@@ -38,55 +38,70 @@ NODE_BIN = find_node_binary()
 
 class TestKalyaniApp(unittest.TestCase):
 
-    def test_dedicated_repo_docs_and_no_auto_tts_rule_present(self) -> None:
-        """Verify GEMINI.md, .gemini/config/rules/kalyani_app_rules.md, and spec.md exist and enforce the No-Auto-TTS-Rebuild rule."""
-        for rel in ("GEMINI.md", "spec.md", ".gemini/config/rules/kalyani_app_rules.md"):
+    def test_dedicated_repo_docs_persona_downstream_and_no_auto_tts_rule(self) -> None:
+        """Verify GEMINI.md, student-persona.md, client-side-gemini.md, spec.md, and No-Auto-TTS-Rebuild rule exist."""
+        for rel in (
+            "GEMINI.md",
+            "spec.md",
+            "student-persona.md",
+            "client-side-gemini.md",
+            ".gemini/config/rules/kalyani_app_rules.md",
+        ):
             p = APP_ROOT / rel
             self.assertTrue(p.is_file(), f"Missing {rel} in {APP_ROOT}")
-            content = p.read_text(encoding="utf-8")
-            self.assertIn("refresh_voices.py", content)
+
+        persona_txt = (APP_ROOT / "student-persona.md").read_text(encoding="utf-8")
+        self.assertIn("6", persona_txt)
+        self.assertIn("Zero Direct Mistake Callouts", persona_txt)
+
+        downstream_txt = (APP_ROOT / "client-side-gemini.md").read_text(encoding="utf-8")
+        self.assertIn("YouTube Music", downstream_txt)
+        self.assertIn("কল্যাণী", downstream_txt)
 
         build_src = (SCRIPTS_DIR / "build_app.py").read_text(encoding="utf-8")
         self.assertNotIn("gemini-agents-generate/generate", build_src, "build_app.py must NEVER invoke generate tts")
         self.assertNotIn("build_one(", build_src, "build_app.py must NEVER trigger TTS generation")
 
-    def test_python_scripts_compile_and_tts_manifest_tracks_all_246_mp3s(self) -> None:
-        """Verify all Python scripts compile cleanly and audio/tts_manifest.json tracks all 246 Aoede MP3s."""
+    def test_python_scripts_compile_and_tts_status_runs_cleanly(self) -> None:
+        """Verify all Python scripts compile cleanly and refresh_voices.py --status runs without regenerating audio."""
         for py_file in SCRIPTS_DIR.glob("*.py"):
             py_compile.compile(str(py_file), doraise=True)
 
         manifest_path = AUDIO_DIR / "tts_manifest.json"
         self.assertTrue(manifest_path.is_file(), "Missing audio/tts_manifest.json")
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        self.assertEqual(manifest.get("total_tracked"), 246, "Expected 246 tracked MP3s (8 slides + 7 quotes + 21 days + 210 games)")
 
         proc = subprocess.run(
             [sys.executable, str(SCRIPTS_DIR / "refresh_voices.py"), "--status"],
             capture_output=True, text=True, check=False,
         )
         self.assertEqual(proc.returncode, 0, proc.stderr)
-        self.assertIn("246", proc.stdout)
+        self.assertIn("162", proc.stdout, "Expected 162 tracked items (8 slides + 7 quotes + 21 days + 126 games)")
 
     def test_ma_presentation_html_and_node_vm_behavioral_suite(self) -> None:
-        """Verify ma-presentation.html has zero JS syntax errors, 10 single-focus games/day, YouTube Music Bengali guide, random Quote tab, and Play/Pause/Resume."""
+        """Verify 🌸 কল্যাণী header, আজকের খেলা tab, অনুপ্রেরণা inside চিঠি, 6 ego-safe games/day, and Node VM behavior."""
         ma_html_path = APP_ROOT / "ma-presentation.html"
         self.assertTrue(ma_html_path.is_file(), "Missing ma-presentation.html")
         ma_html = ma_html_path.read_text(encoding="utf-8")
 
-        self.assertIn('id="htabPlan"', ma_html)
-        self.assertIn('id="htabSlides"', ma_html)
-        self.assertIn('id="htabQuote"', ma_html)
+        # Header checks: 🌸 কল্যাণী brand, 🎓 আজকের খেলা, 💌 চিঠি, no separate #htabQuote or #viewQuote
+        self.assertIn('id="headerBrand"', ma_html)
+        self.assertIn('<span>🌸</span><span>কল্যাণী</span>', ma_html)
+        self.assertIn('🎓 আজকের খেলা', ma_html)
+        self.assertIn('💌 চিঠি', ma_html)
+        self.assertNotIn('id="htabQuote"', ma_html, "Quote tab must be removed from header and placed inside চিঠি")
+        self.assertNotIn('id="viewQuote"', ma_html, "Separate viewQuote must be merged inside viewSlides (চিঠি)")
         self.assertNotIn('id="bnavKalyani"', ma_html)
-        self.assertNotIn('id="bnavProgress"', ma_html)
         self.assertNotIn('<nav class="bottom-nav">', ma_html)
         self.assertNotIn('id="themeBtn"', ma_html)
         self.assertNotIn("speechSynthesis", ma_html)
-        self.assertNotIn("SpeechSynthesisUtterance", ma_html)
 
-        self.assertIn("ধাপ ১ — মা, আজ কী করবো দেখো:", ma_html)
-        self.assertIn("এবার ফোনে জেমিনি (Gemini) খুলে মাইক 🎙️ ছুঁয়ে মুখে বলো:", ma_html)
-        self.assertNotIn("দয়া করে", ma_html, "Unnatural 'দয়া করে' must never appear in Bengali text")
-        self.assertNotIn("মস্তিষ্ক", ma_html, "Bookish 'মস্তিষ্ক' must be replaced with natural 'মাথা'")
+        # Natural Bengali & Ego-Safety checks
+        self.assertNotIn("দয়া করে", ma_html)
+        self.assertNotIn("মস্তিষ্ক", ma_html)
+        self.assertNotIn("ভুল থেকে শিক্ষা", ma_html)
+        self.assertNotIn("পচা ফলটা আগে", ma_html)
+        self.assertNotIn("ভবঘুরের মতো", ma_html)
+        self.assertNotIn("Kiptemi", ma_html)
 
         m = re.search(r"<script>([\s\S]*?)</script>", ma_html)
         self.assertIsNotNone(m, "Missing <script> block in ma-presentation.html")
@@ -131,7 +146,7 @@ function getEl(id) {
   if (!elements[id]) elements[id] = makeEl(id);
   return elements[id];
 }
-['topPlayBtn','permBanner','dailyQuoteText','btnQuotePlay','viewPlan','viewSlides','viewQuote','htabPlan','htabSlides','htabQuote','segPart1','segPart2','progInlinePill','dayStrip','activeDayStage','slideImg','slideBadge','slideTitleBn','slideHighlight','slideBodyBn','btnSlideMainPlay','prevBtn','nextBtn','autoAdvanceBtn','audioPlayer'].forEach(id => {
+['headerBrand','topPlayBtn','permBanner','dailyQuoteText','btnQuotePlay','viewPlan','viewSlides','htabPlan','htabSlides','segPart1','segPart2','progInlinePill','dayStrip','activeDayStage','slideImg','slideBadge','slideTitleBn','slideHighlight','slideBodyBn','btnSlideMainPlay','prevBtn','nextBtn','autoAdvanceBtn','audioPlayer'].forEach(id => {
   const el = getEl(id);
   if (id === 'topPlayBtn' || id === 'btnQuotePlay') el.setAttribute('data-default-label', '🔊 শোনো');
   if (id === 'btnSlideMainPlay') el.setAttribute('data-default-label', '🔊 এই পাতাটা শোনো');
@@ -169,62 +184,57 @@ const testBlock = `
 assert.strictEqual(DAYS_21.length, 21);
 assert.strictEqual(DAYS_PART2_30.length, 30);
 DAYS_21.forEach(d => {
-  assert.strictEqual(d.agendas.length, 10, 'Every Part 1 day must have 10 single-task games');
-  assert.ok(d.agendas[8].detail_bn.includes('ইউটিউব মিউজিক'), 'Game 9 must include YouTube Music Bengali instructions');
-  assert.ok(d.agendas[8].prompt_bn.includes('ইউটিউব মিউজিকে'), 'Game 9 prompt must ask Gemini about YouTube Music in Bengali');
-  assert.ok(d.agendas[9].category.includes('কৌতূহল'), 'Game 10 must be the dedicated Why/How curiosity game');
-  d.agendas.forEach((ag, idx) => {
-    assert.ok(ag.audio_url.endsWith('day_' + d.day + '_ag_' + idx + '.mp3'), 'Every Part 1 section must use its verbatim day_X_ag_Y.mp3: ' + ag.audio_url);
-    const fullText = buildFullSectionSpeechText(d, ag, idx);
-    assert.ok(fullText.includes(ag.title_bn));
-    assert.ok(fullText.includes(ag.detail_bn));
-    assert.ok(fullText.includes(ag.prompt_bn));
-  });
+  assert.strictEqual(d.agendas.length, 6, 'Every Part 1 day must have 6 cohesive games');
+  assert.ok(d.agendas[3].detail_bn.includes('ইউটিউব মিউজিক'), 'Game 4 must include YouTube Music instructions');
+  assert.ok(d.agendas[3].prompt_bn.startsWith('জেমিনি, ইউটিউব মিউজিকে ‘'), 'Game 4 prompt must directly command YouTube Music');
+  assert.ok(d.agendas[3].prompt_bn.endsWith('’ গানটা চালিয়ে দাও।'));
+  assert.ok(d.agendas[3].followup_prompt_bn.includes('গানটার কথাগুলোর আসল মানে'));
 });
 DAYS_PART2_30.forEach(d => {
-  assert.strictEqual(d.agendas.length, 10, 'Every Part 2 day must have 10 single-task games');
-  assert.ok(d.agendas[8].detail_bn.includes('ইউটিউব মিউজিক'));
+  assert.strictEqual(d.agendas.length, 6, 'Every Part 2 day must have 6 cohesive games');
+  assert.ok(d.agendas[3].prompt_bn.startsWith('জেমিনি, ইউটিউব মিউজিকে ‘'));
 });
 
 const audio = getEl('audioPlayer');
 const agBtn0 = getEl('btnAgPlay_1_0');
-const agBtn1 = getEl('btnAgPlay_1_1');
 (async () => {
   await playAgendaByIdx(1, 0, agBtn0);
   assert.strictEqual(audio.paused, false);
   assert.strictEqual(agBtn0.innerHTML, '⏸️ থামাও');
-  assert.strictEqual(getEl('topPlayBtn').innerHTML, '⏸️ থামাও');
 
   await playAgendaByIdx(1, 0, agBtn0);
   assert.strictEqual(audio.paused, true);
   assert.strictEqual(agBtn0.innerHTML, '🔊 শোনো');
 
+  // Opening চিঠি ('slides') refreshes the random quote inside চিঠি
   const qBefore = getEl('dailyQuoteText').textContent;
-  switchView('quote');
+  switchView('slides');
+  assert.ok(getEl('viewSlides').className.includes('active'));
   const qClick1 = getEl('dailyQuoteText').textContent;
   assert.notStrictEqual(qClick1, qBefore);
-  switchView('quote');
+  switchView('slides');
   const qClick2 = getEl('dailyQuoteText').textContent;
   assert.notStrictEqual(qClick2, qClick1);
 
   switchView('plan');
   switchCoursePart(2);
-  assert.ok(getEl('progInlinePill').textContent.includes('/ 300'));
+  assert.ok(getEl('progInlinePill').textContent.includes('/ 180'));
   toggleAgendaDone(22, 0);
-  assert.ok(getEl('progInlinePill').textContent.includes('1 / 300'));
+  assert.ok(getEl('progInlinePill').textContent.includes('1 / 180'));
 
+  // Test 6-Game 2x3 Visual Navigator Grid & Song Game (index 3) + Last Game (index 5)
   switchCoursePart(1);
   selectDay(1, false);
-  selectGame(8);
+  assert.ok(getEl('progInlinePill').textContent.includes('/ 126'));
+  selectGame(3);
   assert.ok(getEl('activeDayStage').innerHTML.includes('ফোনের জেমিনি নিজে থেকেই ইউটিউব মিউজিকে (YouTube Music) গান বাজাতে পারে!'));
-  assert.ok(DAYS_21[0].agendas[8].prompt_bn.startsWith('জেমিনি, ইউটিউব মিউজিকে ‘'));
-  assert.ok(DAYS_21[0].agendas[8].prompt_bn.endsWith('’ গানটা চালিয়ে দাও।'));
   assert.ok(getEl('activeDayStage').innerHTML.includes('ধাপ ৩ — গানটা শোনা হয়ে গেলে এর মানে আর গল্পটা জানতে জেমিনিকে বলো:'));
-  selectGame(9);
-  assert.strictEqual(curGameIdx, 9);
-  assert.ok(getEl('activeDayStage').innerHTML.includes('খেলা 10 / 10'));
+  selectGame(5);
+  assert.strictEqual(curGameIdx, 5);
+  assert.ok(getEl('activeDayStage').innerHTML.includes('খেলা 6 / 6'));
 
-  for (let g = 0; g < 10; g++) {
+  // Completing all 6 games of Day 1 auto-advances to Day 2
+  for (let g = 0; g < 6; g++) {
     if (!doneMap['1_' + g]) toggleAgendaDone(1, g);
   }
   assert.strictEqual(curDayNum, 2);

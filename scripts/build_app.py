@@ -64,7 +64,7 @@ def build_html() -> None:
         }
 
     day1_ag_map = {}
-    for a_idx in range(10):
+    for a_idx in range(6):
         a_path = os.path.join(AUDIO_DIR, f"day_1_ag_{a_idx}.mp3")
         day1_ag_map[a_idx] = {
             "url": f"audio/day_1_ag_{a_idx}.mp3",
@@ -141,7 +141,7 @@ def build_html() -> None:
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="ma-manifest.json">
-<title>মায়ের এআই শিক্ষা ও চিঠি</title>
+<title>🌸 কল্যাণী — মায়ের এআই শিক্ষা ও চিঠি</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Noto+Serif+Bengali:wght@700;800&display=swap" rel="stylesheet">
@@ -192,12 +192,25 @@ def build_html() -> None:
   .slim-header-inner {
     max-width: 600px;
     margin: 0 auto;
-    height: 40px;
+    height: 42px;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
+    gap: 5px;
+  }
+  .header-brand {
+    display: inline-flex;
+    align-items: center;
     gap: 4px;
+    font-family: 'Noto Serif Bengali', serif;
+    font-size: clamp(0.95rem, 3.8vw, 1.08rem);
+    font-weight: 800;
+    color: var(--accent-active);
+    white-space: nowrap;
+    flex-shrink: 0;
+    cursor: pointer;
+    padding-right: 2px;
   }
   .header-tabs {
     display: flex;
@@ -300,22 +313,22 @@ def build_html() -> None:
     cursor: pointer;
   }
 
-  /* Morning Quote View Card */
+  /* Morning Quote Card (Embedded inside 💌 চিঠি) */
   .quote-card {
-    margin: 14px 0;
-    padding: 22px 18px;
-    border-radius: 22px;
+    margin: 12px 0;
+    padding: 15px 16px;
+    border-radius: 20px;
     background: var(--gold-soft);
     border: 1.5px solid var(--gold);
     box-shadow: var(--shadow);
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
   }
   .quote-text {
     font-family: 'Noto Serif Bengali', serif;
-    font-size: 1.32rem;
-    line-height: 1.62;
+    font-size: 1.16rem;
+    line-height: 1.58;
     font-weight: 700;
     color: var(--text-primary);
   }
@@ -511,8 +524,8 @@ def build_html() -> None:
   }
   .game-grid-8 {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
   }
   .game-tile {
     min-height: 54px;
@@ -741,13 +754,15 @@ def build_html() -> None:
 </head>
 <body>
 
-<!-- ULTRA-COMPACT SINGLE-ROW STICKY HEADER (All 3 Tabs + Listen Button Fit on 1 Row in Mobile) -->
+<!-- ULTRA-COMPACT SINGLE-ROW STICKY HEADER (🌸 কল্যাণী Brand + আজকের খেলা + চিঠি + Listen Button on 1 Row) -->
 <header class="slim-header">
   <div class="slim-header-inner">
+    <div id="headerBrand" class="header-brand" onclick="switchView('plan')" title="🌸 কল্যাণী">
+      <span>🌸</span><span>কল্যাণী</span>
+    </div>
     <div class="header-tabs">
-      <button id="htabPlan" class="htab-btn active" onclick="switchView('plan')">🎓 খেলা</button>
+      <button id="htabPlan" class="htab-btn active" onclick="switchView('plan')">🎓 আজকের খেলা</button>
       <button id="htabSlides" class="htab-btn" onclick="switchView('slides')">💌 চিঠি</button>
-      <button id="htabQuote" class="htab-btn" onclick="switchView('quote')">☀️ অনুপ্রেরণা</button>
     </div>
     <div class="header-right">
       <button id="topPlayBtn" class="hctrl-btn" data-default-label="🔊 শোনো" onclick="toggleMasterAudio()">🔊 শোনো</button>
@@ -764,7 +779,7 @@ def build_html() -> None:
   </div>
 
   <!-- =====================================================================
-       VIEW 1: TODAY'S LESSON (🎓 খেলা — Part 1: 21 Days & Part 2: 30 Days)
+       VIEW 1: TODAY'S LESSON (🎓 আজকের খেলা — Part 1: 21 Days & Part 2: 30 Days)
        ===================================================================== -->
   <section id="viewPlan" class="view-sec active">
     <div class="course-top-row">
@@ -772,7 +787,7 @@ def build_html() -> None:
         <button id="segPart1" class="part-seg-btn active" onclick="switchCoursePart(1)">🎓 পার্ট ১ (২১ দিন)</button>
         <button id="segPart2" class="part-seg-btn" onclick="switchCoursePart(2)">🌱 পার্ট ২ (৩০ দিন)</button>
       </div>
-      <div id="progInlinePill" class="prog-inline-pill">✅ 0 / 210</div>
+      <div id="progInlinePill" class="prog-inline-pill">✅ 0 / 126</div>
     </div>
 
     <div id="dayStrip" class="day-selector-strip"></div>
@@ -781,9 +796,20 @@ def build_html() -> None:
   </section>
 
   <!-- =====================================================================
-       VIEW 2: 8-SLIDE THANKSGIVING LETTER (💌 চিঠি)
+       VIEW 2: DAILY INSPIRATION + 8-SLIDE THANKSGIVING LETTER (💌 চিঠি)
        ===================================================================== -->
   <section id="viewSlides" class="view-sec">
+    <div class="quote-card" style="margin-top:12px;">
+      <div>
+        <div style="font-size:0.95rem; font-weight:700; color:var(--gold); margin-bottom:6px;">☀️ আজকের অনুপ্রেরণা</div>
+        <div id="dailyQuoteText" class="quote-text"></div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <button id="btnQuotePlay" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="toggleMorningQuoteAudio()">🔊 শোনো</button>
+        <button id="btnNextRandomQuote" class="ag-btn" onclick="pickNewRandomQuote(true)">🎲 নতুন বাণী</button>
+      </div>
+    </div>
+
     <div class="slide-card">
       <div class="slide-img-wrap">
         <img id="slideImg" src="" alt="মা ও পরিবারের ছবি">
@@ -802,20 +828,6 @@ def build_html() -> None:
           <button id="nextBtn" class="ag-btn" onclick="nextSlide()">পরে ➡️</button>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- =====================================================================
-       VIEW 3: DAILY INSPIRATION & RANDOM QUOTE (☀️ আজকের অনুপ্রেরণা)
-       ===================================================================== -->
-  <section id="viewQuote" class="view-sec">
-    <div class="quote-card">
-      <div>
-        <div style="font-size:0.95rem; font-weight:700; color:var(--gold); margin-bottom:8px;">☀️ আজকের সুপ্রভাত ও অনুপ্রেরণা</div>
-        <div id="dailyQuoteText" class="quote-text"></div>
-      </div>
-      <button id="btnQuotePlay" class="quote-play-btn" data-default-label="🔊 শোনো" onclick="toggleMorningQuoteAudio()">🔊 শোনো</button>
-      <button id="btnNextRandomQuote" class="ag-btn" onclick="pickNewRandomQuote(true)">🎲 নতুন অনুপ্রেরণা দেখো</button>
     </div>
   </section>
 
@@ -851,16 +863,12 @@ let showAllGamesInDay = false;
 let autoAdvance = true;
 
 const GAME_SHORT_LABELS = [
-  "🧠 ১. মন",
-  "📱 ২. রিমোট",
-  "🔤 ৩. শব্দ",
-  "🗣️ ৪. ইংরেজি বলা",
-  "🌍 ৫. খবর",
-  "🤖 ৬. এআই",
-  "🏆 ৭. চ্যালেঞ্জ",
-  "💡 ৮. বুদ্ধি",
-  "🎵 ৯. গান",
-  "❓ ১০. কেন?"
+  "🧠 ১. মনের আনন্দ",
+  "📱 ২. হাতের যন্ত্র",
+  "🔤 ৩. ইংরেজি খেলা",
+  "🎵 ৪. গান ও অর্থ",
+  "🌍 ৫. জানাশোনা",
+  "🎨 ৬. মজার খেলা"
 ];
 
 /* Unified Audio State Machine (Supports Play, Pause & Resume on Every Button) */
@@ -1139,7 +1147,6 @@ function toggleMasterAudio() {
   }
   // Otherwise play the active view's main audio
   if (curView === 'slides') toggleSlideAudio();
-  else if (curView === 'quote') toggleMorningQuoteAudio();
   else playAgendaByIdx(curDayNum, curGameIdx, document.getElementById('btnAgPlay_' + curDayNum + '_' + curGameIdx));
 }
 
@@ -1222,10 +1229,10 @@ function toggleAutoPlayAll() {
   document.getElementById('autoAdvanceBtn').textContent = autoAdvance ? '🔁 পরপর: চালু' : '🔁 পরপর: বন্ধ';
 }
 
-/* COURSE PLAN VIEW (Part 1: 21 Days & Part 2: 30 Days) */
+/* COURSE PLAN VIEW (Part 1: 21 Days & Part 2: 30 Days — 6 Cohesive Games/Day) */
 function isDayFullyDone(dayNum) {
   const d = findDayObj(dayNum);
-  const count = d ? d.agendas.length : 8;
+  const count = d ? d.agendas.length : 6;
   for (let i = 0; i < count; i++) {
     if (!doneMap[dayNum + '_' + i]) return false;
   }
@@ -1234,7 +1241,7 @@ function isDayFullyDone(dayNum) {
 
 function getFirstIncompleteGameIdx(dayNum) {
   const d = findDayObj(dayNum);
-  const count = d ? d.agendas.length : 8;
+  const count = d ? d.agendas.length : 6;
   for (let i = 0; i < count; i++) {
     if (!doneMap[dayNum + '_' + i]) return i;
   }
@@ -1312,7 +1319,7 @@ function selectDay(dayNum, autoPlayAudio) {
 
 function selectGame(gIdx) {
   const d = findDayObj(curDayNum);
-  const maxIdx = (d && d.agendas) ? d.agendas.length - 1 : 7;
+  const maxIdx = (d && d.agendas) ? d.agendas.length - 1 : 5;
   curGameIdx = Math.max(0, Math.min(maxIdx, gIdx));
   stopAllAudio();
   renderPlanView();
@@ -1483,24 +1490,20 @@ function renderPlanView() {
   syncAllAudioButtonsUI(!audioEl.paused);
 }
 
-/* Header View Switcher (3 Clean Views: Plan, Slides & Random Quote) */
+/* Header View Switcher (2 Clean Views: আজকের খেলা & চিঠি with আজকের অনুপ্রেরণা inside চিঠি) */
 function switchView(mode) {
   curView = mode;
   stopAllAudio();
   document.getElementById('viewPlan').className = 'view-sec' + (mode === 'plan' ? ' active' : '');
   document.getElementById('viewSlides').className = 'view-sec' + (mode === 'slides' ? ' active' : '');
-  document.getElementById('viewQuote').className = 'view-sec' + (mode === 'quote' ? ' active' : '');
   document.getElementById('htabPlan').className = 'htab-btn' + (mode === 'plan' ? ' active' : '');
   document.getElementById('htabSlides').className = 'htab-btn' + (mode === 'slides' ? ' active' : '');
-  document.getElementById('htabQuote').className = 'htab-btn' + (mode === 'quote' ? ' active' : '');
 
   if (mode === 'plan') {
     renderPlanView();
   } else if (mode === 'slides') {
-    renderSlide();
-  } else if (mode === 'quote') {
-    // Every time "অনুপ্রেরণা" is clicked, a new random quote appears!
     pickNewRandomQuote(false);
+    renderSlide();
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }

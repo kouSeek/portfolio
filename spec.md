@@ -12,17 +12,14 @@
   - `scripts/refresh_voices.py --confirm` performs an incremental TTS refresh of only the stale/missing `.mp3` files when explicitly requested by Koushik.
 
 ## 3. Mobile-First UI & Navigation Spec
-- **Single-Row Sticky Header (`46px`):**
-  - Left: 3 compact tabs (`🎓 খেলা`, `💌 চিঠি`, `☀️ অনুপ্রেরণা`) that fit on a single row on `360px` Android screens.
+- **Single-Row Sticky Header (`42px`):**
+  - Left: **`🌸 কল্যাণী`** brand + 2 compact tabs (`🎓 আজকের খেলা`, `💌 চিঠি`) that fit cleanly on a single row on `360px` Android screens.
   - Right: Master Play/Pause button (`🔊 শোনো` / `⏸️ থামাও`).
-  - No footer bar, no theme toggle button.
-- **10 Single-Focus Games Per Day (`2×5` Visual Navigator Grid):**
-  - Every game card contains:
-    1. Category pill & `খেলা X / 10` counter.
-    2. `📋 ধাপ ১ — মা আজ যা করবেন ও শিখবেন (বিস্তারিত নির্দেশ)`
-    3. For Game 9 (`🎵 ৯. গান`): Highlighted **YouTube Music Bengali Voice-Prompt Guide** (`🎵 ইউটিউব মিউজিকে বাংলায় গান চালানোর সহজ নিয়ম`).
-    4. `🗣️ ধাপ ২ — মা, ফোনে জেমিনি (Gemini) অ্যাপ খুলে মাইক 🎙️ বোতাম ছুঁয়ে ঠিক এই কথাটি মুখে বলো:`
-    5. `🔊 শোনো` / `⏸️ থামাও` toggle button and `⬜ আমি এটি করেছি` / `✅ করা হয়েছে` completion button.
+  - Inside `💌 চিঠি`: Displays the `☀️ আজকের অনুপ্রেরণা` random quote card above the 8-slide Thanksgiving letter.
+  - No footer bar, no separate `অনুপ্রেরণা` header tab, no theme toggle button.
+- **6 Cohesive Games Per Day (`2×3` Visual Navigator Grid — See `student-persona.md`):**
+  - Strictly `6` games per day (`126` in Part 1, `180` in Part 2), with zero direct mistake callouts (`<= 5%` indirect third-person Wise-Advisor story puzzles).
+  - Game 4 (`🎵 ৪. গান ও অর্থ`) includes the highlighted **YouTube Music Bengali Voice-Prompt Guide** (`“জেমিনি, ইউটিউব মিউজিকে ‘...’ গানটা চালিয়ে দাও।”`) + follow-up lyric-meaning prompt (`followup_prompt_bn`).
 - **Auto-Advance & Startup Focus:**
   - Checking off an item jumps to the next incomplete game in the day.
   - Completing all 10 games in Day `N` automatically advances to Day `N+1` and scrolls `#dayChip_{N+1}` into view.

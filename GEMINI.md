@@ -27,6 +27,8 @@ This file is the **single, canonical, Git-tracked source of truth** governing ho
 ```text
 /usr/local/google/home/koushikchak/kalyani-app/
 ├── GEMINI.md                  # Master rules, preferences & No-Auto-TTS policy
+├── student-persona.md         # Canonical learner persona, ego-safety rules & 6-game ratio distribution
+├── client-side-gemini.md      # Downstream Android Gemini Saved Info prompt & memory collaboration spec
 ├── .gemini/
 │   └── config/
 │       └── rules/
@@ -55,21 +57,19 @@ This file is the **single, canonical, Git-tracked source of truth** governing ho
 ## 3. Core Product & UX Invariants
 
 1. **Android Mobile-First, Distraction-Free Layout:**
-   - Single-row ultra-compact sticky header (`46px` height) with **3 tabs**: `🎓 খেলা` (`#htabPlan`), `💌 চিঠি` (`#htabSlides`), and `☀️ অনুপ্রেরণা` (`#htabQuote`), plus the master play/pause button (`#topPlayBtn`).
-   - **Zero bottom footer** (no Kalyani chat tab, no Diary tab).
-   - **No theme toggle button** in the header (locked to the warm, high-contrast maternal daylight theme).
-2. **10 Single-Focus Games Per Day (`2×5` Visual Navigator Grid):**
-   - Every day in **Part 1 (`21` days = `210` games)** and **Part 2 (`30` days = `300` games)** has strictly **1 task per game** across 10 categories:
-     1. `🧠 ১. মন` — CBT Therapy & Self-Confidence
-     2. `📱 ২. রিমোট` — Single Appliance / Phone Mastery
-     3. `🔤 ৩. শব্দ` — English Word Reading (3 words)
-     4. `🗣️ ৪. ইংরেজি বলা` — Speaking 1 English Sentence Out Loud
-     5. `🌍 ৫. খবর` — General Knowledge & Social News
-     6. `🤖 ৬. এআই` — Everyday Personal AI Help
-     7. `🏆 ৭. চ্যালেঞ্জ` — Comfort-Zone Action Challenge
-     8. `💡 ৮. বুদ্ধি` — Loving Self-Realization & Mistake Reinforcement
-     9. `🎵 ৯. গান` — Playing Today's Song in **YouTube Music** via Bengali Voice Prompt + Lyric Meaning
-     10. `❓ ১০. কেন?` — Asking *"Why & How"* Critical Curiosity
+   - Single-row ultra-compact sticky header (`42px` height) displaying **`🌸 কল্যাণী`** brand on the left, **2 tabs**: `🎓 আজকের খেলা` (`#htabPlan`) and `💌 চিঠি` (`#htabSlides`), plus the master play/pause button (`#topPlayBtn`).
+   - **`☀️ আজকের অনুপ্রেরণা`** random quote card lives inside the `💌 চিঠি` tab (above the 8-slide letter) and refreshes to a new random quote each time `💌 চিঠি` is opened or `🎲 নতুন বাণী` is clicked.
+   - **Zero bottom footer** and **no theme toggle button** in the header.
+2. **6 Cohesive Games Per Day (`2×3` Visual Navigator Grid — Defined in [`student-persona.md`](file:///usr/local/google/home/koushikchak/kalyani-app/student-persona.md)):**
+   - Every day in **Part 1 (`21` days = `126` games)** and **Part 2 (`30` days = `180` games)** has **6 cohesive games** (`খেলা ১` to `খেলা ৬`):
+     1. `🧠 ১. মনের আনন্দ` — Self-Confidence & Joyful Calm
+     2. `📱 ২. হাতের যন্ত্র` — Single Appliance / Phone Mastery
+     3. `🔤 ৩. ইংরেজি খেলা` — Clubbed English Words (`2–3` words) + Speaking `1` Short English Line
+     4. `🎵 ৪. গান ও অর্থ` — Playing Today's Song in **YouTube Music** via Direct Bengali Voice Prompt + Lyric Meaning
+     5. `🌍 ৫. জানাশোনা` — Clubbed GK/History/Science + Asking *"Why & How"* Critical Curiosity
+     6. `🎨 ৬. মজার খেলা` — Everyday Personal AI Help, Hobbies & Fun Challenges (with `<= 5%` disguised third-person Wise-Advisor story riddles and **0% direct mistake callouts**).
+3. **Downstream Android Gemini Sync ([`client-side-gemini.md`](file:///usr/local/google/home/koushikchak/kalyani-app/client-side-gemini.md)):**
+   - Keep `client-side-gemini.md` synchronized with any persona or app workflow updates so Ma's Android Gemini app understands `🌸 কল্যাণী`, remembers her tastes/fears/progress, and never criticizes her directly.
 3. **Smart Progression & Navigation:**
    - Completing all 10 games in a day automatically advances to the next day (`Day N -> Day N+1`) and scrolls the active day chip into view.
    - Opening the app automatically focuses the first incomplete day (`findInitialCurrentDayAndPart()`).
