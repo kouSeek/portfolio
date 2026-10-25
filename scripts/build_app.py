@@ -793,8 +793,8 @@ def build_html() -> None:
         <div id="slideTitleBn" class="slide-title"></div>
         <div id="slideHighlight" class="slide-highlight"></div>
         <div id="slideBodyBn" class="slide-body"></div>
-        <button id="btnSlideMainPlay" class="big-voice-btn" data-default-label="🔊 এই পাতাটি কল্যাণীর গলায় শোনো" onclick="toggleSlideAudio()">
-          🔊 এই পাতাটি কল্যাণীর গলায় শোনো
+        <button id="btnSlideMainPlay" class="big-voice-btn" data-default-label="🔊 এই পাতাটা শোনো" onclick="toggleSlideAudio()">
+          🔊 এই পাতাটা শোনো
         </button>
         <div class="slide-nav-row">
           <button id="prevBtn" class="ag-btn" onclick="prevSlide()">⬅️ আগে</button>
@@ -835,10 +835,10 @@ const ALL_DAYS = DAYS_21.concat(DAYS_PART2_30);
 const MORNING_QUOTES = [
   "সুপ্রভাত মা! যেমনভাবে একটা পাখি ডানা মেলে আকাশে ওড়ে, আজ তোমার মনটাও তেমনই হালকা ও আনন্দে ভরে উঠুক।",
   "সুপ্রভাত মা! মা সারদা বলতেন—‘যখনই ভয় করবে, জানবে আমি তোমার পাশে আছি।’ আজ নতুন কিছু শেখার জন্য দারুণ একটা দিন!",
-  "সুপ্রভাত মা! রানাঘাটের সেই মনোযোগী স্কুলছাত্রীটি আজও তোমার ভেতরে বেঁচে আছে। আজ কৌতূহল নিয়ে একটি গানের অর্থ ও নতুন বোতাম শিখবো!",
-  "সুপ্রভাত মা! বয়স কেবল সংখ্যামাত্র—প্রতিদিন একটি করে ‘কেন?’ এবং ‘কীভাবে?’ প্রশ্ন করলেই মস্তিষ্ক চিরতরুণ থাকে।",
-  "সুপ্রভাত মা! তোমার ছেলে কৌশিক আর দিদি তোমাকে ভীষণ ভালোবাসে। আজ নিজের আনন্দে, কোনো দ্বিধা ছাড়া নতুন কিছু শেখো!",
-  "সুপ্রভাত মা! রবীন্দ্রনাথ লিখেছেন—‘আলো আমার, আলো ওগো, আলোয় ভুবন ভরা।’ আজ তোমার মন ও ঘর আনন্দ-আলোয় ভরে থাকুক।",
+  "সুপ্রভাত মা! রানাঘাটের সেই মনোযোগী স্কুলছাত্রীটা আজও তোমার ভেতরে বেঁচে আছে। আজ আনন্দে একটা গানের মানে আর নতুন বোতাম শিখবো!",
+  "সুপ্রভাত মা! বয়স শুধু সংখ্যামাত্র—রোজ একটা করে ‘কেন?’ আর ‘কীভাবে?’ প্রশ্ন করলেই মাথাটা একদম তাজা ও সচল থাকে।",
+  "সুপ্রভাত মা! তোমার ছেলে কৌশিক আর দিদি তোমাকে ভীষণ ভালোবাসে। আজ নিজের আনন্দে, কোনো ভয় ছাড়া নতুন কিছু শেখো!",
+  "সুপ্রভাত মা! রবীন্দ্রনাথ লিখেছেন—‘আলো আমার, আলো ওগো, আলোয় ভুবন ভরা।’ আজ তোমার মন আর ঘর আনন্দ-আলোয় ভরে থাকুক।",
   "সুপ্রভাত মা! ভুল হওয়া মানেই শেখার শুরু। আজ কোনো লজ্জা ছাড়া রিমোট, ফোন বা ইংরেজি শব্দ নিয়ে নতুন খেলা খেলবো!"
 ];
 
@@ -1059,11 +1059,14 @@ function stopAllAudio() {
 
 function buildFullSectionSpeechText(d, ag, agIdx) {
   const dispDay = (d && d.part === 2) ? d.part_day : (d ? d.day : 1);
+  const followTxt = ag.followup_prompt_bn
+    ? (' আর গানটা শোনা হয়ে গেলে এর মানে জানতে বলো: ' + ag.followup_prompt_bn)
+    : '';
   return (
     'দিন ' + dispDay + ', খেলা ' + (agIdx + 1) + ': ' + ag.category + '। ' +
     ag.title_bn + '। ' +
-    'ধাপ ১, মা আজ যা করবেন ও শিখবেন: ' + ag.detail_bn + ' ' +
-    'ধাপ ২, মা, এবার ফোনে জেমিনি অ্যাপ খুলে মাইক বোতাম ছুঁয়ে ঠিক এই কথাটি মুখে বলো: ' + ag.prompt_bn
+    'ধাপ ১, আজ কী করবো দেখো: ' + ag.detail_bn + ' ' +
+    'ধাপ ২, এবার ফোনে জেমিনি খুলে মাইক বোতাম ছুঁয়ে মুখে বলো: ' + ag.prompt_bn + followTxt
   );
 }
 
@@ -1355,9 +1358,17 @@ function buildAgendaCardHtml(d, ag, idx) {
   const isSongGame = (ag.category || '').includes('গান') || (ag.detail_bn || '').includes('ইউটিউব মিউজিক');
   const ytMusicGuideHtml = isSongGame ? `
       <div class="agenda-prompt-box" style="border-color:var(--accent); background:var(--accent-soft);">
-        <div class="agenda-prompt-label" style="color:var(--accent);">🎵 ইউটিউব মিউজিকে (YouTube Music) বাংলায় গান চালানোর সহজ নিয়ম:</div>
-        <div class="agenda-detail" style="font-size:1.02rem;">১. ফোনে জেমিনি (Gemini) খুলে মাইক 🎙️ ছুঁয়ে বাংলায় বলো: <strong>“জেমিনি, ইউটিউব মিউজিকে কীভাবে বাংলায় গান চালাতে হয় আমাকে শেখাও এবং আজকের গানটি ইউটিউব মিউজিকে চালিয়ে দাও।”</strong><br>২. গানটি চলার সময় কথাগুলো মন দিয়ে শুনে নিচের ধাপ ২-এর কথাটি জেমিনিকে বলো।</div>
+        <div class="agenda-prompt-label" style="color:var(--accent);">🎵 ফোনের জেমিনি নিজে থেকেই ইউটিউব মিউজিকে (YouTube Music) গান বাজাতে পারে!</div>
+        <div class="agenda-detail" style="font-size:1.02rem;">মা, ফোনের জেমিনির ইউটিউব মিউজিকের সাথে সরাসরি যোগ আছে। যেকোনো গান শুনতে ইচ্ছে করলেই শুধু মাইক 🎙️ ছুঁয়ে মুখে বলবে:<br><strong>“জেমিনি, ইউটিউব মিউজিকে ‘[গানের নাম বা যেকোনো লাইন]’ গানটা চালিয়ে দাও।”</strong><br>গানের পুরো নাম মনে না থাকলেও চলবে—গানের যেকোনো একটা লাইন বলে এইটুকু বললেই ও নিজে থেকে ইউটিউব মিউজিক খুলে গানটা বাজিয়ে দেবে!</div>
       </div>` : '';
+  const followupHtml = ag.followup_prompt_bn ? `
+      <div class="agenda-prompt-box">
+        <div class="agenda-prompt-label">🗣️ ধাপ ৩ — গানটা শোনা হয়ে গেলে এর মানে আর গল্পটা জানতে জেমিনিকে বলো:</div>
+        <div class="agenda-prompt-speech">“${ag.followup_prompt_bn}”</div>
+      </div>` : '';
+  const step2Label = isSongGame
+    ? '🗣️ ধাপ ২ — ইউটিউব মিউজিকে আজকের গানটা চালাতে ফোনে জেমিনি (Gemini) খুলে মাইক 🎙️ ছুঁয়ে বলো:'
+    : '🗣️ ধাপ ২ — এবার ফোনে জেমিনি (Gemini) খুলে মাইক 🎙️ ছুঁয়ে মুখে বলো:';
   return `
     <div class="agenda-card ${isDone ? 'done-card' : ''}" id="agendaCard_${d.day}_${idx}">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
@@ -1366,18 +1377,18 @@ function buildAgendaCardHtml(d, ag, idx) {
       </div>
       <div class="agenda-title">${ag.title_bn}</div>
       <div>
-        <div class="agenda-step-heading">📋 ধাপ ১ — মা আজ যা করবেন ও শিখবেন (বিস্তারিত নির্দেশ):</div>
+        <div class="agenda-step-heading">📋 ধাপ ১ — মা, আজ কী করবো দেখো:</div>
         <div class="agenda-detail">${ag.detail_bn}</div>
       </div>${ytMusicGuideHtml}
       <div class="agenda-prompt-box">
-        <div class="agenda-prompt-label">🗣️ ধাপ ২ — মা, ফোনে জেমিনি (Gemini) অ্যাপ খুলে মাইক 🎙️ বোতাম ছুঁয়ে ঠিক এই কথাটি মুখে বলো:</div>
+        <div class="agenda-prompt-label">${step2Label}</div>
         <div class="agenda-prompt-speech">“${ag.prompt_bn}”</div>
-        <div class="agenda-prompt-howto">💡 (কোনো দ্বিধা ছাড়া উপরের কথাটি হুবহু বা নিজের ভাষায় জেমিনিকে বলো এবং ও কী উত্তর দেয় মন দিয়ে শোনো)</div>
-      </div>
+        <div class="agenda-prompt-howto">💡 (নিজের মতো সহজ বাংলায় বললেই হবে, ভুল হওয়ার কোনো ভয় নেই—বলো আর শোনো ও কী করে!)</div>
+      </div>${followupHtml}
       <div class="agenda-actions">
         <button id="${btnId}" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="playAgendaByIdx(${d.day}, ${idx}, this)">🔊 শোনো</button>
         <button class="ag-btn check ${isDone ? 'checked' : ''}" onclick="toggleAgendaDone(${d.day}, ${idx})">
-          ${isDone ? '✅ করা হয়েছে' : '⬜ আমি এটি করেছি'}
+          ${isDone ? '✅ করা হয়েছে' : '⬜ আমি এটা করেছি'}
         </button>
       </div>
     </div>
@@ -1448,8 +1459,8 @@ function renderPlanView() {
       </div>
       <div class="day-hero-title">${d.title_bn}</div>
       <div class="day-hero-summary">${d.summary_bn}</div>
-      <button id="btnDayMainPlay" class="big-voice-btn" data-default-label="🔊 আজকের সম্পূর্ণ গাইডটি কল্যাণীর গলায় শোনো" onclick="toggleDayOverviewAudio()">
-        🔊 আজকের সম্পূর্ণ গাইডটি কল্যাণীর গলায় শোনো
+      <button id="btnDayMainPlay" class="big-voice-btn" data-default-label="🔊 আজকের কথাগুলো শোনো" onclick="toggleDayOverviewAudio()">
+        🔊 আজকের কথাগুলো শোনো
       </button>
       <div style="display:flex; gap:8px; margin-top:10px;">
         <button class="ag-btn" style="flex:1;" ${d.day <= minDay ? 'disabled' : ''} onclick="selectDay(${d.day - 1}, false)">⬅️ আগের দিন</button>

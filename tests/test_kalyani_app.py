@@ -83,8 +83,10 @@ class TestKalyaniApp(unittest.TestCase):
         self.assertNotIn("speechSynthesis", ma_html)
         self.assertNotIn("SpeechSynthesisUtterance", ma_html)
 
-        self.assertIn("ধাপ ১ — মা আজ যা করবেন ও শিখবেন (বিস্তারিত নির্দেশ):", ma_html)
-        self.assertIn("ধাপ ২ — মা, ফোনে জেমিনি (Gemini) অ্যাপ খুলে মাইক 🎙️ বোতাম ছুঁয়ে ঠিক এই কথাটি মুখে বলো:", ma_html)
+        self.assertIn("ধাপ ১ — মা, আজ কী করবো দেখো:", ma_html)
+        self.assertIn("এবার ফোনে জেমিনি (Gemini) খুলে মাইক 🎙️ ছুঁয়ে মুখে বলো:", ma_html)
+        self.assertNotIn("দয়া করে", ma_html, "Unnatural 'দয়া করে' must never appear in Bengali text")
+        self.assertNotIn("মস্তিষ্ক", ma_html, "Bookish 'মস্তিষ্ক' must be replaced with natural 'মাথা'")
 
         m = re.search(r"<script>([\s\S]*?)</script>", ma_html)
         self.assertIsNotNone(m, "Missing <script> block in ma-presentation.html")
@@ -132,7 +134,7 @@ function getEl(id) {
 ['topPlayBtn','permBanner','dailyQuoteText','btnQuotePlay','viewPlan','viewSlides','viewQuote','htabPlan','htabSlides','htabQuote','segPart1','segPart2','progInlinePill','dayStrip','activeDayStage','slideImg','slideBadge','slideTitleBn','slideHighlight','slideBodyBn','btnSlideMainPlay','prevBtn','nextBtn','autoAdvanceBtn','audioPlayer'].forEach(id => {
   const el = getEl(id);
   if (id === 'topPlayBtn' || id === 'btnQuotePlay') el.setAttribute('data-default-label', '🔊 শোনো');
-  if (id === 'btnSlideMainPlay') el.setAttribute('data-default-label', '🔊 এই পাতাটি কল্যাণীর গলায় শোনো');
+  if (id === 'btnSlideMainPlay') el.setAttribute('data-default-label', '🔊 এই পাতাটা শোনো');
 });
 
 const sandbox = {
@@ -214,7 +216,10 @@ const agBtn1 = getEl('btnAgPlay_1_1');
   switchCoursePart(1);
   selectDay(1, false);
   selectGame(8);
-  assert.ok(getEl('activeDayStage').innerHTML.includes('ইউটিউব মিউজিকে (YouTube Music) বাংলায় গান চালানোর সহজ নিয়ম:'));
+  assert.ok(getEl('activeDayStage').innerHTML.includes('ফোনের জেমিনি নিজে থেকেই ইউটিউব মিউজিকে (YouTube Music) গান বাজাতে পারে!'));
+  assert.ok(DAYS_21[0].agendas[8].prompt_bn.startsWith('জেমিনি, ইউটিউব মিউজিকে ‘'));
+  assert.ok(DAYS_21[0].agendas[8].prompt_bn.endsWith('’ গানটা চালিয়ে দাও।'));
+  assert.ok(getEl('activeDayStage').innerHTML.includes('ধাপ ৩ — গানটা শোনা হয়ে গেলে এর মানে আর গল্পটা জানতে জেমিনিকে বলো:'));
   selectGame(9);
   assert.strictEqual(curGameIdx, 9);
   assert.ok(getEl('activeDayStage').innerHTML.includes('খেলা 10 / 10'));
