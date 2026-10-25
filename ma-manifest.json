@@ -1,0 +1,19 @@
+{
+  "name": "মায়ের এআই বন্ধু কল্যাণী — ২১+৩০ দিনের নবজাগরণ অ্যাপ",
+  "short_name": "কল্যাণী (মা)",
+  "description": "মায়ের জন্য বাংলা ভয়েস এআই বন্ধু, থেরাপি, রিমোট-ফোন-ইংরেজি শেখা ও ২১+৩০ দিনের ব্রেন-রিওয়্যারিং অ্যাপ",
+  "start_url": "./ma-presentation.html",
+  "display": "standalone",
+  "background_color": "#120907",
+  "theme_color": "#120907",
+  "orientation": "portrait-primary",
+  "lang": "bn-IN",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
