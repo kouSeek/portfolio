@@ -9,7 +9,7 @@
      - **Sequential Curiosity Locking & Zero Distracting Tickers:** No Part 1 / Part 2 switcher and no task-completion tickers. Days unlock strictly in sequence (`Day N` unlocks only when all 6 games of `Day 1 .. Day N-1` are ticked off `✅`).
      - **Auto-Unlocked Collapsible Calendar Grid (`Days 22–51`):** `Days 1–21` appear in the primary strip + optional `🗓️ ক্যালেন্ডার` grid; once `Days 1–21` are 100% completed, `Days 22–51` automatically appear in the days list as a comfortable collapsible calendar grid (`🌿 নতুন ৩০ দিনের ক্যালেন্ডার`).
      - **Single-Label `2×3` Game Grid:** Six clean buttons (`🧠 মনের আনন্দ`, `📱 হাতের যন্ত্র`, `🔤 ইংরেজি খেলা`, `🎵 গান ও অর্থ`, `🌍 জানাশোনা`, `🎨 মজার খেলা`) with zero duplicate numbers.
-  2. **`💌 চিঠি`:** Random `☀️ আজকের অনুপ্রেরণা` inspiration card + Koushik's 8-slide illustrated Thanksgiving & apology letter (with `.slide-top-header` badge cleanly above the photo, plus swipe + slide-dot navigation).
+  2. **`💌 চিঠি`:** Random `☀️ আজকের অনুপ্রেরণা` inspiration card + `🎬 মায়ের জন্য ভিডিও চিঠি` card pointing to `Ma_Thanksgiving_Bengali_Video.mp4` (`https://drive.google.com/file/d/1gzEnSqp72VlguNK0YirZHRARGmJFR-4g/view`) + Koushik's 8-slide illustrated Thanksgiving & apology letter (with `.slide-top-header` badge cleanly above the photo, plus swipe + slide-dot navigation).
 
 ---
 
@@ -17,7 +17,7 @@
 
 ```text
 content/ (Declarative Data) ──┐
-                              ├──▶ scripts/build_app.py (<0.5s) ──▶ index.html, ma-presentation.html & Drive HTML
+                              ├──▶ scripts/build_app.py (<0.5s) ──▶ index.html & ma-presentation.html
 src/ (Template + CSS + JS)  ──┘           │
                                           ▼ (SHA-256 read-only check)
 audio/{slides,quotes,days,games}/ + tts_manifest.json ◀── scripts/refresh_voices.py --confirm (Explicit Only)

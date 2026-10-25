@@ -66,6 +66,9 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertIn('id="extendedPart2CalWrap"', ma_html)
         self.assertIn('id="nowPlayingBar"', ma_html)
         self.assertIn('id="celebrationToast"', ma_html)
+        self.assertIn('id="videoLetterCard"', ma_html)
+        self.assertIn('id="btnWatchMovieLetter"', ma_html)
+        self.assertIn('https://drive.google.com/file/d/1gzEnSqp72VlguNK0YirZHRARGmJFR-4g/view', ma_html)
         self.assertIn('id="slideDotsRow"', ma_html)
         self.assertLess(ma_html.index('id="slideBadge"'), ma_html.index('class="slide-img-wrap"'))
         self.assertNotIn("speechSynthesis", ma_html)
@@ -120,7 +123,7 @@ function getEl(id) {
   'headerBrand','topPlayBtn','nowPlayingBar','npTrack','npFill','npTime',
   'permBanner','dailyQuoteText','btnQuotePlay','viewPlan','viewSlides',
   'htabPlan','htabSlides','daysNavigatorWrap','dayStrip','btnToggleCalGrid',
-  'primaryCalGridWrap','extendedPart2CalWrap','activeDayStage','letterSlideCard',
+  'primaryCalGridWrap','extendedPart2CalWrap','activeDayStage','videoLetterCard','btnWatchMovieLetter','letterSlideCard',
   'slideImg','slideBadge','slideDotsRow','slideTitleBn','slideHighlight',
   'slideBodyBn','btnSlideMainPlay','prevBtn','nextBtn','autoAdvanceBtn',
   'celebrationToast','audioPlayer'

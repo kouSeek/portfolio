@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""8 Personalized Thanksgiving Letter Slides, 7 Morning Quotes & 6 Game Slot Metadata."""
+"""8 Personalized Thanksgiving Letter Slides, Video Letter Link, 7 Morning Quotes & 6 Game Slot Metadata."""
+
+LETTER_VIDEO_URL = 'https://drive.google.com/file/d/1gzEnSqp72VlguNK0YirZHRARGmJFR-4g/view'
 
 SLIDES = [{'id': 1,
   'badge': 'পাতা ১ • মায়ের প্রতি খোলা চিঠি',

@@ -106,7 +106,7 @@ Design every screen and interaction like a **Genius Artist UX Designer** craftin
 ## 4. Build, Test & Deployment Workflow
 
 ```bash
-# 1. Compile modular src/ + content/ -> ma-presentation.html, index.html & Drive HTML (<0.5s):
+# 1. Compile modular src/ + content/ -> ma-presentation.html & index.html (<0.5s):
 python3 /usr/local/google/home/koushikchak/kalyani-app/scripts/build_app.py
 
 # 2. Run all modular architecture, persona & Node VM behavioral tests:
@@ -116,4 +116,5 @@ python3 /usr/local/google/home/koushikchak/kalyani-app/tests/run_tests.py
 - **Public Git Remote:** `git@github.com:kouSeek/portfolio.git` (branch `ma-course`)
 - **Public Clickable Mobile Link (Never output `localhost` links):**
   https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/ma-course/ma-presentation.html
-- **Google Drive Standalone HTML File ID:** `16Qgl9PubSfevNx2fF3h_qVIaF3b9mDkr`
+- **Video Letter MP4 in `Kortex` Drive (linked inside `💌 চিঠি`, zero website HTML/MP3 artifacts in `Kortex`):**
+  https://drive.google.com/file/d/1gzEnSqp72VlguNK0YirZHRARGmJFR-4g/view

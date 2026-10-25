@@ -37,6 +37,8 @@ function renderSlideDots() {
 
 function renderSlide() {
   const s = SLIDES[curSlideIdx];
+  const vLink = document.getElementById('btnWatchMovieLetter');
+  if (vLink && typeof LETTER_VIDEO_URL === 'string') vLink.href = LETTER_VIDEO_URL;
   const imgEl = document.getElementById('slideImg');
   if (imgEl) imgEl.src = s.img_b64;
   document.getElementById('slideBadge').textContent = s.badge;

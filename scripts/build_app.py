@@ -29,10 +29,9 @@ APP_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(APP_ROOT))
 sys.path.insert(0, str(APP_ROOT / "scripts"))
 
-from content import DAYS_21, DAYS_PART2_30, GAME_META, MORNING_QUOTES, SLIDES  # noqa: E402
+from content import DAYS_21, DAYS_PART2_30, GAME_META, LETTER_VIDEO_URL, MORNING_QUOTES, SLIDES  # noqa: E402
 from refresh_voices import get_stale_or_missing_files  # noqa: E402
 
-BRAIN_DIR = Path("/usr/local/google/home/koushikchak/.gemini/jetski/brain/78e141e4-9a15-4fd2-86e2-68d0604ebe24")
 AUDIO_DIR = APP_ROOT / "audio"
 SLIDES_IMG_DIR = APP_ROOT / "assets" / "slides"
 SRC_DIR = APP_ROOT / "src"
@@ -123,6 +122,7 @@ def assemble_data_js(embed_offline_b64: bool, url_prefix: str) -> str:
     days_p2 = enrich_days(DAYS_PART2_30, embed_part1_audio=False, url_prefix=url_prefix)
 
     return "\n".join([
+        f"const LETTER_VIDEO_URL = {json.dumps(LETTER_VIDEO_URL, ensure_ascii=False)};",
         f"const SLIDES = {json.dumps(slides_payload, ensure_ascii=False)};",
         f"const MORNING_QUOTES = {json.dumps(MORNING_QUOTES, ensure_ascii=False)};",
         f"const GAME_META = {json.dumps(GAME_META, ensure_ascii=False)};",
@@ -163,15 +163,7 @@ def build_html() -> None:
     out_idx.write_text(cdn_html, encoding="utf-8")
     print(f"Built {out_ma.name} & {out_idx.name} ({out_ma.stat().st_size:,} bytes)")
 
-    # 2. Standalone Self-Contained Artifact / Google Drive HTML
-    if BRAIN_DIR.is_dir():
-        standalone_data_js = assemble_data_js(embed_offline_b64=True, url_prefix="")
-        standalone_html = render_bundle(template_html, css_bundle, js_bundle, standalone_data_js)
-        out_brain = BRAIN_DIR / "Ma_Thanksgiving_Bengali_Presentation.html"
-        out_brain.write_text(standalone_html, encoding="utf-8")
-        print(f"Built standalone artifact HTML {out_brain} ({out_brain.stat().st_size:,} bytes)")
-
-    # 3. Non-blocking TTS hash check (NEVER auto-regenerates voices!)
+    # 2. Non-blocking TTS hash check (NEVER auto-regenerates voices!)
     stale, expected, _ = get_stale_or_missing_files(scope="all")
     if not stale:
         print(f"[TTS Check] All {len(expected)} Aoede MP3 files are 100% in sync with content/.")
