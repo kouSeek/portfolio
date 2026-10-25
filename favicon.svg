@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="কল্যাণী">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFF7EA"/>
+      <stop offset="100%" stop-color="#F6E4CB"/>
+    </linearGradient>
+    <radialGradient id="core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF7A45"/>
+      <stop offset="100%" stop-color="#C93E1B"/>
+    </radialGradient>
+  </defs>
+  <rect width="128" height="128" rx="30" fill="url(#bg)" stroke="#D8522E" stroke-width="4"/>
+  <circle cx="64" cy="64" r="50" fill="none" stroke="#B46910" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.55"/>
+  <!-- 7 Shiuli Petals -->
+  <g transform="translate(64,64)" fill="#FFFFFF" stroke="#E5CEB0" stroke-width="1.6">
+    <ellipse rx="13" ry="33" transform="rotate(0) translate(0,-16)"/>
+    <ellipse rx="13" ry="33" transform="rotate(51.4) translate(0,-16)"/>
+    <ellipse rx="13" ry="33" transform="rotate(102.8) translate(0,-16)"/>
+    <ellipse rx="13" ry="33" transform="rotate(154.3) translate(0,-16)"/>
+    <ellipse rx="13" ry="33" transform="rotate(205.7) translate(0,-16)"/>
+    <ellipse rx="13" ry="33" transform="rotate(257.1) translate(0,-16)"/>
+    <ellipse rx="13" ry="33" transform="rotate(308.6) translate(0,-16)"/>
+  </g>
+  <!-- Shiuli Vermilion Center -->
+  <circle cx="64" cy="64" r="15" fill="url(#core)"/>
+  <circle cx="64" cy="64" r="5.5" fill="#FFF5E6"/>
+</svg>

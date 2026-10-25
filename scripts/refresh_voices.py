@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Explicit-only incremental Gemini Aoede (`gemini-v4s-tts`) voice generator for Kalyani App.
+"""Explicit-only incremental Gemini Aoede (`gemini-v4s-tts`) voice refresher for 🌸 কল্যাণী.
 
-CRITICAL RULE (defined in GEMINI.md):
-- NEVER run this script automatically during UI changes or data/content edits.
-- `scripts/build_app.py` checks `audio/tts_manifest.json` and reports any stale/missing audio files without regenerating them.
+CRITICAL GOVERNANCE RULE (defined in GEMINI.md):
+- NEVER run this script with `--confirm` automatically during UI tweaks or content/data edits.
+- `scripts/build_app.py` inspects `audio/tts_manifest.json` in <0.1s and reports stale/missing voices without calling TTS.
 - Only run `python3 scripts/refresh_voices.py --confirm` when Koushik explicitly asks to refresh voices.
 """
+
+from __future__ import annotations
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -23,19 +25,16 @@ APP_ROOT = Path(__file__).resolve().parent.parent
 AUDIO_DIR = APP_ROOT / "audio"
 MANIFEST_PATH = AUDIO_DIR / "tts_manifest.json"
 GEN_BIN = "/google/bin/releases/gemini-agents-generate/generate"
+TTS_MODELS = ("gemini-v4s-tts-no-transcriber", "gemini-v4s-tts")
 
-sys.path.insert(0, str(APP_ROOT / "scripts"))
-from curriculum_data import DAYS_21, SLIDES  # noqa: E402
+sys.path.insert(0, str(APP_ROOT))
+from content import DAYS_21, DAYS_PART2_30, MORNING_QUOTES, SLIDES  # noqa: E402
 
-MORNING_QUOTES = [
-    "সুপ্রভাত মা! যেমনভাবে একটা পাখি ডানা মেলে আকাশে ওড়ে, আজ তোমার মনটাও তেমনই হালকা ও আনন্দে ভরে উঠুক।",
-    "সুপ্রভাত মা! মা সারদা বলতেন—‘যখনই ভয় করবে, জানবে আমি তোমার পাশে আছি।’ আজ নতুন কিছু শেখার জন্য দারুণ একটা দিন!",
-    "সুপ্রভাত মা! রানাঘাটের সেই মনোযোগী স্কুলছাত্রীটা আজও তোমার ভেতরে বেঁচে আছে। আজ আনন্দে একটা গানের মানে আর নতুন বোতাম শিখবো!",
-    "সুপ্রভাত মা! বয়স শুধু সংখ্যামাত্র—রোজ একটা করে ‘কেন?’ আর ‘কীভাবে?’ প্রশ্ন করলেই মাথাটা একদম তাজা ও সচল থাকে।",
-    "সুপ্রভাত মা! তোমার ছেলে কৌশিক আর দিদি তোমাকে ভীষণ ভালোবাসে। আজ নিজের আনন্দে, কোনো ভয় ছাড়া নতুন কিছু শেখো!",
-    "সুপ্রভাত মা! রবীন্দ্রনাথ লিখেছেন—‘আলো আমার, আলো ওগো, আলোয় ভুবন ভরা।’ আজ তোমার মন আর ঘর আনন্দ-আলোয় ভরে থাকুক।",
-    "সুপ্রভাত মা! ভুল হওয়া মানেই শেখার শুরু। আজ কোনো লজ্জা ছাড়া রিমোট, ফোন বা ইংরেজি শব্দ নিয়ে নতুন খেলা খেলবো!",
-]
+BN_DIGITS = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
+
+
+def bn_num(n: int) -> str:
+    return str(n).translate(BN_DIGITS)
 
 
 def clean_cat(cat_str: str) -> str:
@@ -49,30 +48,60 @@ def sha256_text(text: str) -> str:
 
 
 def collect_expected_audio_items() -> dict[str, dict[str, str]]:
-    """Return mapping of filename -> {hash, text, part1, part2} for all tracked audio files."""
+    """Return mapping of relative audio path (under `audio/`) -> {hash, scope, part, text, part1, part2}."""
     items: dict[str, dict[str, str]] = {}
 
     for s in SLIDES:
         sid = s["id"]
-        fname = f"slide_{sid}.mp3"
+        rel_path = f"slides/slide_{sid}.mp3"
         txt = f"{s['title_bn']}। {s['highlight_bn']}। {s['text_bn']}"
-        items[fname] = {"hash": sha256_text(txt), "text": txt, "part1": txt, "part2": ""}
+        items[rel_path] = {
+            "hash": sha256_text(txt),
+            "scope": "slides",
+            "part": "0",
+            "text": txt,
+            "part1": txt,
+            "part2": "",
+        }
 
     for q_idx, q_txt in enumerate(MORNING_QUOTES):
-        fname = f"quote_{q_idx}.mp3"
-        items[fname] = {"hash": sha256_text(q_txt), "text": q_txt, "part1": q_txt, "part2": ""}
+        rel_path = f"quotes/quote_{q_idx}.mp3"
+        items[rel_path] = {
+            "hash": sha256_text(q_txt),
+            "scope": "quotes",
+            "part": "0",
+            "text": q_txt,
+            "part1": q_txt,
+            "part2": "",
+        }
 
-    for d in DAYS_21:
-        day_num = d["day"]
-        day_fname = f"day_{day_num}.mp3"
-        day_txt = f"দিন {day_num}: {d['title_bn']}। {d['summary_bn']}"
-        items[day_fname] = {"hash": sha256_text(day_txt), "text": day_txt, "part1": day_txt, "part2": ""}
+    for d in DAYS_21 + DAYS_PART2_30:
+        day_num = int(d["day"])
+        part_num = int(d.get("part", 1))
+        disp_day = bn_num(int(d["part_day"])) if part_num == 2 else bn_num(day_num)
+        day_prefix = f"পার্ট ২, দিন {disp_day}" if part_num == 2 else f"দিন {disp_day}"
+
+        day_rel = f"days/day_{day_num}.mp3"
+        # Preserve original Day 1..21 overview text format so existing valid Part 1 day MP3s remain hash-stable
+        day_txt = (
+            f"দিন {day_num}: {d['title_bn']}। {d['summary_bn']}"
+            if part_num == 1
+            else f"{day_prefix}: {d['title_bn']}। {d['summary_bn']}"
+        )
+        items[day_rel] = {
+            "hash": sha256_text(day_txt),
+            "scope": "days",
+            "part": str(part_num),
+            "text": day_txt,
+            "part1": day_txt,
+            "part2": "",
+        }
 
         for idx, ag in enumerate(d["agendas"]):
-            ag_fname = f"day_{day_num}_ag_{idx}.mp3"
+            ag_rel = f"games/day_{day_num}_ag_{idx}.mp3"
             cat_bn = clean_cat(ag["category"])
             part1_bn = (
-                f"দিন {day_num}, খেলা {idx + 1}: {cat_bn}। "
+                f"{day_prefix}, খেলা {bn_num(idx + 1)}: {cat_bn}। "
                 f"{ag['title_bn']}। "
                 f"ধাপ ১, আজ কী করবো দেখো: {ag['detail_bn']}"
             )
@@ -81,12 +110,12 @@ def collect_expected_audio_items() -> dict[str, dict[str, str]]:
                 if ag.get("followup_prompt_bn")
                 else ""
             )
-            part2_bn = (
-                f"ধাপ ২, এবার ফোনে জেমিনি খুলে মাইক বোতাম ছুঁয়ে মুখে বলো: {ag['prompt_bn']}{follow_bn}"
-            )
+            part2_bn = f"ধাপ ২, এবার ফোনে জেমিনি খুলে মাইক বোতাম ছুঁয়ে মুখে বলো: {ag['prompt_bn']}{follow_bn}"
             full_txt = f"{part1_bn} {part2_bn}"
-            items[ag_fname] = {
+            items[ag_rel] = {
                 "hash": sha256_text(full_txt),
+                "scope": "games",
+                "part": str(part_num),
                 "text": full_txt,
                 "part1": part1_bn,
                 "part2": part2_bn,
@@ -115,128 +144,165 @@ def save_manifest(hashes: dict[str, str]) -> None:
     MANIFEST_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def get_stale_or_missing_files() -> tuple[list[str], dict[str, dict[str, str]], dict[str, str]]:
+def matches_scope(rel_path: str, info: dict[str, str], scope: str) -> bool:
+    if scope == "all":
+        return True
+    if scope == "days-and-games":
+        return info["scope"] in ("days", "games")
+    if scope == "days":
+        return info["scope"] == "days"
+    if scope == "games":
+        return info["scope"] == "games"
+    if scope == "part1":
+        return info["scope"] in ("days", "games") and info["part"] == "1"
+    if scope == "part2":
+        return info["scope"] in ("days", "games") and info["part"] == "2"
+    return info["scope"] == scope
+
+
+def get_stale_or_missing_files(scope: str = "all") -> tuple[list[str], dict[str, dict[str, str]], dict[str, str]]:
     expected = collect_expected_audio_items()
     recorded = load_manifest()
     stale: list[str] = []
-    for fname, info in expected.items():
-        mp3_path = AUDIO_DIR / fname
+    for rel_path, info in expected.items():
+        if not matches_scope(rel_path, info, scope):
+            continue
+        mp3_path = AUDIO_DIR / rel_path
         if not mp3_path.is_file() or mp3_path.stat().st_size < 4000:
-            stale.append(fname)
-        elif recorded.get(fname) != info["hash"]:
-            stale.append(fname)
+            stale.append(rel_path)
+        elif recorded.get(rel_path) != info["hash"]:
+            stale.append(rel_path)
     return stale, expected, recorded
 
 
-def build_one(fname: str, info: dict[str, str]) -> tuple[str, bool]:
-    out_mp3 = AUDIO_DIR / fname
-    part1_bn = info["part1"]
-    part2_bn = info["part2"]
-    w1 = Path(f"/tmp/kalyani_p1_{os.getpid()}_{fname}.wav")
-    w2 = Path(f"/tmp/kalyani_p2_{os.getpid()}_{fname}.wav")
+def _synthesize_wav(text: str, out_wav: Path, model_name: str, timeout_s: int = 75) -> bool:
+    try:
+        proc = subprocess.run(
+            [GEN_BIN, f"-timeout={timeout_s}s", f"-output={out_wav}", "tts", f"-model={model_name}", "-voice=Aoede", text],
+            capture_output=True,
+            text=True,
+            timeout=timeout_s + 5,
+        )
+        return proc.returncode == 0 and out_wav.is_file() and out_wav.stat().st_size > 4000
+    except subprocess.TimeoutExpired:
+        return False
 
-    for attempt in range(3):
+
+def _wav_to_mp3(wav_paths: list[Path], out_mp3: Path) -> bool:
+    out_mp3.parent.mkdir(parents=True, exist_ok=True)
+    if len(wav_paths) == 1:
+        cmd = [
+            "ffmpeg", "-y", "-i", str(wav_paths[0]),
+            "-af", "loudnorm=I=-16:TP=-1.5:LRA=11",
+            "-ar", "24000", "-ac", "1", "-b:a", "32k",
+            str(out_mp3),
+        ]
+    else:
+        cmd = [
+            "ffmpeg", "-y", "-i", str(wav_paths[0]), "-i", str(wav_paths[1]),
+            "-filter_complex", "[0:a][1:a]concat=n=2:v=0:a=1,loudnorm=I=-16:TP=-1.5:LRA=11",
+            "-ar", "24000", "-ac", "1", "-b:a", "32k",
+            str(out_mp3),
+        ]
+    res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+    return res.returncode == 0 and out_mp3.is_file() and out_mp3.stat().st_size >= 4000
+
+
+def build_one(rel_path: str, info: dict[str, str]) -> tuple[str, bool]:
+    out_mp3 = AUDIO_DIR / rel_path
+    safe_tag = rel_path.replace("/", "_").replace(".mp3", "")
+    w_full = Path(f"/tmp/kalyani_full_{os.getpid()}_{safe_tag}.wav")
+    w1 = Path(f"/tmp/kalyani_p1_{os.getpid()}_{safe_tag}.wav")
+    w2 = Path(f"/tmp/kalyani_p2_{os.getpid()}_{safe_tag}.wav")
+
+    for attempt, model_name in enumerate((TTS_MODELS[0], TTS_MODELS[0], TTS_MODELS[1])):
         try:
-            if part2_bn:
-                p1 = subprocess.run(
-                    [GEN_BIN, f"-output={w1}", "tts", "-voice=Aoede", part1_bn],
-                    capture_output=True, text=True, timeout=35,
-                )
-                p2 = subprocess.run(
-                    [GEN_BIN, f"-output={w2}", "tts", "-voice=Aoede", part2_bn],
-                    capture_output=True, text=True, timeout=35,
-                )
-                if p1.returncode == 0 and p2.returncode == 0 and w1.is_file() and w2.is_file():
-                    subprocess.run(
-                        [
-                            "ffmpeg", "-y", "-i", str(w1), "-i", str(w2),
-                            "-filter_complex", "[0:a][1:a]concat=n=2:v=0:a=1,loudnorm=I=-16:TP=-1.5:LRA=11",
-                            "-ar", "24000", "-ac", "1", "-b:a", "32k",
-                            str(out_mp3),
-                        ],
-                        check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                    )
-                    w1.unlink(missing_ok=True)
-                    w2.unlink(missing_ok=True)
-                    return fname, True
-            else:
-                p1 = subprocess.run(
-                    [GEN_BIN, f"-output={w1}", "tts", "-voice=Aoede", part1_bn],
-                    capture_output=True, text=True, timeout=35,
-                )
-                if p1.returncode == 0 and w1.is_file():
-                    subprocess.run(
-                        [
-                            "ffmpeg", "-y", "-i", str(w1),
-                            "-af", "loudnorm=I=-16:TP=-1.5:LRA=11",
-                            "-ar", "24000", "-ac", "1", "-b:a", "32k",
-                            str(out_mp3),
-                        ],
-                        check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                    )
-                    w1.unlink(missing_ok=True)
-                    return fname, True
-        except subprocess.TimeoutExpired:
-            pass
+            # Strategy 1: Seamless single-shot synthesis for continuous prosody
+            if _synthesize_wav(info["text"], w_full, model_name, timeout_s=75):
+                if _wav_to_mp3([w_full], out_mp3):
+                    return rel_path, True
+
+            # Strategy 2: Two-part synthesis fallback if full text hit window limits
+            if info["part2"]:
+                if _synthesize_wav(info["part1"], w1, model_name, timeout_s=55) and _synthesize_wav(info["part2"], w2, model_name, timeout_s=45):
+                    if _wav_to_mp3([w1, w2], out_mp3):
+                        return rel_path, True
         finally:
+            w_full.unlink(missing_ok=True)
             w1.unlink(missing_ok=True)
             w2.unlink(missing_ok=True)
-        time.sleep(0.4 * (attempt + 1))
-    return fname, False
+        time.sleep(0.5 * (attempt + 1))
+
+    return rel_path, False
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Explicit-only incremental Gemini Aoede voice refresher.")
-    parser.add_argument("--init-manifest", action="store_true", help="Snapshot current text hashes for existing MP3s into audio/tts_manifest.json.")
-    parser.add_argument("--status", action="store_true", help="Check which audio files are stale/out-of-sync without regenerating.")
+    parser.add_argument("--init-manifest", action="store_true", help="Snapshot current text hashes for existing MP3s.")
+    parser.add_argument("--status", action="store_true", help="Check which audio files are stale/missing without regenerating.")
     parser.add_argument("--confirm", action="store_true", help="Explicit confirmation from Koushik to regenerate stale/missing voices.")
-    parser.add_argument("--all", action="store_true", help="Force regenerate all voices (requires --confirm).")
+    parser.add_argument(
+        "--scope",
+        default="all",
+        choices=("all", "days-and-games", "days", "games", "part1", "part2", "slides", "quotes"),
+        help="Target subset of voices to check or refresh.",
+    )
+    parser.add_argument("--workers", type=int, default=16, help="Parallel TTS worker count (default: 16).")
+    parser.add_argument("--all", action="store_true", help="Force regenerate all items in scope (requires --confirm).")
     args = parser.parse_args()
 
-    expected = collect_expected_audio_items()
+    stale, expected, recorded = get_stale_or_missing_files(scope=args.scope)
+    scoped_keys = [k for k, v in expected.items() if matches_scope(k, v, args.scope)]
+
     if args.init_manifest:
         hashes = {
-            fname: info["hash"]
-            for fname, info in expected.items()
-            if (AUDIO_DIR / fname).is_file() and (AUDIO_DIR / fname).stat().st_size >= 4000
+            rel_path: info["hash"]
+            for rel_path, info in expected.items()
+            if (AUDIO_DIR / rel_path).is_file() and (AUDIO_DIR / rel_path).stat().st_size >= 4000
         }
         save_manifest(hashes)
         print(f"[TTS Manifest] Initialized {MANIFEST_PATH} with {len(hashes)}/{len(expected)} verified MP3 hashes.")
         return 0
 
-    stale, expected, recorded = get_stale_or_missing_files()
     if args.status or not args.confirm:
         if not stale:
-            print(f"[TTS Status] All {len(expected)} Aoede MP3 files are 100% in sync with curriculum_data.py.")
+            print(f"[TTS Status] All {len(scoped_keys)} Aoede MP3 files in scope='{args.scope}' are 100% in sync.")
         else:
-            print(f"[TTS Status] {len(stale)}/{len(expected)} audio file(s) have modified text or are missing: {stale[:12]}")
+            print(f"[TTS Status] {len(stale)}/{len(scoped_keys)} audio file(s) in scope='{args.scope}' need refresh: {stale[:10]}")
             if not args.confirm:
                 print("[TTS Rule] Automatic TTS regeneration is disabled by GEMINI.md. Ask Koushik before running with --confirm.")
         return 0
 
-    targets = list(expected.keys()) if args.all else stale
+    targets = scoped_keys if args.all else stale
     if not targets:
-        print("[TTS Refresh] Nothing to regenerate — all voices match current text hashes.")
+        print(f"[TTS Refresh] Nothing to regenerate in scope='{args.scope}' — all voices match current text hashes.")
         return 0
 
     t0 = time.time()
-    print(f"[TTS Refresh] Regenerating {len(targets)} Gemini Aoede MP3 file(s)...", flush=True)
+    print(f"[TTS Refresh] Regenerating {len(targets)} Gemini Aoede MP3 file(s) (scope={args.scope}, workers={args.workers})...", flush=True)
     ok_count = 0
-    failed = []
-    with ThreadPoolExecutor(max_workers=16) as ex:
-        futs = {ex.submit(build_one, fname, expected[fname]): fname for fname in targets}
+    failed: list[str] = []
+
+    with ThreadPoolExecutor(max_workers=max(1, args.workers)) as ex:
+        futs = {ex.submit(build_one, rel_path, expected[rel_path]): rel_path for rel_path in targets}
         for i, fut in enumerate(as_completed(futs), 1):
-            fname, ok = fut.result()
+            rel_path, ok = fut.result()
             if ok:
                 ok_count += 1
-                recorded[fname] = expected[fname]["hash"]
+                recorded[rel_path] = expected[rel_path]["hash"]
             else:
-                failed.append(fname)
-            if i % 10 == 0 or i == len(targets):
-                print(f"Progress: {i}/{len(targets)} (ok={ok_count}, failed={len(failed)}, elapsed={time.time()-t0:.1f}s)", flush=True)
+                failed.append(rel_path)
+            if i % 15 == 0 or i == len(targets):
+                save_manifest(recorded)
+                print(
+                    f"Progress: {i}/{len(targets)} (ok={ok_count}, failed={len(failed)}, elapsed={time.time() - t0:.1f}s)",
+                    flush=True,
+                )
 
     save_manifest(recorded)
-    print(f"[TTS Refresh] Done: {ok_count}/{len(targets)} updated in {time.time()-t0:.1f}s.")
+    print(f"[TTS Refresh] Done: {ok_count}/{len(targets)} updated in {time.time() - t0:.1f}s.")
+    if failed:
+        print(f"[TTS Refresh] Failed ({len(failed)}): {failed[:15]}", flush=True)
     return 1 if failed else 0
 
 

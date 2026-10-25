@@ -1,0 +1,259 @@
+/* ============================================================================
+   LAYOUT, STICKY GLASS HEADER, LIVE AUDIO BAR & CELEBRATION TOAST
+   ============================================================================ */
+
+/* Ultra-Compact Single-Row Sticky Header (Fits 320px–600px cleanly on 1 row) */
+.slim-header {
+  position: sticky;
+  top: 0;
+  z-index: 120;
+  background: var(--nav-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: calc(4px + env(safe-area-inset-top, 0px)) 8px 4px;
+}
+
+.slim-header-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  height: 42px;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.header-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-serif);
+  font-size: clamp(0.95rem, 3.8vw, 1.1rem);
+  font-weight: 800;
+  color: var(--accent-active);
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  padding: 4px 4px 4px 2px;
+  border-radius: var(--radius-sm);
+  user-select: none;
+}
+
+.header-brand-flower {
+  display: inline-block;
+  font-size: 1.08em;
+  filter: drop-shadow(0 1px 2px rgba(216, 82, 46, 0.25));
+}
+
+.header-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.htab-btn {
+  height: 34px;
+  padding: 0 9px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: clamp(0.76rem, 3.15vw, 0.9rem);
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  white-space: nowrap;
+  flex-shrink: 1;
+  min-width: 0;
+  transition: transform 0.14s var(--ease-out), background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.htab-btn:active {
+  transform: scale(0.97);
+}
+
+.htab-btn.active {
+  background: var(--accent);
+  color: #FFFFFF;
+  border-color: var(--accent);
+  box-shadow: var(--shadow-active);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.hctrl-btn {
+  height: 34px;
+  padding: 0 9px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--gold-border);
+  background: var(--gold-soft);
+  color: var(--text-primary);
+  font-size: clamp(0.76rem, 3.1vw, 0.88rem);
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  transition: transform 0.14s var(--ease-out), background 0.16s ease;
+}
+
+.hctrl-btn:active {
+  transform: scale(0.96);
+}
+
+.hctrl-btn.playing {
+  background: var(--accent-active);
+  color: #FFFFFF;
+  border-color: var(--accent-active);
+  box-shadow: 0 3px 10px rgba(216, 82, 46, 0.3);
+}
+
+/* Live Now-Playing Progress Ribbon (Visible only when Aoede voice is active/paused mid-way) */
+.now-playing-bar {
+  max-width: 600px;
+  margin: 4px auto 0;
+  padding: 5px 10px;
+  border-radius: 10px;
+  background: var(--accent-active-soft);
+  border: 1px solid rgba(216, 82, 46, 0.28);
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.now-playing-bar.visible {
+  display: flex;
+}
+
+.np-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(216, 82, 46, 0.18);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.np-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-active), var(--gold));
+  border-radius: var(--radius-pill);
+  transition: width 0.18s linear;
+}
+
+.np-time {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent-active);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Animated 3-Bar Voice Equalizer Indicator */
+.eq-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 13px;
+}
+
+.eq-bars i {
+  display: block;
+  width: 2.5px;
+  background: currentColor;
+  border-radius: 2px;
+  animation: eqBounce 0.75s ease-in-out infinite alternate;
+}
+
+.eq-bars i:nth-child(1) { height: 5px; animation-delay: 0s; }
+.eq-bars i:nth-child(2) { height: 12px; animation-delay: 0.18s; }
+.eq-bars i:nth-child(3) { height: 7px; animation-delay: 0.34s; }
+
+@keyframes eqBounce {
+  0% { transform: scaleY(0.45); }
+  100% { transform: scaleY(1); }
+}
+
+/* Main App Container & Views */
+.app-shell {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 12px;
+}
+
+.view-sec {
+  display: none;
+  animation: viewFadeIn 0.22s var(--ease-out);
+}
+
+.view-sec.active {
+  display: block;
+}
+
+@keyframes viewFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Subtle Bengali Alpana Divider */
+.alpana-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 12px 0 8px;
+  color: var(--gold);
+  opacity: 0.72;
+  font-size: 0.85rem;
+  user-select: none;
+}
+
+.alpana-divider::before,
+.alpana-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-border), transparent);
+}
+
+/* Non-Intrusive Celebration Micro-Toast */
+.celebration-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translate(-50%, 20px);
+  z-index: 200;
+  max-width: min(92vw, 440px);
+  padding: 11px 18px;
+  border-radius: var(--radius-pill);
+  background: #1C140E;
+  color: #FFF9F0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 10px 28px rgba(28, 20, 14, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s var(--ease-out);
+}
+
+.celebration-toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}

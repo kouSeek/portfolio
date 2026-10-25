@@ -1,0 +1,681 @@
+/* ============================================================================
+   ARTISANAL UI COMPONENTS — Cards, 2×3 Game Grid, Step Bubbles & Heirloom Letter
+   ============================================================================ */
+
+/* One-Time Permission Banner */
+.perm-banner {
+  margin: 10px 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  border: 1.5px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.perm-banner-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 200px;
+}
+
+.perm-btn-primary {
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-size: 0.98rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Course Part Switcher + Progress Pill */
+.course-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 12px 0 10px;
+  flex-wrap: wrap;
+}
+
+.part-switch-row {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-elev);
+  padding: 4px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  flex: 1;
+  min-width: 215px;
+}
+
+.part-seg-btn {
+  flex: 1;
+  min-height: 38px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.part-seg-btn.active {
+  background: var(--bg-surface);
+  color: var(--accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.prog-inline-pill {
+  padding: 7px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  border: 1.5px solid var(--accent-border);
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Horizontal Snap Day Selector Ribbon */
+.day-selector-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 2px 10px;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+}
+
+.day-selector-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.day-chip {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 0.98rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.14s var(--ease-out), background 0.16s ease, border-color 0.16s ease;
+}
+
+.day-chip:active {
+  transform: scale(0.96);
+}
+
+.day-chip.active {
+  background: var(--accent-active);
+  color: #FFFFFF;
+  border-color: var(--accent-active);
+  box-shadow: 0 4px 12px rgba(216, 82, 46, 0.28);
+}
+
+.day-chip.done {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.day-chip.done.active {
+  background: var(--accent);
+  color: #FFFFFF;
+}
+
+/* Day Hero Summary Card */
+.day-hero-card {
+  padding: 18px 16px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #FFFFFF 0%, #FDF9F2 100%);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow);
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.day-hero-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-active), var(--gold), var(--accent));
+}
+
+.day-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.day-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: var(--radius-pill);
+  background: var(--gold-soft);
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.day-hero-prog {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.day-hero-title {
+  font-family: var(--font-serif);
+  font-size: 1.38rem;
+  font-weight: 800;
+  line-height: 1.38;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+
+.day-hero-summary {
+  font-size: 1.07rem;
+  line-height: 1.62;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.big-voice-btn {
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-size: 1.12rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(14, 131, 88, 0.24);
+  transition: transform 0.14s var(--ease-out), background 0.16s ease;
+}
+
+.big-voice-btn:active {
+  transform: scale(0.985);
+}
+
+.big-voice-btn.playing {
+  background: var(--accent-active);
+  box-shadow: 0 4px 14px rgba(216, 82, 46, 0.3);
+}
+
+.day-prev-next-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* 2×3 Visual Game Navigator Card (6 Cohesive Daily Games) */
+.game-nav-card {
+  padding: 13px 14px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 12px;
+}
+
+.game-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.game-nav-title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.view-mode-toggle {
+  min-height: 34px;
+  padding: 0 11px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.game-grid-6 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.game-tile {
+  min-height: 58px;
+  padding: 7px 6px 6px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.25;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.14s var(--ease-out), background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.game-tile::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background: var(--tile-accent, var(--gold));
+  opacity: 0.75;
+}
+
+.game-tile[data-accent="terra"]   { --tile-accent: var(--cat-terra); }
+.game-tile[data-accent="emerald"] { --tile-accent: var(--cat-emerald); }
+.game-tile[data-accent="indigo"]  { --tile-accent: var(--cat-indigo); }
+.game-tile[data-accent="rose"]    { --tile-accent: var(--cat-rose); }
+.game-tile[data-accent="amber"]   { --tile-accent: var(--cat-amber); }
+.game-tile[data-accent="plum"]    { --tile-accent: var(--cat-plum); }
+
+.game-tile:active {
+  transform: scale(0.96);
+}
+
+.game-tile.done-tile {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.game-tile.active {
+  background: var(--accent-active);
+  border-color: var(--accent-active);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(216, 82, 46, 0.28);
+  transform: translateY(-1px);
+}
+
+.game-tile.active::before {
+  opacity: 0;
+}
+
+.game-tile-num {
+  font-size: 0.75rem;
+  opacity: 0.92;
+}
+
+.game-tile-lbl {
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+
+.game-stepper-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+/* Artisanal Game Card (Step 1 + Step 2 Voice Bubble + Step 3 Song Meaning) */
+.agenda-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.agenda-card {
+  padding: 18px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  animation: viewFadeIn 0.2s var(--ease-out);
+}
+
+.agenda-card.done-card {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, #F6FCF9 0%, #FFFFFF 42%);
+}
+
+.agenda-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.agenda-cat {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: var(--radius-pill);
+  background: var(--cat-bg, var(--gold-soft));
+  color: var(--cat-fg, var(--gold));
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.agenda-card[data-accent="terra"]   { --cat-fg: var(--cat-terra);   --cat-bg: var(--cat-terra-bg); }
+.agenda-card[data-accent="emerald"] { --cat-fg: var(--cat-emerald); --cat-bg: var(--cat-emerald-bg); }
+.agenda-card[data-accent="indigo"]  { --cat-fg: var(--cat-indigo);  --cat-bg: var(--cat-indigo-bg); }
+.agenda-card[data-accent="rose"]    { --cat-fg: var(--cat-rose);    --cat-bg: var(--cat-rose-bg); }
+.agenda-card[data-accent="amber"]   { --cat-fg: var(--cat-amber);   --cat-bg: var(--cat-amber-bg); }
+.agenda-card[data-accent="plum"]    { --cat-fg: var(--cat-plum);    --cat-bg: var(--cat-plum-bg); }
+
+.agenda-slot-pill {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.agenda-title {
+  font-family: var(--font-serif);
+  font-size: 1.28rem;
+  font-weight: 800;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.step-section {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+}
+
+.agenda-step-heading {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+
+.agenda-detail {
+  font-size: 1.09rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+}
+
+.agenda-prompt-box {
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: var(--gold-soft);
+  border: 1.5px solid var(--gold-border);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.agenda-prompt-box.yt-music-box {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+}
+
+.agenda-prompt-label {
+  font-size: 0.99rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1.45;
+}
+
+.agenda-prompt-box.yt-music-box .agenda-prompt-label {
+  color: var(--accent);
+}
+
+.agenda-prompt-speech {
+  padding: 10px 13px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border-left: 4px solid var(--accent-active);
+  font-size: 1.16rem;
+  line-height: 1.58;
+  font-weight: 700;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.agenda-prompt-howto {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.agenda-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.ag-btn {
+  min-height: 48px;
+  padding: 0 12px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 1.02rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.14s var(--ease-out), background 0.16s ease, border-color 0.16s ease;
+}
+
+.ag-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.ag-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.ag-btn.listen {
+  background: var(--gold-soft);
+  border-color: var(--gold);
+}
+
+.ag-btn.listen.playing {
+  background: var(--accent-active);
+  color: #FFFFFF;
+  border-color: var(--accent-active);
+  box-shadow: 0 4px 12px rgba(216, 82, 46, 0.28);
+}
+
+.ag-btn.check.checked {
+  background: var(--accent);
+  color: #FFFFFF;
+  border-color: var(--accent);
+}
+
+/* ============================================================================
+   VIEW 2: HEIRLOOM LETTER & MORNING INSPIRATION (💌 চিঠি)
+   ============================================================================ */
+.quote-card {
+  margin: 12px 0;
+  padding: 16px 16px 14px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #FFF7E5 0%, #FFFDF8 100%);
+  border: 1.5px solid var(--gold-border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quote-eyebrow {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.quote-text {
+  font-family: var(--font-serif);
+  font-size: 1.16rem;
+  line-height: 1.6;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.quote-actions-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.slide-card {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: 10px;
+  box-shadow: var(--shadow);
+}
+
+.slide-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #1B120C;
+}
+
+.slide-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.slide-badge-pill {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(24, 14, 8, 0.84);
+  color: #FFE5A8;
+  font-size: 0.86rem;
+  font-weight: 700;
+  backdrop-filter: blur(6px);
+}
+
+.slide-dots-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 14px 0;
+}
+
+.slide-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.slide-dot.active {
+  background: var(--accent-active);
+  color: #FFFFFF;
+  border-color: var(--accent-active);
+  transform: scale(1.08);
+}
+
+.slide-content {
+  padding: 14px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.slide-title {
+  font-family: var(--font-serif);
+  font-size: 1.42rem;
+  font-weight: 800;
+  line-height: 1.36;
+}
+
+.slide-highlight {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--gold-soft);
+  border-left: 4px solid var(--gold);
+  font-size: 1.07rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.slide-body {
+  font-size: 1.13rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+}
+
+.slide-nav-row {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr 1fr;
+  gap: 8px;
+  padding-top: 4px;
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="warm">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#FBF7F0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="ma-manifest.json">
+<title>🌸 কল্যাণী — আজকের খেলা ও চিঠি</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Noto+Serif+Bengali:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/*__INJECT_CSS__*/
+</style>
+</head>
+<body>
+
+<!-- SINGLE-ROW STICKY GLASS HEADER (🌸 কল্যাণী + আজকের খেলা + চিঠি + শোনো) -->
+<header class="slim-header">
+  <div class="slim-header-inner">
+    <div id="headerBrand" class="header-brand" onclick="switchView('plan')" title="🌸 কল্যাণী">
+      <span class="header-brand-flower">🌸</span><span>কল্যাণী</span>
+    </div>
+    <div class="header-tabs" role="tablist" aria-label="মূল বিভাগ">
+      <button id="htabPlan" class="htab-btn active" role="tab" onclick="switchView('plan')">🎓 আজকের খেলা</button>
+      <button id="htabSlides" class="htab-btn" role="tab" onclick="switchView('slides')">💌 চিঠি</button>
+    </div>
+    <div class="header-right">
+      <button id="topPlayBtn" class="hctrl-btn" data-default-label="🔊 শোনো" onclick="toggleMasterAudio()">🔊 শোনো</button>
+    </div>
+  </div>
+  <!-- Live Voice Progress Strip (Appears smoothly while Aoede voice speaks) -->
+  <div id="nowPlayingBar" class="now-playing-bar" aria-live="polite">
+    <span class="eq-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+    <div id="npTrack" class="np-track" onclick="seekAudioFromTrack(event)">
+      <div id="npFill" class="np-fill"></div>
+    </div>
+    <span id="npTime" class="np-time">০:০০</span>
+  </div>
+</header>
+
+<main class="app-shell">
+
+  <!-- ONE-TIME PERMISSION BANNER -->
+  <div id="permBanner" class="perm-banner" style="display:none;">
+    <div class="perm-banner-title">🎙️ মা, রোজ সকালের সুপ্রভাত বার্তা ও মাইক চালু করতে এখানে একবার ছোঁও:</div>
+    <button class="perm-btn-primary" onclick="requestMicAndNotificationPermission()">✅ চালু করো</button>
+  </div>
+
+  <!-- =====================================================================
+       VIEW 1: TODAY'S GAMES (🎓 আজকের খেলা — Part 1: 21d & Part 2: 30d)
+       ===================================================================== -->
+  <section id="viewPlan" class="view-sec active">
+    <div class="course-top-row">
+      <div class="part-switch-row">
+        <button id="segPart1" class="part-seg-btn active" onclick="switchCoursePart(1)">🎓 পার্ট ১ (২১ দিন)</button>
+        <button id="segPart2" class="part-seg-btn" onclick="switchCoursePart(2)">🌱 পার্ট ২ (৩০ দিন)</button>
+      </div>
+      <div id="progInlinePill" class="prog-inline-pill">✅ 0 / 126</div>
+    </div>
+
+    <div id="dayStrip" class="day-selector-strip"></div>
+
+    <div id="activeDayStage"></div>
+  </section>
+
+  <!-- =====================================================================
+       VIEW 2: MORNING INSPIRATION + 8-SLIDE HEIRLOOM LETTER (💌 চিঠি)
+       ===================================================================== -->
+  <section id="viewSlides" class="view-sec">
+    <div class="quote-card">
+      <div>
+        <div class="quote-eyebrow">☀️ আজকের অনুপ্রেরণা</div>
+        <div id="dailyQuoteText" class="quote-text"></div>
+      </div>
+      <div class="quote-actions-row">
+        <button id="btnQuotePlay" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="toggleMorningQuoteAudio()">🔊 শোনো</button>
+        <button id="btnNextRandomQuote" class="ag-btn" onclick="pickNewRandomQuote(true)">🎲 নতুন বাণী</button>
+      </div>
+    </div>
+
+    <div class="alpana-divider">❈ মায়ের জন্য খোলা চিঠি ❈</div>
+
+    <div id="letterSlideCard" class="slide-card">
+      <div class="slide-img-wrap">
+        <img id="slideImg" src="" alt="মা ও পরিবারের ছবি">
+        <div id="slideBadge" class="slide-badge-pill"></div>
+      </div>
+      <div id="slideDotsRow" class="slide-dots-row"></div>
+      <div class="slide-content">
+        <div id="slideTitleBn" class="slide-title"></div>
+        <div id="slideHighlight" class="slide-highlight"></div>
+        <div id="slideBodyBn" class="slide-body"></div>
+        <button id="btnSlideMainPlay" class="big-voice-btn" data-default-label="🔊 এই পাতাটা শোনো" onclick="toggleSlideAudio()">
+          🔊 এই পাতাটা শোনো
+        </button>
+        <div class="slide-nav-row">
+          <button id="prevBtn" class="ag-btn" onclick="prevSlide()">⬅️ আগে</button>
+          <button id="autoAdvanceBtn" class="ag-btn" onclick="toggleAutoPlayAll()">🔁 পরপর: চালু</button>
+          <button id="nextBtn" class="ag-btn" onclick="nextSlide()">পরে ➡️</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="celebrationToast" class="celebration-toast" role="status" aria-live="polite"></div>
+<audio id="audioPlayer" preload="none"></audio>
+
+<script>
+/*__INJECT_DATA__*/
+/*__INJECT_JS__*/
+</script>
+</body>
+</html>

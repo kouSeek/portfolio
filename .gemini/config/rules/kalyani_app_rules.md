@@ -1,11 +1,8 @@
-# Kalyani App Workspace Rules
+# Kalyani App Workspace Rules (`🌸 কল্যাণী`)
 
-All rules, preferences, and specifications for the **Kalyani App** (`মায়ের এআই শিক্ষা ও চিঠি`) are governed by [`/usr/local/google/home/koushikchak/kalyani-app/GEMINI.md`](file:///usr/local/google/home/koushikchak/kalyani-app/GEMINI.md) and [`/usr/local/google/home/koushikchak/kalyani-app/spec.md`](file:///usr/local/google/home/koushikchak/kalyani-app/spec.md).
+Always read and strictly follow [`/usr/local/google/home/koushikchak/kalyani-app/GEMINI.md`](file:///usr/local/google/home/koushikchak/kalyani-app/GEMINI.md), [`docs/student-persona.md`](file:///usr/local/google/home/koushikchak/kalyani-app/docs/student-persona.md), and [`docs/client-side-gemini.md`](file:///usr/local/google/home/koushikchak/kalyani-app/docs/client-side-gemini.md):
 
-## Mandatory Operating Rules
-1. **Strict Repository Isolation:** Keep all Kalyani App code, scripts, audio, specs, and rules inside `/usr/local/google/home/koushikchak/kalyani-app`. Never mix Kalyani App files into `/usr/local/google/home/koushikchak/koushik-wiki`.
-2. **NO Automatic TTS Voice Regeneration:**
-   - Never run `scripts/refresh_voices.py` or `generate tts` automatically when making UI changes, CSS/JS edits, or curriculum/data text edits.
-   - Always run `python3 /usr/local/google/home/koushikchak/kalyani-app/scripts/build_app.py` (`<0.5s`) and `python3 /usr/local/google/home/koushikchak/kalyani-app/tests/run_tests.py`.
-   - If `build_app.py` detects that text changes made `N` audio files stale relative to `audio/tts_manifest.json`, **do not regenerate them automatically**—remind/ask Koushik if he wants to refresh those `N` voices once he finishes reviewing the text/UI changes.
-3. **No `localhost` Links:** Always provide the public clickable link (`https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/ma-course/ma-presentation.html`) and clickable `file://` links.
+1. **Strict Repo Isolation:** Keep all Kalyani App code, docs, audio, and rules inside `/usr/local/google/home/koushikchak/kalyani-app` (100% separate from `koushik-wiki`).
+2. **Principal Software Architecture (Zero Monoliths):** Keep specifications in `docs/`, declarative curriculum/slides in `content/`, HTML/CSS/JS modules in `src/` (`src/template.html`, `src/styles/*.css`, `src/js/*.js`), structured audio in `audio/{slides,quotes,days,games}/`, build/TTS CLIs in `scripts/`, and modular unit/VM tests in `tests/`. Never embed giant raw CSS/JS/data strings inside `scripts/build_app.py`.
+3. **Genius Artist UX Design:** Preserve the *Shantiniketan Handloom Ivory & Shiuli* aesthetic (`AAA` readability, 6 category accents, `42px` single-row sticky glass header with `🌸 কল্যাণী` + `🎓 আজকের খেলা` + `💌 চিঠি` + `🔊 শোনো`, live `#nowPlayingBar` equalizer/progress strip, `48px+` touch targets, `☀️ আজকের অনুপ্রেরণা` inside `💌 চিঠি`, zero footer, and ego-safe natural spoken West Bengal Bangla).
+4. **NEVER Auto-Rebuild TTS Voices:** On UI or content edits, run only `python3 scripts/build_app.py` and `python3 tests/run_tests.py`. Only run `python3 scripts/refresh_voices.py --confirm` when Koushik explicitly asks to refresh voices.
