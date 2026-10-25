@@ -51,6 +51,8 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertIn('id="nowPlayingBar"', ma_html)
         self.assertIn('id="celebrationToast"', ma_html)
         self.assertIn('id="slideDotsRow"', ma_html)
+        # Ensure slideBadge sits outside and above slide-img-wrap (never overlaid on top of the image)
+        self.assertLess(ma_html.index('id="slideBadge"'), ma_html.index('class="slide-img-wrap"'))
         self.assertNotIn('id="htabQuote"', ma_html)
         self.assertNotIn('id="viewQuote"', ma_html)
         self.assertNotIn('<nav class="bottom-nav">', ma_html)
