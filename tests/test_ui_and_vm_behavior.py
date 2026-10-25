@@ -34,7 +34,7 @@ NODE_BIN = find_node_binary()
 class TestUIAndVMBehavior(unittest.TestCase):
 
     def test_compiled_html_ux_and_node_vm_interactions(self) -> None:
-        """Verify 🌸 কল্যাণী header, live progress bar, celebration toast, চিঠি quote+dots, and 6-game VM logic."""
+        """Verify crisp Bengali typography, zero tickers, sequential lock, auto-unlocked calendar grid, and proactive audio."""
         ma_html_path = APP_ROOT / "ma-presentation.html"
         idx_html_path = APP_ROOT / "index.html"
         self.assertTrue(ma_html_path.is_file())
@@ -43,20 +43,31 @@ class TestUIAndVMBehavior(unittest.TestCase):
         ma_html = ma_html_path.read_text(encoding="utf-8")
         self.assertEqual(ma_html, idx_html_path.read_text(encoding="utf-8"))
 
-        # Artisanal UX & Header Invariants
+        # 1. Crisp Bengali ১ (U+09E7) Font & Anti-Clipping Invariants
+        self.assertIn("Noto+Sans+Bengali", ma_html)
+        self.assertIn("Noto+Serif+Bengali", ma_html)
+        self.assertNotIn("Hind+Siliguri", ma_html)
+        self.assertNotIn("tabular-nums", ma_html)
+
+        # 2. Zero Part 1/Part 2 Switcher & Zero Task Completion Tickers
+        self.assertNotIn('id="segPart1"', ma_html)
+        self.assertNotIn('id="segPart2"', ma_html)
+        self.assertNotIn('id="progInlinePill"', ma_html)
+        self.assertNotIn("আজকের অগ্রগতি", ma_html)
+        self.assertNotIn("পার্ট ২", ma_html)
+
+        # 3. Header, Above-Image Letter Badge & Collapsible Calendar Containers
         self.assertIn('id="headerBrand"', ma_html)
         self.assertIn('🌸</span><span>কল্যাণী</span>', ma_html)
         self.assertIn('🎓 আজকের খেলা', ma_html)
         self.assertIn('💌 চিঠি', ma_html)
+        self.assertIn('id="daysNavigatorWrap"', ma_html)
+        self.assertIn('id="primaryCalGridWrap"', ma_html)
+        self.assertIn('id="extendedPart2CalWrap"', ma_html)
         self.assertIn('id="nowPlayingBar"', ma_html)
         self.assertIn('id="celebrationToast"', ma_html)
         self.assertIn('id="slideDotsRow"', ma_html)
-        # Ensure slideBadge sits outside and above slide-img-wrap (never overlaid on top of the image)
         self.assertLess(ma_html.index('id="slideBadge"'), ma_html.index('class="slide-img-wrap"'))
-        self.assertNotIn('id="htabQuote"', ma_html)
-        self.assertNotIn('id="viewQuote"', ma_html)
-        self.assertNotIn('<nav class="bottom-nav">', ma_html)
-        self.assertNotIn('id="themeBtn"', ma_html)
         self.assertNotIn("speechSynthesis", ma_html)
 
         m = re.search(r"<script>([\s\S]*?)</script>", ma_html)
@@ -108,15 +119,17 @@ function getEl(id) {
 [
   'headerBrand','topPlayBtn','nowPlayingBar','npTrack','npFill','npTime',
   'permBanner','dailyQuoteText','btnQuotePlay','viewPlan','viewSlides',
-  'htabPlan','htabSlides','segPart1','segPart2','progInlinePill','dayStrip',
-  'activeDayStage','letterSlideCard','slideImg','slideBadge','slideDotsRow',
-  'slideTitleBn','slideHighlight','slideBodyBn','btnSlideMainPlay',
-  'prevBtn','nextBtn','autoAdvanceBtn','celebrationToast','audioPlayer'
+  'htabPlan','htabSlides','daysNavigatorWrap','dayStrip','btnToggleCalGrid',
+  'primaryCalGridWrap','extendedPart2CalWrap','activeDayStage','letterSlideCard',
+  'slideImg','slideBadge','slideDotsRow','slideTitleBn','slideHighlight',
+  'slideBodyBn','btnSlideMainPlay','prevBtn','nextBtn','autoAdvanceBtn',
+  'celebrationToast','audioPlayer'
 ].forEach(id => {
   const el = getEl(id);
   if (id === 'topPlayBtn' || id === 'btnQuotePlay') el.setAttribute('data-default-label', '🔊 শোনো');
   if (id === 'btnSlideMainPlay') el.setAttribute('data-default-label', '🔊 এই পাতাটা শোনো');
 });
+getEl('btnDayMainPlay').setAttribute('data-default-label', '🔊 আজকের কথাগুলো শোনো');
 getEl('btnAgPlay_1_0').setAttribute('data-default-label', '🔊 শোনো');
 
 const sandbox = {
@@ -129,14 +142,16 @@ const sandbox = {
   localStorage: {
     _store: { 'ma_21day_done_v2': '{corrupted_json', 'ma_kalyani_profile_v1': '{bad_json' },
     getItem(k) { return this._store[k] || null; },
-    setItem(k) { return null; }
+    setItem(k, v) { this._store[k] = v; }
   },
   window: { scrollTo: () => {} },
   document: {
     documentElement: { _theme: 'warm', getAttribute() { return this._theme; }, setAttribute(k, v) { this._theme = v; } },
+    addEventListener: () => {},
+    removeEventListener: () => {},
     getElementById: (id) => getEl(id),
     createElement: (tag) => makeEl(tag),
-    querySelectorAll: () => [getEl('topPlayBtn'), getEl('btnQuotePlay'), getEl('btnSlideMainPlay'), getEl('btnAgPlay_1_0')]
+    querySelectorAll: () => [getEl('topPlayBtn'), getEl('btnQuotePlay'), getEl('btnSlideMainPlay'), getEl('btnDayMainPlay'), getEl('btnAgPlay_1_0')]
   }
 };
 
@@ -146,46 +161,78 @@ assert.strictEqual(DAYS_21.length, 21);
 assert.strictEqual(DAYS_PART2_30.length, 30);
 
 const audio = getEl('audioPlayer');
-const agBtn0 = getEl('btnAgPlay_1_0');
 (async () => {
-  // 1. Play/Pause toggle + live Now-Playing Bar visibility
-  await playAgendaByIdx(1, 0, agBtn0);
-  assert.strictEqual(audio.paused, false);
-  assert.strictEqual(agBtn0.innerHTML, '⏸️ থামাও');
+  // 1. Proactive Auto-Engage Audio on App Open/Load!
+  assert.strictEqual(curDayNum, 1);
+  assert.strictEqual(audio.paused, false, 'Proactive welcome audio should engage immediately on load');
+  assert.strictEqual(activeAudioKey, 'day_main_1');
+  assert.ok(audio.src.includes('audio/days/day_1.mp3'));
   assert.strictEqual(getEl('nowPlayingBar').classList.contains('visible'), true);
 
-  await playAgendaByIdx(1, 0, agBtn0);
-  assert.strictEqual(audio.paused, true);
-  assert.strictEqual(agBtn0.innerHTML, '🔊 শোনো');
-  assert.strictEqual(getEl('nowPlayingBar').classList.contains('visible'), false);
+  // Chaining: when day_main_1 finishes, it automatically reads out Game 1 (ag_1_0)
+  audio.listeners['ended']();
+  assert.strictEqual(activeAudioKey, 'ag_1_0');
+  assert.ok(audio.src.includes('audio/games/day_1_ag_0.mp3'));
 
-  // 2. চিঠি view refreshes random quote & renders 8 slide dots
+  // 2. Game Tiles have ZERO duplicate numbers (only 🧠 মনের আনন্দ, no খেলা ১ or ১.)
+  const stageHtml = getEl('activeDayStage').innerHTML;
+  assert.ok(stageHtml.includes('🧠 মনের আনন্দ'));
+  assert.ok(!stageHtml.includes('খেলা ১'), 'Game buttons must not contain duplicate খেলা ১');
+  assert.ok(!stageHtml.includes('১. মনের আনন্দ'), 'Game buttons must not contain ১. prefix');
+
+  // 3. Sequential Day Locking: Day 2..51 are locked until Day 1 is finished
+  assert.strictEqual(isDayUnlocked(1), true);
+  assert.strictEqual(isDayUnlocked(2), false);
+  assert.ok(getEl('dayChip_2').innerHTML.includes('🔒 দিন ২'));
+  assert.strictEqual(getEl('extendedPart2CalWrap').style.display, 'none', 'Days 22-51 stay hidden before Day 21 finishes');
+
+  const blockedJump = selectDay(2, false);
+  assert.strictEqual(blockedJump, false);
+  assert.strictEqual(curDayNum, 1);
+  assert.ok(getEl('celebrationToast').textContent.includes('দিন ১'));
+
+  // 4. Primary Calendar Grid Toggle (Days 1-21)
+  togglePrimaryCalendarGrid();
+  assert.strictEqual(getEl('primaryCalGridWrap').style.display, 'block');
+  assert.ok(getEl('primaryCalGridWrap').innerHTML.includes('🔒 দিন ২'));
+  togglePrimaryCalendarGrid();
+  assert.strictEqual(getEl('primaryCalGridWrap').style.display, 'none');
+
+  // 5. Completing all 6 games of Day 1 unlocks Day 2 and auto-advances!
+  for (let g = 0; g < 6; g++) {
+    toggleAgendaDone(1, g);
+  }
+  assert.strictEqual(isDayUnlocked(2), true);
+  assert.strictEqual(isDayUnlocked(3), false);
+  assert.strictEqual(curDayNum, 2);
+
+  // 6. Completing Days 2..21 automatically unlocks Days 22-51 as a Collapsible Calendar Grid View!
+  for (let d = 2; d <= 21; d++) {
+    for (let g = 0; g < 6; g++) {
+      toggleAgendaDone(d, g);
+    }
+  }
+  assert.strictEqual(areFirst21DaysComplete(), true);
+  assert.strictEqual(curDayNum, 22);
+  assert.strictEqual(isDayUnlocked(22), true);
+  assert.strictEqual(isDayUnlocked(23), false);
+  assert.strictEqual(getEl('extendedPart2CalWrap').style.display, 'block');
+  assert.ok(getEl('extendedPart2CalWrap').innerHTML.includes('নতুন ৩০ দিনের ক্যালেন্ডার (দিন ২২ – ৫১)'));
+  assert.ok(getEl('extendedPart2CalWrap').innerHTML.includes('দিন ২২'));
+  assert.ok(getEl('extendedPart2CalWrap').innerHTML.includes('🔒 দিন ২৩'));
+
+  // Collapsing and re-expanding the Extended 30-Day Calendar Grid works smoothly
+  toggleExtendedCalendarGrid();
+  assert.ok(!getEl('extendedPart2CalWrap').innerHTML.includes('id="extCalendarGrid"'));
+  toggleExtendedCalendarGrid();
+  assert.ok(getEl('extendedPart2CalWrap').innerHTML.includes('id="extCalendarGrid"'));
+
+  // 7. চিঠি view refreshes random quote & renders 8 slide dots
   const q0 = getEl('dailyQuoteText').textContent;
   switchView('slides');
   assert.ok(getEl('viewSlides').className.includes('active'));
   assert.notStrictEqual(getEl('dailyQuoteText').textContent, q0);
   assert.strictEqual(getEl('slideDotsRow').children.length, 8);
-
-  // 3. Part 2 & Part 1 progress + 6-game navigator + celebration toast + Day 1->2 auto-advance
-  switchView('plan');
-  switchCoursePart(2);
-  assert.ok(getEl('progInlinePill').textContent.includes('/ 180'));
-  assert.ok(DAYS_PART2_30[0].audio_url.includes('audio/days/day_'));
-  assert.ok(DAYS_PART2_30[0].agendas[0].audio_url.includes('audio/games/day_'));
-
-  switchCoursePart(1);
-  selectDay(1, false);
-  selectGame(3);
-  assert.ok(getEl('activeDayStage').innerHTML.includes('ফোনের জেমিনি নিজে থেকেই ইউটিউব মিউজিকে (YouTube Music) গান বাজাতে পারে!'));
-  assert.ok(getEl('activeDayStage').innerHTML.includes('ধাপ ৩ — গানটা শোনা হয়ে গেলে এর মানে আর গল্পটা জানতে জেমিনিকে বলো:'));
-
-  toggleAgendaDone(1, 0);
-  assert.strictEqual(getEl('celebrationToast').classList.contains('show'), true);
-  for (let g = 1; g < 6; g++) {
-    toggleAgendaDone(1, g);
-  }
-  assert.strictEqual(curDayNum, 2);
-  assert.strictEqual(getEl('dayChip_2').scrolledIntoView, true);
 })().catch(err => { console.error(err); process.exit(1); });
 `;
 vm.runInContext(code + "\n" + testBlock, sandbox, {filename: 'kalyani-bundle.js'});

@@ -1,5 +1,5 @@
 /* ============================================================================
-   MODULE 1: STATE, PERSISTENCE & PROGRESSION ENGINE (src/js/state.js)
+   MODULE 1: STATE, PERSISTENCE & SEQUENTIAL PROGRESSION ENGINE (src/js/state.js)
    ============================================================================ */
 const ALL_DAYS = DAYS_21.concat(DAYS_PART2_30);
 
@@ -12,11 +12,12 @@ function toBnDigits(val) {
 }
 
 let curView = 'plan';
-let curPart = 1;
 let curSlideIdx = 0;
 let curDayNum = 1;
 let curGameIdx = 0;
 let showAllGamesInDay = false;
+let primaryCalOpen = false;
+let extCalOpen = true;
 let autoAdvance = true;
 let curQuoteIdx = Math.floor(Date.now() / 86400000) % MORNING_QUOTES.length;
 let toastTimer = null;
@@ -57,11 +58,7 @@ function showCelebrationToast(msg) {
   if (toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     toastEl.classList.remove('show');
-  }, 2600);
-}
-
-function getActiveCourseDays() {
-  return curPart === 2 ? DAYS_PART2_30 : DAYS_21;
+  }, 3000);
 }
 
 function findDayObj(dayNum) {
@@ -77,6 +74,29 @@ function isDayFullyDone(dayNum) {
   return true;
 }
 
+function isDayUnlocked(dayNum) {
+  if (dayNum <= 1) return true;
+  for (let k = 1; k < dayNum; k++) {
+    if (!isDayFullyDone(k)) return false;
+  }
+  return true;
+}
+
+function areFirst21DaysComplete() {
+  for (let i = 0; i < DAYS_21.length; i++) {
+    if (!isDayFullyDone(DAYS_21[i].day)) return false;
+  }
+  return true;
+}
+
+function getHighestUnlockedDay() {
+  for (let i = 0; i < ALL_DAYS.length; i++) {
+    const d = ALL_DAYS[i];
+    if (!isDayFullyDone(d.day)) return d.day;
+  }
+  return ALL_DAYS[ALL_DAYS.length - 1].day;
+}
+
 function getFirstIncompleteGameIdx(dayNum) {
   const d = findDayObj(dayNum);
   const count = d ? d.agendas.length : 6;
@@ -86,45 +106,14 @@ function getFirstIncompleteGameIdx(dayNum) {
   return 0;
 }
 
-function findInitialCurrentDayAndPart() {
-  for (let i = 0; i < DAYS_21.length; i++) {
-    if (!isDayFullyDone(DAYS_21[i].day)) {
-      curPart = 1;
-      curDayNum = DAYS_21[i].day;
-      curGameIdx = getFirstIncompleteGameIdx(curDayNum);
-      return;
-    }
-  }
-  for (let i = 0; i < DAYS_PART2_30.length; i++) {
-    if (!isDayFullyDone(DAYS_PART2_30[i].day)) {
-      curPart = 2;
-      curDayNum = DAYS_PART2_30[i].day;
-      curGameIdx = getFirstIncompleteGameIdx(curDayNum);
-      return;
-    }
-  }
-  curPart = 1;
-  curDayNum = 1;
-  curGameIdx = 0;
+function findInitialCurrentDay() {
+  curDayNum = getHighestUnlockedDay();
+  curGameIdx = getFirstIncompleteGameIdx(curDayNum);
 }
 
 function scrollActiveDayChipIntoView() {
-  const activeChip = document.getElementById('dayChip_' + curDayNum);
+  const activeChip = document.getElementById('dayChip_' + curDayNum) || document.getElementById('calCell_' + curDayNum);
   if (activeChip && typeof activeChip.scrollIntoView === 'function') {
     activeChip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
   }
-}
-
-function updateProgressPill() {
-  const activeList = getActiveCourseDays();
-  let doneCount = 0;
-  let totalCount = 0;
-  activeList.forEach(d => {
-    totalCount += d.agendas.length;
-    d.agendas.forEach((_, i) => {
-      if (doneMap[d.day + '_' + i]) doneCount++;
-    });
-  });
-  const pill = document.getElementById('progInlinePill');
-  if (pill) pill.textContent = `✅ ${doneCount} / ${totalCount}`;
 }

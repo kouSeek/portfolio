@@ -1,10 +1,13 @@
 /* ============================================================================
-   MODULE 2: UNIFIED AOEDE AUDIO ENGINE, PROGRESS BAR & NOTIFICATIONS (src/js/audio.js)
+   MODULE 2: UNIFIED AOEDE AUDIO ENGINE, PROACTIVE WELCOME & NOTIFICATIONS
+   (src/js/audio.js)
    ============================================================================ */
 const audioEl = document.getElementById('audioPlayer');
 const topPlayBtn = document.getElementById('topPlayBtn');
 let activeAudioBtnId = null;
 let activeAudioKey = null;
+let autoWelcomeSucceeded = false;
+let autoWelcomeFallbackArmed = false;
 
 function formatAudioSecondsBn(sec) {
   if (!sec || !isFinite(sec) || sec < 0) return '০:০০';
@@ -76,7 +79,7 @@ function stopAllAudio() {
   syncAllAudioButtonsUI(false);
 }
 
-function playOrToggleAudio(btnId, audioKey, srcUrl, fallbackB64) {
+function playOrToggleAudio(btnId, audioKey, srcUrl, fallbackB64, onBlockedFallback) {
   if (activeAudioKey === audioKey && !audioEl.paused) {
     audioEl.pause();
     syncAllAudioButtonsUI(false);
@@ -94,14 +97,69 @@ function playOrToggleAudio(btnId, audioKey, srcUrl, fallbackB64) {
   audioEl.src = srcUrl || fallbackB64 || '';
   audioEl.currentTime = 0;
   syncAllAudioButtonsUI(true);
-  audioEl.play().catch(() => {
-    if (fallbackB64 && audioEl.src !== fallbackB64) {
-      audioEl.src = fallbackB64;
-      audioEl.play().catch(() => stopAllAudio());
-    } else {
-      stopAllAudio();
-    }
-  });
+
+  const playPromise = audioEl.play();
+  if (playPromise && typeof playPromise.then === 'function') {
+    playPromise.then(() => {
+      autoWelcomeSucceeded = true;
+      detachAutoWelcomeGestureFallback();
+    }).catch(() => {
+      if (fallbackB64 && audioEl.src !== fallbackB64) {
+        audioEl.src = fallbackB64;
+        audioEl.play().then(() => {
+          autoWelcomeSucceeded = true;
+          detachAutoWelcomeGestureFallback();
+        }).catch(() => {
+          stopAllAudio();
+          if (typeof onBlockedFallback === 'function') onBlockedFallback();
+        });
+      } else {
+        stopAllAudio();
+        if (typeof onBlockedFallback === 'function') onBlockedFallback();
+      }
+    });
+  }
+}
+
+function onFirstGestureWelcomeUnlock(ev) {
+  detachAutoWelcomeGestureFallback();
+  if (autoWelcomeSucceeded || !audioEl.paused || activeAudioKey || curView !== 'plan') return;
+  const explicitTarget = (ev && ev.target && typeof ev.target.closest === 'function')
+    ? ev.target.closest('#topPlayBtn, #btnDayMainPlay, .ag-btn.listen, #htabSlides, .perm-btn-primary')
+    : null;
+  if (explicitTarget) return;
+  autoWelcomeSucceeded = true;
+  toggleDayOverviewAudio();
+}
+
+function attachAutoWelcomeGestureFallback() {
+  if (autoWelcomeFallbackArmed || !document.addEventListener) return;
+  autoWelcomeFallbackArmed = true;
+  document.addEventListener('pointerdown', onFirstGestureWelcomeUnlock, true);
+  document.addEventListener('touchstart', onFirstGestureWelcomeUnlock, true);
+  document.addEventListener('keydown', onFirstGestureWelcomeUnlock, true);
+}
+
+function detachAutoWelcomeGestureFallback() {
+  if (!autoWelcomeFallbackArmed || !document.removeEventListener) return;
+  autoWelcomeFallbackArmed = false;
+  document.removeEventListener('pointerdown', onFirstGestureWelcomeUnlock, true);
+  document.removeEventListener('touchstart', onFirstGestureWelcomeUnlock, true);
+  document.removeEventListener('keydown', onFirstGestureWelcomeUnlock, true);
+}
+
+function engageProactiveWelcomeAudio() {
+  if (curView !== 'plan') return;
+  const d = findDayObj(curDayNum);
+  const refDay = d.audio_ref_day || d.day || 1;
+  const refObj = DAYS_21.find(x => x.day === refDay) || d;
+  playOrToggleAudio(
+    'btnDayMainPlay',
+    'day_main_' + d.day,
+    d.audio_url || refObj.audio_url,
+    d.audio_b64 || refObj.audio_b64,
+    attachAutoWelcomeGestureFallback
+  );
 }
 
 function toggleMorningQuoteAudio() {

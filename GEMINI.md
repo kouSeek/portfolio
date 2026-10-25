@@ -28,21 +28,21 @@ Maintain the codebase like a **Principal Software Architect**: every file must h
 │   └── client-side-gemini.md           # Downstream Android Gemini Saved-Info prompt & memory handshake
 ├── content/                            # Pure Declarative Content & Curriculum Package (Zero UI/Build Code)
 │   ├── __init__.py                     # Exports SLIDES, MORNING_QUOTES, GAME_META, DAYS_21, DAYS_PART2_30
-│   ├── slides_and_quotes.py            # 8 Thanksgiving letter slides + 7 morning quotes + 6 game slot metadata
-│   ├── part1_days.py                   # Part 1: 21-Day Foundation Course (21 × 6 = 126 ego-safe games)
-│   └── part2_days.py                   # Part 2: 30-Day Self-Mastery Course (30 × 6 = 180 ego-safe games)
+│   ├── slides_and_quotes.py            # 8 Thanksgiving letter slides + 7 morning quotes + 6 clean game slot labels
+│   ├── part1_days.py                   # Days 1–21 Foundation Journey (21 × 6 = 126 ego-safe games)
+│   └── part2_days.py                   # Days 22–51 Extended Journey (30 × 6 = 180 ego-safe games, zero "পার্ট ২" nagging)
 ├── src/                                # Modular Frontend Source Layer
-│   ├── template.html                   # Semantic accessible HTML5 shell
+│   ├── template.html                   # Semantic accessible HTML5 shell (Noto Sans Bengali + Noto Serif Bengali)
 │   ├── styles/
-│   │   ├── tokens.css                  # "Shantiniketan Handloom Ivory & Shiuli" design tokens & typography
+│   │   ├── tokens.css                  # "Shantiniketan Handloom Ivory & Shiuli" design tokens & crisp Bengali typography
 │   │   ├── layout.css                  # 42px single-row sticky glass header, live audio bar & micro-toast
-│   │   └── components.css              # Tactile cards, 2×3 game navigator, voice bubbles & heirloom letter
+│   │   └── components.css              # Sequential lock chips, collapsible calendar grids, 2×3 game tiles & letter
 │   └── js/
-│       ├── state.js                    # State store, localStorage resilience, Bengali numerals & progression
-│       ├── audio.js                    # Unified Aoede play/pause/resume engine, scrub bar & morning chime
-│       ├── plan-view.js                # 🎓 আজকের খেলা renderer (hero card, 2×3 tile grid, step-by-step card)
-│       ├── letter-view.js              # 💌 চিঠি renderer (☀️ অনুপ্রেরণা quote + 8-slide album & touch swipe)
-│       └── boot.js                     # View router, notification scheduler & Service Worker bootstrap
+│       ├── state.js                    # State store, localStorage resilience, sequential day-lock & 21-day unlock logic
+│       ├── audio.js                    # Proactive auto-engage welcome audio, Aoede play/pause/resume & morning chime
+│       ├── plan-view.js                # 🎓 আজকের খেলা renderer (locked days, collapsible calendar grids, clean 2×3 tiles)
+│       ├── letter-view.js              # 💌 চিঠি renderer (☀️ অনুপ্রেরণা quote + above-image header badge + 8-slide album)
+│       └── boot.js                     # View router, notification scheduler & proactive welcome startup
 ├── assets/
 │   ├── icons/favicon.svg               # Handcrafted Bengali Shiuli flower vector emblem
 │   └── slides/slide_1..8.jpg           # Personalized family photographs
@@ -50,16 +50,16 @@ Maintain the codebase like a **Principal Software Architect**: every file must h
 │   ├── tts_manifest.json               # SHA-256 text-hash registry for O(Δ) incremental voice refreshes
 │   ├── slides/slide_1..8.mp3           # 8 letter slide narrations
 │   ├── quotes/quote_0..6.mp3           # 7 morning inspiration narrations
-│   ├── days/day_1..51.mp3              # All 51 day overview narrations (Part 1 + Part 2)
-│   └── games/day_1..51_ag_0..5.mp3     # All 306 verbatim game narrations (Step 1 + Step 2 + Step 3)
+│   ├── days/day_1..51.mp3              # All 51 warm, welcoming day narrations (zero duplicate number readouts)
+│   └── games/day_1..51_ag_0..5.mp3     # All 306 natural, number-bloat-free game narrations
 ├── scripts/                            # Fast Build & Explicit TTS CLI Tooling
 │   ├── build_app.py                    # <0.5s static bundler + non-blocking stale-voice detector
 │   └── refresh_voices.py               # Explicit-only (--confirm) parallel Gemini Aoede TTS generator
 ├── tests/                              # Multi-Layer Automated Verification Suite
 │   ├── run_tests.py                    # Unified test runner
 │   ├── test_architecture_and_docs.py   # Enforces modular structure, docs & No-Auto-TTS rule
-│   ├── test_curriculum_persona.py      # Enforces 6-game structure, ego-safety, natural Bangla & YT Music prompts
-│   └── test_ui_and_vm_behavior.py      # Headless Node VM behavioral & edge-case suite
+│   ├── test_curriculum_persona.py      # Enforces 6-game structure, ego-safety, zero number bloat & YT Music prompts
+│   └── test_ui_and_vm_behavior.py      # Headless Node VM behavioral suite (locking, calendar unlock, proactive audio)
 ├── favicon.svg                         # Root PWA icon (synced automatically from assets/icons/favicon.svg)
 ├── ma-manifest.json                    # Android Chrome PWA Web App Manifest
 ├── ma-sw.js                            # Service Worker for notifications & window focus
@@ -73,20 +73,19 @@ Maintain the codebase like a **Principal Software Architect**: every file must h
 
 Design every screen and interaction like a **Genius Artist UX Designer** crafting an heirloom gift for a sensitive 64-year-old Bengali mother:
 
-1. **Cultural Warmth & AAA Senior Readability (`src/styles/tokens.css`):**
-   - **Palette:** Handloom Ivory canvas (`#FBF7F0`) with subtle warm radial glow, crisp Sandalwood surfaces (`#FFFFFF`, `#F5EDE0`), deep espresso ink (`#1C140E`, `>14:1` contrast), Shiuli-stem vermilion (`#D8522E`), Tulsi emerald (`#0E8358`), and Temple brass gold (`#AE630C`)—plus 6 harmonious category accents (`terra`, `emerald`, `indigo`, `rose`, `amber`, `plum`).
-   - **Typography & Ergonomics:** `Hind Siliguri` + `Noto Serif Bengali` with generous line-height (`1.6+`), Bengali numerals (`১–৬`) across UI badges, and **`48px+` tactile touch targets** so nothing feels cramped or intimidating.
-   - **Artisanal Details:** Handcrafted 7-petal **Shiuli flower `favicon.svg`**, delicate *Alpana* divider (`❈`), zero visual clutter, zero bottom footer, and no distracting theme toggle.
-2. **Single-Row Sticky Glass Header (`42px`):**
-   - Left: **`🌸 কল্যাণী`** brand (`#headerBrand`).
-   - Center: **`🎓 আজকের খেলা`** (`#htabPlan`) and **`💌 চিঠি`** (`#htabSlides`) fitting on a single row even on `320px–360px` phones.
-   - Right: Master Play/Pause button (`#topPlayBtn`).
-   - Beneath header (when audio plays): Live **Now-Playing Equalizer & Scrubbable Progress Ribbon (`#nowPlayingBar`)** showing animated voice bars and Bengali elapsed/total time (`০:১২ / ১:০৫`).
-3. **Cognitive Ease & Joyful Micro-Interactions:**
-   - **6 Cohesive Games/Day (`2×3` Grid):** Color-accented tiles let Ma jump to any of today's 6 games in 1 tap without scrolling.
-   - **Crystal-Clear Voice Prompts:** Numbered step pills (`📋 ধাপ ১`, `🎙️ ধাপ ২`, `🗣️ ধাপ ৩`), highlighted `@YouTube Music` helper card on Game 4, and natural spoken West Bengal Bangla (*চলিত বাংলা* — never stiff translated words like `দয়া করে` or `মস্তিষ্ক`).
-   - **Ego-Safe Pedagogy (`docs/student-persona.md`):** `0%` direct mistake callouts; `<= 5%` behavioral lessons disguised inside playful third-person Wise-Advisor stories.
-   - **Celebration & Auto-Progression:** Checking off a game triggers a warm celebratory micro-toast (`🌸 সাবাশ মা!...`) and advances to the next incomplete game; finishing all 6 games celebrates and auto-advances to the next day.
+1. **Cultural Warmth, Unclipped Bengali `১` (`U+09E7`) & AAA Readability (`src/styles/tokens.css`):**
+   - **Palette:** Handloom Ivory canvas (`#FBF7F0`), crisp Sandalwood surfaces (`#FFFFFF`, `#F5EDE0`), deep espresso ink (`#1C140E`, `>14:1` contrast), Shiuli-stem vermilion (`#D8522E`), Tulsi emerald (`#0E8358`), and Temple brass gold (`#AE630C`)—plus 6 harmonious category accents (`terra`, `emerald`, `indigo`, `rose`, `amber`, `plum`).
+   - **Crisp Bengali Glyph Rendering:** Always use **`Noto Sans Bengali`** + **`Noto Serif Bengali`** (never `Hind Siliguri`, never `font-variant-numeric: tabular-nums`, and never `overflow: hidden` on text pills/tiles) with generous `line-height >= 1.48–1.6` so Bengali `১` (`U+09E7`) and *matra* ascenders/descenders are never half-cut on Android Chrome.
+2. **Zero Distracting Tickers & Sequential Curiosity Locking (`src/js/state.js`, `src/js/plan-view.js`):**
+   - **No Part 1/Part 2 Switcher & No Task Completion Counters:** Never display task-completion tickers (`0 / 126`, `খেলা 1 / 6`, `আজকের অগ্রগতি`) or `পার্ট ১` / `পার্ট ২` tabs/labels—they create pressure and distraction.
+   - **Sequential Day Locking:** Future days (`Day N` for `N > 1`) stay locked (`🔒 দিন N`) until all 6 games of every previous day (`Day 1 .. Day N-1`) are ticked off (`✅`). Tapping a locked day shows an encouraging Bengali curiosity toast motivating Ma to tick off her current day's games to unlock tomorrow's surprise.
+   - **Auto-Unlocked Collapsible Calendar Grid (`Days 22–51`):** `Days 22–51` remain hidden until `Days 1–21` are 100% completed; upon finishing Day 21, `🌿 নতুন ৩০ দিনের ক্যালেন্ডার (দিন ২২ – ৫১)` automatically appears in the days list as a comfortable **Collapsible Calendar Grid View** (alongside the `🗓️ ক্যালেন্ডার` grid toggle for `Days 1–21`).
+3. **Proactive Auto-Engage Audio on App Open (`src/js/audio.js`, `src/js/boot.js`):**
+   - On app open/load, `engageProactiveWelcomeAudio()` proactively starts reading out today's welcoming day inspiration (`days/day_{curDayNum}.mp3`) and chains automatically into the active incomplete game—with a synchronous first-gesture unlock fallback if a mobile browser blocks cold unmuted autoplay.
+4. **Clean Single-Label Game Tiles & Zero Voice Number Bloat:**
+   - Game buttons show a single clean label (`🧠 মনের আনন্দ`, `📱 হাতের যন্ত্র`, `🔤 ইংরেজি খেলা`, `🎵 গান ও অর্থ`, `🌍 জানাশোনা`, `🎨 মজার খেলা`)—never duplicate numbers like `খেলা ১` + `১. মনের আনন্দ`.
+   - Spoken voice scripts (`scripts/refresh_voices.py` & `content/`) must sound like a real Bengali son speaking warmly at home—never read out bloated number sequences (`1.1`, `১) ... ২)`, `ধাপ ১`) and never mention `"পার্ট ২"`.
+   - In `💌 চিঠি`, `#slideBadge` sits cleanly in `.slide-top-header` above `.slide-img-wrap` (never overlaid on top of family photos).
 
 ---
 

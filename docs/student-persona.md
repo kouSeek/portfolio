@@ -59,12 +59,12 @@ Whenever a reasoning principle or life habit is taught, **hide it inside a compl
 
 | Slot | Tile Label | Category Name (Natural Bangla) | Share | Purpose & Natural Clubbing Strategy |
 | :--- | :--- | :--- | :---: | :--- |
-| **খেলা ১** | `🧠 ১. মনের আনন্দ` | `🧠 ১. মনের আনন্দ ও নিজের ওপর ভরসা` | `16.7%` | Warm self-belief, calm joy, Maa Sarada / Rabindranath inspiration, overcoming hesitation with tech. |
-| **খেলা ২** | `📱 ২. হাতের যন্ত্র` | `📱 ২. ফোন, এসি ও টিভি রিমোট হাতের মুঠোয়` | `16.7%` | 1 practical appliance or phone skill per day (Volume, AC `26°C`, TV Input, WhatsApp voice/photo, Torch, Camera, Scam safety). |
-| **খেলা ৩** | `🔤 ৩. ইংরেজি খেলা` | `🔤 ৩. ইংরেজি শব্দ চেনা ও মুখে বলা` | `16.7%` | **Clubbed seamlessly:** Learn `2–3` practical uppercase English words AND speak `1` short, happy English sentence out loud to Gemini in a single natural flow. |
-| **খেলা ৪** | `🎵 ৪. গান ও অর্থ` | `🎵 ৪. ইউটিউব মিউজিকে গান চালানো ও কথাগুলো বোঝা` | `16.7%` | **Clubbed seamlessly:** Command Android Gemini in Bengali to play today's song on **YouTube Music** (`“জেমিনি, ইউটিউব মিউজিকে ‘...’ গানটা চালিয়ে দাও।”`), listen mindfully, and ask Gemini about the song's deep meaning/story. |
-| **খেলা ৫** | `🌍 ৫. জানাশোনা ও কেন?` | `🌍 ৫. দেশ-দুনিয়ার খবর ও ‘কেন-কীভাবে’ কৌতূহল` | `16.7%` | **Clubbed seamlessly:** Positive GK / history / science story paired with asking *"Why / How"* (`কেন ও কীভাবে`) so Ma builds active critical curiosity instead of accepting things at face value. |
-| **খেলা ৬** | `🎨 ৬. মজার খেলা` | `🎨 ৬. রোজকার কাজে এআই, শখ ও মজার চ্যালেঞ্জ` | `16.7%` | Everyday personal AI help (recipes, pencil sketching ideas, health comfort, puja prep) + playful comfort-zone mini-challenges (and on `<= 1 in 4` days, a fun third-person wisdom riddle). |
+| **Slot 1** | `🧠 মনের আনন্দ` | `🧠 মনের আনন্দ ও নিজের ওপর ভরসা` | `16.7%` | Warm self-belief, calm joy, Maa Sarada / Rabindranath inspiration, overcoming hesitation with tech. |
+| **Slot 2** | `📱 হাতের যন্ত্র` | `📱 ফোন, এসি ও টিভি রিমোট হাতের মুঠোয়` | `16.7%` | 1 practical appliance or phone skill per day (Volume, AC `26°C`, TV Input, WhatsApp voice/photo, Torch, Camera, Scam safety). |
+| **Slot 3** | `🔤 ইংরেজি খেলা` | `🔤 ইংরেজি শব্দ চেনা ও মুখে বলা` | `16.7%` | **Clubbed seamlessly:** Learn `2–3` practical uppercase English words AND speak `1` short, happy English sentence out loud to Gemini in a single natural flow. |
+| **Slot 4** | `🎵 গান ও অর্থ` | `🎵 ইউটিউব মিউজিকে গান চালানো ও কথাগুলো বোঝা` | `16.7%` | **Clubbed seamlessly:** Command Android Gemini in Bengali to play today's song on **YouTube Music** (`“জেমিনি, ইউটিউব মিউজিকে ‘...’ গানটা চালিয়ে দাও।”`), listen mindfully, and ask Gemini about the song's deep meaning/story. |
+| **Slot 5** | `🌍 জানাশোনা` | `🌍 দেশ-দুনিয়ার খবর ও কৌতূহল` | `16.7%` | **Clubbed seamlessly:** Positive GK / history / science story paired with asking *"Why / How"* (`কেন ও কীভাবে`) so Ma builds active critical curiosity instead of accepting things at face value. |
+| **Slot 6** | `🎨 মজার খেলা` | `🎨 রোজকার কাজে এআই ও মজার খেলা` | `16.7%` | Everyday personal AI help (recipes, pencil sketching ideas, health comfort, puja prep) + playful comfort-zone mini-challenges (and on `<= 1 in 4` days, a fun third-person wisdom riddle). |
 
 ---
 

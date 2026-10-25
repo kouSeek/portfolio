@@ -1,5 +1,5 @@
 /* ============================================================================
-   MODULE 5: NAVIGATION ROUTER & APPLICATION BOOTSTRAP (src/js/boot.js)
+   MODULE 5: NAVIGATION ROUTER & PROACTIVE APPLICATION BOOTSTRAP (src/js/boot.js)
    ============================================================================ */
 function switchView(mode) {
   curView = mode;
@@ -37,9 +37,8 @@ if ('serviceWorker' in navigator) {
 }
 
 initMorningQuoteAndAlarm();
-findInitialCurrentDayAndPart();
-document.getElementById('segPart1').className = 'part-seg-btn' + (curPart === 1 ? ' active' : '');
-document.getElementById('segPart2').className = 'part-seg-btn' + (curPart === 2 ? ' active' : '');
+findInitialCurrentDay();
 renderSlide();
 renderPlanView();
 scrollActiveDayChipIntoView();
+engageProactiveWelcomeAudio();

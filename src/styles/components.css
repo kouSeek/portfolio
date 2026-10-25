@@ -1,5 +1,6 @@
 /* ============================================================================
-   ARTISANAL UI COMPONENTS — Cards, 2×3 Game Grid, Step Bubbles & Heirloom Letter
+   ARTISANAL UI COMPONENTS — Calendar Grid, Locked Days, 2×3 Game Grid & Letter
+   All Bengali text & digits use generous line-height (>=1.5) & zero clipping
    ============================================================================ */
 
 /* One-Time Permission Banner */
@@ -18,6 +19,7 @@
 
 .perm-banner-title {
   font-size: 1rem;
+  line-height: 1.55;
   font-weight: 700;
   color: var(--text-primary);
   flex: 1;
@@ -26,92 +28,72 @@
 
 .perm-btn-primary {
   min-height: 42px;
-  padding: 0 16px;
+  padding: 4px 16px;
   border-radius: var(--radius-sm);
   border: none;
   background: var(--accent);
   color: #FFFFFF;
   font-size: 0.98rem;
+  line-height: 1.5;
   font-weight: 700;
   cursor: pointer;
 }
 
-/* Course Part Switcher + Progress Pill */
-.course-top-row {
+/* Days Strip + Collapsible Calendar Grid Navigator */
+.days-navigator-wrap {
+  margin: 12px 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cal-bar-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
-  margin: 12px 0 10px;
-  flex-wrap: wrap;
 }
 
-.part-switch-row {
-  display: flex;
-  gap: 4px;
-  background: var(--bg-elev);
-  padding: 4px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  flex: 1;
-  min-width: 215px;
-}
-
-.part-seg-btn {
-  flex: 1;
-  min-height: 38px;
-  padding: 4px 8px;
-  border-radius: 10px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 0.92rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
-}
-
-.part-seg-btn.active {
-  background: var(--bg-surface);
-  color: var(--accent);
-  box-shadow: var(--shadow-sm);
-}
-
-.prog-inline-pill {
-  padding: 7px 12px;
-  border-radius: var(--radius-pill);
-  background: var(--accent-soft);
-  border: 1.5px solid var(--accent-border);
-  color: var(--accent);
-  font-size: 0.9rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-/* Horizontal Snap Day Selector Ribbon */
 .day-selector-strip {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 2px 2px 10px;
+  padding: 3px 4px 6px;
   scrollbar-width: none;
   scroll-snap-type: x proximity;
+  flex: 1;
+  min-width: 0;
 }
 
 .day-selector-strip::-webkit-scrollbar {
   display: none;
 }
 
+.cal-toggle-btn {
+  flex-shrink: 0;
+  min-height: 42px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--gold-border);
+  background: var(--gold-soft);
+  color: var(--gold);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 .day-chip {
   flex: 0 0 auto;
   scroll-snap-align: center;
   min-height: 42px;
-  padding: 0 14px;
+  padding: 4px 15px;
   border-radius: var(--radius-pill);
   border: 1.5px solid var(--border);
   background: var(--bg-surface);
   color: var(--text-primary);
-  font-size: 0.98rem;
+  font-size: 0.96rem;
+  line-height: 1.5;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
@@ -140,6 +122,105 @@
   color: #FFFFFF;
 }
 
+.day-chip.locked {
+  background: var(--bg-subtle);
+  border-style: dashed;
+  border-color: var(--border);
+  color: var(--text-muted);
+  opacity: 0.76;
+}
+
+/* Collapsible Calendar Grid Panels (Days 1–21 & Unlocked Days 22–51) */
+.cal-collapse-panel,
+.ext-cal-card {
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.ext-cal-card {
+  background: linear-gradient(180deg, #F6FCF9 0%, #FFFFFF 100%);
+  border-color: var(--accent-border);
+}
+
+.ext-cal-header-btn {
+  width: 100%;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 2px 4px;
+  color: var(--accent);
+  font-size: 1rem;
+  line-height: 1.55;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}
+
+.cal-grid-subtitle {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+@media (min-width: 440px) {
+  .calendar-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.cal-day-cell {
+  min-height: 46px;
+  padding: 6px 8px;
+  border-radius: 13px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+  transition: transform 0.14s var(--ease-out), background 0.16s ease;
+}
+
+.cal-day-cell.done {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.cal-day-cell.active {
+  background: var(--accent-active);
+  border-color: var(--accent-active);
+  color: #FFFFFF;
+  box-shadow: 0 3px 10px rgba(216, 82, 46, 0.25);
+}
+
+.cal-day-cell.locked {
+  background: #F4EFE6;
+  border-style: dashed;
+  color: var(--text-muted);
+  opacity: 0.74;
+}
+
 /* Day Hero Summary Card */
 .day-hero-card {
   padding: 18px 16px;
@@ -149,17 +230,6 @@
   box-shadow: var(--shadow);
   margin-bottom: 12px;
   position: relative;
-  overflow: hidden;
-}
-
-.day-hero-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--accent-active), var(--gold), var(--accent));
 }
 
 .day-hero-top {
@@ -174,33 +244,28 @@
 .day-hero-badge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 11px;
+  padding: 5px 13px;
   border-radius: var(--radius-pill);
   background: var(--gold-soft);
   border: 1px solid var(--gold-border);
   color: var(--gold);
-  font-size: 0.88rem;
-  font-weight: 700;
-}
-
-.day-hero-prog {
   font-size: 0.9rem;
+  line-height: 1.5;
   font-weight: 700;
-  color: var(--accent);
 }
 
 .day-hero-title {
   font-family: var(--font-serif);
-  font-size: 1.38rem;
+  font-size: 1.36rem;
   font-weight: 800;
-  line-height: 1.38;
+  line-height: 1.48;
   margin-bottom: 6px;
   color: var(--text-primary);
 }
 
 .day-hero-summary {
   font-size: 1.07rem;
-  line-height: 1.62;
+  line-height: 1.65;
   color: var(--text-secondary);
   margin-bottom: 14px;
 }
@@ -214,6 +279,7 @@
   background: var(--accent);
   color: #FFFFFF;
   font-size: 1.12rem;
+  line-height: 1.5;
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -239,7 +305,7 @@
   margin-top: 10px;
 }
 
-/* 2×3 Visual Game Navigator Card (6 Cohesive Daily Games) */
+/* 2×3 Visual Game Navigator Card (Zero Duplicate Numbers!) */
 .game-nav-card {
   padding: 13px 14px;
   border-radius: var(--radius-lg);
@@ -260,18 +326,20 @@
 
 .game-nav-title {
   font-size: 0.98rem;
+  line-height: 1.5;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .view-mode-toggle {
-  min-height: 34px;
-  padding: 0 11px;
+  min-height: 36px;
+  padding: 4px 12px;
   border-radius: var(--radius-pill);
   border: 1.5px solid var(--border);
   background: var(--bg-subtle);
   color: var(--text-secondary);
-  font-size: 0.85rem;
+  font-size: 0.86rem;
+  line-height: 1.5;
   font-weight: 700;
   cursor: pointer;
 }
@@ -283,36 +351,22 @@
 }
 
 .game-tile {
-  min-height: 58px;
-  padding: 7px 6px 6px;
+  min-height: 54px;
+  padding: 8px 6px;
   border-radius: 14px;
   border: 1.5px solid var(--border);
+  border-top: 3.5px solid var(--tile-accent, var(--gold));
   background: var(--bg-subtle);
   color: var(--text-primary);
-  font-size: 0.84rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.48;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
   text-align: center;
-  position: relative;
-  overflow: hidden;
   transition: transform 0.14s var(--ease-out), background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
-}
-
-.game-tile::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3.5px;
-  background: var(--tile-accent, var(--gold));
-  opacity: 0.75;
 }
 
 .game-tile[data-accent="terra"]   { --tile-accent: var(--cat-terra); }
@@ -340,18 +394,11 @@
   transform: translateY(-1px);
 }
 
-.game-tile.active::before {
-  opacity: 0;
-}
-
-.game-tile-num {
-  font-size: 0.75rem;
-  opacity: 0.92;
-}
-
 .game-tile-lbl {
-  font-size: 0.83rem;
+  font-size: 0.88rem;
+  line-height: 1.48;
   font-weight: 700;
+  padding: 1px 2px;
 }
 
 .game-stepper-row {
@@ -361,7 +408,7 @@
   margin-top: 2px;
 }
 
-/* Artisanal Game Card (Step 1 + Step 2 Voice Bubble + Step 3 Song Meaning) */
+/* Artisanal Game Card */
 .agenda-stack {
   display: flex;
   flex-direction: column;
@@ -387,7 +434,7 @@
 
 .agenda-card-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
@@ -396,11 +443,12 @@
 .agenda-cat {
   display: inline-flex;
   align-items: center;
-  padding: 4px 11px;
+  padding: 5px 12px;
   border-radius: var(--radius-pill);
   background: var(--cat-bg, var(--gold-soft));
   color: var(--cat-fg, var(--gold));
-  font-size: 0.92rem;
+  font-size: 0.93rem;
+  line-height: 1.5;
   font-weight: 700;
 }
 
@@ -411,17 +459,11 @@
 .agenda-card[data-accent="amber"]   { --cat-fg: var(--cat-amber);   --cat-bg: var(--cat-amber-bg); }
 .agenda-card[data-accent="plum"]    { --cat-fg: var(--cat-plum);    --cat-bg: var(--cat-plum-bg); }
 
-.agenda-slot-pill {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--text-muted);
-}
-
 .agenda-title {
   font-family: var(--font-serif);
   font-size: 1.28rem;
   font-weight: 800;
-  line-height: 1.4;
+  line-height: 1.48;
   color: var(--text-primary);
 }
 
@@ -434,6 +476,7 @@
 
 .agenda-step-heading {
   font-size: 0.98rem;
+  line-height: 1.5;
   font-weight: 700;
   color: var(--accent);
   margin-bottom: 5px;
@@ -441,7 +484,7 @@
 
 .agenda-detail {
   font-size: 1.09rem;
-  line-height: 1.65;
+  line-height: 1.68;
   color: var(--text-primary);
 }
 
@@ -464,7 +507,7 @@
   font-size: 0.99rem;
   font-weight: 700;
   color: var(--gold);
-  line-height: 1.45;
+  line-height: 1.52;
 }
 
 .agenda-prompt-box.yt-music-box .agenda-prompt-label {
@@ -476,8 +519,8 @@
   border-radius: var(--radius-sm);
   background: var(--bg-surface);
   border-left: 4px solid var(--accent-active);
-  font-size: 1.16rem;
-  line-height: 1.58;
+  font-size: 1.15rem;
+  line-height: 1.62;
   font-weight: 700;
   color: var(--text-primary);
   box-shadow: var(--shadow-sm);
@@ -486,7 +529,7 @@
 .agenda-prompt-howto {
   font-size: 0.92rem;
   color: var(--text-secondary);
-  line-height: 1.45;
+  line-height: 1.52;
 }
 
 .agenda-actions {
@@ -498,12 +541,13 @@
 
 .ag-btn {
   min-height: 48px;
-  padding: 0 12px;
+  padding: 4px 12px;
   border-radius: 14px;
   border: 1.5px solid var(--border-strong);
   background: var(--bg-surface);
   color: var(--text-primary);
   font-size: 1.02rem;
+  line-height: 1.5;
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
@@ -520,6 +564,12 @@
 .ag-btn:disabled {
   opacity: 0.45;
   cursor: default;
+}
+
+.ag-btn.locked-btn {
+  background: var(--bg-subtle);
+  border-style: dashed;
+  color: var(--text-muted);
 }
 
 .ag-btn.listen {
@@ -557,6 +607,7 @@
 
 .quote-eyebrow {
   font-size: 0.94rem;
+  line-height: 1.5;
   font-weight: 700;
   color: var(--gold);
   margin-bottom: 4px;
@@ -565,7 +616,7 @@
 .quote-text {
   font-family: var(--font-serif);
   font-size: 1.16rem;
-  line-height: 1.6;
+  line-height: 1.65;
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -596,12 +647,13 @@
 .slide-badge-pill {
   display: inline-flex;
   align-items: center;
-  padding: 5px 13px;
+  padding: 5px 14px;
   border-radius: var(--radius-pill);
   background: var(--gold-soft);
   border: 1px solid var(--gold-border);
   color: var(--gold);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
   font-weight: 700;
 }
 
@@ -625,18 +677,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
   padding: 12px 14px 0;
+  flex-wrap: wrap;
 }
 
 .slide-dot {
-  width: 28px;
-  height: 28px;
+  min-width: 32px;
+  height: 32px;
+  padding: 2px 6px;
   border-radius: var(--radius-pill);
   border: 1.5px solid var(--border);
   background: var(--bg-subtle);
   color: var(--text-secondary);
-  font-size: 0.82rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
@@ -661,9 +716,9 @@
 
 .slide-title {
   font-family: var(--font-serif);
-  font-size: 1.42rem;
+  font-size: 1.4rem;
   font-weight: 800;
-  line-height: 1.36;
+  line-height: 1.46;
 }
 
 .slide-highlight {
@@ -673,12 +728,12 @@
   border-left: 4px solid var(--gold);
   font-size: 1.07rem;
   font-weight: 700;
-  line-height: 1.5;
+  line-height: 1.58;
 }
 
 .slide-body {
   font-size: 1.13rem;
-  line-height: 1.7;
+  line-height: 1.72;
   color: var(--text-primary);
 }
 

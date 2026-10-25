@@ -12,7 +12,7 @@
 <title>🌸 কল্যাণী — আজকের খেলা ও চিঠি</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Noto+Serif+Bengali:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@700;800&display=swap" rel="stylesheet">
 <style>
 /*__INJECT_CSS__*/
 </style>
@@ -52,18 +52,17 @@
   </div>
 
   <!-- =====================================================================
-       VIEW 1: TODAY'S GAMES (🎓 আজকের খেলা — Part 1: 21d & Part 2: 30d)
+       VIEW 1: TODAY'S GAMES (🎓 আজকের খেলা — Sequential Lock + Calendar Grid)
        ===================================================================== -->
   <section id="viewPlan" class="view-sec active">
-    <div class="course-top-row">
-      <div class="part-switch-row">
-        <button id="segPart1" class="part-seg-btn active" onclick="switchCoursePart(1)">🎓 পার্ট ১ (২১ দিন)</button>
-        <button id="segPart2" class="part-seg-btn" onclick="switchCoursePart(2)">🌱 পার্ট ২ (৩০ দিন)</button>
+    <div id="daysNavigatorWrap" class="days-navigator-wrap">
+      <div class="cal-bar-row">
+        <div id="dayStrip" class="day-selector-strip"></div>
+        <button id="btnToggleCalGrid" class="cal-toggle-btn" onclick="togglePrimaryCalendarGrid()">🗓️ ক্যালেন্ডার</button>
       </div>
-      <div id="progInlinePill" class="prog-inline-pill">✅ 0 / 126</div>
+      <div id="primaryCalGridWrap" class="cal-collapse-panel" style="display:none;"></div>
+      <div id="extendedPart2CalWrap" class="ext-cal-card" style="display:none;"></div>
     </div>
-
-    <div id="dayStrip" class="day-selector-strip"></div>
 
     <div id="activeDayStage"></div>
   </section>
@@ -112,7 +111,7 @@
 </main>
 
 <div id="celebrationToast" class="celebration-toast" role="status" aria-live="polite"></div>
-<audio id="audioPlayer" preload="none"></audio>
+<audio id="audioPlayer" preload="auto"></audio>
 
 <script>
 /*__INJECT_DATA__*/

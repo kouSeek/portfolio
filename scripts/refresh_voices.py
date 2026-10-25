@@ -78,16 +78,9 @@ def collect_expected_audio_items() -> dict[str, dict[str, str]]:
     for d in DAYS_21 + DAYS_PART2_30:
         day_num = int(d["day"])
         part_num = int(d.get("part", 1))
-        disp_day = bn_num(int(d["part_day"])) if part_num == 2 else bn_num(day_num)
-        day_prefix = f"পার্ট ২, দিন {disp_day}" if part_num == 2 else f"দিন {disp_day}"
 
         day_rel = f"days/day_{day_num}.mp3"
-        # Preserve original Day 1..21 overview text format so existing valid Part 1 day MP3s remain hash-stable
-        day_txt = (
-            f"দিন {day_num}: {d['title_bn']}। {d['summary_bn']}"
-            if part_num == 1
-            else f"{day_prefix}: {d['title_bn']}। {d['summary_bn']}"
-        )
+        day_txt = d.get("voice_script_bn") or f"সুপ্রভাত মা! আজকের বিষয়— {d['title_bn']}। {d['summary_bn']}"
         items[day_rel] = {
             "hash": sha256_text(day_txt),
             "scope": "days",
@@ -99,18 +92,13 @@ def collect_expected_audio_items() -> dict[str, dict[str, str]]:
 
         for idx, ag in enumerate(d["agendas"]):
             ag_rel = f"games/day_{day_num}_ag_{idx}.mp3"
-            cat_bn = clean_cat(ag["category"])
-            part1_bn = (
-                f"{day_prefix}, খেলা {bn_num(idx + 1)}: {cat_bn}। "
-                f"{ag['title_bn']}। "
-                f"ধাপ ১, আজ কী করবো দেখো: {ag['detail_bn']}"
-            )
+            part1_bn = f"{ag['title_bn']}। {ag['detail_bn']}"
             follow_bn = (
                 f" আর গানটা শোনা হয়ে গেলে এর মানে জানতে বলো: {ag['followup_prompt_bn']}"
                 if ag.get("followup_prompt_bn")
                 else ""
             )
-            part2_bn = f"ধাপ ২, এবার ফোনে জেমিনি খুলে মাইক বোতাম ছুঁয়ে মুখে বলো: {ag['prompt_bn']}{follow_bn}"
+            part2_bn = f"এবার ফোনে জেমিনি খুলে মাইক ছুঁয়ে মুখে বলো: {ag['prompt_bn']}{follow_bn}"
             full_txt = f"{part1_bn} {part2_bn}"
             items[ag_rel] = {
                 "hash": sha256_text(full_txt),

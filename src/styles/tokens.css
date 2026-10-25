@@ -57,9 +57,9 @@
   --radius-lg: 22px;
   --radius-pill: 999px;
 
-  /* Typography */
-  --font-sans: 'Hind Siliguri', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-serif: 'Noto Serif Bengali', Georgia, serif;
+  /* Typography — Noto Sans Bengali prevents clipped ১ (U+09E7) & matra glyphs on Android Skia */
+  --font-sans: 'Noto Sans Bengali', 'Kohinoor Bangla', 'Nirmala UI', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Noto Serif Bengali', 'Noto Sans Bengali', Georgia, serif;
 
   /* Motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
