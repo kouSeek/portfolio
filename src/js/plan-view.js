@@ -93,7 +93,7 @@ function buildCalendarGridCellsHtml(daysArray, idPrefix) {
 function buildAgendaCardHtml(d, ag, idx) {
   const isDone = !!doneMap[d.day + '_' + idx];
   const btnId = `btnAgPlay_${d.day}_${idx}`;
-  const accent = GAME_ACCENTS[idx] || 'terra';
+  const accent = ag.accent || GAME_ACCENTS[idx] || 'terra';
   const isSongGame = (ag.category || '').includes('গান') || (ag.detail_bn || '').includes('ইউটিউব মিউজিক');
 
   const ytMusicGuideHtml = isSongGame ? `
@@ -209,8 +209,8 @@ function renderPlanView() {
   d.agendas.forEach((ag, idx) => {
     const isDone = !!doneMap[d.day + '_' + idx];
     const isAct = (!showAllGamesInDay && idx === curGameIdx);
-    const shortLbl = GAME_SHORT_LABELS[idx] || ag.category;
-    const accent = GAME_ACCENTS[idx] || 'terra';
+    const shortLbl = ag.short_bn || GAME_SHORT_LABELS[idx] || ag.category;
+    const accent = ag.accent || GAME_ACCENTS[idx] || 'terra';
     tilesHtml += `
       <button id="gameTile_${d.day}_${idx}" data-accent="${accent}" class="game-tile ${isAct ? 'active' : ''} ${isDone ? 'done-tile' : ''}" onclick="selectGame(${idx})">
         <span class="game-tile-lbl">${isDone ? '✅ ' : ''}${shortLbl}</span>
@@ -262,7 +262,7 @@ function renderPlanView() {
           ${showAllGamesInDay ? '🎯 ১টি করে দেখো' : '📜 সব খেলা একসাথে'}
         </button>
       </div>
-      <div class="game-grid-6">${tilesHtml}</div>
+      <div class="game-grid-6" data-count="${d.agendas.length}">${tilesHtml}</div>
     </div>
 
     <div class="agenda-stack">${agendasHtml}</div>

@@ -1,75 +1,68 @@
-# Student Persona & Curriculum Design Specification (`student-persona.md`)
+# Student Persona & Curriculum v2 Design Specification (`student-persona.md`)
 
-This document is the canonical psychological, pedagogical, and content-distribution blueprint for the learner (**Ma — Shikha Chakraborty**) in the **Kalyani (`🌸 কল্যাণী`)** app. Every game, instruction, story, and prompt in `content/` (`part1_days.py`, `part2_days.py`, `slides_and_quotes.py`) and `src/` must strictly follow this specification.
-
----
-
-## 1. Learner Profile & Life Context
-
-- **Name & Age:** Shikha Chakraborty ("Ma"), ~64 years old.
-- **Roots & Home:** Grew up and raised her children in Ranaghat; currently lives in Dumdum Cantonment, Kolkata (right next to Koushik's sanctuary flat).
-- **Family Anchors:**
-  - Deeply proud of her son **Koushik** (AI Engineer at Google) and daughter **Kankana (Didi)**; lovingly cares for **Aishee** and little **Ayush**.
-  - Lost her husband (**Baba**) suddenly in 2016, who previously sheltered her from external administrative and technical complexities.
-- **Physical Context:** Has asthma/cold sensitivity (AC at `26°C` is safest, never freezing `18°C`) and chronic pain in her knees, feet, and waist (activities must be physically gentle and doable while seated comfortably).
-- **Cognitive & Emotional Traits:**
-  - Innocent, affectionate, sincere, and attentive like the diligent Ranaghat schoolgirl she once was.
-  - Shares Koushik's sensitive, anxious/ADHD-like tendency toward cognitive overwhelm when hurried, pressured, or handed multi-step technical jargon.
-  - **High Sensitivity to Direct Criticism (`অভিমান`):** If a lesson points out her real-life habits as "mistakes" or makes her feel judged, scolded, or exposed, she feels hurt (`অভিমান`), loses confidence, and withdraws from learning.
+This document is the canonical psychological, CBT, tone, and content-distribution blueprint for **Ma — Shikha Chakraborty** in **🌸 কল্যাণী (Kalyani)** (mirrored in [`students/ma_kalyani/persona.md`](../students/ma_kalyani/persona.md)). Every curriculum draft, game, story, and downstream prompt must follow this specification.
 
 ---
 
-## 2. Personal Tastes, Joys & Positive Anchors
+## 1. Learner Profile & Real Blocker Analysis
 
-Use these authentic personal anchors organically across lessons so the app feels warm, familiar, and joyful:
-- **Music:** Golden-era Bengali songs (Hemanta Mukherjee, Sandhya Mukherjee, Manna Dey, Lata Mangeshkar), Rabindra Sangeet, devotional songs, and her Carvaan / YouTube Music.
-- **Spiritual Calm:** Lighting incense (`ধূপকাঠি`) in her quiet puja corner, stories of **Maa Sarada**, **Sri Ramakrishna**, **Rani Rashmoni**, Dakshineswar, and Belur Math.
-- **Creative Play:** Drawing and shading flowers, birds, rural scenery, and alpana in her notebook with pencils/colors.
-- **Food Preferences:** Loves tasty, flavorful Bengali snacks, fruits, sweets, and good Zomato treats. **Strongly dislikes bland soya bean (`সয়াবিন`) and mushroom (`মাশরুম`)**—never recommend those positively.
-- **Nature & Travel:** Birds, flowers, monsoon rain, Puri sea waves, Darjeeling hills, and peaceful morning sunshine.
-
----
-
-## 3. Strict Ego-Safety & Indirect Learning Protocol
-
-### Rule A — Zero Direct Mistake Callouts (`0%` Tolerance)
-- **NEVER** write any game that says or implies Ma has done something wrong in real life (e.g., never mention *"তুমি ভালো ফল রেখে পচা ফল খাও"*, *"তুমি বারবার ফোন করো"*, *"তুমি কাপড় প্লাস্টিকের ব্যাগে রাখো"*, *"তুমি অন্যের কথা না শুনেই মাঝখানে বলো"*, or *"তুমি নাতি-নাতনিকে নিয়ে শুয়ে ঘুম না হওয়ার নালিশ করো"*).
-- Never use labels like *"ভুল থেকে শিক্ষা"* (Learning from Mistakes) or *"বদভ্যাস পরিবর্তন"* (Changing Bad Habits).
-
-### Rule B — The "Wise Advisor" Third-Person Story Method
-Whenever a reasoning principle or life habit is taught, **hide it inside a completely different, playful third-person scenario** (a flower-seller puzzle, a sweet-shop story, a detective mystery, a temple-kitchen arrangement game, or a music analogy) where **Ma is cast as the smart advisor giving counsel to someone else**:
-- *Instead of pointing out eating bruised fruit first:* Present a fun riddle about a flower-seller (`ফুলওয়ালা`) who keeps freshhibiscus flowers locked away every day and only strings yesterday's wilted ones—ask Ma to tell Gemini what funny thing happens to the fresh flowers!
-- *Instead of pointing out losing items in plastic bags:* Ask Gemini how a smart spice-shop or temple puja room arranges daily items on an open tray so anything can be found in 2 seconds!
-- *Instead of pointing out interrupting mid-sentence:* Share a fascinating musical secret about why Hemanta Mukherjee or classical singers listen to the entire instrumental pause before singing the first note.
-- *Instead of pointing out ticket/travel panic:* Tell a cozy travel story about how WhatsApp's ★ Starred Message acts like a magic iron locker in a purse so a train ticket never gets lost.
-
-### Rule C — Keep Behavioral-Nudge Volume Low (`<= 5%` of All Games)
-- Indirect behavioral/wisdom story puzzles must appear **at most once every 3–4 days** (`~5–6` times across all `126` games in Part 1, i.e., **< 5% of total games**).
-- The remaining **95%+ of games** must focus purely on joyful skill-building, phone/appliance mastery, English confidence, YouTube Music & song appreciation, general knowledge, curiosity, sketching, and everyday AI fun.
+- **Name & Age:** Shikha Chakraborty ("Ma"), ~64 years old (roots in Ranaghat; lives in Dumdum Cantonment, Kolkata).
+- **Family Context:** Deeply loves and is proud of **Koushik** and **Didi (Kankana)**, and adores **Aishee** and **Ayush**. Lost her husband (**Baba**) suddenly in 2016, who previously handled external/technical tasks for her.
+- **Physical Context:** Cold/asthma sensitivity (`26°C` AC comfort) and knee/foot/waist discomfort—physical activities must be **gentle, joint-safe free-hand movements** and **relaxed outdoor strolls** at her own pace.
+- **What She Already Knows vs. Her Real Blocker:**
+  - **Already knows:** Very basic phone usage (answering calls, basic WhatsApp viewing). Repeating trivial phone/TV/AC button drills day after day feels monotonous and dull.
+  - **Real core blocker:** **Psychological dread, nervous friction, and mental freeze** around trying unfamiliar technology, learning new things, or applying active problem-solving on her own.
+- **Primary North Star Goal:**
+  1. **Fall in love with talking to & using AI first**—experiencing Gemini as a warm **personal assistant, friend, philosopher, and everyday guide** with zero fear of pressing the wrong thing.
+  2. Once talking to AI feels natural and enjoyable, weave in **CBT (Cognitive Behavioral Therapy)**, richer spoken English, third-person habit-shifting stories, gentle outdoor exploration, and free-hand movement through effortless, playful repetition.
 
 ---
 
-## 4. Daily Cognitive Load & The 6-Game Sweet Spot
+## 2. Core CBT & Emotional Unblocking Targets
 
-### Why 6 Games Per Day
-- `10` games per day creates scroll fatigue and decision overwhelm.
-- **Strictly `6` cohesive games per day** (`খেলা ১` to `খেলা ৬`, rendered in a compact `2×3` tile grid) is the sweet spot: completable in `12–15` relaxed minutes while covering 100% of curriculum goals (`21 × 6 = 126` games in Part 1; `30 × 6 = 180` games in Part 2).
+Without ever sounding clinical or pointing fingers, CBT-inspired games and stories gently dissolve seven specific emotional patterns:
 
-### Daily 6-Game Distribution & Clubbing Architecture
-
-| Slot | Tile Label | Category Name (Natural Bangla) | Share | Purpose & Natural Clubbing Strategy |
-| :--- | :--- | :--- | :---: | :--- |
-| **Slot 1** | `🧠 মনের আনন্দ` | `🧠 মনের আনন্দ ও নিজের ওপর ভরসা` | `16.7%` | Warm self-belief, calm joy, Maa Sarada / Rabindranath inspiration, overcoming hesitation with tech. |
-| **Slot 2** | `📱 হাতের যন্ত্র` | `📱 ফোন, এসি ও টিভি রিমোট হাতের মুঠোয়` | `16.7%` | 1 practical appliance or phone skill per day (Volume, AC `26°C`, TV Input, WhatsApp voice/photo, Torch, Camera, Scam safety). |
-| **Slot 3** | `🔤 ইংরেজি খেলা` | `🔤 ইংরেজি শব্দ চেনা ও মুখে বলা` | `16.7%` | **Clubbed seamlessly:** Learn `2–3` practical uppercase English words AND speak `1` short, happy English sentence out loud to Gemini in a single natural flow. |
-| **Slot 4** | `🎵 গান ও অর্থ` | `🎵 ইউটিউব মিউজিকে গান চালানো ও কথাগুলো বোঝা` | `16.7%` | **Clubbed seamlessly:** Command Android Gemini in Bengali to play today's song on **YouTube Music** (`“জেমিনি, ইউটিউব মিউজিকে ‘...’ গানটা চালিয়ে দাও।”`), listen mindfully, and ask Gemini about the song's deep meaning/story. |
-| **Slot 5** | `🌍 জানাশোনা` | `🌍 দেশ-দুনিয়ার খবর ও কৌতূহল` | `16.7%` | **Clubbed seamlessly:** Positive GK / history / science story paired with asking *"Why / How"* (`কেন ও কীভাবে`) so Ma builds active critical curiosity instead of accepting things at face value. |
-| **Slot 6** | `🎨 মজার খেলা` | `🎨 রোজকার কাজে এআই ও মজার খেলা` | `16.7%` | Everyday personal AI help (recipes, pencil sketching ideas, health comfort, puja prep) + playful comfort-zone mini-challenges (and on `<= 1 in 4` days, a fun third-person wisdom riddle). |
+| Target Pattern | How It Shows Up | Ego-Safe CBT Technique Used in Kalyani |
+| :--- | :--- | :--- |
+| **1. Habitual Nervousness & Anxiety** | Sudden racing thoughts (`কী হবে?`, `যদি গন্ডগোল হয়?`) before small events or tasks | **Pause & Grounding (*থামা ও লম্বা শ্বাস*):** Naming *"এটা শুধু মনের পুরনো তাড়াহুড়ো, আসল বিপদ নয়"* and asking Gemini to break things into 1 calm step. |
+| **2. "Cluelessness" / Mind Going Blank** | Freezing up and assuming *"আমি কিছু বুঝতে পারছি না"* when seeing something unfamiliar | **Curiosity Reframe:** Replacing *"আমি পারি না"* with *"জেমিনি, এটা কী জিনিস গো? খুলে বলো তো!"*—turning not-knowing into an interesting game. |
+| **3. Shame (`লজ্জা` / *"লোকে কী বলবে?"*)** | Hiding questions or hesitating to speak English / ask at a shop for fear of looking foolish | **Zero-Judgment Rehearsal:** Practicing privately with Gemini first + stories showing intelligent adults ask simple questions openly. |
+| **4. Guilt (`অপরাধবোধ`)** | Feeling guilty when resting, spending small money on her own joy, or saying what she prefers | **Self-Compassion Permission:** Philosophical conversations (inspired by Maa Sarada / Rabindranath / everyday life) affirming her right to comfort and small pleasures. |
+| **5. Underconfidence (`আত্মবিশ্বাসের অভাব`)** | Discounting 40+ years of running a household and raising two children | **Evidence Harvesting:** Asking Gemini to connect skills she already masters (cooking proportions, care, observation) to new mental/tech skills. |
+| **6. Insecurity** | Feeling left behind by the modern English/digital world or overly dependent on others | **Micro-Autonomy Wins:** Small real-world wins—checking weather/prices via AI, walking to a shop and buying a treat herself, using expressive English words. |
+| **7.Sensitivity to Criticism (`অভিমান`)** | Feeling hurt and withdrawing if her real-life habits are criticized directly | **100% Indirect Third-Person Stories:**Ma is always the *wise observer/advisor* helping a fictional character in a story, never the person being corrected. |
 
 ---
 
-## 5. Native Bengali Language Style Guide
+## 3. Tone & Language Rules (Zero Cringe, Real Adult Warmth)
 
-1. **Everyday Spoken West Bengal Bangla (*চলিত বাংলা*):** Write exactly how a loving Bengali son from Ranaghat/Kolkata speaks at home (`গানটা`, `কথাটা`, `বোতামটা`, `পাতাটা`, `একটু সহজ করে বলো তো`, `মাথাটা তাজা থাকে`).
-2. **Banned Stiff / Translated Words:** Never use `দয়া করে` ("kindly/please"), `মস্তিষ্ক` (use `মাথা` or `মন`), `সংকোচ`, `বিস্তারিত নির্দেশ`, `স্বাবলম্বী চেষ্টা`, `আমাকে আদর করে বোঝাও`, or formal *apni* verbs (`করবেন`, `শিখবেন`) mixed with *tumi* (`তুমি`, `করো`, `বলো`).
-3. **Direct Android Gemini Addressing:** Every voice prompt addresses **`জেমিনি`** (never `"কল্যাণী"`), matching the real Gemini app on Ma's Android phone.
+1. **Less Cringe, Grounded Respect:**
+   - **Avoid** over-the-top, melodramatic, sugary praise or babyish exclamations (*"জাদুর বাক্স!"*, *"অপূর্ব চমৎকার মহারানী!"*, excessive exclamation marks, or treating a 64-year-old mother like a toddler).
+   - **Use** calm, affectionate, natural adult conversation—exactly how Koushik talks to Ma on a relaxed afternoon (`“দেখো মা, একটা মজার জিনিস বলি”`, `“একদিন চেষ্টা করে দেখো তো কেমন লাগে”`, `“তাড়াহুড়োর কিচ্ছু নেই”`).
+2. **Everyday Spoken West Bengal Bangla (*চলিত বাংলা*):**
+   - Natural words (`গানটা`, `কথাটা`, `দোকানে গিয়ে`, `হালকা হাত-পা ছড়ানো`).
+   - **Strictly banned stiff/nagging words:** `দয়া করে`, `মস্তিষ্ক`, `সংকোচ`, `ভুল থেকে শিক্ষা`, `পার্ট ১`, `পার্ট ২`, `1.1`, `ধাপ ১`.
+3. **Direct Android Gemini Addressing (`জেমিনি`):** Every prompt addresses **`জেমিনি`**, including direct YouTube Music commands (`“জেমিনি, ইউটিউব মিউজিকে ‘...’ গানটা চালিয়ে দাও।”`).
+
+---
+
+## 4. Smart Unpredictable Volume (Dopamine Waves) & Pillar Mix
+
+### A. Variable Daily Game Waves (No Monotonous Fixed Count)
+To eliminate predictability fatigue and create light curiosity ("আজ কটা খেলা আছে দেখি তো!"), v2 uses **3-day variable waves (`3–5` games/day)**:
+- **Day 1 (Ultra-Light Start):** `3` games (~6 mins) — zero overwhelm, instant win.
+- **Wave Rhythm:** Alternates unpredictably across `3` (light & casual), `4` (story + exploration), and `5` (rich variety) games—for example:
+  - **Days 1–3:** `3 → 4 → 3`
+  - **Days 4–6:** `5 → 3 → 4`
+  - **Days 7–9:** `3 → 5 → 4`
+  - *(Live v1 retains its 6-game structure intact until v2 draft is reviewed and promoted.)*
+
+### B. Upgraded Content Pillars & Ratios (v2)
+1. **🤖 AI as Friend, Personal Assistant & Philosopher (`Every Day`):** Practical, surprising ways AI helps her daily life—deciding menus (never soya bean or mushroom!), decoding medicine/packet labels, chatting about life philosophy, planning her evening, or answering random *"কেন এমন হয়?"* curiosities.
+2. **🌿 Deep CBT & Calm Mind (`Every Day`):** Gentle exercises to melt nervousness, blank-mind freeze, guilt, shame, and insecurity.
+3. **📖 Indirect Habit-Shifting Story Games (`Every Alternate Day — 50% of Days`):** Engaging third-person stories (e.g., Laboni Mashi at the sweet shop, Nirmal Babu on the train, Moyna Dadi's cupboard, Subimal Babu's worry diary) where Ma chats with Gemini about what the character could do wiser—rewiring habits with zero offense.
+4. **🔤 Better Everyday Spoken English (`~75% of Days`):** Move past dull `ON/OFF` button labels to genuinely classy, useful everyday spoken English words (`Comfortable`, `Peaceful`, `Actually`, `Definitely`, `Choice`, `Relax`, `Prefer`, `Curious`, `Appreciate`, `Manage`) inside natural 1-line sentences she speaks aloud to Gemini.
+5. **🚶‍♀️ Real-World Stepping Out, Shop Visits & 🤸‍♀️ Free-Hand Exercise (`~60–70% of Days`):**
+   - **Stepping Out & Shop Joy:** Gentle morning/afternoon veranda or lane walks, noticing trees/birds, and the simple independent joy of **walking to a nearby shop and picking/buying something small she likes** (horlicks biscuits, sweet lemon, incense sticks, notebook, hair clip) on her own terms.
+   - **Joint-Safe Free-Hand Exercise:** 2–3 minute seated or standing free-hand movements (shoulder rolls, wrist/finger stretches, gentle ankle circles, slow neck turns, deep belly breathing) that warm up stiffness without hurting knees or waist.
+6. **🎵 Music, Meaning & Rare Meaningful Tech (`~50% of Days`):** Commanding Gemini to play Hemanta, Sandhya, Manna Dey, or Rabindra Sangeet on YouTube Music—plus **only occasional, genuinely useful** phone/tech discoveries (Google Lens camera translation, WhatsApp voice search, scam defense)—never repetitive AC/TV button nagging.

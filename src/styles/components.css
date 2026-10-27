@@ -350,6 +350,11 @@
   gap: 8px;
 }
 
+.game-grid-6[data-count="2"],
+.game-grid-6[data-count="4"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .game-tile {
   min-height: 54px;
   padding: 8px 6px;

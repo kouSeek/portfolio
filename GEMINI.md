@@ -22,10 +22,15 @@ Maintain the codebase like a **Principal Software Architect**: every file must h
 ├── GEMINI.md                           # Master Governance: Architecture, UX Artistry & No-Auto-TTS Policy
 ├── .gemini/config/rules/
 │   └── kalyani_app_rules.md            # Workspace-local agent rule synced with GEMINI.md
-├── docs/                               # Product, Pedagogy & Downstream AI Specifications
+├── docs/                               # Product, Pedagogy, Pipeline & Downstream AI Specifications
 │   ├── spec.md                         # End-to-end Technical, Audio & Mobile UX Architecture
-│   ├── student-persona.md              # Ma's cognitive/emotional profile, ego-safety & 6-game ratio blueprint
-│   └── client-side-gemini.md           # Downstream Android Gemini Saved-Info prompt & memory handshake
+│   ├── content-pipeline.md             # Reusable 5-stage Multi-Student Pipeline & Dynamic Evolution Blueprint
+│   ├── student-persona.md              # Ma's CBT/emotional profile, zero-cringe tone & variable wave blueprint
+│   └── client-side-gemini.md           # Downstream Android Gemini Saved-Info prompt (Friend, Philosopher & Guide)
+├── students/                           # Multi-Student Persona & Review-Stage Curriculum Drafts (Pre-TTS Gate)
+│   └── ma_kalyani/
+│       ├── persona.md                  # Student profile card for Ma (Shikha Chakraborty)
+│       └── curriculum_v2_draft.md      # Human-reviewable curriculum draft (approved BEFORE promoting to content/ & TTS)
 ├── content/                            # Pure Declarative Content & Curriculum Package (Zero UI/Build Code)
 │   ├── __init__.py                     # Exports SLIDES, MORNING_QUOTES, GAME_META, DAYS_21, DAYS_PART2_30
 │   ├── slides_and_quotes.py            # 8 Thanksgiving letter slides + 7 morning quotes + 6 clean game slot labels
@@ -89,13 +94,17 @@ Design every screen and interaction like a **Genius Artist UX Designer** craftin
 
 ---
 
-## 3. CRITICAL RULE: Lazy / Explicit-Only TTS Voice Generation
+## 3. CRITICAL RULE: Multi-Student Content Review Gate & Explicit-Only TTS
 
-1. **On-Device Web Speech API (`speechSynthesis`) is Forbidden:** Always use pre-generated **Gemini `Aoede` (`gemini-v4s-tts`)** `.mp3` files under `audio/`.
-2. **NEVER Auto-Regenerate Voices on UI or Content Edits:**
-   - During UI, CSS, JS, layout, or curriculum text edits, run **only** `python3 scripts/build_app.py` (`< 0.5s`).
+1. **Reusable Multi-Student Content Pipeline (`docs/content-pipeline.md`):**
+   - Always follow the 5-stage pipeline for Ma (`students/ma_kalyani/`) or any future learner (`students/<student_id>/`):
+     `1. Persona Spec` -> `2. Human-Readable Draft (curriculum_v2_draft.md)` -> `3. Koushik Reviews & Approves Content (ZERO TTS)` -> `4. Promote to content/ + Adjust UI` -> `5. Run refresh_voices.py --confirm + Build & Deploy`.
+2. **On-Device Web Speech API (`speechSynthesis`) is Forbidden:** Always use pre-generated **Gemini `Aoede` (`gemini-v4s-tts`)** `.mp3` files under `audio/`.
+3. **NEVER Auto-Regenerate Voices Before Content Approval:**
+   - Always show new or updated curriculum content first and wait for Koushik's explicit approval before generating TTS.
+   - During UI, CSS, JS, layout, or draft edits, run **only** `python3 scripts/build_app.py` (`< 0.5s`).
    - `build_app.py` checks `audio/tts_manifest.json` without calling TTS. If `N` files have updated text, finish your edit immediately and **ask/remind Koushik** before running `refresh_voices.py --confirm`.
-3. **Explicit Incremental Refresh Command (Only When Requested by Koushik):**
+4. **Explicit Incremental Refresh Command (Only After Koushik Approves Content):**
    ```bash
    # Refresh all stale/missing day & game voices (or --scope all / part1 / part2):
    python3 /usr/local/google/home/koushikchak/kalyani-app/scripts/refresh_voices.py --confirm --scope days-and-games
