@@ -19,7 +19,7 @@ function selectDay(dayNum, autoPlayAudio) {
     return false;
   }
   curDayNum = dayNum;
-  curGameIdx = getFirstIncompleteGameIdx(dayNum);
+  curGameIdx = getNextOpenGameIdx(dayNum);
   primaryCalOpen = false;
   stopAllAudio();
   renderPlanView();
@@ -29,12 +29,16 @@ function selectDay(dayNum, autoPlayAudio) {
   return true;
 }
 
-function selectGame(gIdx) {
+function selectGame(gIdx, autoPlayAudio) {
   const d = findDayObj(curDayNum);
-  const maxIdx = (d && d.agendas) ? d.agendas.length - 1 : 5;
+  const maxIdx = (d && d.agendas) ? d.agendas.length - 1 : 0;
   curGameIdx = Math.max(0, Math.min(maxIdx, gIdx));
   stopAllAudio();
   renderPlanView();
+  if (autoPlayAudio !== false) {
+    const btnEl = document.getElementById('btnAgPlay_' + curDayNum + '_' + curGameIdx);
+    playAgendaByIdx(curDayNum, curGameIdx, btnEl);
+  }
 }
 
 function toggleShowAllGames() {
@@ -62,7 +66,7 @@ function toggleAgendaDone(dayNum, agIdx) {
       if (dayNum < ALL_DAYS.length) {
         const nextDay = dayNum + 1;
         curDayNum = nextDay;
-        curGameIdx = getFirstIncompleteGameIdx(nextDay);
+        curGameIdx = getNextOpenGameIdx(nextDay);
         stopAllAudio();
         renderPlanView();
         scrollActiveDayChipIntoView();
@@ -72,7 +76,12 @@ function toggleAgendaDone(dayNum, agIdx) {
     } else {
       showCelebrationToast('🌸 সাবাশ মা! খেলাটা খুব সুন্দরভাবে শেষ করলে!');
       if (!showAllGamesInDay) {
-        curGameIdx = getFirstIncompleteGameIdx(dayNum);
+        curGameIdx = getNextOpenGameIdx(dayNum);
+        stopAllAudio();
+        renderPlanView();
+        const nextBtnEl = document.getElementById('btnAgPlay_' + dayNum + '_' + curGameIdx);
+        playAgendaByIdx(dayNum, curGameIdx, nextBtnEl);
+        return;
       }
     }
   }
@@ -212,7 +221,7 @@ function renderPlanView() {
     const shortLbl = ag.short_bn || GAME_SHORT_LABELS[idx] || ag.category;
     const accent = ag.accent || GAME_ACCENTS[idx] || 'terra';
     tilesHtml += `
-      <button id="gameTile_${d.day}_${idx}" data-accent="${accent}" class="game-tile ${isAct ? 'active' : ''} ${isDone ? 'done-tile' : ''}" onclick="selectGame(${idx})">
+      <button id="gameTile_${d.day}_${idx}" data-accent="${accent}" class="game-tile ${isAct ? 'active' : ''} ${isDone ? 'done-tile' : ''}" onclick="selectGame(${idx}, true)">
         <span class="game-tile-lbl">${isDone ? '✅ ' : ''}${shortLbl}</span>
       </button>
     `;
@@ -227,8 +236,8 @@ function renderPlanView() {
     const activeAg = d.agendas[curGameIdx] || d.agendas[0];
     agendasHtml = buildAgendaCardHtml(d, activeAg, curGameIdx) + `
       <div class="game-stepper-row">
-        <button id="prevGameBtn" class="ag-btn" ${curGameIdx <= 0 ? 'disabled' : ''} onclick="selectGame(${curGameIdx - 1})">⬅️ আগের খেলা</button>
-        <button id="nextGameBtn" class="ag-btn" ${curGameIdx >= d.agendas.length - 1 ? 'disabled' : ''} onclick="selectGame(${curGameIdx + 1})">পরের খেলা ➡️</button>
+        <button id="prevGameBtn" class="ag-btn" ${curGameIdx <= 0 ? 'disabled' : ''} onclick="selectGame(${curGameIdx - 1}, true)">⬅️ আগের খেলা</button>
+        <button id="nextGameBtn" class="ag-btn" ${curGameIdx >= d.agendas.length - 1 ? 'disabled' : ''} onclick="selectGame(${curGameIdx + 1}, true)">পরের খেলা ➡️</button>
       </div>
     `;
   }

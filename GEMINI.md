@@ -51,15 +51,16 @@ Maintain the codebase like a **Principal Software Architect**: every file must h
 ├── assets/
 │   ├── icons/favicon.svg               # Handcrafted Bengali Shiuli flower vector emblem
 │   └── slides/slide_1..8.jpg           # Personalized family photographs
-├── audio/                              # Domain-Partitioned Gemini Aoede (`gemini-v4s-tts`) Voice Library
-│   ├── tts_manifest.json               # SHA-256 text-hash registry for O(Δ) incremental voice refreshes
-│   ├── slides/slide_1..8.mp3           # 8 letter slide narrations
-│   ├── quotes/quote_0..6.mp3           # 7 morning inspiration narrations
-│   ├── days/day_1..51.mp3              # All 51 warm, welcoming day narrations (zero duplicate number readouts)
-│   └── games/day_1..51_ag_0..5.mp3     # All 306 natural, number-bloat-free game narrations
-├── scripts/                            # Fast Build & Explicit TTS CLI Tooling
+├── audio/                              # Local Aoede Cache + Tracked Hash Registry (MP3s published to `ma-audio` orphan branch)
+│   ├── tts_manifest.json               # Git-tracked SHA-256 text-hash registry for O(Δ) incremental voice refreshes
+│   ├── slides/slide_1..8.mp3           # Local cache -> published to `ma-audio` orphan branch
+│   ├── quotes/quote_0..6.mp3           # Local cache -> published to `ma-audio` orphan branch
+│   ├── days/day_1..51.mp3              # Local cache -> published to `ma-audio` orphan branch
+│   └── games/day_1..51_ag_*.mp3        # Local cache -> published to `ma-audio` orphan branch
+├── scripts/                            # Fast Build, Explicit TTS & Orphan Audio Branch Tooling
 │   ├── build_app.py                    # <0.5s static bundler + non-blocking stale-voice detector
-│   └── refresh_voices.py               # Explicit-only (--confirm) parallel Gemini Aoede TTS generator
+│   ├── refresh_voices.py               # Explicit-only (--confirm) parallel Gemini Aoede TTS generator
+│   └── sync_audio_branch.py            # Publishes `audio/` as a 1-commit snapshot to `ma-audio` orphan branch
 ├── tests/                              # Multi-Layer Automated Verification Suite
 │   ├── run_tests.py                    # Unified test runner
 │   ├── test_architecture_and_docs.py   # Enforces modular structure, docs & No-Auto-TTS rule
@@ -85,8 +86,9 @@ Design every screen and interaction like a **Genius Artist UX Designer** craftin
    - **No Part 1/Part 2 Switcher & No Task Completion Counters:** Never display task-completion tickers (`0 / 126`, `খেলা 1 / 6`, `আজকের অগ্রগতি`) or `পার্ট ১` / `পার্ট ২` tabs/labels—they create pressure and distraction.
    - **Sequential Day Locking:** Future days (`Day N` for `N > 1`) stay locked (`🔒 দিন N`) until all 6 games of every previous day (`Day 1 .. Day N-1`) are ticked off (`✅`). Tapping a locked day shows an encouraging Bengali curiosity toast motivating Ma to tick off her current day's games to unlock tomorrow's surprise.
    - **Auto-Unlocked Collapsible Calendar Grid (`Days 22–51`):** `Days 22–51` remain hidden until `Days 1–21` are 100% completed; upon finishing Day 21, `🌿 নতুন ৩০ দিনের ক্যালেন্ডার (দিন ২২ – ৫১)` automatically appears in the days list as a comfortable **Collapsible Calendar Grid View** (alongside the `🗓️ ক্যালেন্ডার` grid toggle for `Days 1–21`).
-3. **Proactive Auto-Engage Audio on App Open (`src/js/audio.js`, `src/js/boot.js`):**
-   - On app open/load, `engageProactiveWelcomeAudio()` proactively starts reading out today's welcoming day inspiration (`days/day_{curDayNum}.mp3`) and chains automatically into the active incomplete game—with a synchronous first-gesture unlock fallback if a mobile browser blocks cold unmuted autoplay.
+3. **Proactive Auto-Engage Audio & Seamless Stepper Voice (`src/js/audio.js`, `src/js/plan-view.js`):**
+   - **On App Open:** Automatically focuses the current active day and **the next game right after the latest finished/done game** (`getNextOpenGameIdx(curDayNum)`), proactively plays the Day Voice (`days/day_{curDayNum}.mp3`) while preloading that open game's MP3, and chains immediately into reading the current open game (`games/day_{curDayNum}_ag_{curGameIdx}.mp3`).
+   - **On Next Game / Prev Game / Game Tile Click:** Clicking `পরের খেলা ➡️`, `⬅️ আগের খেলা`, or any game tile immediately plays the voice for that game.
 4. **Clean Single-Label Game Tiles & Zero Voice Number Bloat:**
    - Game buttons show a single clean label (`🧠 মনের আনন্দ`, `📱 হাতের যন্ত্র`, `🔤 ইংরেজি খেলা`, `🎵 গান ও অর্থ`, `🌍 জানাশোনা`, `🎨 মজার খেলা`)—never duplicate numbers like `খেলা ১` + `১. মনের আনন্দ`.
    - Spoken voice scripts (`scripts/refresh_voices.py` & `content/`) must sound like a real Bengali son speaking warmly at home—never read out bloated number sequences (`1.1`, `১) ... ২)`, `ধাপ ১`) and never mention `"পার্ট ২"`.
@@ -104,15 +106,15 @@ Design every screen and interaction like a **Genius Artist UX Designer** craftin
    - Always show new or updated curriculum content first and wait for Koushik's explicit approval before generating TTS.
    - During UI, CSS, JS, layout, or draft edits, run **only** `python3 scripts/build_app.py` (`< 0.5s`).
    - `build_app.py` checks `audio/tts_manifest.json` without calling TTS. If `N` files have updated text, finish your edit immediately and **ask/remind Koushik** before running `refresh_voices.py --confirm`.
-4. **Explicit Incremental Refresh Command (Only After Koushik Approves Content):**
+4. **Explicit Incremental Refresh & Single-Commit `ma-audio` Publish (Only After Koushik Approves Content):**
    ```bash
-   # Refresh all stale/missing day & game voices (or --scope all / part1 / part2):
-   python3 /usr/local/google/home/koushikchak/kalyani-app/scripts/refresh_voices.py --confirm --scope days-and-games
+   # Refresh stale/missing voices AND force-push 1-commit snapshot to `ma-audio` orphan branch:
+   python3 /usr/local/google/home/koushikchak/kalyani-app/scripts/refresh_voices.py --confirm --scope all --publish
    ```
 
 ---
 
-## 4. Build, Test & Deployment Workflow
+## 4. Build, Test & 3-Branch Deployment Architecture
 
 ```bash
 # 1. Compile modular src/ + content/ -> ma-presentation.html & index.html (<0.5s):
@@ -120,9 +122,15 @@ python3 /usr/local/google/home/koushikchak/kalyani-app/scripts/build_app.py
 
 # 2. Run all modular architecture, persona & Node VM behavioral tests:
 python3 /usr/local/google/home/koushikchak/kalyani-app/tests/run_tests.py
+
+# 3. Publish audio/ snapshot to 1-commit `ma-audio` orphan branch (whenever MP3s changed):
+python3 /usr/local/google/home/koushikchak/kalyani-app/scripts/sync_audio_branch.py
 ```
 
-- **Public Git Remote:** `git@github.com:kouSeek/portfolio.git` (branch `ma-course`)
+- **Public Git Remote (`git@github.com:kouSeek/portfolio.git`) — 3-Branch Topology:**
+  1. **`ma-course` (Main App Branch):** Code, docs, curriculum, `audio/tts_manifest.json`, and compiled HTML (`audio/**/*.mp3` gitignored so code commits stay tiny).
+  2. **`ma-audio` (1-Commit Orphan Audio Branch):** Stores active `Aoede` `.mp3` assets (`raw.githubusercontent.com/kouSeek/portfolio/ma-audio/audio/...`) as a single-commit snapshot—zero historical MP3 bloat, zero Git LFS pointer/quota issues.
+  3. **`kalyani-app-v0` (Backup & Fallback Branch):** Preserved v0 snapshot from commit `279e36f2d9851608444ffd34177dea174abda6d0` (`https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/kalyani-app-v0/ma-presentation.html`).
 - **Public Clickable Mobile Link (Never output `localhost` links):**
   https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/ma-course/ma-presentation.html
 - **Video Letter MP4 in `Kortex` Drive (linked inside `💌 চিঠি`, zero website HTML/MP3 artifacts in `Kortex`):**

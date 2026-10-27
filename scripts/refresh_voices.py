@@ -148,15 +148,21 @@ def matches_scope(rel_path: str, info: dict[str, str], scope: str) -> bool:
     return info["scope"] == scope
 
 
-def get_stale_or_missing_files(scope: str = "all") -> tuple[list[str], dict[str, dict[str, str]], dict[str, str]]:
+def get_stale_or_missing_files(
+    scope: str = "all", require_local_mp3: bool | None = None
+) -> tuple[list[str], dict[str, dict[str, str]], dict[str, str]]:
     expected = collect_expected_audio_items()
     recorded = load_manifest()
+    if require_local_mp3 is None:
+        # On local dev machines with audio/ cache present, verify both MP3 files & hashes;
+        # on fresh code-only clones of `ma-course` (where MP3s live on `ma-audio`), verify manifest hashes.
+        require_local_mp3 = any(AUDIO_DIR.rglob("*.mp3"))
     stale: list[str] = []
     for rel_path, info in expected.items():
         if not matches_scope(rel_path, info, scope):
             continue
         mp3_path = AUDIO_DIR / rel_path
-        if not mp3_path.is_file() or mp3_path.stat().st_size < 4000:
+        if require_local_mp3 and (not mp3_path.is_file() or mp3_path.stat().st_size < 4000):
             stale.append(rel_path)
         elif recorded.get(rel_path) != info["hash"]:
             stale.append(rel_path)
@@ -237,9 +243,13 @@ def main() -> int:
     )
     parser.add_argument("--workers", type=int, default=16, help="Parallel TTS worker count (default: 16).")
     parser.add_argument("--all", action="store_true", help="Force regenerate all items in scope (requires --confirm).")
+    parser.add_argument("--publish", action="store_true", help="Also force-push updated audio/ snapshot to `ma-audio` orphan branch.")
     args = parser.parse_args()
 
-    stale, expected, recorded = get_stale_or_missing_files(scope=args.scope)
+    stale, expected, recorded = get_stale_or_missing_files(
+        scope=args.scope,
+        require_local_mp3=True if args.confirm else None,
+    )
     scoped_keys = [k for k, v in expected.items() if matches_scope(k, v, args.scope)]
 
     if args.init_manifest:
@@ -309,7 +319,13 @@ def main() -> int:
     print(f"[TTS Refresh] Done: {ok_count}/{len(targets)} updated in {time.time() - t0:.1f}s.")
     if failed:
         print(f"[TTS Refresh] Failed ({len(failed)}): {failed[:15]}", flush=True)
-    return 1 if failed else 0
+        return 1
+    if args.publish:
+        from sync_audio_branch import sync_ma_audio_orphan_branch  # noqa: PLC0415
+
+        return sync_ma_audio_orphan_branch(dry_run=False)
+    print("[TTS Next Step] Run `python3 scripts/sync_audio_branch.py` to publish updated MP3s to the `ma-audio` branch.")
+    return 0
 
 
 if __name__ == "__main__":

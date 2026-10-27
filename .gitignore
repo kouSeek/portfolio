@@ -1,3 +1,10 @@
+# Python bytecode
 __pycache__/
 *.py[cod]
-.DS_Store
+
+# Audio MP3 binaries live on the dedicated 1-commit `ma-audio` orphan branch
+# (local MP3 cache stays on disk for incremental `refresh_voices.py` runs,
+# while `audio/tts_manifest.json` stays tracked on `ma-course`).
+audio/*.mp3
+audio/**/*.mp3
+!audio/tts_manifest.json

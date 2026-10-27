@@ -97,18 +97,33 @@ function getHighestUnlockedDay() {
   return ALL_DAYS[ALL_DAYS.length - 1].day;
 }
 
-function getFirstIncompleteGameIdx(dayNum) {
+function getNextOpenGameIdx(dayNum) {
   const d = findDayObj(dayNum);
-  const count = d ? d.agendas.length : 6;
+  const count = (d && d.agendas) ? d.agendas.length : 0;
+  if (count <= 0) return 0;
+
+  let latestDoneIdx = -1;
   for (let i = 0; i < count; i++) {
+    if (doneMap[dayNum + '_' + i]) latestDoneIdx = i;
+  }
+
+  for (let i = latestDoneIdx + 1; i < count; i++) {
     if (!doneMap[dayNum + '_' + i]) return i;
   }
+
+  for (let i = 0; i <= latestDoneIdx; i++) {
+    if (!doneMap[dayNum + '_' + i]) return i;
+  }
+
   return 0;
 }
 
+const getFirstIncompleteGameIdx = getNextOpenGameIdx;
+
 function findInitialCurrentDay() {
   curDayNum = getHighestUnlockedDay();
-  curGameIdx = getFirstIncompleteGameIdx(curDayNum);
+  curGameIdx = getNextOpenGameIdx(curDayNum);
+  showAllGamesInDay = false;
 }
 
 function scrollActiveDayChipIntoView() {

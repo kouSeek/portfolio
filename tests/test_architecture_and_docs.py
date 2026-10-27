@@ -41,14 +41,18 @@ class TestArchitectureAndDocs(unittest.TestCase):
             "favicon.svg",
             "ma-manifest.json",
             "ma-sw.js",
+            ".gitignore",
+            "audio/tts_manifest.json",
             "scripts/build_app.py",
             "scripts/refresh_voices.py",
+            "scripts/sync_audio_branch.py",
         ]
         for rel in required_files:
             self.assertTrue((APP_ROOT / rel).is_file(), f"Missing required modular file: {rel}")
 
-        for sub in ("slides", "quotes", "days", "games"):
-            self.assertTrue((APP_ROOT / "audio" / sub).is_dir(), f"Missing audio/{sub}/ directory")
+        gitignore_txt = (APP_ROOT / ".gitignore").read_text(encoding="utf-8")
+        self.assertIn("audio/**/*.mp3", gitignore_txt)
+        self.assertIn("!audio/tts_manifest.json", gitignore_txt)
 
         # Legacy monolithic curriculum_data.py must not exist in scripts/
         self.assertFalse((APP_ROOT / "scripts" / "curriculum_data.py").exists())

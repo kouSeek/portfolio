@@ -165,17 +165,31 @@ assert.strictEqual(DAYS_PART2_30.length, 30);
 
 const audio = getEl('audioPlayer');
 (async () => {
-  // 1. Proactive Auto-Engage Audio on App Open/Load!
+  // 1. Proactive Auto-Engage Audio on App Open/Load (plays Day voice -> Current Open Game) & uses ma-audio orphan branch!
   assert.strictEqual(curDayNum, 1);
+  assert.strictEqual(curGameIdx, 0);
   assert.strictEqual(audio.paused, false, 'Proactive welcome audio should engage immediately on load');
   assert.strictEqual(activeAudioKey, 'day_main_1');
-  assert.ok(audio.src.includes('audio/days/day_1.mp3'));
+  assert.ok(audio.src.includes('ma-audio/audio/days/day_1.mp3'), 'Audio URL must point to ma-audio orphan branch');
   assert.strictEqual(getEl('nowPlayingBar').classList.contains('visible'), true);
 
-  // Chaining: when day_main_1 finishes, it automatically reads out Game 1 (ag_1_0)
+  // Chaining: when day_main_1 finishes, it automatically reads out Current Open Game (ag_1_0)
   audio.listeners['ended']();
   assert.strictEqual(activeAudioKey, 'ag_1_0');
-  assert.ok(audio.src.includes('audio/games/day_1_ag_0.mp3'));
+  assert.ok(audio.src.includes('ma-audio/audio/games/day_1_ag_0.mp3'));
+
+  // Next Game & Prev Game buttons automatically play the voice for that game!
+  selectGame(curGameIdx + 1, true);
+  assert.strictEqual(curGameIdx, 1);
+  assert.strictEqual(activeAudioKey, 'ag_1_1');
+  assert.strictEqual(audio.paused, false, 'Clicking Next Game must automatically play that game voice');
+  assert.ok(audio.src.includes('ma-audio/audio/games/day_1_ag_1.mp3'));
+
+  selectGame(curGameIdx - 1, true);
+  assert.strictEqual(curGameIdx, 0);
+  assert.strictEqual(activeAudioKey, 'ag_1_0');
+  assert.strictEqual(audio.paused, false, 'Clicking Prev Game must automatically play that game voice');
+  assert.ok(audio.src.includes('ma-audio/audio/games/day_1_ag_0.mp3'));
 
   // 2. Game Tiles have ZERO duplicate numbers and support custom v2 badges & variable wave counts!
   const stageHtml = getEl('activeDayStage').innerHTML;
@@ -210,6 +224,19 @@ const audio = getEl('audioPlayer');
   assert.strictEqual(isDayUnlocked(3), false);
   assert.strictEqual(curDayNum, 2);
   assert.ok(getEl('activeDayStage').innerHTML.includes('data-count="4"'), 'Day 2 should render a 4-game wave');
+
+  // 5b. App Re-Open Simulation: if Day 2 Game 0 was skipped and Game 1 is the latest finished game,
+  // opening the app focuses Game 2 (next game after latest done = index 2) and plays day_main_2 -> ag_2_2!
+  doneMap['2_1'] = true;
+  findInitialCurrentDay();
+  renderPlanView();
+  engageProactiveWelcomeAudio();
+  assert.strictEqual(curDayNum, 2);
+  assert.strictEqual(curGameIdx, 2, 'Should open the next game strictly after the latest finished game');
+  assert.strictEqual(activeAudioKey, 'day_main_2');
+  audio.listeners['ended']();
+  assert.strictEqual(activeAudioKey, 'ag_2_2', 'After Day 2 voice finishes, should play current open game (index 2)');
+  delete doneMap['2_1'];
 
   // 6. Completing Days 2..21 automatically unlocks Days 22-51 as a Collapsible Calendar Grid View!
   for (let d = 2; d <= 21; d++) {

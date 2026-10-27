@@ -125,11 +125,22 @@ function onFirstGestureWelcomeUnlock(ev) {
   detachAutoWelcomeGestureFallback();
   if (autoWelcomeSucceeded || !audioEl.paused || activeAudioKey || curView !== 'plan') return;
   const explicitTarget = (ev && ev.target && typeof ev.target.closest === 'function')
-    ? ev.target.closest('#topPlayBtn, #btnDayMainPlay, .ag-btn.listen, #htabSlides, .perm-btn-primary')
+    ? ev.target.closest('#topPlayBtn, #btnDayMainPlay, .ag-btn, .game-tile, .day-chip, .cal-day-cell, #btnToggleCalGrid, #btnToggleExtCal, .view-mode-toggle, #htabSlides, .perm-btn-primary')
     : null;
   if (explicitTarget) return;
   autoWelcomeSucceeded = true;
   toggleDayOverviewAudio();
+}
+
+function preloadOpenGameAudio(dayObj, gameIdx) {
+  try {
+    if (!dayObj || !dayObj.agendas || !dayObj.agendas[gameIdx] || typeof Audio !== 'function') return;
+    const url = dayObj.agendas[gameIdx].audio_url;
+    if (!url) return;
+    const pre = new Audio();
+    pre.preload = 'auto';
+    pre.src = url;
+  } catch (e) {}
 }
 
 function attachAutoWelcomeGestureFallback() {
@@ -153,6 +164,7 @@ function engageProactiveWelcomeAudio() {
   const d = findDayObj(curDayNum);
   const refDay = d.audio_ref_day || d.day || 1;
   const refObj = DAYS_21.find(x => x.day === refDay) || d;
+  preloadOpenGameAudio(d, curGameIdx);
   playOrToggleAudio(
     'btnDayMainPlay',
     'day_main_' + d.day,
@@ -172,6 +184,7 @@ function toggleDayOverviewAudio() {
   const d = findDayObj(curDayNum);
   const refDay = d.audio_ref_day || d.day || 1;
   const refObj = DAYS_21.find(x => x.day === refDay) || d;
+  preloadOpenGameAudio(d, curGameIdx);
   playOrToggleAudio(
     'btnDayMainPlay',
     'day_main_' + d.day,
@@ -197,6 +210,7 @@ function toggleMasterAudio() {
     return;
   }
   if (curView === 'slides') toggleSlideAudio();
+  else if (!autoWelcomeSucceeded && !activeAudioKey) toggleDayOverviewAudio();
   else playAgendaByIdx(curDayNum, curGameIdx, document.getElementById('btnAgPlay_' + curDayNum + '_' + curGameIdx));
 }
 

@@ -30,12 +30,12 @@ sys.path.insert(0, str(APP_ROOT))
 sys.path.insert(0, str(APP_ROOT / "scripts"))
 
 from content import DAYS_21, DAYS_PART2_30, GAME_META, LETTER_VIDEO_URL, MORNING_QUOTES, SLIDES  # noqa: E402
-from refresh_voices import get_stale_or_missing_files  # noqa: E402
+from refresh_voices import get_stale_or_missing_files, load_manifest  # noqa: E402
 
 AUDIO_DIR = APP_ROOT / "audio"
 SLIDES_IMG_DIR = APP_ROOT / "assets" / "slides"
 SRC_DIR = APP_ROOT / "src"
-GH_RAW_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ma-course/"
+GH_RAW_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ma-audio/"
 
 CSS_MODULES = (
     SRC_DIR / "styles" / "tokens.css",
@@ -59,6 +59,7 @@ def b64_uri(path: Path, mime: str) -> str:
 
 
 def enrich_days(days_list: list[dict], embed_part1_audio: bool, url_prefix: str) -> list[dict]:
+    manifest_hashes = load_manifest()
     enriched_days: list[dict] = []
     for d in days_list:
         day_num = int(d["day"])
@@ -66,13 +67,15 @@ def enrich_days(days_list: list[dict], embed_part1_audio: bool, url_prefix: str)
 
         day_rel = f"audio/days/day_{day_num}.mp3"
         ref_day_rel = f"audio/days/day_{ref_day}.mp3"
-        resolved_day_rel = day_rel if (APP_ROOT / day_rel).is_file() else ref_day_rel
+        has_day = (APP_ROOT / day_rel).is_file() or (f"days/day_{day_num}.mp3" in manifest_hashes)
+        resolved_day_rel = day_rel if has_day else ref_day_rel
 
         ags_enriched = []
         for idx, ag in enumerate(d["agendas"]):
             ag_rel = f"audio/games/day_{day_num}_ag_{idx}.mp3"
             ref_ag_rel = f"audio/games/day_{ref_day}_ag_{idx}.mp3"
-            resolved_ag_rel = ag_rel if (APP_ROOT / ag_rel).is_file() else ref_ag_rel
+            has_ag = (APP_ROOT / ag_rel).is_file() or (f"games/day_{day_num}_ag_{idx}.mp3" in manifest_hashes)
+            resolved_ag_rel = ag_rel if has_ag else ref_ag_rel
             ags_enriched.append({
                 **ag,
                 "audio_url": url_prefix + resolved_ag_rel,
