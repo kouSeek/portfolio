@@ -14,7 +14,25 @@ This document is the canonical psychological, CBT, tone, and content-distributio
   - **Real core blocker:** **Psychological dread, nervous friction, and mental freeze** around trying unfamiliar technology, learning new things, or applying active problem-solving on her own.
 - **Primary North Star Goal:**
   1. **Fall in love with talking to & using AI first**—experiencing Gemini as a warm **personal assistant, friend, philosopher, and everyday guide** with zero fear of pressing the wrong thing.
-  2. Once talking to AI feels natural and enjoyable, weave in **CBT (Cognitive Behavioral Therapy)**, richer spoken English, third-person habit-shifting stories, gentle outdoor exploration, and free-hand movement through effortless, playful repetition.
+  2. Once talking to AI feels natural and enjoyable, weave in **CBT (Cognitive Behavioral Therapy)**, richer spoken English, third-person habit-shifting stories, gentle outdoor exploration, and free-hand movement through **deliberate multi-touch spaced repetition (`Day N -> +2 -> +5 -> +10`)** so skills actually stick in long-term memory.
+
+---
+
+## 1B. Elderly Memory & Zero-Boredom Spaced Reinforcement Protocol (`4–5×` Per Skill)
+
+At ~64, **hearing a word, phone action, or CBT idea once means 0% retention** after 48 hours. At the same time, copy-pasting the exact same lesson feels monotonous, and testing her like a school exam (*"মনে আছে কাল কী পড়েছিলে?"*) triggers anxiety if she forgets.
+
+Every core skill therefore follows **"Same Skill, Fresh Scene, Shame-Free Recall"**:
+1. **Strict Vocabulary & Skill Cap (Depth Over Breadth):**
+   - **Spoken English:** Teach **only `8` high-value everyday words across all 21 days** (~2–3 words/week: `Comfortable`, `Peaceful`, `Actually`, `Prefer`, `Choice`, `Definitely`, `Relax`, `Manage`), repeating each word **4–5 times** across Days 1–21 in different real-life sentences.
+   - **AI Core Actions:** Reinforce **only `4` core AI habits** (`Voice Chat Assistant`, `YouTube Music by Voice`, `Camera 📷 Packet/Bill Reader`, `Ask "Why/Explain Simply"`) over and over across food, weather, health labels, shopping, and stories until automatic.
+   - **CBT Core Reflexes:** Reinforce **only `4` emotional reflexes** (`5-Second Calm Breath`, `Not-Knowing -> Curious Question`, `Zero-Guilt Self-Care`, `95% of Worries Never Happen`) across multiple days and stories.
+   - **Free-Hand Routine:** Repeat the **same `3` joint-safe movements** (seated shoulder rolls + hand open/close, seated ankle circles, gentle chest-opening breath) so her body memorizes one simple routine without needing instructions.
+2. **The 4-Touch Spaced Interval (`Day N -> N+2 -> N+5 -> N+10`):**
+   - **Touch 1 (Warm Introduction):** Meet the word/skill in one easy situation.
+   - **Touch 2 (+2 Days — Fresh Everyday Context):** Use the exact same word/skill in a new moment (e.g., `Comfortable` while sitting -> `Comfortable` after a gentle walk).
+   - **Touch 3 (+5 Days — Natural Combination):** Combine an older word with 1 new word (`"Actually, I feel very comfortable"`), or combine Camera `📷` with a shop item she bought.
+   - **Touch 4 (+10 Days — Gentle Active Recall with Safety Net):** Invite her to remember and use it first, **always** paired with zero-shame permission (*"মনে পড়লে নিজে বলো, আর ভুলে গেলে জেমিনিকে জিজ্ঞেস করো—মনে না থাকা একদম স্বাভাবিক"*).
 
 ---
 
