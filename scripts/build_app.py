@@ -35,7 +35,7 @@ from refresh_voices import get_stale_or_missing_files  # noqa: E402
 AUDIO_DIR = APP_ROOT / "audio"
 SLIDES_IMG_DIR = APP_ROOT / "assets" / "slides"
 SRC_DIR = APP_ROOT / "src"
-GH_RAW_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ma-course/"
+GH_RAW_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-app-v0/"
 
 CSS_MODULES = (
     SRC_DIR / "styles" / "tokens.css",
