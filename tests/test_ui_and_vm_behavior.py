@@ -177,11 +177,12 @@ const audio = getEl('audioPlayer');
   assert.strictEqual(activeAudioKey, 'ag_1_0');
   assert.ok(audio.src.includes('audio/games/day_1_ag_0.mp3'));
 
-  // 2. Game Tiles have ZERO duplicate numbers (only 🧠 মনের আনন্দ, no খেলা ১ or ১.)
+  // 2. Game Tiles have ZERO duplicate numbers and support custom v2 badges & variable wave counts!
   const stageHtml = getEl('activeDayStage').innerHTML;
-  assert.ok(stageHtml.includes('🧠 মনের আনন্দ'));
+  assert.ok(stageHtml.includes('🤖 এআই বন্ধু') && stageHtml.includes('🌿 মনের আরাম'));
+  assert.ok(stageHtml.includes('data-count="3"'), 'Day 1 should render a 3-game gentle wave');
   assert.ok(!stageHtml.includes('খেলা ১'), 'Game buttons must not contain duplicate খেলা ১');
-  assert.ok(!stageHtml.includes('১. মনের আনন্দ'), 'Game buttons must not contain ১. prefix');
+  assert.ok(!stageHtml.includes('১. '), 'Game buttons must not contain ১. prefix');
 
   // 3. Sequential Day Locking: Day 2..51 are locked until Day 1 is finished
   assert.strictEqual(isDayUnlocked(1), true);
@@ -201,17 +202,19 @@ const audio = getEl('audioPlayer');
   togglePrimaryCalendarGrid();
   assert.strictEqual(getEl('primaryCalGridWrap').style.display, 'none');
 
-  // 5. Completing all 6 games of Day 1 unlocks Day 2 and auto-advances!
-  for (let g = 0; g < 6; g++) {
+  // 5. Completing all games of Day 1 unlocks Day 2 (4-game wave) and auto-advances!
+  for (let g = 0; g < DAYS_21[0].agendas.length; g++) {
     toggleAgendaDone(1, g);
   }
   assert.strictEqual(isDayUnlocked(2), true);
   assert.strictEqual(isDayUnlocked(3), false);
   assert.strictEqual(curDayNum, 2);
+  assert.ok(getEl('activeDayStage').innerHTML.includes('data-count="4"'), 'Day 2 should render a 4-game wave');
 
   // 6. Completing Days 2..21 automatically unlocks Days 22-51 as a Collapsible Calendar Grid View!
   for (let d = 2; d <= 21; d++) {
-    for (let g = 0; g < 6; g++) {
+    const dayCount = DAYS_21[d - 1].agendas.length;
+    for (let g = 0; g < dayCount; g++) {
       toggleAgendaDone(d, g);
     }
   }

@@ -60,7 +60,11 @@ class TestArchitectureAndDocs(unittest.TestCase):
         self.assertNotIn("function renderPlanView", build_src)
 
     def test_no_auto_tts_rule_and_manifest_tracking(self) -> None:
-        """Verify build_app.py never calls TTS and refresh_voices.py tracks all 372 audio clips."""
+        """Verify build_app.py never calls TTS and refresh_voices.py tracks all expected audio clips."""
+        sys.path.insert(0, str(APP_ROOT))
+        sys.path.insert(0, str(APP_ROOT / "scripts"))
+        from refresh_voices import collect_expected_audio_items  # noqa: PLC0415
+
         for py_file in [*(APP_ROOT / "scripts").glob("*.py"), *(APP_ROOT / "content").glob("*.py")]:
             py_compile.compile(str(py_file), doraise=True)
 
@@ -73,6 +77,7 @@ class TestArchitectureAndDocs(unittest.TestCase):
         self.assertIn("Genius Artist UX Design", gemini_md)
         self.assertIn("refresh_voices.py --confirm", gemini_md)
 
+        expected_count = len(collect_expected_audio_items())
         proc = subprocess.run(
             [sys.executable, str(APP_ROOT / "scripts" / "refresh_voices.py"), "--status", "--scope", "all"],
             capture_output=True,
@@ -80,7 +85,7 @@ class TestArchitectureAndDocs(unittest.TestCase):
             check=False,
         )
         self.assertEqual(proc.returncode, 0, proc.stderr)
-        self.assertIn("372", proc.stdout, "Expected 372 tracked items (8 slides + 7 quotes + 51 days + 306 games)")
+        self.assertIn(str(expected_count), proc.stdout)
 
 
 if __name__ == "__main__":

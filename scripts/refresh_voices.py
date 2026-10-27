@@ -287,6 +287,24 @@ def main() -> int:
                     flush=True,
                 )
 
+    # Prune orphan manifest entries & obsolete MP3 files when running full/days-and-games refresh
+    if args.scope in ("all", "days-and-games"):
+        orphan_keys = [k for k in list(recorded.keys()) if k not in expected]
+        for ok_key in orphan_keys:
+            recorded.pop(ok_key, None)
+        pruned_files = 0
+        for sub in ("slides", "quotes", "days", "games"):
+            sub_dir = AUDIO_DIR / sub
+            if not sub_dir.is_dir():
+                continue
+            for mp3_file in sub_dir.glob("*.mp3"):
+                rel = f"{sub}/{mp3_file.name}"
+                if rel not in expected:
+                    mp3_file.unlink(missing_ok=True)
+                    pruned_files += 1
+        if orphan_keys or pruned_files:
+            print(f"[TTS Prune] Cleaned {pruned_files} obsolete MP3 file(s) and {len(orphan_keys)} manifest key(s).", flush=True)
+
     save_manifest(recorded)
     print(f"[TTS Refresh] Done: {ok_count}/{len(targets)} updated in {time.time() - t0:.1f}s.")
     if failed:

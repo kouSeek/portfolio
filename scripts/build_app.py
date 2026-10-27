@@ -110,8 +110,8 @@ def assemble_data_js(embed_offline_b64: bool, url_prefix: str) -> str:
         })
 
     day1_ag_map = {}
-    if embed_offline_b64:
-        for a_idx in range(6):
+    if embed_offline_b64 and DAYS_21:
+        for a_idx in range(len(DAYS_21[0]["agendas"])):
             ag_rel = f"audio/games/day_1_ag_{a_idx}.mp3"
             day1_ag_map[a_idx] = {
                 "url": url_prefix + ag_rel,
