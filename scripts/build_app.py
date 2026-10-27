@@ -8,8 +8,8 @@ Assembles:
   - Modular JS application controllers (`src/js/{state,audio,plan-view,letter-view,boot}.js`)
   - Semantic HTML5 shell (`src/template.html`)
 Into:
-  1. `ma-presentation.html` & `index.html` (CDN-backed lightweight mobile PWA entrypoints)
-  2. Standalone Google Drive / Artifact HTML bundle (with embedded offline fallback audio)
+  1. `index.html` (Single canonical CDN-backed mobile PWA entrypoint)
+  2. Standalone Google Drive / Artifact HTML bundle (when requested)
 
 CRITICAL GOVERNANCE RULE (defined in GEMINI.md):
 - Runs in <0.5s and NEVER invokes TTS voice generation.
@@ -156,15 +156,13 @@ def build_html() -> None:
     css_bundle = "\n\n".join(p.read_text(encoding="utf-8").strip() for p in CSS_MODULES)
     js_bundle = "\n\n".join(p.read_text(encoding="utf-8").strip() for p in JS_MODULES)
 
-    # 1. Public CDN-backed Mobile PWA HTML (ma-presentation.html & index.html)
+    # 1. Single Canonical Public CDN-backed Mobile PWA HTML (index.html)
     cdn_data_js = assemble_data_js(embed_offline_b64=False, url_prefix=GH_RAW_BASE)
     cdn_html = render_bundle(template_html, css_bundle, js_bundle, cdn_data_js)
 
-    out_ma = APP_ROOT / "ma-presentation.html"
     out_idx = APP_ROOT / "index.html"
-    out_ma.write_text(cdn_html, encoding="utf-8")
     out_idx.write_text(cdn_html, encoding="utf-8")
-    print(f"Built {out_ma.name} & {out_idx.name} ({out_ma.stat().st_size:,} bytes)")
+    print(f"Built {out_idx.name} ({out_idx.stat().st_size:,} bytes)")
 
     # 2. Non-blocking TTS hash check (NEVER auto-regenerates voices!)
     stale, expected, _ = get_stale_or_missing_files(scope="all")

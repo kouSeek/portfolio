@@ -17,7 +17,7 @@
 
 ```text
 content/ (Declarative Data) ──┐
-                              ├──▶ scripts/build_app.py (<0.5s) ──▶ index.html & ma-presentation.html
+                              ├──▶ scripts/build_app.py (<0.5s) ──▶ index.html
 src/ (Template + CSS + JS)  ──┘           │
                                           ▼ (SHA-256 read-only check)
 audio/{slides,quotes,days,games}/ + tts_manifest.json ◀── scripts/refresh_voices.py --confirm (Explicit Only)

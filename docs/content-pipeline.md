@@ -47,7 +47,7 @@ Each learner lives in an isolated profile directory under `students/<student_id>
 
 Koushik's vision is for Kalyani not to feel like a static school workbook, but a **personal assistant, friend, philosopher, and gentle CBT guide** that Ma naturally turns to for her daily thoughts, curiosity, and wellbeing.
 
-Because `ma-presentation.html` currently runs as a zero-login static PWA, dynamic evolution works across **two complementary layers**:
+Because `index.html` currently runs as a zero-login static PWA, dynamic evolution works across **two complementary layers**:
 
 ### Layer A — Live Today (Zero-Server Hybrid Architecture)
 1. **Unpredictable Dopamine Waves in `🌸 কল্যাণী`:**

@@ -1,8 +1,8 @@
 {
   "name": "🌸 কল্যাণী — মায়ের আজকের খেলা ও চিঠি",
   "short_name": "🌸 কল্যাণী",
-  "description": "মায়ের জন্য প্রতিদিনের ৬টি মজার খেলা, ইউটিউব মিউজিক ও জেমিনি ভয়েস গাইড এবং চিঠি",
-  "start_url": "./ma-presentation.html",
+  "description": "মায়ের জন্য প্রতিদিনের মজার খেলা, ইউটিউব মিউজিক ও জেমিনি ভয়েস গাইড এবং চিঠি",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#FAF6F0",
   "theme_color": "#FAF6F0",

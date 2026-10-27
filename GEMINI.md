@@ -69,8 +69,7 @@ Maintain the codebase like a **Principal Software Architect**: every file must h
 ├── favicon.svg                         # Root PWA icon (synced automatically from assets/icons/favicon.svg)
 ├── ma-manifest.json                    # Android Chrome PWA Web App Manifest
 ├── ma-sw.js                            # Service Worker for notifications & window focus
-├── ma-presentation.html                # Compiled public CDN-backed mobile web app
-└── index.html                          # Compiled root entrypoint (kept identical to ma-presentation.html)
+└── index.html                          # Single compiled root PWA entrypoint (zero duplicate HTML bundles)
 ```
 
 ---
@@ -117,7 +116,7 @@ Design every screen and interaction like a **Genius Artist UX Designer** craftin
 ## 4. Build, Test & 3-Branch Deployment Architecture
 
 ```bash
-# 1. Compile modular src/ + content/ -> ma-presentation.html & index.html (<0.5s):
+# 1. Compile modular src/ + content/ -> index.html (<0.5s):
 python3 /usr/local/google/home/koushikchak/kalyani-app/scripts/build_app.py
 
 # 2. Run all modular architecture, persona & Node VM behavioral tests:
@@ -128,10 +127,10 @@ python3 /usr/local/google/home/koushikchak/kalyani-app/scripts/sync_audio_branch
 ```
 
 - **Public Git Remote (`git@github.com:kouSeek/portfolio.git`) — 3-Branch Topology:**
-  1. **`ma-course` (Main App Branch):** Code, docs, curriculum, `audio/tts_manifest.json`, and compiled HTML (`audio/**/*.mp3` gitignored so code commits stay tiny).
+  1. **`ma-course` (Main App Branch):** Code, docs, curriculum, `audio/tts_manifest.json`, and single compiled `index.html` (`audio/**/*.mp3` gitignored so code commits stay tiny).
   2. **`ma-audio` (1-Commit Orphan Audio Branch):** Stores active `Aoede` `.mp3` assets (`raw.githubusercontent.com/kouSeek/portfolio/ma-audio/audio/...`) as a single-commit snapshot—zero historical MP3 bloat, zero Git LFS pointer/quota issues.
-  3. **`kalyani-app-v0` (Backup & Fallback Branch):** Preserved v0 snapshot from commit `279e36f2d9851608444ffd34177dea174abda6d0` (`https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/kalyani-app-v0/ma-presentation.html`).
+  3. **`kalyani-app-v0` (Backup & Fallback Branch):** Preserved v0 snapshot from commit `279e36f2d9851608444ffd34177dea174abda6d0` (`https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/kalyani-app-v0/index.html`).
 - **Public Clickable Mobile Link (Never output `localhost` links):**
-  https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/ma-course/ma-presentation.html
+  https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/ma-course/index.html
 - **Video Letter MP4 in `Kortex` Drive (linked inside `💌 চিঠি`, zero website HTML/MP3 artifacts in `Kortex`):**
   https://drive.google.com/file/d/1gzEnSqp72VlguNK0YirZHRARGmJFR-4g/view

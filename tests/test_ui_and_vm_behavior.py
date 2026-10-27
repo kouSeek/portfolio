@@ -35,13 +35,11 @@ class TestUIAndVMBehavior(unittest.TestCase):
 
     def test_compiled_html_ux_and_node_vm_interactions(self) -> None:
         """Verify crisp Bengali typography, zero tickers, sequential lock, auto-unlocked calendar grid, and proactive audio."""
-        ma_html_path = APP_ROOT / "ma-presentation.html"
         idx_html_path = APP_ROOT / "index.html"
-        self.assertTrue(ma_html_path.is_file())
         self.assertTrue(idx_html_path.is_file())
+        self.assertFalse((APP_ROOT / "ma-presentation.html").exists(), "Duplicate ma-presentation.html must not exist")
 
-        ma_html = ma_html_path.read_text(encoding="utf-8")
-        self.assertEqual(ma_html, idx_html_path.read_text(encoding="utf-8"))
+        ma_html = idx_html_path.read_text(encoding="utf-8")
 
         # 1. Crisp Bengali ১ (U+09E7) Font & Anti-Clipping Invariants
         self.assertIn("Noto+Sans+Bengali", ma_html)
@@ -74,7 +72,7 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertNotIn("speechSynthesis", ma_html)
 
         m = re.search(r"<script>([\s\S]*?)</script>", ma_html)
-        self.assertIsNotNone(m, "Missing <script> block in ma-presentation.html")
+        self.assertIsNotNone(m, "Missing <script> block in index.html")
 
         vm_harness = r"""
 const fs = require('fs'), vm = require('vm'), assert = require('assert');
