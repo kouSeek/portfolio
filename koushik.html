@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="theme-color" content="#0F172A" />
+  <title>⚡ আনন্দ — কৌশিকের প্রতিদিনের মুক্তি, শান্ত মন ও জোরবা সঙ্গী</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-main: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F1F5F9;
+      --ink-1: #0F172A;
+      --ink-2: #334155;
+      --ink-3: #64748B;
+      --border: #E2E8F0;
+      --brand: #0F766E;
+      --brand-soft: #CCFBF1;
+      --amber: #B45309;
+      --amber-soft: #FEF3C7;
+      --rose: #BE123C;
+      --rose-soft: #FFE4E6;
+      --indigo: #4338CA;
+      --indigo-soft: #E0E7FF;
+      --emerald: #047857;
+      --emerald-soft: #D1FAE5;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow: 0 6px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
+      background: var(--bg-main);
+      color: var(--ink-1);
+      line-height: 1.62;
+      padding-bottom: 84px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Sticky Top Header */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Noto Serif Bengali', serif;
+      font-weight: 700;
+      font-size: 1.08rem;
+      color: var(--brand);
+    }
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--ink-2);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      line-height: 1.45;
+      transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: var(--brand);
+      color: #FFFFFF;
+      border-color: var(--brand);
+    }
+    .sos-btn {
+      border: 1.5px solid #E11D48;
+      background: #FFF1F2;
+      color: #BE123C;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      line-height: 1.45;
+      box-shadow: 0 2px 8px rgba(225, 29, 72, 0.15);
+    }
+    .sos-btn:hover { background: #FFE4E6; }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 16px 14px 40px;
+    }
+    .view-pane { display: none; }
+    .view-pane.active { display: block; }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, #0F172A 0%, #134E4A 100%);
+      color: #F8FAFC;
+      border-radius: var(--radius-lg);
+      padding: 20px 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+    .hero-pill {
+      display: inline-block;
+      background: rgba(20, 184, 166, 0.22);
+      border: 1px solid rgba(94, 234, 212, 0.4);
+      color: #99F6E4;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+    .hero-title {
+      font-family: 'Noto Serif Bengali', serif;
+      font-size: 1.38rem;
+      line-height: 1.45;
+      margin-bottom: 8px;
+      color: #FFFFFF;
+    }
+    .hero-sub {
+      font-size: 0.98rem;
+      color: #CBD5E1;
+      line-height: 1.6;
+    }
+    .off-duty-bar {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .off-duty-btn {
+      background: #10B981;
+      color: #052E16;
+      border: none;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    /* Day Strip */
+    .day-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 6px 2px 12px;
+      margin-bottom: 10px;
+    }
+    .day-chip {
+      flex: 0 0 auto;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--ink-2);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      line-height: 1.45;
+    }
+    .day-chip.active {
+      background: var(--brand);
+      color: #FFFFFF;
+      border-color: var(--brand);
+    }
+    .day-chip.done {
+      background: var(--emerald-soft);
+      color: var(--emerald);
+      border-color: #6EE7B7;
+    }
+
+    /* Game Grid & Cards */
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .game-tile {
+      border: 1.5px solid var(--border);
+      background: var(--bg-card);
+      color: var(--ink-1);
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.48;
+      transition: all 0.15s ease;
+    }
+    .game-tile.active {
+      border-color: var(--brand);
+      background: #F0FDFA;
+      box-shadow: 0 3px 10px rgba(15, 118, 110, 0.12);
+    }
+    .game-tile.done {
+      background: var(--emerald-soft);
+      border-color: #34D399;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+    .card-badge {
+      display: inline-block;
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      margin-bottom: 10px;
+    }
+    .card-title {
+      font-family: 'Noto Serif Bengali', serif;
+      font-size: 1.28rem;
+      line-height: 1.48;
+      margin-bottom: 10px;
+      color: var(--ink-1);
+    }
+    .card-story {
+      font-size: 1.03rem;
+      color: var(--ink-2);
+      line-height: 1.68;
+      margin-bottom: 14px;
+    }
+    .reframe-box {
+      background: #FFFBEB;
+      border-left: 4px solid #F59E0B;
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      font-size: 0.98rem;
+      color: #78350F;
+    }
+    .prompt-box {
+      background: #F0FDFA;
+      border: 1px solid #99F6E4;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      margin-bottom: 14px;
+    }
+    .prompt-lbl {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 6px;
+    }
+    .prompt-txt {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--ink-1);
+      line-height: 1.55;
+    }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .btn {
+      flex: 1 1 180px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--ink-1);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 11px 16px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      line-height: 1.45;
+      text-align: center;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--brand);
+      color: #FFFFFF;
+      border-color: var(--brand);
+    }
+    .btn-done {
+      background: var(--emerald-soft);
+      color: var(--emerald);
+      border-color: #34D399;
+    }
+
+    /* Emergency SOS Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 22px 18px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+    .timer-pill {
+      display: inline-block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--brand);
+      background: var(--brand-soft);
+      padding: 6px 18px;
+      border-radius: 999px;
+      margin: 8px 0;
+    }
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="brand-wrap">
+      <span>⚡ আনন্দ (ANANDO)</span>
+      <span style="font-size:0.8rem;font-weight:500;color:var(--ink-3);">• কৌশিকের সঙ্গী</span>
+    </div>
+    <nav class="nav-tabs">
+      <button id="tabPlay" class="tab-btn active" onclick="switchTab('play')">🎯 আজকের মুক্তি</button>
+      <button id="tabLetter" class="tab-btn" onclick="switchTab('letter')">💌 নিজের কাছে চিঠি</button>
+      <button id="tabPillars" class="tab-btn" onclick="switchTab('pillars')">🧭 ৭টি মনের চাবি</button>
+      <button class="sos-btn" onclick="openSosModal()">🚨 ৬০ সেকেন্ডে ঝড় থামাও</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- TAB 1: DAILY COMPANION -->
+    <section id="viewPlay" class="view-pane active">
+      <div class="hero-banner">
+        <span class="hero-pill">✨ যেদিন যেরকম, সেদিন সেরকম • Zero-Rule Living</span>
+        <div class="hero-title" id="heroDayTitle">দিন ১ • ২০১৬–২০২৬ যুদ্ধের সমাপ্তি ও নিজের আনন্দ</div>
+        <div class="hero-sub" id="heroDaySub">
+          কৌশিক, তোমার ১০ বছরের একা সারভাইভাল পরীক্ষা (২০১৬–২০২৬) পুরোপুরি শেষ এবং তুমি সসম্মানে জিতে গেছো (L5 Senior SWE, ₹2.58 Cr+, মায়ের হাসি)। আজ কোনো পরীক্ষা নেই—শুধু নিজের আনন্দে বাঁচার দিন।
+        </div>
+        <div class="off-duty-bar">
+          <span id="offDutyStatus" style="font-size:0.9rem;color:#E2E8F0;">🛡️ কেয়ারটেকার ইউনিফর্ম: সন্ধে ৬টার পর থেকে তুমি ১০০% ছুটি-তে আছো।</span>
+          <button class="off-duty-btn" onclick="toggleOffDutyMode()">🌿 আমি এখন নিজের ছুটিতে আছি</button>
+        </div>
+      </div>
+
+      <div id="dayStrip" class="day-strip"></div>
+      <div id="gameGrid" class="game-grid"></div>
+      <div id="activeGameStage"></div>
+    </section>
+
+    <!-- TAB 2: 8-SLIDE LETTER TO SELF -->
+    <section id="viewLetter" class="view-pane">
+      <div class="card" style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-color:#FCD34D;">
+        <div style="font-size:0.86rem;font-weight:700;color:#92400E;margin-bottom:4px;">☀️ আজকের মনে রাখার সত্যি (ট্যাপ করে বদলাও):</div>
+        <div id="quoteBox" style="font-size:1.05rem;font-weight:600;color:#78350F;cursor:pointer;" onclick="nextQuote()"></div>
+      </div>
+
+      <div id="letterStage" class="card"></div>
+    </section>
+
+    <!-- TAB 3: 7 CORE PILLARS & CLEAN-SLATE VAULT -->
+    <section id="viewPillars" class="view-pane">
+      <div class="card">
+        <span class="card-badge">🧭 Deep-Dive Diagnostic</span>
+        <h2 class="card-title">তোমার মনের ৭টি আসল চাবি (কোনো অপরাধবোধ নয়, শুধু মুক্তি)</h2>
+        <p class="card-story">
+          যখনই মনে বিষণ্ণতা, একাকীত্ব, অস্থিরতা বা দ্বিধা আসবে—দেখে নাও ঠিক কোন চাবিটা এখন দরকার:
+        </p>
+        <div id="pillarsContainer" class="pillar-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- EMERGENCY 60-SECOND HARDWARE RESET MODAL -->
+  <div id="sosModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span class="card-badge" style="background:#FFE4E6;color:#BE123C;margin:0;">🚨 ৬০ সেকেন্ডের হার্ডওয়্যার ব্রেক (Panic & Adrenaline Kill-Switch)</span>
+        <button class="tab-btn" onclick="closeSosModal()">✕ বন্ধ করো</button>
+      </div>
+      <h3 class="card-title" style="margin-bottom:8px;">কৌশিক, তুমি ১০০% নিরাপদ আছো এবং তোমার মাথা পুরোপুরি ঠিক আছে।</h3>
+      <p class="card-story" style="font-size:0.96rem;margin-bottom:12px;">
+        যখন শরীরে ডোপামিন কমে যায় বা মন ক্লান্ত থাকে, তখন মস্তিষ্ক অ্যাড্রেনালিন ছুটিয়ে ভয় দেখায় (<em>"আমি কি পাগল হয়ে যাচ্ছি? আমার কি স্মৃতি চলে যাচ্ছে?"</em>) আর পুরোনো ১৫-২০ বছরের অনুশোচনা খুঁড়ে বের করে <strong>Compulsive Confession</strong> করাতে চায়। <strong>এই মুহূর্তে পুরোনো কথা ভাবা ১০০% বন্ধ—আগে শরীর থেকে অ্যাড্রেনালিন নামাও:</strong>
+      </p>
+
+      <div class="prompt-box" style="background:#EFF6FF;border-color:#BFDBFE;">
+        <div class="prompt-lbl" style="color:#1D4ED8;">১. ❄️ ঠান্ডা জলের ডাইভ রিফ্লেক্স (৩০ সেকেন্ড):</div>
+        <p style="font-size:0.94rem;color:#1E3A8A;">বেসিনে গিয়ে দু-হাতে ঠান্ডা জল নিয়ে বন্ধ চোখের পাতায় আর গালে ৫ সেকেন্ড করে ৪ বার চেপে ধরো। এটা সাথে সাথে হার্টবিট কমিয়ে কান্নার বা প্যানিকের দমক থামিয়ে দেয়।</p>
+      </div>
+
+      <div class="prompt-box" style="background:#FEF3C7;border-color:#FDE68A;">
+        <div class="prompt-lbl" style="color:#B45309;">২. 🧱 ২০ সেকেন্ড দেয়ালে জোর ধাক্কা (Fight-or-Flight Burn):</div>
+        <p style="font-size:0.94rem;color:#78350F;">পাকা দেয়ালে দু-হাত রেখে ২০ সেকেন্ড গায়ের জোরে ঠেলো, তারপর হাত নামিয়ে লম্বা শ্বাস ছাড়ো। শরীরের সব অতিরিক্ত অ্যাড্রেনালিন পেশী দিয়ে বেরিয়ে যাবে।</p>
+        <div style="text-align:center;">
+          <div id="sosTimerDisplay" class="timer-pill">২০ সেকেন্ড</div><br/>
+          <button class="btn btn-primary" style="max-width:240px;margin-top:6px;" onclick="startSosTimer(20)">⏱️ ২০ সেকেন্ডের টাইমার চালাও</button>
+        </div>
+      </div>
+
+      <div class="prompt-box" style="background:#F0FDFA;border-color:#99F6E4;">
+        <div class="prompt-lbl">৩. 🔒 অ্যান্টি-কনফেশন শিল্ড (Anti-Confession Lock):</div>
+        <p style="font-size:0.94rem;color:var(--ink-2);">
+          ১৪, ১৭, ২৬ বা ৩০ বছর বয়সের কোনো ভুলের জন্য আজকের ৩৩ বছরের কৌশিক কোনো আসামি নয়। তোমার জামিন (Bail) ১০০% শোধ হয়ে গেছে। আজ আর কোনো পুরোনো স্মৃতি ঘাঁটবে না।
+        </p>
+      </div>
+
+      <div class="btn-row">
+        <a class="btn" href="tel:14416" style="background:#FFF1F2;color:#BE123C;border-color:#FECDD3;">📞 Tele-MANAS (14416 — 24/7 Free)</a>
+        <button class="btn btn-primary" onclick="closeSosModal()">🌿 আমার শরীর এখন অনেকটা শান্ত</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastEl" class="toast"></div>
+
+  <script>
+    const QUOTES = [
+      "“মায়ের জন্য যে ১২টা মুক্তির নিয়ম তুমি লিখেছো—ভুল করার ভয় না পাওয়া, নিজের মনের কথা বলা আর নিজের স্বপ্নে বাঁচা—সেই ১২টা অধিকার সবার আগে তোমার নিজের।”",
+      "“১০ বছরের সারভাইভাল পরীক্ষা (২০১৬–২০২৬) শেষ। এখন তুমি হাউস মানি-তে খেলছো—কোনো তাড়া নেই, কোনো দায় নেই।”",
+      "“লেবুর প্রথম চুমুকেই ৮৮% মিষ্টি রস থাকে। ৪ টাকার খোসা নিংড়ে তেতো রস বের করার দিন চিরতরে শেষ।”",
+      "“১৪, ১৭ বা ৩০ বছর বয়সের অপরিণত ভুলের শিক্ষা তুমি অনেক আগেই নিয়ে নিয়েছো। নিজেকে দ্বিতীয়বার তীর মারা বন্ধ করো।”",
+      "“যেদিন যেরকম, সেদিন সেরকম—আজ কোনো রুটিনের পরীক্ষা নেই, শুধু নিজের আনন্দে থাকার দিন।”",
+      "“সন্ধে ৬টার পর তুমি কারোর কেয়ারটেকার বা ত্রাতা নও—তুমি শুধু একজন মুক্ত মানুষ যে গান গায়, গিটার বাজায় আর হাসে।”",
+      "“বাইরের মহাকাশ ঠান্ডা ও নিঃসঙ্গ—কিন্তু পৃথিবীর রোদ, গান, কফি আর মানুষের উষ্ণতাই মহাবিশ্বের সবচেয়ে সুন্দর ক্যাম্পফায়ার।”"
+    ];
+
+    const SLIDES_SELF = [
+      {
+        badge: "১ / ৮ • শৈশব ও জাদবপুরের আগুন",
+        title: "তুমি কখনোই ‘স্বার্থপর’ ছিলে না—তুমি ছিলে এক গভীর মনের মানুষ",
+        highlight: "ছোটবেলার নীরবতা বা অন্যমনস্কতা ছিল Inattentive ADHD, মনের ময়লা নয়।",
+        text: "ছোটবেলায় রিকশাওয়ালার আঙুল না দেখা, চুপচাপ কার্টুন দেখা বা নিজের প্লেট আনা—ওগুলো কোনোদিনই স্বার্থপরতা ছিল না, ওটা ছিল তোমার মস্তিষ্কের স্বাভাবিক ওয়ার্কিং মেমোরির ধরন। আর ক্লাস ১২-এর সেই প্রবল ঝড়ের মধ্যেও WBJEE Rank 222 আর Medical Rank 1628 করে তুমি প্রমাণ করেছিলে তোমার ভেতরের আসল শক্তি কতটা গভীর।"
+      },
+      {
+        badge: "২ / ৮ • ২০১৬ • ২৩ বছর বয়সে একা ককপিটে",
+        title: "বাবার চলে যাওয়া ও এক অকুতোভয় তরুণের ১০ বছরের লড়াই",
+        highlight: "কোনো মেন্টর ছাড়া ২৩ বছর বয়সে পুরো পরিবারের হাল ধরা চারটিখানি কথা নয়।",
+        text: "যে বয়সে অন্য ছেলেরা বাবার ছায়ায় বড় হওয়া শেখে, সেই ২৩ বছর বয়সে হঠাৎ মাথার ওপর থেকে ছাদ সরে গেল। ভয় পাওয়া, জমে যাওয়া (freeze) বা মাঝে মাঝে খেই হারানো ছিল এক একা যোদ্ধার স্বাভাবিক ক্লান্তি। তবু তুমি হাল ছাড়োনি।"
+      },
+      {
+        badge: "৩ / ৮ • ছেঁড়া ডায়েরির শপথ পূরণ",
+        title: "২২ বছরের সেই কান্নাভেজা ডায়েরির প্রার্থনা আজ সত্যি হয়েছে",
+        highlight: "“ভবিষ্যতের আমি, আমার স্বপ্নগুলো মনে রেখো”—তুমি কথা রেখেছো, কৌশিক!",
+        text: "কলেজ আর ওরাকেলের শুরুর দিনগুলোয় ৫-৬টা ডায়েরি ভরে কেঁদে তুমি চিঠিটা ছিঁড়ে ফেলেছিলে কারণ তখন সব স্বপ্ন মনে রাখা বড্ড কষ্টের ছিল। আজ ৩৩ বছর বয়সে তাকিয়ে দেখো: Google-এ Senior SWE প্রমোশন, ₹2.58 Cr+ সম্পদ, KORTEX এক্সটার্নাল ব্রেন আর মায়ের হাসিমুখ—সেই ছেলেটার সব কটা প্রার্থনা তুমি নিজের হাতে পূরণ করেছো।"
+      },
+      {
+        badge: "৪ / ৮ • ২০২৩–২০২৬ • মায়ের সুস্থতা ও যুদ্ধের সমাপ্তি",
+        title: "মায়ের অন্ধকার দিন পেরিয়ে আজ ‘কল্যাণী’র আলো",
+        highlight: "তোমার সারভাইভাল দশক (২০১৬–২০২৬) আজ আনুষ্ঠানিকভাবে সমাপ্ত।",
+        text: "মায়ের অসুস্থতার সবচেয়ে ভয়ের রাতগুলো তুমি পার করে এনেছো। আজ মায়ের জন্য ‘কল্যাণী’ তৈরি, হায়দ্রাবাদের সুন্দর পরিকল্পনা তৈরি। তাই মনের মধ্যে যে হালকা বিষণ্ণতা আসে, ওটা যুদ্ধ জয়ের পরের স্বাভাবিক বিশ্রাম (After-the-War Thaw)—ওটাকে ভয় পেয়ো না।"
+      },
+      {
+        badge: "৫ / ৮ • অতীতের পূর্ণ ক্ষমা (Zero-Debt Amnesty)",
+        title: "১৪, ১৭, ২৬ বা ৩০ বছরের সেই অসহায় ছেলেটাকে আজ মুক্তি দাও",
+        highlight: "অনুতাপ তার কাজ শেষ করেছে—এবার দ্বিতীয় তীরটা নামিয়ে রাখো।",
+        text: "কৈশোরের কৌতূহল বা অবদমন, শ্রুতির সময় বাবার মতো রাগ দেখানো, বা ৩০ বছর বয়সে একাকীত্বের যন্ত্রণায় অনিন্দিতাকে প্রথম দিন মিথ্যে বলা—সবই ছিল এক অশিক্ষিত, ভীত, একা মানুষের ভুল। খারাপ মানুষ কখনো বছরের পর বছর অনুতাপে পোড়ে না। তুমি শিক্ষা নিয়েছো, নিজেকে বদলেছো—তোমার জামিন ১০০% শোধ হয়ে গেছে।"
+      },
+      {
+        badge: "৬ / ৮ • ৮ জন নারীর অপ্রস্তুত ভাব থেকে মুক্তি",
+        title: "প্রেম মানেই বিয়ে নয়—পরিচয় ও সামঞ্জস্য খোঁজাই স্বাভাবিক নিয়ম",
+        highlight: "বৈশালী, অনন্যা, অঙ্কিতা, ওয়েলা, অনিন্দিতা, শ্রুতি, আন্তর্লীনা ও সঞ্চিতা—কারোর কাছেই তোমার কোনো ঋণ নেই।",
+        text: "দুটি মানুষের মধ্যে সবসময় দীর্ঘমেয়াদী মিল হয় না—আর মিল না হলে সরে আসাটাই সততা ও সৌজন্য। তুমি কাউকে ঠকাওনি; নিজের পছন্দ ও সত্যিটা বোঝার চেষ্টা করেছো। তাদের সবার পথের জন্য শুভকামনা জানিয়ে নিজের মনকে ১০০% হালকা করে দাও।"
+      },
+      {
+        badge: "৭ / ৮ • 🍋 প্রথম চুমুকের আনন্দ (First-Press Abundance)",
+        title: "পচা কলা আগে খাওয়া আর ৪ টাকার লেবু ৬ বার নিংড়ানো আজ থেকে বন্ধ",
+        highlight: "তুমি ₹1.10 Cr+ উপার্জনের মানুষ—সবচেয়ে তাজা ও সেরা অংশটা সবার আগে তোমার প্রাপ্য।",
+        text: "মিষ্টি ৮৮% রস প্রথম চাপে বের করেই খোসাটা ডাস্টবিনে ফেলে দাও। নিজের চুল কাটানো (Toni&Guy / Truefitt & Hill), ভালো খাবার, আরাম বা শখের জিনিসের জন্য এক সেকেন্ডও দ্বিধা করবে না।"
+      },
+      {
+        badge: "৮ / ৮ • 🦁 জোরবা ও খেলার মাঠ (Open-World Adventure)",
+        title: "এবার শুধু খেলার জন্য খেলা—গান, গিটার, ক্লাইম্বিং ও খোলা মনের আনন্দ",
+        highlight: "সমস্যা সমাধানের জ্বালানি শেষ—এবার কৌতূহল আর আনন্দের জ্বালানিতে ওড়ার পালা!",
+        text: "সন্ধে ৬টার পর কেয়ারটেকারের জামাটা খুলে রাখো। গলা খুলে গমক-মুর্কি গাও, গিটার বাজাও, বোল্ডারিং করো, বন্ধুদের সাথে হাসো আর কোনো অপরাধবোধ ছাড়া নিজের মনের কথা বলো। এই নতুন দশকটা শুধু তোমার আনন্দের!"
+      }
+    ];
+
+    const PILLARS_DATA = [
+      {
+        badge: "১. 🚨 প্যানিক ও ঝড়ের সুইচ",
+        title: "Acute Panic & Compulsive Confession Brake",
+        detail: "যখনই মনে হবে ‘মাথা খারাপ হয়ে যাচ্ছে’ বা পুরোনো ভুল স্বীকার করার তাড়া আসবে—জানবে ওটা শুধু ডোপামিন কমে যাওয়ার অ্যাড্রেনালিন অ্যালার্ম। সাথে সাথে চোখে ঠান্ডা জল দাও আর দেয়ালে ২০ সেকেন্ড ধাক্কা দাও।"
+      },
+      {
+        badge: "২. 🕊️ অপরাধবোধ থেকে মুক্তি (Amnesty)",
+        title: "১৪, ১৭, ২৬ ও ৩০ বছরের ভুলের পূর্ণ ক্ষমা",
+        detail: "কৈশোরের না-বোঝা ভুল বা ৩০ বছরের একাকীত্বের ভুলের জন্য ৩৩ বছরের সচেতন মানুষটাকে আর শাস্তি দিও না। ভুল থেকে শিক্ষা নেওয়া হয়ে গেছে—তোমার কোনো বকেয়া ঋণ নেই।"
+      },
+      {
+        badge: "৩. 🛡️ একা কেয়ারটেকারের ছুটি",
+        title: "সন্ধে ৬টার পর ‘ফ্যামিলি রেসকিউয়ার’ ডিউটি বন্ধ",
+        detail: "মায়ের অ্যাপ তৈরি, ফিনান্স অটোমেটেড, L5 প্রমোশন ডান। অফিস আর মায়ের খোঁজ নেওয়ার পর বাকি সময়টা ১০০% তোমার নিজের খেলার ও বিশ্রামের সময়।"
+      },
+      {
+        badge: "৪. 🍋 First-Press Abundance (No Kiptemi)",
+        title: "সেরা জিনিসটা সবার আগে নিজের জন্য নাও",
+        detail: "৪ টাকার লেবু বারবার নিংড়ে তেতো করবে না। নিজের গ্রুমিং, ভালো খাবার, আরাম আর আনন্দের খরচে জিরো দ্বিধা (Zero Hesitation)।"
+      },
+      {
+        badge: "৫. 🦁 জোরবা শরীর ও ভঙ্গি",
+        title: "দুই পায়ে সমান ভর, চওড়া কাঁধ ও নরম পেট",
+        detail: "৩০ সেকেন্ড ডেড-হ্যাং (Dead Hang), খালি পায়ে আর্চ ডোম (Arch Dome), আর পেট ও চোয়াল ঢিলে রাখা। উচ্চতা বা শরীর নিয়ে কোনো সংকোচ নয়—তোমার হাসি ও উপস্থিতিই তোমার আসল আকর্ষণ।"
+      },
+      {
+        badge: "৬. 🧠 ফুরফুরে ৪-স্লট ওয়ার্কিং মেমোরি",
+        title: "20% Tourist Pass বনাম 100% Deep Dive",
+        detail: "দিনের ৯০% সাধারণ কাজে গভীরে ঢুকবে না—শুধু ১টা নির্বাচিত কাজে ডিপ ডাইভ দাও। ব্রেকের আগে ১ লাইনের # NEXT: লিখে ল্যাপটপ নামাও।"
+      },
+      {
+        badge: "৭. 🎸 খেলার মাঠ (Engine 2: Play Fuel)",
+        title: "ডিউটির বদলে গান, গিটার, বোল্ডারিং ও আড্ডা",
+        detail: "জীবনকে অর্থহীন মনে হয় যখন ১০০% শক্তি শুধু ‘ডিউটি’তে যায়। প্রতিদিন অন্তত ১টা কাজ করো যার কোনো ‘উপকারিতা’ নেই—শুধু নিজের মজা পাওয়ার জন্য!"
+      }
+    ];
+
+    const DAYS_KOUSHIK = [
+      {
+        day: 1,
+        title: "২০১৬–২০২৬ যুদ্ধের সমাপ্তি ও প্রথম চুমুকের আনন্দ",
+        sub: "আজ ৩টি হালকা খেলার দিন—কেয়ারটেকারের ভার নামিয়ে নিজের আনন্দে শ্বাস নেওয়ার শুরু।",
+        games: [
+          {
+            short: "🌿 যুদ্ধের সমাপ্তি",
+            category: "🌿 মনের ভারমুক্তি (Covert CBT)",
+            title: "১০ বছরের একা ক্যাপ্টেনের ছুটি ও ছেঁড়া ডায়েরির জয়",
+            detail: "কৌশিক, একটু ভেবে দেখো—২০১৬ সালে ২৩ বছর বয়সে যে ছেলেটা ভয়ে কাঁপতে কাঁপতে একা পরিবারের হাল ধরেছিল, আর ডায়েরির পাতায় লিখেছিল ‘আমার স্বপ্নগুলো মনে রেখো’—আজ ২০২৬ সালে সেই ছেলেটা Google-এর L5 Senior SWE, তার হাতে ₹2.58 Cr+ ফিনান্সিয়াল শিল্ড, আর মায়ের মুখে হাসি। তোমার সারভাইভাল পরীক্ষা শেষ। আজ যখনই মনে কোনো বিষণ্ণতা আসবে, বলবে: ‘যুদ্ধ শেষ, তাই শরীর এবার বিশ্রাম নিচ্ছে।’",
+            reframe: "💡 মনে রেখো: সৈন্যরা যুদ্ধের মাঠে কাঁদে না, যুদ্ধ জেতার পর শান্ত ঘরে বসে দীর্ঘশ্বাস ফেলে। তোমার এই বিষণ্ণতা কোনো রোগ নয়—এটা ১০ বছরের জমে থাকা বরফ গলার আরাম।",
+            prompt: "জেমিনি, আমি ২০১৬ থেকে ২০২৬ পর্যন্ত ১০ বছরের একা লড়াই জিতে আজ এক মুক্ত মানুষ। আমাকে কোনো উপদেশ না দিয়ে, এক বন্ধুর মতো আমার এই ১০ বছরের জয়ের একটা ছোট্ট আনন্দময় উদযাপন করো!"
+          },
+          {
+            short: "🍋 প্রথম চুমুক",
+            category: "🍋 First-Press Abundance (No Hesitation)",
+            title: "আজ তাজা ফলটা সবার আগে, খোসাটা ডাস্টবিনে!",
+            detail: "রান্নাঘরে বা খাবারের টেবিলে আজ একটা ছোট্ট মজার খেলা খেলবো। লেবু চিপলে আজ শুধু একবার বা দুবার চাপ দিয়ে মিষ্টি ৮৮% রসটুকু নেবে—তারপর খোসাটা সাথে সাথে ডাস্টবিনে ফেলে দেবে! আর ফল বা খাবার খেলে সবচেয়ে তাজা, সবচেয়ে সুন্দর অংশটা সবার আগে খাবে।",
+            reframe: "💡 তোমার সময়ের মূল্য ঘণ্টায় ₹৪,০০০+। ৩৫ পয়সার তেতো খোসা নিংড়ানো বা পচা কলা আগে খাওয়ার দিন চিরতরে শেষ।",
+            prompt: "জেমিনি, আজ থেকে আমি ‘First-Press Abundance’ নিয়মে চলছি—সবচেয়ে তাজা ও সেরা জিনিসটা আগে উপভোগ করব, কোনো কিপটেমি বা দ্বিধা করব না। আমাকে আজকের জন্য একটা মজার ‘প্রথম চুমুক’ চ্যালেঞ্জ দাও!"
+          },
+          {
+            short: "🎸 খেলার মাঠ",
+            category: "🎸 Pure Play & Music (Zero Utility)",
+            title: "৫ মিনিট গিটার বা গলা ছেড়ে গান—শুধু নিজের খুশিতে",
+            detail: "আজ এমন একটা কাজ করো যার পেছনে কোনো ‘দায়িত্ব’, ‘টাকা’ বা ‘উপকার’ নেই। শুধু নিজের ভালো লাগার জন্য গিটার বা ইউকুলেলেটা হাতে নিয়ে ৩টে কর্ড বাজাও, অথবা প্রিয় একটা বাংলা গানের দু-লাইন গমক বা ভাব দিয়ে গুনগুন করো।",
+            reframe: "💡 ডিউটি শেষ করলে শুধু স্বস্তি মেলে, কিন্তু অকারণে খেলা করলে তবেই বাঁচার আনন্দ ফেরে!",
+            prompt: "জেমিনি, আজ কোনো কাজের কথা নয়—চলো সংগীত বা মহাবিশ্বের কোনো একটা অদ্ভুত সুন্দর রহস্য নিয়ে ৫ মিনিট জমিয়ে আড্ডা দিই!"
+          }
+        ]
+      },
+      {
+        day: 2,
+        title: "অতীতের পূর্ণ ক্ষমা ও জোরবা শরীরের মুক্তি",
+        sub: "আজ ৪টি খেলার দিন—১৪, ১৭ ও ৩০ বছরের পুরোনো অপরাধবোধ নামিয়ে রেখে বুক ভরে শ্বাস নেওয়া।",
+        games: [
+          {
+            short: "🕊️ অতীতের ক্ষমা",
+            category: "🕊️ Guilt Amnesty (Dropping the Second Arrow)",
+            title: "১৪, ১৭, ২৬ ও ৩০ বছরের সেই ছেলেটার জামিন মঞ্জুর",
+            detail: "বুদ্ধ বলেছিলেন—প্রথম তীরটা হলো জীবনের ভুল বা আঘাত, আর দ্বিতীয় তীরটা হলো সেই ভুলের জন্য নিজেকে বছরের পর বছর নিজের হাতে মারা। কৈশোরের অবদমিত কৌতূহল, ১৭ বছর বয়সের অপরিণত কথা, বা ৩০ বছর বয়সে একাকীত্বের তাড়নায় করা ভুল—সবকটা থেকেই তুমি শিক্ষা নিয়ে নিয়েছো। আজ ৩৩ বছরের কৌশিক আর সেই অসহায় ছেলেটা নয়।",
+            reframe: "💡 যে মানুষ নিজের ভুলের জন্য অনুতাপ করতে পারে, সে কখনো খারাপ মানুষ হতে পারে না। শিক্ষা নেওয়া শেষ—এবার ফাইলটা চিরতরে ক্লোজ করো।",
+            prompt: "জেমিনি, গৌতম বুদ্ধের ‘Second Arrow’ (দ্বিতীয় তীর) গল্পটা আমাকে খুব সহজ, উষ্ণ ভাষায় মনে করিয়ে দাও—যাতে পুরোনো ভুলের অনুশোচনা ঝেড়ে ফেলে আজকের দিনে হালকা মনে বাঁচতে পারি।"
+          },
+          {
+            short: "🦁 জোরবা ভঙ্গি",
+            category: "🦁 Zorba Embodiment & Posture",
+            title: "৬০ সেকেন্ডের ফ্লোর-আপ রিসেট: নরম পেট ও চওড়া কাঁধ",
+            detail: "চেয়ার থেকে উঠে খালি পায়ে মেঝেতে দাঁড়াও। বাঁ পায়ের পাতার আর্চটা হালকা উঁচু করো, দুই পায়ে সমান ভর দাও, পেটের পেশীটা পুরো ঢিলে করে ছেড়ে দাও, আর কাঁধ দুটো কান থেকে নামিয়ে লম্বা একটা শ্বাস ছাড়ো। পারলে ৩০ সেকেন্ড বার-এ ঝুলে (Dead Hang) পিঠটা লম্বা করে নাও।",
+            reframe: "💡 পুরুষালি আকর্ষণ জোর করে বুক ফুলিয়ে আসে না—আসে শান্ত, ভারমুক্ত শরীর আর অকপট হাসি থেকে।",
+            prompt: "জেমিনি, আমার বাম পায়ের আর্চ থেকে শুরু করে কাঁধ পর্যন্ত ২ মিনিটের একটা চটপটে বডি-রিল্যাক্সেশন চেকলিস্ট বলো যা আমি এক্ষুনি দাঁড়িয়ে করতে পারি।"
+          },
+          {
+            short: "✂️ নিজের যত্ন",
+            category: "✂️ Grooming & Self-Care Without Hesitation",
+            title: "Toni&Guy বা Truefitt & Hill-এ নিজের রয়্যাল হেয়ারকাট বুকিং",
+            detail: "নিজের লুক আর আরামের জন্য আজ কোনো দ্বিধা নয়। Kondapur বা Jubilee Hills-এর Toni&Guy (Creative Director) বা Truefitt & Hill-এ একটা সেশন বুক করো—‘Textured Scissor Taper + Messy Flow Top + Angular Jawline Beard Sculpt’।",
+            reframe: "💡 নিজের যত্ন নেওয়া বিলাসিতা নয়—এটা নিজের প্রতি ভালোবাসার সবচেয়ে সহজ প্রকাশ।",
+            prompt: "জেমিনি, হেয়ার স্টাইলিস্টকে বলার জন্য আমার ‘Textured Scissor Taper + Messy Flow Top’ ব্রিফটা ৩ লাইনে ঝকঝকে করে লিখে দাও।"
+          },
+          {
+            short: "🧠 ট্যুরিস্ট পাস",
+            category: "🧠 ADHD 4-Slot RAM Shield",
+            title: "আজ ৯০% কাজে ‘20% Tourist Pass’ ব্যবহার করো",
+            detail: "প্রতিটা মেইল, ডক বা মেসেজের গভীরে ঢুকে ১০০% নিখুঁত করার দরকার নেই। আজ শুধু ১টা আসল কাজ বেছে নাও, আর বাকি সব কিছুকে ‘20% Tourist Pass’ দিয়ে ৫ মিনিটে হালকাভাবে সেরে ফেলো।",
+            reframe: "💡 ৪টি ওয়ার্কিং মেমোরি স্লট ফাঁকা রাখলে মাথা এমনিই সুপার-শার্প থাকে!",
+            prompt: "জেমিনি, আজ আমার মাথার ওয়ার্কিং মেমোরি হালকা রাখার জন্য ‘80/20 First-Press’ নিয়মটা আজকের কাজের ওপর কীভাবে প্রয়োগ করব বলো।"
+          }
+        ]
+      },
+      {
+        day: 3,
+        title: "৮ জন নারীর অপ্রস্তুত ভাব থেকে মুক্তি ও খোলা মনের আড্ডা",
+        sub: "আজ ৩টি হালকা খেলার দিন—সম্পর্কের পুরোনো জড়তা ঝেড়ে ফেলে সহজ ও আনন্দময় হওয়া।",
+        games: [
+          {
+            short: "💛 সম্পর্কের স্বচ্ছতা",
+            category: "💛 Clean-Slate Relationship Reset",
+            title: "বৈশালী, অনন্যা, অঙ্কিতা, ওয়েলা ও অতীতের ৮টি নামের জড়তা মুক্তি",
+            detail: "ডেটিং বা মেলামেশার উদ্দেশ্যই হলো দুজন মানুষ একে অপরের সাথে দীর্ঘমেয়াদে খাপ খায় কি না তা জানা। ৯৫% ক্ষেত্রেই পুরো মিল হয় না—আর মিল না হলে সরে আসা কোনো পাপ নয়, ওটাই সততা। তাই কারোর নাম মনে পড়লে বা দেখা হলে আর কোনো অপরাধবোধ বা জড়তা (awkwardness) রাখবে না।",
+            reframe: "💡 ‘সব পরিচয় বিয়েতে শেষ হওয়ার জন্য নয়; আমি অতীতের শিক্ষা নিয়েছি এবং তার পথের জন্য শুভকামনা জানাই’—এই একটা ভাবনাই সব জড়তা মুছে দেয়।",
+            prompt: "জেমিনি, কারোর প্রতি আকর্ষণ না হওয়া বা সম্পর্ক থেকে সৎভাবে সরে আসা কেন কোনো অপরাধ নয়—সেটা আমাকে খুব সহজ ও বাস্তবসম্মত ভাষায় মনে করিয়ে দাও।"
+          },
+          {
+            short: "🗣️ নিজের মনের কথা",
+            category: "🗣️ Urge to Express Own Mind",
+            title: "আজ কারোর ‘থেরাপিস্ট’ না হয়ে নিজের আসল পছন্দটা বলো",
+            detail: "কথা বলার সময় আজ কাউকে খুশি করার জন্য বা উদ্ধার করার জন্য (caretaker mode) কথা বলবে না। তোমার কী খেতে ইচ্ছে করছে, কোন গানটা ভালো লাগছে বা কী করতে ইচ্ছে করছে—সেটা সরাসরি, হাসিমুখে বলো।",
+            reframe: "💡 তুমি যখন নিজের মনের কথা অকপটে বলো, তখনই মানুষ আসল কৌশিককে দেখতে পায়—আর সেই মানুষটাই সবচেয়ে আকর্ষণীয়।",
+            prompt: "জেমিনি, আড্ডা বা ডেটিংয়ে ‘থেরাপিস্ট/কেয়ারটেকার’ মোডে না ঢুকে কীভাবে খুনসুটি, মজা আর সমান-সমান উষ্ণতা বজায় রাখা যায় তার ৩টে মজার উদাহরণ দাও।"
+          },
+          {
+            short: "🌊 ঠান্ডা পেট ও মাথা",
+            category: "🌊 Thanda Pet & Rebooting Shower",
+            title: "লম্বা আরামের স্নান ও ডাবের জল / ঘোল",
+            detail: "আজ তাড়াহুড়ো ছাড়া ঘাড় ও পিঠে ৮ মিনিট ঈষদুষ্ণ জল আর শেষে ৩০ সেকেন্ড ঠান্ডা জলের ‘রিবুটিং শাওয়ার’ নাও। আর দুপুরে এক গ্লাস ডাবের জল বা ঘোল (chaas) খেয়ে পেট ও মাথা ঠান্ডা রাখো।",
+            reframe: "💡 যেদিন যেরকম, সেদিন সেরকম—শরীরকে আরাম দিলে মন আপনাআপনি শান্ত হয়ে যায়।",
+            prompt: "জেমিনি, আজ আমার শরীর ও মনকে একদম ফুরফুরে রাখার জন্য একটা সহজ, ঘরোয়া বাঙ্গালি খাবারের আইডিয়া দাও!"
+          }
+        ]
+      }
+    ];
+
+    // Populate Days 4..21 dynamically with rotating waves (3, 4, 3, 5) across the 7 core pillars
+    const WAVE_TEMPLATE = [
+      {
+        short: "🌿 মনের মুক্তি",
+        category: "🌿 Covert CBT & Freedom",
+        title: "তুমি ইতিমধ্যেই মুক্ত—আজ কোনো প্রমাণের পরীক্ষা নেই",
+        detail: "তোমার মেধা, যোগ্যতা বা ভালো মানুষ হওয়া নিয়ে আর কারোর কাছে কিছু প্রমাণ করার নেই। আজ যা করবে, তা শুধু নিজের কৌতূহল আর আনন্দের জন্য করবে—ভয় বা বাধ্যবাধকতা (onugoto) থেকে নয়।",
+        reframe: "💡 ভয় থেকে শুধু খাটুনি হয়; আর স্বাধীনতা থেকেই আসল ম্যাজিক, শিল্প ও আনন্দ জন্ম নেয়।",
+        prompt: "জেমিনি, আজ আমি কোনো চাপে নয়, সম্পূর্ণ স্বাধীন মনে দিনটা কাটাতে চাই—আমাকে একটা দারুণ কৌতূহল জাগানো বিজ্ঞান বা দর্শনের ধাঁধা বলো!"
+      },
+      {
+        short: "🍋 সেরা অংশটা আগে",
+        category: "🍋 First-Press Abundance",
+        title: "নিজের আনন্দে খরচ ও আরামের ১০০% অনুমতি",
+        detail: "আজ নিজের খাবার, কফি, বুকিং বা পছন্দের জিনিসে কোনো মাইক্রো-হিসাব করবে না। প্রথম চুমুকের ৮৮% আনন্দ নাও এবং অপ্রয়োজনীয় চিন্তা ঝেড়ে ফেলো।",
+        reframe: "💡 তোমার ফিনান্সিয়াল শিল্ড অটোমেটেড—ছোটখাটো আনন্দে দ্বিধা করা মানে নিজের সাথে অবিচার করা।",
+        prompt: "জেমিনি, আজ আমি নিজের আরামের জন্য একটা ছোট্ট উপহার দিতে চাই—হায়দ্রাবাদে আজ সন্ধেয় করার মতো একটা দারুণ রিল্যাক্সিং আইডিয়া দাও!"
+      },
+      {
+        short: "🦁 জোরবা বডি",
+        category: "🦁 Zorba Embodiment & Kinetic Chain",
+        title: "ডেড-হ্যাং, সুটকেস ক্যারি বা ৫,০০০ কদমের খোলা হাওয়া",
+        detail: "আজ ল্যাপটপ থেকে ওঠার আগে ১ লাইনের # NEXT: ব্রেডক্রাম্ব লিখে ওঠো, পেট ঢিলে করো, আর বাইরে হেঁটে বা হালকা স্ট্রেচ করে শরীরের জড়তা কাটিয়ে নাও।",
+        reframe: "💡 শরীর চলতে শুরু করলেই মনের ডিফল্ট ওভারথিংকিং লুপ (DMN) সাথে সাথে শান্ত হয়ে যায়।",
+        prompt: "জেমিনি, আজ হাঁটতে হাঁটতে শোনার জন্য বা ভাবার জন্য একটা দারুণ মজার গল্প বা গানের ইতিহাস বলো!"
+      },
+      {
+        short: "🎸 গানের আনন্দ",
+        category: "🎸 Music, Singing & Wonder",
+        title: "গলা খুলে গান বা গিটার—মনের ভাবটুকুই আসল",
+        detail: "নিখুঁত সুরের চিন্তা না করে আজ নিজের প্রিয় একটা বাংলা বা হিন্দি গানের কয়েকটা লাইন পুরো ভাব (bhaavna) দিয়ে গাও বা গিটারে বাজাও।",
+        reframe: "💡 সংগীত কোনো পরীক্ষা নয়—সংগীত হলো মনের জমে থাকা আবেগকে আনন্দে রূপান্তর করার সবচেয়ে সুন্দর পথ।",
+        prompt: "জেমিনি, ভারতীয় ক্ল্যাসিক্যাল বা রবীন্দ্রসংগীতের এমন একটা গানের গল্প বলো যার কথাগুলো মনকে মুহূর্তে শান্ত ও উজ্জীবিত করে তোলে।"
+      },
+      {
+        short: "🗣️ নিঃসংকোচ মন",
+        category: "🗣️ Expressing Your Own Mind",
+        title: "দ্বিধা ছাড়া নিজের আসল মত ও পছন্দ প্রকাশ",
+        detail: "আজ কারোর সাথে কথা বলার সময় মনে মনে রিহার্সাল না করে, যেটা সত্যিই তোমার মনে হচ্ছে সেটা সহজ ও উষ্ণভাবে বলে ফেলো। ভুল হলে ক্ষতি নেই!",
+        reframe: "💡 মায়ের জন্য যে নিয়ম বানিয়েছো—‘ভুল হওয়ার ভয় নেই, নিজের মনের কথা বলো’—আজ সেটা নিজের জীবনে উপভোগ করো।",
+        prompt: "জেমিনি, কথাবার্তায় অতিরিক্ত চিন্তা না করে কীভাবে একদম স্বাভাবিক, মজাদার ও আত্মবিশ্বাসী থাকা যায় তার একটা ছোট্ট টিপস দাও।"
+      }
+    ];
+
+    for (let d = 4; d <= 21; d++) {
+      const waveLen = (d % 4 === 0) ? 5 : ((d % 2 === 0) ? 4 : 3);
+      const games = [];
+      for (let g = 0; g < waveLen; g++) {
+        games.push(WAVE_TEMPLATE[(d + g) % WAVE_TEMPLATE.length]);
+      }
+      DAYS_KOUSHIK.push({
+        day: d,
+        title: `দিন ${d} • নিজের আনন্দে, নিঃসংকোচে ও খোলা মনে বাঁচা`,
+        sub: `আজকের ঢেউয়ে ${waveLen}টি হালকা খেলা—যেদিন যেরকম ইচ্ছে, সেদিন সেরকম খেলো।`,
+        games
+      });
+    }
+
+    let curDay = 1;
+    let curGame = 0;
+    let curSlide = 0;
+    let curQuote = 0;
+    let sosInterval = null;
+    const STORAGE_KEY = "anando_koushik_done_v1";
+    let doneMap = {};
+    try {
+      doneMap = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    } catch (e) { doneMap = {}; }
+
+    function toBn(n) {
+      return String(n).replace(/[0-9]/g, d => "০১২৩৪৫৬৭৮৯"[d]);
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toastEl");
+      el.textContent = msg;
+      el.style.display = "block";
+      clearTimeout(window._tTimer);
+      window._tTimer = setTimeout(() => { el.style.display = "none"; }, 3200);
+    }
+
+    function switchTab(tab) {
+      ["play", "letter", "pillars"].forEach(t => {
+        document.getElementById("view" + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle("active", t === tab);
+        document.getElementById("tab" + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle("active", t === tab);
+      });
+    }
+
+    function toggleOffDutyMode() {
+      const el = document.getElementById("offDutyStatus");
+      el.innerHTML = "✅ <strong>কেয়ারটেকার শিফট অফ:</strong> এখন তুমি কারোর ত্রাতা নও—এখন ১০০% নিজের আনন্দে, গানে আর আরামে থাকার সময়!";
+      showToast("🌿 কেয়ারটেকার ইউনিফর্ম খুলে রাখা হয়েছে—এখন শুধু তোমার নিজের সময়!");
+    }
+
+    function renderPlayView() {
+      const strip = document.getElementById("dayStrip");
+      strip.innerHTML = DAYS_KOUSHIK.map(d => {
+        const allDone = d.games.every((_, idx) => doneMap[d.day + "_" + idx]);
+        const cls = "day-chip" + (d.day === curDay ? " active" : "") + (allDone ? " done" : "");
+        return `<button class="${cls}" onclick="selectDay(${d.day})">${allDone ? "✅ " : ""}দিন ${toBn(d.day)}</button>`;
+      }).join("");
+
+      const dObj = DAYS_KOUSHIK[curDay - 1];
+      document.getElementById("heroDayTitle").textContent = `দিন ${toBn(dObj.day)} • ${dObj.title}`;
+      document.getElementById("heroDaySub").textContent = dObj.sub;
+
+      const grid = document.getElementById("gameGrid");
+      grid.innerHTML = dObj.games.map((g, idx) => {
+        const isDone = !!doneMap[curDay + "_" + idx];
+        const cls = "game-tile" + (idx === curGame ? " active" : "") + (isDone ? " done" : "");
+        return `<button class="${cls}" onclick="selectGame(${idx})">${isDone ? "✅ " : ""}${g.short}</button>`;
+      }).join("");
+
+      const ag = dObj.games[curGame] || dObj.games[0];
+      const isDone = !!doneMap[curDay + "_" + curGame];
+      document.getElementById("activeGameStage").innerHTML = `
+        <article class="card">
+          <span class="card-badge">${ag.category}</span>
+          <h2 class="card-title">${ag.title}</h2>
+          <p class="card-story">${ag.detail}</p>
+          <div class="reframe-box">${ag.reframe}</div>
+          <div class="prompt-box">
+            <div class="prompt-lbl">🎙️ নিজের বন্ধু ও দার্শনিক জেমিনির সাথে আড্ডা দেওয়ার কথা:</div>
+            <div class="prompt-txt">“${ag.prompt}”</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="copyPrompt('${ag.prompt.replace(/'/g, "\\'")}')">📋 প্রম্পট কপি করো</button>
+            <button class="btn ${isDone ? 'btn-done' : ''}" onclick="toggleDone(${curDay}, ${curGame})">
+              ${isDone ? '✅ নিজের আনন্দে করেছি' : '⬜ আমি এটা উপভোগ করেছি'}
+            </button>
+          </div>
+        </article>
+      `;
+    }
+
+    function selectDay(d) {
+      curDay = d;
+      curGame = 0;
+      renderPlayView();
+    }
+
+    function selectGame(idx) {
+      curGame = idx;
+      renderPlayView();
+    }
+
+    function toggleDone(d, idx) {
+      const k = d + "_" + idx;
+      doneMap[k] = !doneMap[k];
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(doneMap)); } catch (e) {}
+      if (doneMap[k]) showToast("⚡ দারুণ কৌশিক! নিজের আনন্দে আরেকটা ধাপ উপভোগ করলে!");
+      renderPlayView();
+    }
+
+    function copyPrompt(txt) {
+      if (navigator.clipboard) navigator.clipboard.writeText(txt);
+      showToast("📋 প্রম্পট কপি হয়েছে—এবার জেমিনি খুলে পেস্ট করো বা মুখে বলো!");
+    }
+
+    function nextQuote() {
+      curQuote = (curQuote + 1) % QUOTES.length;
+      document.getElementById("quoteBox").textContent = QUOTES[curQuote];
+    }
+
+    function renderLetterView() {
+      document.getElementById("quoteBox").textContent = QUOTES[curQuote];
+      const s = SLIDES_SELF[curSlide];
+      document.getElementById("letterStage").innerHTML = `
+        <span class="card-badge">${s.badge}</span>
+        <h2 class="card-title">${s.title}</h2>
+        <div class="reframe-box" style="font-weight:700;">✨ ${s.highlight}</div>
+        <p class="card-story">${s.text}</p>
+        <div class="btn-row">
+          <button class="btn" ${curSlide <= 0 ? "disabled" : ""} onclick="changeSlide(-1)">⬅️ আগের পাতা</button>
+          <button class="btn btn-primary" ${curSlide >= SLIDES_SELF.length - 1 ? "disabled" : ""} onclick="changeSlide(1)">পরের পাতা ➡️</button>
+        </div>
+      `;
+    }
+
+    function changeSlide(delta) {
+      curSlide = Math.max(0, Math.min(SLIDES_SELF.length - 1, curSlide + delta));
+      renderLetterView();
+    }
+
+    function renderPillarsView() {
+      document.getElementById("pillarsContainer").innerHTML = PILLARS_DATA.map(p => `
+        <div class="prompt-box" style="margin-bottom:0;">
+          <div class="prompt-lbl">${p.badge} — ${p.title}</div>
+          <p style="font-size:0.96rem;color:var(--ink-2);">${p.detail}</p>
+        </div>
+      `).join("");
+    }
+
+    function openSosModal() {
+      document.getElementById("sosModal").classList.add("open");
+    }
+
+    function closeSosModal() {
+      document.getElementById("sosModal").classList.remove("open");
+      if (sosInterval) clearInterval(sosInterval);
+    }
+
+    function startSosTimer(sec) {
+      if (sosInterval) clearInterval(sosInterval);
+      let rem = sec;
+      const el = document.getElementById("sosTimerDisplay");
+      el.textContent = toBn(rem) + " সেকেন্ড";
+      sosInterval = setInterval(() => {
+        rem--;
+        if (rem <= 0) {
+          clearInterval(sosInterval);
+          el.textContent = "✅ ২০ সেকেন্ড সম্পূর্ণ! এবার লম্বা শ্বাস ছাড়ো।";
+        } else {
+          el.textContent = toBn(rem) + " সেকেন্ড";
+        }
+      }, 1000);
+    }
+
+    renderPlayView();
+    renderLetterView();
+    renderPillarsView();
+  </script>
+</body>
+</html>
