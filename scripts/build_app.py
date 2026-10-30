@@ -30,6 +30,7 @@ sys.path.insert(0, str(APP_ROOT))
 sys.path.insert(0, str(APP_ROOT / "scripts"))
 
 from content import DAYS_21, DAYS_PART2_30, GAME_META, LETTER_VIDEO_URL, MORNING_QUOTES, SLIDES  # noqa: E402
+from curate_loop import run_quality_gate  # noqa: E402
 from refresh_voices import get_stale_or_missing_files, load_manifest  # noqa: E402
 
 AUDIO_DIR = APP_ROOT / "audio"
@@ -146,6 +147,12 @@ def render_bundle(template_html: str, css_bundle: str, js_bundle: str, data_js: 
 
 
 def build_html() -> None:
+    # 0. Mandatory 12-Dimension Content Quality Gate & Curation Check
+    passed, issues, dim_scores = run_quality_gate(verbose=False)
+    if not passed:
+        raise RuntimeError(f"12-Dimension Content Quality Gate failed: {issues}")
+    print(f"[Content Quality Gate] PASSED all {len(dim_scores)}/12 pedagogical & emotional dimensions.")
+
     # Sync root favicon.svg from canonical assets/icons/favicon.svg
     src_icon = APP_ROOT / "assets" / "icons" / "favicon.svg"
     dst_icon = APP_ROOT / "favicon.svg"

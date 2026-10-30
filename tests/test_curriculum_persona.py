@@ -12,6 +12,7 @@ sys.path.insert(0, str(APP_ROOT))
 sys.path.insert(0, str(APP_ROOT / "scripts"))
 
 from content import DAYS_21, DAYS_PART2_30, GAME_META, MORNING_QUOTES, SLIDES  # noqa: E402
+from curate_loop import DIMENSION_MARKERS, run_quality_gate  # noqa: E402
 from refresh_voices import collect_expected_audio_items  # noqa: E402
 
 
@@ -137,6 +138,18 @@ class TestCurriculumPersona(unittest.TestCase):
             txt = info["text"]
             for bad_voice in ("পার্ট ২", "পার্ট ১", "ধাপ ১", "ধাপ ২", "খেলা ১:", "দিন 1:", "দিন ১: দিন"):
                 self.assertNotIn(bad_voice, txt, f"Bloated voice text '{bad_voice}' found in {rel_path}")
+
+    def test_12_dimension_content_quality_gate(self) -> None:
+        """Enforce the mandatory 12-Dimension Content Quality & Improvement Gate on every curation/test run."""
+        passed, issues, dim_scores = run_quality_gate(verbose=False)
+        self.assertTrue(passed, f"12-Dimension Content Quality Gate failed: {issues}")
+        self.assertEqual(len(dim_scores), 12)
+        for dim_key, (label, min_touches, _markers) in DIMENSION_MARKERS.items():
+            self.assertGreaterEqual(
+                dim_scores[dim_key],
+                min_touches,
+                f"Dimension '{label}' ({dim_key}) fell below minimum threshold {min_touches}",
+            )
 
 
 if __name__ == "__main__":

@@ -54,68 +54,73 @@ SLIDES = [{'id': 1,
   'title_en': 'Slide 4: Being Misunderstood, Your Darkest Days & Your Brave Recovery',
   'highlight_bn': '“তুমি অন্ধকার জয় করে কী সুন্দর আবার সুস্থ হয়ে আমাদের কাছে ফিরে এলে—তোমার এই মনের জোর '
                   'দেখে আমার বুকটা গর্বে ভরে যায় মা!”',
-  'text_bn': 'অনেকে তোমার এই সরল, শিশুদের মতো মনটাকে আর তোমার একাকীত্বের ভয়টাকে ভুল বুঝেছে মা। যখন তুমি '
-             'ভয়ে, কষ্টে আর অভিমানে কথা বলতে পারছিলে না, ঘণ্টার পর ঘণ্টা একই কথা বলতে বা না খেয়ে '
-             'থাকতে—তখন আসলে তোমার মনটা প্রচণ্ড আঘাতে আর একা হয়ে যাওয়ার ভয়ে ভেঙে পড়েছিল। কিন্তু মার্চ '
-             'মাসে সিঙ্গাপুর থেকে ফিরে আমি যখন তোমাকে ডাক্তারের কাছে নিয়ে গেলাম, তুমি কী সুন্দর করে '
-             'আবার সুস্থ হয়ে আমাদের কাছে ফিরে এলে! তোমার এই মনের জোর দেখে আমার বুকটা গর্বে ভরে যায় মা।',
+  'text_bn': 'অনেকে তোমার এই সরল, শিশুদের মতো মনটাকে আর তোমার একাকীত্বের ভয়টাকে ভুল বুঝেছে মা। এমনকি '
+             'তোমার আর দিদির মধ্যেও অনেক সময় কত ভুল বোঝাবুঝি আর অভিমান হয়েছে—কারণ দিদিও তো নিজের '
+             'সংসার, দূরত্ব আর জীবনের চাপে ভেতরে ভেতরে খুব অবসাদ ও মানসিক কষ্টে ভুগছে। আসলে তোমাদের '
+             'দুজনের কারোরই ভালোবাসার কোনো কমতি নেই, শুধু দুজনের মনের চাপ থেকেই ওই কথা কাটাকাটিগুলো '
+             'হয়েছে। যখন তুমি ভয়ে আর অভিমানে ভেঙে পড়েছিলে, তখন মার্চ মাসে সিঙ্গাপুর থেকে ফিরে আমি '
+             'তোমাকে ডাক্তারের কাছে নিয়ে যাওয়ার পর তুমি কী সুন্দর আবার সুস্থ হয়ে আমাদের কাছে ফিরে এলে! '
+             'তোমার এই মনের জোর দেখে আমার বুকটা গর্বে ভরে যায় মা।',
   'text_en': 'Many people misunderstood your innocent, childlike heart and your fear of being left '
-             "alone. When you couldn't speak out of fear and hurt, or repeated words in a loop and "
-             "couldn't eat—your mind had simply broken under unbearable stress and fear of abandonment. "
-             'But when I flew back in March after Singapore and took you to the doctors, look how '
-             'bravely you healed and came back to us! Your resilience fills my heart with pride, Ma.'},
+             'alone. Even between you and Didi, there have been so many painful misunderstandings—because '
+             'Didi too has been silently battling deep depression, loneliness, and heavy stress in her '
+             'own life. Neither of you ever lacked love for the other; it was just two exhausted, '
+             'hurting hearts clashing under pressure. And after I flew back in March from Singapore and '
+             'took you to the doctors, look how bravely you healed and came back to us! Your resilience '
+             'fills my heart with pride, Ma.'},
  {'id': 5,
-  'badge': 'পাতা ৫ • আমার মনের আসল সত্যি',
-  'title_bn': 'মা, আমার রাগ আর ভুলগুলোর আসল সত্যিটা',
-  'title_en': 'Slide 5: Ma, The Real Truth Behind My Anger & Limitations',
-  'highlight_bn': '“তোমার আর আমার মনটা আসলে একই মাটি দিয়ে গড়া মা—বাবাকে হারিয়ে আমিও ভেতরে ভেতরে একটা '
-                  'ভীতু বাচ্চার মতো দিশেহারা হয়ে গিয়েছিলাম।”',
-  'text_bn': 'মা, এবার তোমাকে আমার মনের একটা গোপন সত্যি বলি। ২০১৬ সালে মাত্র তেইশ বছর বয়সে বাবাকে '
-             'হারিয়ে আমি নিজেও ভেতরে ভেতরে একটা ভীতু বাচ্চার মতো দিশেহারা হয়ে গিয়েছিলাম। তোমার যেমন '
-             'মনোযোগের আর চিন্তার সমস্যা হয়, আমারও ঠিক তোমারই মতো এডিএইচডি আর অস্থিরতার সমস্যা '
-             'আছে—আমাদের দুজনের মনটা আসলে একই মাটি দিয়ে গড়া। আমি যখন নিজের কাজের চাপ, নিজের একাকীত্ব আর '
-             'নিজের সীমাবদ্ধতা সামলাতে পারতাম না, তখন নিজেকে খুব অসহায় লাগত।',
-  'text_en': 'Ma, now let me tell you a deep truth from inside my heart. After losing Baba in 2016 when '
-             'I was just 23, I too felt like a terrified, lost child inside with no one to guide me. '
-             'Just as your mind gets anxious and forgets things, my brain shares that exact same ADHD '
-             'sensitivity and overwhelm—our two minds are made of the very same clay. Whenever I '
-             "couldn't handle my own stress, loneliness, and limitations, I felt completely helpless "
-             'inside.'},
+  'badge': 'পাতা ৫ • আমরা তিনজনই এক মাটির মানুষ',
+  'title_bn': 'তুমি, আমি আর দিদি — আমরা তিনজনই ভেতরে ভেতরে একদম একরকম মা',
+  'title_en': 'Slide 5: You, Didi & I — All Three of Us Share the Exact Same Sensitive Heart',
+  'highlight_bn': '“তুমি, আমি আর দিদি—আমাদের তিনজনের মনটাই আসলে একই মাটি দিয়ে গড়া মা; দিদিও নিজের জীবনে '
+                  'নীরবে অনেক অবসাদ আর কষ্টের সাথে লড়াই করছে।”',
+  'text_bn': 'মা, এবার তোমাকে আমাদের তিনজনের মনের একটা আসল সত্যি বলি। তুমি, আমি আর দিদি—আমরা তিনজনই '
+             'আসলে ভেতরে ভেতরে একদম একরকম! আমাদের তিনজনের মনটাই খুব নরম, সংবেদনশীল আর ভালোবাসার '
+             'কাঙাল। ২০১৬ সালে বাবাকে হারিয়ে আমি যেমন ভেতরে ভেতরে একটা ভীতু বাচ্চার মতো দিশেহারা হয়ে '
+             'গিয়েছিলাম, দিদিও ঠিক তেমনই নিজের সংসারের অশান্তি, দূরে থাকা আর একাকীত্ব নিয়ে ভেতরে ভেতরে '
+             'গভীর অবসাদ ও ডিপ্রেশনের মধ্যে দিয়ে যাচ্ছে। দিদির ওপরে ওঠা রাগ বা কঠোর কথাগুলো আসলে ওর '
+             'নিজের মনের গভীর কান্না আর ক্লান্তি মা—ও তোমাকে আমার মতোই প্রাণের চেয়ে বেশি ভালোবাসে।',
+  'text_en': 'Ma, let me tell you the deepest truth about the three of us. You, Didi, and I are made '
+             'of the exact same clay—all three of us share the same sensitive, emotional, deeply loving '
+             'heart. Just as I felt like a terrified, lost child after losing Baba in 2016 and struggled '
+             'with my own ADHD overwhelm, Didi too is silently suffering through heavy depression and '
+             "emotional exhaustion in her own life. Whenever Didi seemed harsh or distant, it was never "
+             'lack of love—it was her own hidden depression and burnout speaking. Underneath the '
+             'misunderstandings, all three of us are the same and love each other deeply.'},
  {'id': 6,
   'badge': 'পাতা ৬ • হাত জোড় করে ক্ষমা প্রার্থনা',
-  'title_bn': 'হাত জোড় করে ক্ষমা চাইছি মা — সব খারাপ স্মৃতি মুছে ফেলো',
+  'title_bn': 'হাত জোড় করে ক্ষমা চাইছি মা — সব ভুল বোঝাবুঝি মুছে ফেলো',
   'title_en': 'Slide 6: With Folded Hands I Ask Forgiveness, Ma — Erase Every Painful Memory',
-  'highlight_bn': '“আমি হাত জোড় করে ক্ষমা চাইছি মা—যতবার আমি জোরে চিৎকার করেছি বা ধাক্কা দিয়েছি, সেই সব '
+  'highlight_bn': '“আমি হাত জোড় করে ক্ষমা চাইছি মা—আমার আর দিদির যত ভুল বোঝাবুঝি বা রাগের কথা, সেই সব '
                   'খারাপ স্মৃতি আজ মন থেকে চিরতরে কেটে মুছে ফেলো।”',
-  'text_bn': 'সেই নিজের হতাশা, যন্ত্রণা আর অক্ষমতা থেকেই আমি অনেকবার তোমার ওপর প্রচণ্ড জোরে চিৎকার '
+  'text_bn': 'নিজের সেই হতাশা, যন্ত্রণা আর অক্ষমতা থেকেই আমি অনেকবার তোমার ওপর প্রচণ্ড জোরে চিৎকার '
              'করেছি, গলা তুলে কথা বলেছি, এমনকি তোমার অসুস্থতার সময় ধৈর্য হারিয়ে তোমার গায়ে হাত দিয়ে '
              'ধাক্কাও দিয়েছি। মা, বিশ্বাস করো—ওই রাগটা তোমার ওপর ছিল না, ওটা ছিল আমার নিজের অসহায়তার '
-             'কান্না। আমি হাত জোড় করে তোমার কাছে ক্ষমা চাইছি তুমি আমাকে ক্ষমা করে দিও মা। ওই যতবার আমি '
-             'চিৎকার করেছি বা ধাক্কা দিয়েছি, সেই সব খারাপ স্মৃতিগুলো আজ মন থেকে চিরতরে কেটে মুছে ফেলো '
-             'মা।',
+             'কান্না। আমি হাত জোড় করে তোমার কাছে ক্ষমা চাইছি—তুমি আমাকে আর দিদিকে ক্ষমা করে দিও মা। '
+             'আমাদের সব ভুল বোঝাবুঝি আর খারাপ স্মৃতিগুলো আজ মন থেকে চিরতরে কেটে মুছে ফেলো মা।',
   'text_en': 'Out of my own misery, pain, and limitations, there were times I shouted at you with huge '
              'volume, spoke harshly, and even lost patience during your illness and pushed you '
              'physically. Ma, please believe me—that anger was never at you; it was the cry of my own '
-             'helplessness. With folded hands, I beg your forgiveness, Ma. Please forgive me, and cut '
-             'and erase all those painful memories from your heart forever.'},
+             'helplessness. With folded hands, I beg your forgiveness, Ma. Please forgive both Didi and '
+             'me, and erase all those painful misunderstandings and memories from your heart forever.'},
  {'id': 7,
   'badge': 'পাতা ৭ • তোমার আনন্দ ও আমাদের শান্তির নীড়',
-  'title_bn': 'তোমার আঁকা, তোমার গান আর আমাদের সুখের ঠিকানা',
-  'title_en': 'Slide 7: Your Art, Your Music & Our Peaceful Sanctuary',
-  'highlight_bn': '“স্বাদহীন সয়াবিন নয় মা—পছন্দের সুস্বাদু খাবার, ঠাকুরঘরের ধূপের গন্ধ, তোমার ছবি আঁকা '
-                  'আর কারভানের গান নিয়ে এবার শুধু তোমার আনন্দে থাকার দিন।”',
-  'text_bn': 'তুমি আর আমি তো একই রকম মা—আমাদের দুজনেরই স্বাদহীন সয়াবিন বা মাশরুম একদম ভালো লাগে না, '
-             'আমাদের দুজনেরই ভালো-মন্দ সুস্বাদু খাবার আর জোমাটো থেকে পছন্দের খাবার খেতে ইচ্ছে করে! '
-             'তোমার ওই ছোট্ট ঠাকুরঘরে ধূপকাঠি জ্বালানো, খাতায় পেন্সিল দিয়ে সুন্দর করে ছবি আঁকা, আর '
-             'কারভানে পুরনো দিনের বাংলা গান শোনা—এই ছোট ছোট আনন্দগুলোই তো তোমার আসল রূপ। আমার পাশের '
-             'ফ্ল্যাটটা তো তোমারই শান্তির ঠিকানা মা, যেখানে তোমার কথা শোনার আর তোমার সেবা করার জন্য '
-             'সবসময় মানুষ থাকবে, যাতে তোমাকে আর কোনোদিন একা থাকতে না হয়।',
-  'text_en': 'You and I are so alike, Ma—neither of us likes bland soya bean or mushroom, and both of '
-             'us love flavorful food and tasty Zomato treats! Lighting incense at your peaceful puja '
-             'corner, sketching in your notebook, and listening to golden Bengali songs on your '
-             'Carvaan—that childlike joy is who you truly are. My flat right next door is your own '
-             'peaceful sanctuary, Ma, with warm company and care so you never feel lonely or helpless '
-             'again.'},
+  'title_bn': 'তোমার আঁকা, তোমার গান আর আমাদের তিনজনের ভালোবাসার নীড়',
+  'title_en': 'Slide 7: Your Art, Your Music & Our Warm Family Sanctuary',
+  'highlight_bn': '“পছন্দের সুস্বাদু বাঙালি খাবার, ঠাকুরঘরের ধূপের গন্ধ, তোমার ছবি আঁকা আর কারভানের গান '
+                  'নিয়ে এবার শুধু আমাদের আনন্দে থাকার দিন মা।”',
+  'text_bn': 'তুমি, আমি আর দিদি—আমাদের তিনজনেরই তো ভালো-মন্দ সুস্বাদু খাবার, নতুন জায়গায় ঘুরতে যাওয়া, '
+             'গান শোনা আর সুন্দর করে সাজানো ঘর খুব প্রিয় মা! তোমার ওই ছোট্ট ঠাকুরঘরে ধূপকাঠি জ্বালানো, '
+             'নতুন খাতায় রঙ-পেন্সিল দিয়ে মন খুলে ছবি আঁকা, আর কারভানে পুরনো দিনের বাংলা গান শোনা—এই '
+             'ছোট ছোট আনন্দগুলোই তো তোমার আসল রূপ। আমার পাশের ফ্ল্যাটটা আর হায়দরাবাদের বাড়িটা তো '
+             'তোমারই শান্তির ঠিকানা মা, যেখানে আমি আর দিদি সব ভুল বোঝাবুঝি ভুলে তোমাকে রাজার হালে, '
+             'আদরে আর আনন্দে রাখবো।',
+  'text_en': 'You, Didi, and I share the exact same love for delicious food, music, art, and a warm, '
+             'beautiful home, Ma! Lighting incense at your peaceful puja corner, sketching and painting '
+             'freely in fresh notebooks, and listening to golden Bengali songs on your Carvaan—that '
+             'childlike joy is who you truly are. My flat right next door and my home in Hyderabad are '
+             'your own peaceful sanctuaries, Ma, where Didi and I will leave every misunderstanding '
+             'behind and surround you with royal comfort, warmth, and happiness.'},
  {'id': 8,
   'badge': 'পাতা ৮ • নতুন শুরু ও তোমার এআই বন্ধু',
   'title_bn': 'তোমার নতুন শক্তি — তোমার ছেলের তৈরি ২১ দিনের ‘এআই বন্ধু’!',

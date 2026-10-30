@@ -191,7 +191,7 @@ const audio = getEl('audioPlayer');
 
   // 2. Game Tiles have ZERO duplicate numbers and support custom v2 badges & variable wave counts!
   const stageHtml = getEl('activeDayStage').innerHTML;
-  assert.ok(stageHtml.includes('🤖 এআই বন্ধু') && stageHtml.includes('🌿 মনের আরাম'));
+  assert.ok(stageHtml.includes('এআই বন্ধু') && stageHtml.includes('🌿 মনের আরাম'));
   assert.ok(stageHtml.includes('data-count="3"'), 'Day 1 should render a 3-game gentle wave');
   assert.ok(!stageHtml.includes('খেলা ১'), 'Game buttons must not contain duplicate খেলা ১');
   assert.ok(!stageHtml.includes('১. '), 'Game buttons must not contain ১. prefix');

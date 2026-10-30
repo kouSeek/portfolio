@@ -57,8 +57,9 @@ Maintain the codebase like a **Principal Software Architect**: every file must h
 │   ├── quotes/quote_0..6.mp3           # Local cache -> published to `ma-audio` orphan branch
 │   ├── days/day_1..51.mp3              # Local cache -> published to `ma-audio` orphan branch
 │   └── games/day_1..51_ag_*.mp3        # Local cache -> published to `ma-audio` orphan branch
-├── scripts/                            # Fast Build, Explicit TTS & Orphan Audio Branch Tooling
-│   ├── build_app.py                    # <0.5s static bundler + non-blocking stale-voice detector
+├── scripts/                            # Fast Build, Content Quality Gate, Explicit TTS & Orphan Audio Branch Tooling
+│   ├── build_app.py                    # <0.5s static bundler + mandatory 12-dimension quality gate + stale-voice detector
+│   ├── curate_loop.py                  # Automated 12-Dimension Content Quality Gate & Continuous Improvement Auditor
 │   ├── refresh_voices.py               # Explicit-only (--confirm) parallel Gemini Aoede TTS generator
 │   └── sync_audio_branch.py            # Publishes `audio/` as a 1-commit snapshot to `ma-audio` orphan branch
 ├── tests/                              # Multi-Layer Automated Verification Suite
@@ -95,11 +96,25 @@ Design every screen and interaction like a **Genius Artist UX Designer** craftin
 
 ---
 
-## 3. CRITICAL RULE: Multi-Student Content Review Gate & Explicit-Only TTS
+## 3. CRITICAL RULE: 12-Dimension Content Quality Gate, Review Gate & Explicit-Only TTS
 
-1. **Reusable Multi-Student Content Pipeline (`docs/content-pipeline.md`):**
+1. **Mandatory 12-Dimension Content Quality Gate on Every Content Curation (`scripts/curate_loop.py`):**
+   - **Every time content curation happens** (and automatically during `scripts/build_app.py` and `tests/run_tests.py`), `python3 /usr/local/google/home/koushikchak/kalyani-app/scripts/curate_loop.py` **MUST** run and pass all 12 pedagogical & emotional dimensions:
+     1. **CBT Effectiveness & Subconscious Reprogramming** (Indirect Ericksonian metaphors, third-person stories, zero clinical/scolding words).
+     2. **Personalization & Personal-Level Connect** (Ranaghat, Dum Dum, Koushik, Didi, Aishee, Ayush, Maa Sarada, Dakshineswar, Santiniketan).
+     3. **Relationship Warmth & Ma–Koushik–Didi Empathy** (How Ma, Koushik, and Didi share the exact same sensitive heart and deep unspoken love).
+     4. **Inspiration, Resilience & Pride** (Celebrating Ma's quiet sacrifice, teaching, and lifelong curiosity).
+     5. **Charm, Playfulness & Fun** (*Adda* warmth, humor, nostalgic stories, playful puzzles).
+     6. **Curiosity & Wonder** (Why/How science & GK wonders, deep song lyric meanings).
+     7. **Engagement & Multi-Step Storytelling Depth** (4-layer elaboration: Nostalgic Hook -> Surprising Insight -> 1-Breath Prompt -> Follow-Up).
+     8. **Ease of Learning & Spaced Dopamine Reinforcement** (Short 1-breath primary prompts + >=5x spaced repetition across the 8 core English words).
+     9. **Zero Fear of Mistakes & Zero Shame for Not Knowing / Forgetting** (Explicit reassurance that nothing breaks on the phone, repeating 100 times is welcome, and forgetting is completely natural).
+     10. **Urge to Express Her Own Mind & Preferences** (Inviting Ma to voice her own opinions, song/story interpretations, and likes/dislikes).
+     11. **Freedom, Autonomy & High-Quality Living** (Choosing comfort, peace, generous self-care, and unhurried living).
+     12. **Growing as Per Her Own Dreams** (Reigniting her personal dreams in painting/sketching, music, travel, and lifelong learning).
+2. **Reusable Multi-Student Content Pipeline (`docs/content-pipeline.md`):**
    - Always follow the 5-stage pipeline for Ma (`students/ma_kalyani/`) or any future learner (`students/<student_id>/`):
-     `1. Persona Spec` -> `2. Human-Readable Draft (curriculum_v2_draft.md)` -> `3. Koushik Reviews & Approves Content (ZERO TTS)` -> `4. Promote to content/ + Adjust UI` -> `5. Run refresh_voices.py --confirm + Build & Deploy`.
+     `1. Persona Spec` -> `2. Human-Readable Draft (curriculum_v2_draft.md) + 12-Dimension Quality Gate` -> `3. Koushik Reviews & Approves Content (ZERO TTS)` -> `4. Promote to content/ + Adjust UI` -> `5. Run refresh_voices.py --confirm + Build & Deploy`.
 2. **On-Device Web Speech API (`speechSynthesis`) is Forbidden:** Always use pre-generated **Gemini `Aoede` (`gemini-v4s-tts`)** `.mp3` files under `audio/`.
 3. **NEVER Auto-Regenerate Voices Before Content Approval:**
    - Always show new or updated curriculum content first and wait for Koushik's explicit approval before generating TTS.

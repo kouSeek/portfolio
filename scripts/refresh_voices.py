@@ -93,11 +93,13 @@ def collect_expected_audio_items() -> dict[str, dict[str, str]]:
         for idx, ag in enumerate(d["agendas"]):
             ag_rel = f"games/day_{day_num}_ag_{idx}.mp3"
             part1_bn = f"{ag['title_bn']}। {ag['detail_bn']}"
-            follow_bn = (
-                f" আর গানটা শোনা হয়ে গেলে এর মানে জানতে বলো: {ag['followup_prompt_bn']}"
-                if ag.get("followup_prompt_bn")
-                else ""
-            )
+            if ag.get("followup_prompt_bn"):
+                if "🎵" in ag.get("category", ""):
+                    follow_bn = f" আর গানটা শোনা হয়ে গেলে এর মানে জানতে বলো: {ag['followup_prompt_bn']}"
+                else:
+                    follow_bn = f" আর উত্তরের পর দ্বিতীয় কথায় বলো: {ag['followup_prompt_bn']}"
+            else:
+                follow_bn = ""
             part2_bn = f"এবার ফোনে জেমিনি খুলে মাইক ছুঁয়ে মুখে বলো: {ag['prompt_bn']}{follow_bn}"
             full_txt = f"{part1_bn} {part2_bn}"
             items[ag_rel] = {
