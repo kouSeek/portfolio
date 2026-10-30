@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="theme-color" content="#0F172A" />
+  <title>⚡ আনন্দ — কৌশিকের প্রতিদিনের মুক্তি, শান্ত মন ও জোরবা সঙ্গী</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-main: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F1F5F9;
+      --ink-1: #0F172A;
+      --ink-2: #334155;
+      --ink-3: #64748B;
+      --border: #E2E8F0;
+      --brand: #0F766E;
+      --brand-soft: #CCFBF1;
+      --amber: #B45309;
+      --amber-soft: #FEF3C7;
+      --rose: #BE123C;
+      --rose-soft: #FFE4E6;
+      --emerald: #047857;
+      --emerald-soft: #D1FAE5;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow: 0 6px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
+      background: var(--bg-main);
+      color: var(--ink-1);
+      line-height: 1.62;
+      padding-bottom: 96px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Noto Serif Bengali', serif;
+      font-weight: 700;
+      font-size: 1.08rem;
+      color: var(--brand);
+    }
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--ink-2);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      line-height: 1.45;
+      transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: var(--brand);
+      color: #FFFFFF;
+      border-color: var(--brand);
+    }
+    .sos-btn {
+      border: 1.5px solid #E11D48;
+      background: #FFF1F2;
+      color: #BE123C;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      line-height: 1.45;
+      box-shadow: 0 2px 8px rgba(225, 29, 72, 0.15);
+    }
+
+    /* Sticky Now Playing Bar */
+    .now-playing-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 10px 16px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+    }
+    .now-playing-bar.visible { display: flex; }
+    .np-label {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #99F6E4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .np-controls {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .np-btn {
+      background: #0F766E;
+      color: #FFFFFF;
+      border: 1px solid #14B8A6;
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 16px 14px 40px;
+    }
+    .view-pane { display: none; }
+    .view-pane.active { display: block; }
+
+    .hero-banner {
+      background: linear-gradient(135deg, #0F172A 0%, #134E4A 100%);
+      color: #F8FAFC;
+      border-radius: var(--radius-lg);
+      padding: 20px 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+    .hero-pill {
+      display: inline-block;
+      background: rgba(20, 184, 166, 0.22);
+      border: 1px solid rgba(94, 234, 212, 0.4);
+      color: #99F6E4;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+    .hero-title {
+      font-family: 'Noto Serif Bengali', serif;
+      font-size: 1.38rem;
+      line-height: 1.48;
+      margin-bottom: 8px;
+      color: #FFFFFF;
+    }
+    .hero-sub {
+      font-size: 0.98rem;
+      color: #CBD5E1;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .voice-hero-btn {
+      width: 100%;
+      background: #14B8A6;
+      color: #042F2E;
+      border: none;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 11px 16px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      margin-bottom: 10px;
+      line-height: 1.45;
+    }
+    .off-duty-bar {
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .off-duty-btn {
+      background: #10B981;
+      color: #052E16;
+      border: none;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .day-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 6px 2px 12px;
+      margin-bottom: 10px;
+    }
+    .day-chip {
+      flex: 0 0 auto;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--ink-2);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      line-height: 1.48;
+    }
+    .day-chip.active {
+      background: var(--brand);
+      color: #FFFFFF;
+      border-color: var(--brand);
+    }
+    .day-chip.done {
+      background: var(--emerald-soft);
+      color: var(--emerald);
+      border-color: #6EE7B7;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .game-tile {
+      border: 1.5px solid var(--border);
+      background: var(--bg-card);
+      color: var(--ink-1);
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.48;
+      transition: all 0.15s ease;
+    }
+    .game-tile.active {
+      border-color: var(--brand);
+      background: #F0FDFA;
+      box-shadow: 0 3px 10px rgba(15, 118, 110, 0.12);
+    }
+    .game-tile.done {
+      background: var(--emerald-soft);
+      border-color: #34D399;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+    .card-badge {
+      display: inline-block;
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      margin-bottom: 10px;
+      line-height: 1.45;
+    }
+    .card-title {
+      font-family: 'Noto Serif Bengali', serif;
+      font-size: 1.28rem;
+      line-height: 1.48;
+      margin-bottom: 10px;
+      color: var(--ink-1);
+    }
+    .slide-img-wrap {
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      background: #0F172A;
+    }
+    .slide-img {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      display: block;
+    }
+    .slide-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .slide-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: none;
+      background: #CBD5E1;
+      cursor: pointer;
+    }
+    .slide-dot.active {
+      width: 26px;
+      border-radius: 999px;
+      background: var(--brand);
+    }
+    .card-story {
+      font-size: 1.03rem;
+      color: var(--ink-2);
+      line-height: 1.68;
+      margin-bottom: 14px;
+    }
+    .reframe-box {
+      background: #FFFBEB;
+      border-left: 4px solid #F59E0B;
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      font-size: 0.98rem;
+      color: #78350F;
+    }
+    .prompt-box {
+      background: #F0FDFA;
+      border: 1px solid #99F6E4;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      margin-bottom: 14px;
+    }
+    .prompt-lbl {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 6px;
+    }
+    .prompt-txt {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--ink-1);
+      line-height: 1.55;
+    }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .btn {
+      flex: 1 1 160px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--ink-1);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 11px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      line-height: 1.45;
+      text-align: center;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--brand);
+      color: #FFFFFF;
+      border-color: var(--brand);
+    }
+    .btn-done {
+      background: var(--emerald-soft);
+      color: var(--emerald);
+      border-color: #34D399;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 22px 18px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+    .timer-pill {
+      display: inline-block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--brand);
+      background: var(--brand-soft);
+      padding: 6px 18px;
+      border-radius: 999px;
+      margin: 8px 0;
+    }
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .toast {
+      position: fixed;
+      bottom: 64px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="brand-wrap">
+      <span>⚡ আনন্দ (ANANDO)</span>
+      <span style="font-size:0.8rem;font-weight:500;color:var(--ink-3);">• কৌশিকের সঙ্গী</span>
+    </div>
+    <nav class="nav-tabs">
+      <button id="tabPlay" class="tab-btn active" onclick="switchTab('play')">🎯 আজকের মুক্তি</button>
+      <button id="tabLetter" class="tab-btn" onclick="switchTab('letter')">💌 নিজের কাছে চিঠি</button>
+      <button id="tabPillars" class="tab-btn" onclick="switchTab('pillars')">🧭 ৭টি মনের চাবি</button>
+      <button class="sos-btn" onclick="openSosModal()">🚨 ৬০ সেকেন্ডে ঝড় থামাও</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- TAB 1: DAILY COMPANION -->
+    <section id="viewPlay" class="view-pane active">
+      <div class="hero-banner">
+        <span class="hero-pill">✨ যেদিন যেরকম, সেদিন সেরকম • Zero-Rule Living</span>
+        <div class="hero-title" id="heroDayTitle"></div>
+        <div class="hero-sub" id="heroDaySub"></div>
+        <button id="btnDayVoice" class="voice-hero-btn" onclick="playDayVoice(true)">🔊 আজকের কথাগুলো শোনো (Aoede কণ্ঠ)</button>
+        <div class="off-duty-bar">
+          <span id="offDutyStatus" style="font-size:0.9rem;color:#E2E8F0;">🛡️ কেয়ারটেকার ইউনিফর্ম: সন্ধে ৬টার পর থেকে তুমি ১০০% ছুটি-তে আছো।</span>
+          <button class="off-duty-btn" onclick="toggleOffDutyMode()">🌿 আমি এখন নিজের ছুটিতে আছি</button>
+        </div>
+      </div>
+
+      <div id="dayStrip" class="day-strip"></div>
+      <div id="gameGrid" class="game-grid"></div>
+      <div id="activeGameStage"></div>
+    </section>
+
+    <!-- TAB 2: 8-SLIDE LETTER TO SELF -->
+    <section id="viewLetter" class="view-pane">
+      <div class="card" style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-color:#FCD34D;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:0.86rem;font-weight:700;color:#92400E;">☀️ আজকের মনে রাখার সত্যি (ট্যাপ করে বদলাও):</span>
+          <button class="tab-btn" style="background:#FDE68A;color:#78350F;border-color:#F59E0B;" onclick="playCurrentQuote()">🔊 শোনো</button>
+        </div>
+        <div id="quoteBox" style="font-size:1.05rem;font-weight:600;color:#78350F;cursor:pointer;" onclick="nextQuote(true)"></div>
+      </div>
+
+      <div id="letterStage" class="card"></div>
+    </section>
+
+    <!-- TAB 3: 7 CORE PILLARS & CLEAN-SLATE VAULT -->
+    <section id="viewPillars" class="view-pane">
+      <div class="card">
+        <span class="card-badge">🧭 Deep-Dive Diagnostic</span>
+        <h2 class="card-title">তোমার মনের ৭টি আসল চাবি (কোনো অপরাধবোধ নয়, শুধু মুক্তি)</h2>
+        <p class="card-story">
+          যখনই মনে বিষণ্ণতা, একাকীত্ব, অস্থিরতা বা দ্বিধা আসবে—দেখে নাও ঠিক কোন চাবিটা এখন দরকার:
+        </p>
+        <div id="pillarsContainer" class="pillar-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- STICKY NOW PLAYING BAR -->
+  <div id="nowPlayingBar" class="now-playing-bar">
+    <div id="npLabel" class="np-label">🔊 চলছে...</div>
+    <div class="np-controls">
+      <button id="npToggleBtn" class="np-btn" onclick="toggleAudioPauseResume()">⏸️ থামাও</button>
+      <button class="np-btn" style="background:#334155;border-color:#475569;" onclick="stopAudio()">⏹️ বন্ধ</button>
+    </div>
+  </div>
+
+  <!-- EMERGENCY 60-SECOND HARDWARE RESET MODAL -->
+  <div id="sosModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span class="card-badge" style="background:#FFE4E6;color:#BE123C;margin:0;">🚨 ৬০ সেকেন্ডের হার্ডওয়্যার ব্রেক (Panic & Adrenaline Kill-Switch)</span>
+        <button class="tab-btn" onclick="closeSosModal()">✕ বন্ধ করো</button>
+      </div>
+      <h3 class="card-title" style="margin-bottom:8px;">কৌশিক, তুমি ১০০% নিরাপদ আছো এবং তোমার মাথা পুরোপুরি ঠিক আছে।</h3>
+      <p class="card-story" style="font-size:0.96rem;margin-bottom:12px;">
+        যখন শরীরে ডোপামিন কমে যায় বা মন ক্লান্ত থাকে, তখন মস্তিষ্ক অ্যাড্রেনালিন ছুটিয়ে ভয় দেখায় (<em>"আমি কি পাগল হয়ে যাচ্ছি? আমার কি স্মৃতি চলে যাচ্ছে?"</em>) আর পুরোনো ১৫-২০ বছরের অনুশোচনা খুঁড়ে বের করে <strong>Compulsive Confession</strong> করাতে চায়। <strong>এই মুহূর্তে পুরোনো কথা ভাবা ১০০% বন্ধ—আগে শরীর থেকে অ্যাড্রেনালিন নামাও:</strong>
+      </p>
+
+      <div class="prompt-box" style="background:#EFF6FF;border-color:#BFDBFE;">
+        <div class="prompt-lbl" style="color:#1D4ED8;">১. ❄️ ঠান্ডা জলের ডাইভ রিফ্লেক্স (৩০ সেকেন্ড):</div>
+        <p style="font-size:0.94rem;color:#1E3A8A;">বেসিনে গিয়ে দু-হাতে ঠান্ডা জল নিয়ে বন্ধ চোখের পাতায় আর গালে ৫ সেকেন্ড করে ৪ বার চেপে ধরো। এটা সাথে সাথে হার্টবিট কমিয়ে কান্নার বা প্যানিকের দমক থামিয়ে দেয়।</p>
+      </div>
+
+      <div class="prompt-box" style="background:#FEF3C7;border-color:#FDE68A;">
+        <div class="prompt-lbl" style="color:#B45309;">২. 🧱 ২০ সেকেন্ড দেয়ালে জোর ধাক্কা (Fight-or-Flight Burn):</div>
+        <p style="font-size:0.94rem;color:#78350F;">পাকা দেয়ালে দু-হাত রেখে ২০ সেকেন্ড গায়ের জোরে ঠেলো, তারপর হাত নামিয়ে লম্বা শ্বাস ছাড়ো। শরীরের সব অতিরিক্ত অ্যাড্রেনালিন পেশী দিয়ে বেরিয়ে যাবে।</p>
+        <div style="text-align:center;">
+          <div id="sosTimerDisplay" class="timer-pill">২০ সেকেন্ড</div><br/>
+          <button class="btn btn-primary" style="max-width:240px;margin-top:6px;" onclick="startSosTimer(20)">⏱️ ২০ সেকেন্ডের টাইমার চালাও</button>
+        </div>
+      </div>
+
+      <div class="prompt-box" style="background:#F0FDFA;border-color:#99F6E4;">
+        <div class="prompt-lbl">৩. 🔒 অ্যান্টি-কনফেশন শিল্ড (Anti-Confession Lock):</div>
+        <p style="font-size:0.94rem;color:var(--ink-2);">
+          ১৪, ১৭, ২৬ বা ৩০ বছর বয়সের কোনো ভুলের জন্য আজকের ৩৩ বছরের কৌশিক কোনো আসামি নয়। তোমার জামিন (Bail) ১০০% শোধ হয়ে গেছে। আজ আর কোনো পুরোনো স্মৃতি ঘাঁটবে না।
+        </p>
+      </div>
+
+      <div class="btn-row">
+        <a class="btn" href="tel:14416" style="background:#FFF1F2;color:#BE123C;border-color:#FECDD3;">📞 Tele-MANAS (14416 — 24/7 Free)</a>
+        <button class="btn btn-primary" onclick="closeSosModal()">🌿 আমার শরীর এখন অনেকটা শান্ত</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastEl" class="toast"></div>
+
+  <script>
+    /*__ANANDO_DATA_INJECT__*/
+
+    const PILLARS_DATA = [
+      {
+        badge: "১. 🚨 প্যানিক ও ঝড়ের সুইচ",
+        title: "Acute Panic & Compulsive Confession Brake",
+        detail: "যখনই মনে হবে ‘মাথা খারাপ হয়ে যাচ্ছে’ বা পুরোনো ভুল স্বীকার করার তাড়া আসবে—জানবে ওটা শুধু ডোপামিন কমে যাওয়ার অ্যাড্রেনালিন অ্যালার্ম। সাথে সাথে চোখে ঠান্ডা জল দাও আর দেয়ালে ২০ সেকেন্ড ধাক্কা দাও।"
+      },
+      {
+        badge: "২. 🕊️ অপরাধবোধ থেকে মুক্তি (Amnesty)",
+        title: "১৪, ১৭, ২৬ ও ৩০ বছরের ভুলের পূর্ণ ক্ষমা",
+        detail: "কৈশোরের না-বোঝা ভুল বা ৩০ বছরের একাকীত্বের ভুলের জন্য ৩৩ বছরের সচেতন মানুষটাকে আর শাস্তি দিও না। ভুল থেকে শিক্ষা নেওয়া হয়ে গেছে—তোমার কোনো বকেয়া ঋণ নেই।"
+      },
+      {
+        badge: "৩. 🛡️ একা কেয়ারটেকারের ছুটি",
+        title: "সন্ধে ৬টার পর ‘ফ্যামিলি রেসকিউয়ার’ ডিউটি বন্ধ",
+        detail: "মায়ের অ্যাপ তৈরি, ফিনান্স অটোমেটেড, L5 প্রমোশন ডান। অফিস আর মায়ের খোঁজ নেওয়ার পর বাকি সময়টা ১০০% তোমার নিজের খেলার ও বিশ্রামের সময়।"
+      },
+      {
+        badge: "৪. 🍋 First-Press Abundance (No Kiptemi)",
+        title: "সেরা জিনিসটা সবার আগে নিজের জন্য নাও",
+        detail: "৪ টাকার লেবু বারবার নিংড়ে তেতো করবে না। নিজের গ্রুমিং, ভালো খাবার, আরাম আর আনন্দের খরচে জিরো দ্বিধা (Zero Hesitation)।"
+      },
+      {
+        badge: "৫. 🦁 জোরবা শরীর ও ভঙ্গি",
+        title: "দুই পায়ে সমান ভর, চওড়া কাঁধ ও নরম পেট",
+        detail: "৩০ সেকেন্ড ডেড-হ্যাং (Dead Hang), খালি পায়ে আর্চ ডোম (Arch Dome), আর পেট ও চোয়াল ঢিলে রাখা। উচ্চতা বা শরীর নিয়ে কোনো সংকোচ নয়—তোমার হাসি ও উপস্থিতিই তোমার আসল আকর্ষণ।"
+      },
+      {
+        badge: "৬. 🧠 ফুরফুরে ৪-স্লট ওয়ার্কিং মেমোরি",
+        title: "20% Tourist Pass বনাম 100% Deep Dive",
+        detail: "দিনের ৯০% সাধারণ কাজে গভীরে ঢুকবে না—শুধু ১টা নির্বাচিত কাজে ডিপ ডাইভ দাও। ব্রেকের আগে ১ লাইনের # NEXT: লিখে ল্যাপটপ নামাও।"
+      },
+      {
+        badge: "৭. 🎸 খেলার মাঠ (Engine 2: Play Fuel)",
+        title: "ডিউটির বদলে গান, গিটার, বোল্ডারিং ও আড্ডা",
+        detail: "জীবনকে অর্থহীন মনে হয় যখন ১০০% শক্তি শুধু ‘ডিউটি’তে যায়। প্রতিদিন অন্তত ১টা কাজ করো যার কোনো ‘উপকারিতা’ নেই—শুধু নিজের মজা পাওয়ার জন্য!"
+      }
+    ];
+
+    const audioEl = new Audio();
+    audioEl.preload = "auto";
+    let activeLabel = "";
+    let chainNextGameOnEnd = false;
+
+    let curDay = 1;
+    let curGame = 0;
+    let curSlide = 0;
+    let curQuote = 0;
+    let sosInterval = null;
+    const STORAGE_KEY = "anando_koushik_done_v1";
+    let doneMap = {};
+    try {
+      doneMap = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    } catch (e) { doneMap = {}; }
+
+    function toBn(n) {
+      return String(n).replace(/[0-9]/g, d => "০১২৩৪৫৬৭৮৯"[d]);
+    }
+
+    function playUrl(url, label, chainToGame) {
+      if (!url) return;
+      chainNextGameOnEnd = !!chainToGame;
+      activeLabel = label || "🔊 চলছে...";
+      audioEl.pause();
+      audioEl.src = url;
+      audioEl.currentTime = 0;
+      const p = audioEl.play();
+      if (p && p.catch) p.catch(() => {});
+      syncAudioBar();
+    }
+
+    function toggleAudioPauseResume() {
+      if (!audioEl.src) return;
+      if (audioEl.paused) {
+        const p = audioEl.play();
+        if (p && p.catch) p.catch(() => {});
+      } else {
+        audioEl.pause();
+      }
+      syncAudioBar();
+    }
+
+    function stopAudio() {
+      chainNextGameOnEnd = false;
+      audioEl.pause();
+      audioEl.currentTime = 0;
+      document.getElementById("nowPlayingBar").classList.remove("visible");
+    }
+
+    function syncAudioBar() {
+      const bar = document.getElementById("nowPlayingBar");
+      const lbl = document.getElementById("npLabel");
+      const btn = document.getElementById("npToggleBtn");
+      if (!audioEl.src) {
+        bar.classList.remove("visible");
+        return;
+      }
+      bar.classList.add("visible");
+      lbl.textContent = activeLabel;
+      btn.textContent = audioEl.paused ? "▶️ চালাও" : "⏸️ থামাও";
+    }
+
+    audioEl.addEventListener("play", syncAudioBar);
+    audioEl.addEventListener("pause", syncAudioBar);
+    audioEl.addEventListener("ended", () => {
+      if (chainNextGameOnEnd) {
+        chainNextGameOnEnd = false;
+        playGameVoice(curDay, curGame);
+      } else {
+        document.getElementById("nowPlayingBar").classList.remove("visible");
+      }
+    });
+
+    function playDayVoice(chainToOpenGame) {
+      const dObj = ANANDO_DATA.days[curDay - 1];
+      if (!dObj) return;
+      playUrl(dObj.audio_url, `🔊 দিন ${toBn(curDay)}: আজকের কথা`, chainToOpenGame);
+    }
+
+    function playGameVoice(dNum, gIdx) {
+      const dObj = ANANDO_DATA.days[dNum - 1];
+      if (!dObj || !dObj.games[gIdx]) return;
+      const g = dObj.games[gIdx];
+      playUrl(g.audio_url, `🔊 ${g.short}: ${g.title}`, false);
+    }
+
+    function playCurrentQuote() {
+      const q = ANANDO_DATA.quotes[curQuote];
+      if (q) playUrl(q.audio_url, "🔊 আজকের অনুপ্রেরণা", false);
+    }
+
+    function playCurrentSlide() {
+      const s = ANANDO_DATA.slides[curSlide];
+      if (s) playUrl(s.audio_url, `🔊 চিঠি (${s.badge})`, false);
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toastEl");
+      el.textContent = msg;
+      el.style.display = "block";
+      clearTimeout(window._tTimer);
+      window._tTimer = setTimeout(() => { el.style.display = "none"; }, 3200);
+    }
+
+    function switchTab(tab) {
+      ["play", "letter", "pillars"].forEach(t => {
+        document.getElementById("view" + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle("active", t === tab);
+        document.getElementById("tab" + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle("active", t === tab);
+      });
+      if (tab === "letter") {
+        curQuote = (curQuote + 1) % ANANDO_DATA.quotes.length;
+        renderLetterView();
+        playCurrentSlide();
+      }
+    }
+
+    function toggleOffDutyMode() {
+      const el = document.getElementById("offDutyStatus");
+      el.innerHTML = "✅ <strong>কেয়ারটেকার শিফট অফ:</strong> এখন তুমি কারোর ত্রাতা নও—এখন ১০০% নিজের আনন্দে, গানে আর আরামে থাকার সময়!";
+      showToast("🌿 কেয়ারটেকার ইউনিফর্ম খুলে রাখা হয়েছে—এখন শুধু তোমার নিজের সময়!");
+    }
+
+    function renderPlayView() {
+      const strip = document.getElementById("dayStrip");
+      strip.innerHTML = ANANDO_DATA.days.map(d => {
+        const allDone = d.games.every((_, idx) => doneMap[d.day + "_" + idx]);
+        const cls = "day-chip" + (d.day === curDay ? " active" : "") + (allDone ? " done" : "");
+        return `<button class="${cls}" onclick="selectDay(${d.day}, true)">${allDone ? "✅ " : ""}দিন ${toBn(d.day)}</button>`;
+      }).join("");
+
+      const dObj = ANANDO_DATA.days[curDay - 1];
+      document.getElementById("heroDayTitle").textContent = `দিন ${toBn(dObj.day)} • ${dObj.title}`;
+      document.getElementById("heroDaySub").textContent = dObj.sub;
+
+      const grid = document.getElementById("gameGrid");
+      grid.innerHTML = dObj.games.map((g, idx) => {
+        const isDone = !!doneMap[curDay + "_" + idx];
+        const cls = "game-tile" + (idx === curGame ? " active" : "") + (isDone ? " done" : "");
+        return `<button class="${cls}" onclick="selectGame(${idx}, true)">${isDone ? "✅ " : ""}${g.short}</button>`;
+      }).join("");
+
+      const ag = dObj.games[curGame] || dObj.games[0];
+      const isDone = !!doneMap[curDay + "_" + curGame];
+      document.getElementById("activeGameStage").innerHTML = `
+        <article class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+            <span class="card-badge" style="margin:0;">${ag.category}</span>
+            <button class="tab-btn" style="background:var(--brand-soft);color:var(--brand);border-color:#5EEAD4;" onclick="playGameVoice(${curDay}, ${curGame})">🔊 এই খেলাটি শোনো</button>
+          </div>
+          <h2 class="card-title">${ag.title}</h2>
+          <p class="card-story">${ag.detail}</p>
+          <div class="reframe-box">${ag.reframe}</div>
+          <div class="prompt-box">
+            <div class="prompt-lbl">🎙️ নিজের বন্ধু ও দার্শনিক জেমিনির সাথে আড্ডা দেওয়ার কথা:</div>
+            <div class="prompt-txt">“${ag.prompt}”</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="copyPrompt('${ag.prompt.replace(/'/g, "\\'")}')">📋 প্রম্পট কপি করো</button>
+            <button class="btn ${isDone ? 'btn-done' : ''}" onclick="toggleDone(${curDay}, ${curGame})">
+              ${isDone ? '✅ নিজের আনন্দে করেছি' : '⬜ আমি এটা উপভোগ করেছি'}
+            </button>
+          </div>
+          <div class="btn-row" style="margin-top:10px;">
+            <button class="btn" ${curGame <= 0 ? "disabled" : ""} onclick="selectGame(${curGame - 1}, true)">⬅️ আগের খেলা</button>
+            <button class="btn" ${curGame >= dObj.games.length - 1 ? "disabled" : ""} onclick="selectGame(${curGame + 1}, true)">পরের খেলা ➡️</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function selectDay(d, autoPlay) {
+      curDay = d;
+      curGame = 0;
+      renderPlayView();
+      if (autoPlay) playDayVoice(true);
+    }
+
+    function selectGame(idx, autoPlay) {
+      const dObj = ANANDO_DATA.days[curDay - 1];
+      curGame = Math.max(0, Math.min(dObj.games.length - 1, idx));
+      renderPlayView();
+      if (autoPlay) playGameVoice(curDay, curGame);
+    }
+
+    function toggleDone(d, idx) {
+      const k = d + "_" + idx;
+      doneMap[k] = !doneMap[k];
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(doneMap)); } catch (e) {}
+      if (doneMap[k]) {
+        showToast("⚡ দারুণ কৌশিক! নিজের আনন্দে আরেকটা ধাপ উপভোগ করলে!");
+        const dObj = ANANDO_DATA.days[d - 1];
+        if (idx + 1 < dObj.games.length) {
+          curGame = idx + 1;
+          renderPlayView();
+          playGameVoice(d, curGame);
+          return;
+        }
+      }
+      renderPlayView();
+    }
+
+    function copyPrompt(txt) {
+      if (navigator.clipboard) navigator.clipboard.writeText(txt);
+      showToast("📋 প্রম্পট কপি হয়েছে—এবার জেমিনি খুলে পেস্ট করো বা মুখে বলো!");
+    }
+
+    function nextQuote(autoPlay) {
+      curQuote = (curQuote + 1) % ANANDO_DATA.quotes.length;
+      document.getElementById("quoteBox").textContent = "“" + ANANDO_DATA.quotes[curQuote].text + "”";
+      if (autoPlay) playCurrentQuote();
+    }
+
+    function renderLetterView() {
+      document.getElementById("quoteBox").textContent = "“" + ANANDO_DATA.quotes[curQuote].text + "”";
+      const s = ANANDO_DATA.slides[curSlide];
+      const dotsHtml = ANANDO_DATA.slides.map((item, idx) =>
+        `<button class="slide-dot ${idx === curSlide ? 'active' : ''}" onclick="goToSlide(${idx}, true)"></button>`
+      ).join("");
+      const imgHtml = s.img_b64 ? `
+        <div class="slide-img-wrap">
+          <img class="slide-img" src="${s.img_b64}" alt="${s.title}" />
+        </div>` : "";
+
+      document.getElementById("letterStage").innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <span class="card-badge" style="margin:0;">${s.badge}</span>
+          <button class="tab-btn" style="background:var(--brand-soft);color:var(--brand);border-color:#5EEAD4;" onclick="playCurrentSlide()">🔊 চিঠির এই পাতাটি শোনো</button>
+        </div>
+        ${imgHtml}
+        <div class="slide-dots">${dotsHtml}</div>
+        <h2 class="card-title">${s.title}</h2>
+        <div class="reframe-box" style="font-weight:700;">✨ ${s.highlight}</div>
+        <p class="card-story">${s.text}</p>
+        <div class="btn-row">
+          <button class="btn" ${curSlide <= 0 ? "disabled" : ""} onclick="changeSlide(-1, true)">⬅️ আগের পাতা</button>
+          <button class="btn btn-primary" ${curSlide >= ANANDO_DATA.slides.length - 1 ? "disabled" : ""} onclick="changeSlide(1, true)">পরের পাতা ➡️</button>
+        </div>
+      `;
+    }
+
+    function goToSlide(idx, autoPlay) {
+      curSlide = idx;
+      renderLetterView();
+      if (autoPlay) playCurrentSlide();
+    }
+
+    function changeSlide(delta, autoPlay) {
+      curSlide = Math.max(0, Math.min(ANANDO_DATA.slides.length - 1, curSlide + delta));
+      renderLetterView();
+      if (autoPlay) playCurrentSlide();
+    }
+
+    function renderPillarsView() {
+      document.getElementById("pillarsContainer").innerHTML = PILLARS_DATA.map(p => `
+        <div class="prompt-box" style="margin-bottom:0;">
+          <div class="prompt-lbl">${p.badge} — ${p.title}</div>
+          <p style="font-size:0.96rem;color:var(--ink-2);">${p.detail}</p>
+        </div>
+      `).join("");
+    }
+
+    function openSosModal() {
+      document.getElementById("sosModal").classList.add("open");
+    }
+
+    function closeSosModal() {
+      document.getElementById("sosModal").classList.remove("open");
+      if (sosInterval) clearInterval(sosInterval);
+    }
+
+    function startSosTimer(sec) {
+      if (sosInterval) clearInterval(sosInterval);
+      let rem = sec;
+      const el = document.getElementById("sosTimerDisplay");
+      el.textContent = toBn(rem) + " সেকেন্ড";
+      sosInterval = setInterval(() => {
+        rem--;
+        if (rem <= 0) {
+          clearInterval(sosInterval);
+          el.textContent = "✅ ২০ সেকেন্ড সম্পূর্ণ! এবার লম্বা শ্বাস ছাড়ো।";
+        } else {
+          el.textContent = toBn(rem) + " সেকেন্ড";
+        }
+      }, 1000);
+    }
+
+    renderPlayView();
+    renderLetterView();
+    renderPillarsView();
+  </script>
+</body>
+</html>
