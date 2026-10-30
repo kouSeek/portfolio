@@ -103,7 +103,23 @@ function buildAgendaCardHtml(d, ag, idx) {
   const isDone = !!doneMap[d.day + '_' + idx];
   const btnId = `btnAgPlay_${d.day}_${idx}`;
   const accent = ag.accent || GAME_ACCENTS[idx] || 'terra';
-  const isSongGame = (ag.category || '').includes('গান') || (ag.detail_bn || '').includes('ইউটিউব মিউজিক');
+  const catStr = (ag.category || '') + ' ' + (ag.short_bn || '');
+  const isSongGame = (ag.category || '').includes('🎵') || (ag.prompt_bn || '').includes('ইউটিউব মিউজিক');
+
+  let stepHeading = '✨ মা, আজ কী করবো দেখো:';
+  if (isSongGame) {
+    stepHeading = '🎵 মা, আজকের গান ও মনের টান:';
+  } else if (catStr.includes('📖') || catStr.includes('গল্প')) {
+    stepHeading = '📖 মা, আজকের গল্প ও মনের কথা:';
+  } else if (catStr.includes('🌿') || catStr.includes('মনের আরাম') || catStr.includes('মনের আনন্দ')) {
+    stepHeading = '🌿 মা, আজকের মনের আরাম ও ভাবনা:';
+  } else if (catStr.includes('🌍') || catStr.includes('জানাশোনা') || catStr.includes('বিস্ময়')) {
+    stepHeading = '🌍 মা, আজকের অবাক করা জানাশোনা:';
+  } else if (catStr.includes('🔤') || catStr.includes('ইংরেজি')) {
+    stepHeading = '🔤 মা, আজকের সহজ ইংরেজি খেলা:';
+  } else if (catStr.includes('🎨') || catStr.includes('আঁকা') || catStr.includes('সৃষ্টি')) {
+    stepHeading = '🎨 মা, আজকের নিজের খুশির সৃষ্টি:';
+  }
 
   const ytMusicGuideHtml = isSongGame ? `
       <div class="agenda-prompt-box yt-music-box">
@@ -111,9 +127,13 @@ function buildAgendaCardHtml(d, ag, idx) {
         <div class="agenda-detail" style="font-size:1.01rem;">মা, ফোনের জেমিনির ইউটিউব মিউজিকের সাথে সরাসরি যোগ আছে। যেকোনো গান শুনতে ইচ্ছে করলেই শুধু মাইক 🎙️ ছুঁয়ে মুখে বলবে:<br><strong>“জেমিনি, ইউটিউব মিউজিকে ‘[গানের নাম বা যেকোনো লাইন]’ গানটা চালিয়ে দাও।”</strong><br>গানের পুরো নাম মনে না থাকলেও চলবে—গানের যেকোনো একটা লাইন বলে এইটুকু বললেই ও নিজে থেকে ইউটিউব মিউজিক খুলে গানটা বাজিয়ে দেবে!</div>
       </div>` : '';
 
+  const followupLabel = isSongGame
+    ? '💬 গানটা শোনা হয়ে গেলে এর মানে আর গল্পটা জানতে জেমিনিকে বলো:'
+    : '💬 জেমিনির উত্তরটা শোনার পর গল্পটা আরও জমাতে দ্বিতীয় কথায় বলো:';
+
   const followupHtml = ag.followup_prompt_bn ? `
       <div class="agenda-prompt-box">
-        <div class="agenda-prompt-label">💬 গানটা শোনা হয়ে গেলে এর মানে আর গল্পটা জানতে জেমিনিকে বলো:</div>
+        <div class="agenda-prompt-label">${followupLabel}</div>
         <div class="agenda-prompt-speech">“${ag.followup_prompt_bn}”</div>
       </div>` : '';
 
@@ -128,7 +148,7 @@ function buildAgendaCardHtml(d, ag, idx) {
       </div>
       <div class="agenda-title">${ag.title_bn}</div>
       <div class="step-section">
-        <div class="agenda-step-heading">✨ মা, আজ কী করবো দেখো:</div>
+        <div class="agenda-step-heading">${stepHeading}</div>
         <div class="agenda-detail">${ag.detail_bn}</div>
       </div>${ytMusicGuideHtml}
       <div class="agenda-prompt-box">

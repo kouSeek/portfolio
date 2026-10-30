@@ -196,6 +196,22 @@ const audio = getEl('audioPlayer');
   assert.ok(!stageHtml.includes('খেলা ১'), 'Game buttons must not contain duplicate খেলা ১');
   assert.ok(!stageHtml.includes('১. '), 'Game buttons must not contain ১. prefix');
 
+  // 2b. Card Inner Headers match game type (Non-song Gemini task vs. Song game):
+  assert.ok(
+    stageHtml.includes('💬 জেমিনির উত্তরটা শোনার পর গল্পটা আরও জমাতে দ্বিতীয় কথায় বলো:'),
+    'Non-song 2-turn game must show conversational follow-up header, NEVER song follow-up header'
+  );
+  assert.ok(
+    !stageHtml.includes('গানটা শোনা হয়ে গেলে এর মানে আর গল্পটা জানতে জেমিনিকে বলো:'),
+    'Non-song game card must NEVER display the song follow-up header'
+  );
+  // Select Day 1 Game 2 (Song game) and verify song headers appear on song card:
+  selectGame(2, false);
+  const songStageHtml = getEl('activeDayStage').innerHTML;
+  assert.ok(songStageHtml.includes('🎵 মা, আজকের গান ও মনের টান:'));
+  assert.ok(songStageHtml.includes('💬 গানটা শোনা হয়ে গেলে এর মানে আর গল্পটা জানতে জেমিনিকে বলো:'));
+  selectGame(0, false);
+
   // 3. Sequential Day Locking: Day 2..51 are locked until Day 1 is finished
   assert.strictEqual(isDayUnlocked(1), true);
   assert.strictEqual(isDayUnlocked(2), false);

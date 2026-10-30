@@ -155,6 +155,14 @@ def run_quality_gate(verbose: bool = True) -> tuple[bool, list[str], dict[str, i
             if "🤸‍♀️" in ag.get("short_bn", "") or "ফ্রি-হ্যান্ড ব্যায়াম" in ag.get("short_bn", ""):
                 issues.append(f"Day {d['day']} Game #{idx} still has removed physio slot in DAYS_21.")
 
+    # 2b. Verify UI Card Header Context-Sensitivity in src/js/plan-view.js
+    with open(os.path.join(ROOT, "src", "js", "plan-view.js"), "r", encoding="utf-8") as f_js:
+        plan_view_js = f_js.read()
+    if "জেমিনির উত্তরটা শোনার পর গল্পটা আরও জমাতে দ্বিতীয় কথায় বলো:" not in plan_view_js:
+        issues.append("src/js/plan-view.js missing non-song conversational follow-up header.")
+    if "const followupLabel = isSongGame" not in plan_view_js:
+        issues.append("src/js/plan-view.js must branch followupLabel on isSongGame so non-song cards never say 'গানটা শোনা হয়ে গেলে'.")
+
     # 3. Audit all 259 games across Days 1..51
     all_days = list(DAYS_21) + list(DAYS_PART2_30)
     total_games = 0
