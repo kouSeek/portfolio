@@ -323,22 +323,49 @@ function el(id) {
   }
   return els[id];
 }
+const audioListeners = {};
 const ctx = {
   window: {},
-  document: { getElementById: el, querySelectorAll: () => [] },
+  document: { getElementById: el, querySelectorAll: () => [], addEventListener() {}, removeEventListener() {} },
   Audio: function() {
     return {
       preload: '', paused: true, ended: false, duration: 30, currentTime: 0,
-      addEventListener() {},
+      addEventListener(ev, fn) { audioListeners[ev] = fn; },
       pause() { this.paused = true; },
       play() { this.paused = false; return Promise.resolve(); }
     };
   },
   localStorage: { getItem: () => null, setItem: () => {} },
   navigator: { clipboard: { writeText: () => {} } },
-  setTimeout, clearTimeout, setInterval, clearInterval, console
+  setTimeout, clearTimeout, setInterval, clearInterval, console, assert, audioListeners
 };
-vm.runInNewContext(code, ctx, {filename: 'koushik-bundle.js'});
+const scriptAndTests = code + `
+;(function() {
+  // 1. Initial page load auto-starts day_main_1 and chains into ag_1_0 on ended
+  assert.strictEqual(activeAudioKey, 'day_main_1', 'Initial load must auto-start day_main_1');
+  audioListeners['ended']();
+  assert.strictEqual(activeAudioKey, 'ag_1_0', 'After day_main_1 ends, must auto-start ag_1_0');
+
+  // 2. Selecting any game auto-starts its voice
+  selectGame(1);
+  assert.strictEqual(activeAudioKey, 'ag_1_1', 'selectGame(1) must auto-start ag_1_1');
+
+  // 3. Selecting any day auto-starts its day overview voice and chains into its first open game
+  selectDay(2);
+  assert.strictEqual(activeAudioKey, 'day_main_2', 'selectDay(2) must auto-start day_main_2');
+  audioListeners['ended']();
+  assert.strictEqual(activeAudioKey, 'ag_2_0', 'After day_main_2 ends, must auto-start ag_2_0');
+
+  // 4. Switching tabs auto-starts voice on every page (letter, pillars, play)
+  switchTab('letter');
+  assert.strictEqual(activeAudioKey, 'slide_1', 'switchTab(letter) must auto-start slide_1');
+  switchTab('pillars');
+  assert.strictEqual(activeAudioKey, 'pillar_0', 'switchTab(pillars) must auto-start pillar_0');
+  switchTab('play');
+  assert.strictEqual(activeAudioKey, 'day_main_2', 'switchTab(play) must auto-start active day voice');
+})();
+`;
+vm.runInNewContext(scriptAndTests, ctx, {filename: 'koushik-bundle.js'});
 assert.ok(els['dayStrip'].innerHTML.includes('দিন ১'), 'dayStrip must render');
 assert.ok(els['gameGrid'].innerHTML.length > 50, 'gameGrid must render game tiles');
 assert.ok(els['activeGameStage'].innerHTML.includes('card-top-bar'), 'activeGameStage must render top inline controls');

@@ -30,7 +30,7 @@ function renderSlideDots() {
     dot.className = 'slide-dot' + (idx === curSlideIdx ? ' active' : '');
     dot.textContent = toBnDigits(idx + 1);
     dot.setAttribute('aria-label', 'চিঠির পাতা ' + (idx + 1));
-    dot.onclick = () => goToSlide(idx, false);
+    dot.onclick = () => goToSlide(idx, true);
     dotsRow.appendChild(dot);
   });
 }

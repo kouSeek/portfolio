@@ -11,9 +11,11 @@ function switchView(mode) {
 
   if (mode === 'plan') {
     renderPlanView();
+    toggleDayOverviewAudio();
   } else if (mode === 'slides') {
     pickNewRandomQuote(false);
     renderSlide();
+    toggleSlideAudio();
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }

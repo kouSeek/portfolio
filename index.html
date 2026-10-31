@@ -2101,7 +2101,7 @@ function renderSlideDots() {
     dot.className = 'slide-dot' + (idx === curSlideIdx ? ' active' : '');
     dot.textContent = toBnDigits(idx + 1);
     dot.setAttribute('aria-label', 'চিঠির পাতা ' + (idx + 1));
-    dot.onclick = () => goToSlide(idx, false);
+    dot.onclick = () => goToSlide(idx, true);
     dotsRow.appendChild(dot);
   });
 }
@@ -2177,9 +2177,11 @@ function switchView(mode) {
 
   if (mode === 'plan') {
     renderPlanView();
+    toggleDayOverviewAudio();
   } else if (mode === 'slides') {
     pickNewRandomQuote(false);
     renderSlide();
+    toggleSlideAudio();
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }

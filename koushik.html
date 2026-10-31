@@ -780,7 +780,10 @@
     let curGame = 0;
     let curSlide = 0;
     let curQuote = 0;
+    let curPillar = 0;
     let autoAdvanceSlides = true;
+    let autoWelcomeSucceeded = false;
+    let autoWelcomeFallbackArmed = false;
     let sosInterval = null;
 
     const STORAGE_KEY = "anando_koushik_done_v1";
@@ -869,7 +872,7 @@
       syncAllAudioButtonsUI(false);
     }
 
-    function playOrToggleAudio(btnId, audioKey, srcUrl, titleText) {
+    function playOrToggleAudio(btnId, audioKey, srcUrl, titleText, onBlockedCallback) {
       if (!srcUrl) return;
       if (activeAudioKey === audioKey && !audioEl.paused) {
         audioEl.pause();
@@ -890,7 +893,67 @@
       audioEl.currentTime = 0;
       syncAllAudioButtonsUI(true);
       const p = audioEl.play();
-      if (p && p.catch) p.catch(() => stopAllAudio());
+      if (p && p.then) {
+        p.then(() => {
+          autoWelcomeSucceeded = true;
+          detachAutoWelcomeGestureFallback();
+        }).catch(() => {
+          stopAllAudio();
+          if (typeof onBlockedCallback === "function") onBlockedCallback();
+        });
+      }
+    }
+
+    function onFirstGestureWelcomeUnlock(ev) {
+      detachAutoWelcomeGestureFallback();
+      if (autoWelcomeSucceeded || !audioEl.paused || activeAudioKey) return;
+      const explicitTarget = (ev && ev.target && typeof ev.target.closest === "function")
+        ? ev.target.closest("#topPlayBtn, #btnDayMainPlay, .ag-btn, .game-tile, .day-chip, .day-nav-btn, .tab-btn, .slide-dot, .big-voice-btn")
+        : null;
+      if (explicitTarget) return;
+      autoWelcomeSucceeded = true;
+      if (curTab === "letter") toggleSlideAudio();
+      else if (curTab === "pillars") togglePillarVoice(curPillar);
+      else toggleDayVoice();
+    }
+
+    function attachAutoWelcomeGestureFallback() {
+      if (autoWelcomeFallbackArmed || !document.addEventListener) return;
+      autoWelcomeFallbackArmed = true;
+      document.addEventListener("pointerdown", onFirstGestureWelcomeUnlock, true);
+      document.addEventListener("touchstart", onFirstGestureWelcomeUnlock, true);
+      document.addEventListener("keydown", onFirstGestureWelcomeUnlock, true);
+    }
+
+    function detachAutoWelcomeGestureFallback() {
+      if (!autoWelcomeFallbackArmed || !document.removeEventListener) return;
+      autoWelcomeFallbackArmed = false;
+      document.removeEventListener("pointerdown", onFirstGestureWelcomeUnlock, true);
+      document.removeEventListener("touchstart", onFirstGestureWelcomeUnlock, true);
+      document.removeEventListener("keydown", onFirstGestureWelcomeUnlock, true);
+    }
+
+    function preloadGameAudio(dNum, gIdx) {
+      try {
+        const dObj = ANANDO_DATA.days[dNum - 1];
+        if (!dObj || !dObj.games[gIdx] || typeof Audio !== "function") return;
+        const pre = new Audio();
+        pre.preload = "auto";
+        pre.src = dObj.games[gIdx].audio_url;
+      } catch (e) {}
+    }
+
+    function engageProactiveWelcomeAudio() {
+      const dObj = ANANDO_DATA.days[curDay - 1];
+      if (!dObj) return;
+      preloadGameAudio(curDay, curGame);
+      playOrToggleAudio(
+        "btnDayMainPlay",
+        "day_main_" + curDay,
+        dObj.audio_url,
+        `দিন ${toBn(curDay)}: আজকের কথা`,
+        attachAutoWelcomeGestureFallback
+      );
     }
 
     audioEl.addEventListener("timeupdate", () => {
@@ -904,13 +967,18 @@
         setTimeout(() => goToSlide(curSlide + 1, true), 800);
       } else if (curTab === "play" && finishedKey && finishedKey.startsWith("day_main_")) {
         toggleGameVoice(curDay, curGame);
+      } else if (curTab === "pillars" && finishedKey && finishedKey.startsWith("pillar_") && curPillar < PILLARS_DATA.length - 1) {
+        curPillar++;
+        renderPillarsView();
+        setTimeout(() => togglePillarVoice(curPillar), 700);
       }
     });
 
     function toggleDayVoice() {
       const dObj = ANANDO_DATA.days[curDay - 1];
       if (!dObj) return;
-      playOrToggleAudio("btnDayMainPlay", "day_main_" + curDay, dObj.audio_url, `দিন ${toBn(curDay)}: আজকের কথা`);
+      preloadGameAudio(curDay, curGame);
+      playOrToggleAudio("btnDayMainPlay", "day_main_" + curDay, dObj.audio_url, `দিন ${toBn(curDay)}: আজকের কথা`, attachAutoWelcomeGestureFallback);
     }
 
     function toggleGameVoice(dNum, gIdx) {
@@ -918,19 +986,27 @@
       if (!dObj || !dObj.games[gIdx]) return;
       const g = dObj.games[gIdx];
       const key = `ag_${dNum}_${gIdx}`;
-      playOrToggleAudio(`btnAgPlay_${dNum}_${gIdx}`, key, g.audio_url, g.short);
+      playOrToggleAudio(`btnAgPlay_${dNum}_${gIdx}`, key, g.audio_url, g.short, attachAutoWelcomeGestureFallback);
     }
 
     function toggleQuoteAudio() {
       const q = ANANDO_DATA.quotes[curQuote];
       if (!q) return;
-      playOrToggleAudio("btnQuotePlay", "quote_" + curQuote, q.audio_url, "আজকের অনুপ্রেরণা");
+      playOrToggleAudio("btnQuotePlay", "quote_" + curQuote, q.audio_url, "আজকের অনুপ্রেরণা", attachAutoWelcomeGestureFallback);
     }
 
     function toggleSlideAudio() {
       const s = ANANDO_DATA.slides[curSlide];
       if (!s) return;
-      playOrToggleAudio("btnSlideMainPlay", "slide_" + s.id, s.audio_url, s.badge);
+      playOrToggleAudio("btnSlideMainPlay", "slide_" + s.id, s.audio_url, s.badge, attachAutoWelcomeGestureFallback);
+    }
+
+    function togglePillarVoice(pIdx) {
+      curPillar = Math.max(0, Math.min(PILLARS_DATA.length - 1, pIdx));
+      const p = PILLARS_DATA[curPillar];
+      const q = ANANDO_DATA.quotes[curPillar % ANANDO_DATA.quotes.length];
+      if (!p || !q) return;
+      playOrToggleAudio(`btnPillarPlay_${curPillar}`, `pillar_${curPillar}`, q.audio_url, p.badge, attachAutoWelcomeGestureFallback);
     }
 
     function toggleMasterAudio() {
@@ -945,6 +1021,8 @@
         return;
       }
       if (curTab === "letter") toggleSlideAudio();
+      else if (curTab === "pillars") togglePillarVoice(curPillar);
+      else if (!autoWelcomeSucceeded && !activeAudioKey) toggleDayVoice();
       else toggleGameVoice(curDay, curGame);
     }
 
@@ -958,15 +1036,21 @@
 
     function switchTab(tab) {
       curTab = tab;
+      stopAllAudio();
       ["play", "letter", "pillars"].forEach(t => {
         document.getElementById("view" + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle("active", t === tab);
         document.getElementById("tab" + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle("active", t === tab);
       });
-      if (tab === "letter") {
+      if (tab === "play") {
+        renderPlayView();
+        toggleDayVoice();
+      } else if (tab === "letter") {
         curQuote = (curQuote + 1) % ANANDO_DATA.quotes.length;
-        stopAllAudio();
         renderLetterView();
         toggleSlideAudio();
+      } else if (tab === "pillars") {
+        renderPillarsView();
+        togglePillarVoice(curPillar);
       }
     }
 
@@ -1046,13 +1130,36 @@
       syncAllAudioButtonsUI(!audioEl.paused);
     }
 
+    function getFirstOpenGameForDay(dNum) {
+      const dObj = ANANDO_DATA.days[dNum - 1];
+      if (!dObj || !dObj.games) return 0;
+      for (let i = 0; i < dObj.games.length; i++) {
+        if (!doneMap[dNum + "_" + i]) return i;
+      }
+      return 0;
+    }
+
+    function findInitialCurrentDay() {
+      for (let i = 0; i < ANANDO_DATA.days.length; i++) {
+        const d = ANANDO_DATA.days[i];
+        const allDone = d.games.every((_, idx) => doneMap[d.day + "_" + idx]);
+        if (!allDone) {
+          curDay = d.day;
+          curGame = getFirstOpenGameForDay(curDay);
+          return;
+        }
+      }
+      curDay = 1;
+      curGame = 0;
+    }
+
     function selectDay(d, autoPlay) {
       if (d < 1 || d > ANANDO_DATA.days.length) return;
       curDay = d;
-      curGame = 0;
+      curGame = getFirstOpenGameForDay(d);
       stopAllAudio();
       renderPlayView();
-      if (autoPlay) toggleDayVoice();
+      if (autoPlay !== false) toggleDayVoice();
     }
 
     function selectGame(idx, autoPlay) {
@@ -1060,7 +1167,7 @@
       curGame = Math.max(0, Math.min(dObj.games.length - 1, idx));
       stopAllAudio();
       renderPlayView();
-      if (autoPlay) toggleGameVoice(curDay, curGame);
+      if (autoPlay !== false) toggleGameVoice(curDay, curGame);
     }
 
     function toggleDone(d, idx) {
@@ -1076,6 +1183,13 @@
           renderPlayView();
           toggleGameVoice(d, curGame);
           return;
+        } else if (d < ANANDO_DATA.days.length) {
+          curDay = d + 1;
+          curGame = getFirstOpenGameForDay(curDay);
+          stopAllAudio();
+          renderPlayView();
+          toggleDayVoice();
+          return;
         }
       }
       renderPlayView();
@@ -1090,7 +1204,7 @@
       curQuote = (curQuote + 1) % ANANDO_DATA.quotes.length;
       document.getElementById("quoteBox").textContent = "“" + ANANDO_DATA.quotes[curQuote].text + "”";
       stopAllAudio();
-      if (autoPlay) toggleQuoteAudio();
+      if (autoPlay !== false) toggleQuoteAudio();
     }
 
     function renderLetterView() {
@@ -1140,20 +1254,24 @@
       curSlide = Math.max(0, Math.min(ANANDO_DATA.slides.length - 1, idx));
       stopAllAudio();
       renderLetterView();
-      if (autoPlay) toggleSlideAudio();
+      if (autoPlay !== false) toggleSlideAudio();
     }
 
     function changeSlide(delta, autoPlay) {
-      goToSlide(curSlide + delta, autoPlay);
+      goToSlide(curSlide + delta, autoPlay !== false);
     }
 
     function renderPillarsView() {
-      document.getElementById("pillarsContainer").innerHTML = PILLARS_DATA.map(p => `
+      document.getElementById("pillarsContainer").innerHTML = PILLARS_DATA.map((p, idx) => `
         <div class="prompt-box" style="margin-bottom:0;">
-          <div class="prompt-lbl">${p.badge} — ${p.title}</div>
+          <div class="prompt-lbl-row">
+            <div class="prompt-lbl">${p.badge} — ${p.title}</div>
+            <button id="btnPillarPlay_${idx}" class="ag-btn listen" style="padding:5px 11px;font-size:0.84rem;" data-default-label="🔊 শোনো" data-audio-key="pillar_${idx}" onclick="togglePillarVoice(${idx})">🔊 শোনো</button>
+          </div>
           <p style="font-size:0.96rem;color:var(--ink-2);">${p.detail}</p>
         </div>
       `).join("");
+      syncAllAudioButtonsUI(!audioEl.paused);
     }
 
     function openSosModal() {
@@ -1181,9 +1299,11 @@
       }, 1000);
     }
 
+    findInitialCurrentDay();
     renderPlayView();
     renderLetterView();
     renderPillarsView();
+    engageProactiveWelcomeAudio();
   </script>
 </body>
 </html>
