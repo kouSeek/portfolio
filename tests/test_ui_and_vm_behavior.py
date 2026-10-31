@@ -293,6 +293,68 @@ vm.runInContext(code + "\n" + testBlock, sandbox, {filename: 'kalyani-bundle.js'
         )
         self.assertEqual(proc.returncode, 0, f"VM test failed: {proc.stderr}")
 
+    def test_koushik_app_vm_rendering_and_inline_audio_controls(self) -> None:
+        """Verify koushik.html (⚡ আনন্দ) compiles cleanly, renders all game & slide content, and has inline audio controls."""
+        k_path = APP_ROOT / "koushik.html"
+        self.assertTrue(k_path.is_file(), "koushik.html must exist")
+        k_html = k_path.read_text(encoding="utf-8")
+        self.assertNotIn("position: fixed;\n      bottom: 0", k_html)
+        self.assertIn('id="topPlayBtn"', k_html)
+        self.assertIn('id="nowPlayingBar"', k_html)
+
+        m = re.search(r"<script>([\s\S]*?)</script>", k_html)
+        self.assertIsNotNone(m, "Missing <script> block in koushik.html")
+
+        vm_harness = r"""
+const fs = require('fs'), vm = require('vm'), assert = require('assert');
+const code = fs.readFileSync(0, 'utf8');
+const els = {};
+function el(id) {
+  if (!els[id]) {
+    els[id] = {
+      id, className: '', innerHTML: '', textContent: '', style: {}, disabled: false,
+      classList: {
+        add(c) { if (!els[id].className.includes(c)) els[id].className += ' ' + c; },
+        remove(c) { els[id].className = els[id].className.replace(c, '').trim(); },
+        toggle(c, b) { if (b) this.add(c); else this.remove(c); }
+      },
+      addEventListener() {}
+    };
+  }
+  return els[id];
+}
+const ctx = {
+  window: {},
+  document: { getElementById: el, querySelectorAll: () => [] },
+  Audio: function() {
+    return {
+      preload: '', paused: true, ended: false, duration: 30, currentTime: 0,
+      addEventListener() {},
+      pause() { this.paused = true; },
+      play() { this.paused = false; return Promise.resolve(); }
+    };
+  },
+  localStorage: { getItem: () => null, setItem: () => {} },
+  navigator: { clipboard: { writeText: () => {} } },
+  setTimeout, clearTimeout, setInterval, clearInterval, console
+};
+vm.runInNewContext(code, ctx, {filename: 'koushik-bundle.js'});
+assert.ok(els['dayStrip'].innerHTML.includes('দিন ১'), 'dayStrip must render');
+assert.ok(els['gameGrid'].innerHTML.length > 50, 'gameGrid must render game tiles');
+assert.ok(els['activeGameStage'].innerHTML.includes('card-top-bar'), 'activeGameStage must render top inline controls');
+assert.ok(els['activeGameStage'].innerHTML.includes('agenda-actions'), 'activeGameStage must render bottom actions');
+assert.ok(els['letterStage'].innerHTML.includes('btnSlideTopPlay'), 'letterStage must render top slide play button');
+assert.ok(els['pillarsContainer'].innerHTML.includes('অপরাধবোধ থেকে মুক্তি'), 'pillarsContainer must render 7 pillars');
+"""
+        proc = subprocess.run(
+            [str(NODE_BIN), "-e", vm_harness],
+            input=m.group(1),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(proc.returncode, 0, f"koushik.html VM test failed: {proc.stderr}")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
