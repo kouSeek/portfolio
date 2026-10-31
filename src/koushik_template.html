@@ -20,6 +20,8 @@
       --border: #E2E8F0;
       --brand: #0F766E;
       --brand-soft: #CCFBF1;
+      --brand-active: #D8522E;
+      --brand-active-soft: #FFF1EC;
       --amber: #B45309;
       --amber-soft: #FEF3C7;
       --rose: #BE123C;
@@ -37,47 +39,53 @@
       background: var(--bg-main);
       color: var(--ink-1);
       line-height: 1.62;
-      padding-bottom: 96px;
+      padding-bottom: 40px;
       -webkit-font-smoothing: antialiased;
     }
 
+    /* Sticky Top Glass Header (Inspired by 🌸 কল্যাণী) */
     .top-bar {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(12px);
+      z-index: 120;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
-      padding: 8px 14px;
+      padding: 6px 12px;
+    }
+    .top-bar-inner {
+      max-width: 680px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
     }
     .brand-wrap {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       font-family: 'Noto Serif Bengali', serif;
       font-weight: 700;
-      font-size: 1.08rem;
+      font-size: 1.05rem;
       color: var(--brand);
+      cursor: pointer;
     }
     .nav-tabs {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       flex-wrap: wrap;
     }
     .tab-btn {
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       background: var(--bg-subtle);
       color: var(--ink-2);
       font-family: inherit;
-      font-size: 0.9rem;
-      font-weight: 600;
-      padding: 6px 12px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      padding: 5px 11px;
       border-radius: 999px;
       cursor: pointer;
       line-height: 1.45;
@@ -88,157 +96,132 @@
       color: #FFFFFF;
       border-color: var(--brand);
     }
+    .hctrl-btn {
+      border: 1.5px solid #F59E0B;
+      background: #FEF3C7;
+      color: #78350F;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 999px;
+      cursor: pointer;
+      line-height: 1.45;
+      transition: all 0.15s ease;
+    }
+    .hctrl-btn.playing {
+      background: var(--brand-active);
+      color: #FFFFFF;
+      border-color: var(--brand-active);
+      box-shadow: 0 3px 10px rgba(216, 82, 46, 0.28);
+    }
     .sos-btn {
       border: 1.5px solid #E11D48;
       background: #FFF1F2;
       color: #BE123C;
       font-family: inherit;
-      font-size: 0.88rem;
+      font-size: 0.84rem;
       font-weight: 700;
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 999px;
       cursor: pointer;
       line-height: 1.45;
-      box-shadow: 0 2px 8px rgba(225, 29, 72, 0.15);
     }
 
-    /* Sticky Now Playing Bar */
+    /* Compact Header Audio Progress Strip (Just like 🌸 কল্যাণী — Never at bottom of screen!) */
     .now-playing-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 200;
-      background: #0F172A;
-      color: #FFFFFF;
-      padding: 10px 16px;
+      max-width: 680px;
+      margin: 5px auto 2px;
+      padding: 5px 10px;
+      border-radius: 10px;
+      background: var(--brand-active-soft);
+      border: 1px solid rgba(216, 82, 46, 0.28);
       display: none;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+      gap: 8px;
     }
     .now-playing-bar.visible { display: flex; }
-    .np-label {
-      font-size: 0.92rem;
-      font-weight: 600;
-      color: #99F6E4;
+    .eq-bars {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 13px;
+      color: var(--brand-active);
+      flex-shrink: 0;
+    }
+    .eq-bars i {
+      display: block;
+      width: 2.5px;
+      background: currentColor;
+      border-radius: 2px;
+      animation: eqBounce 0.75s ease-in-out infinite alternate;
+    }
+    .eq-bars i:nth-child(1) { height: 5px; animation-delay: 0s; }
+    .eq-bars i:nth-child(2) { height: 12px; animation-delay: 0.18s; }
+    .eq-bars i:nth-child(3) { height: 7px; animation-delay: 0.34s; }
+    @keyframes eqBounce {
+      0% { transform: scaleY(0.45); }
+      100% { transform: scaleY(1); }
+    }
+    .np-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--brand-active);
+      max-width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .np-controls {
-      display: flex;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-    .np-btn {
-      background: #0F766E;
-      color: #FFFFFF;
-      border: 1px solid #14B8A6;
+    .np-track {
+      flex: 1;
+      height: 6px;
+      background: rgba(216, 82, 46, 0.18);
       border-radius: 999px;
-      padding: 5px 14px;
-      font-family: inherit;
-      font-size: 0.86rem;
-      font-weight: 700;
+      overflow: hidden;
       cursor: pointer;
+    }
+    .np-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--brand-active), #F59E0B);
+      border-radius: 999px;
+      transition: width 0.15s linear;
+    }
+    .np-time {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--brand-active);
+      white-space: nowrap;
     }
 
     .container {
-      max-width: 780px;
+      max-width: 680px;
       margin: 0 auto;
-      padding: 16px 14px 40px;
+      padding: 14px 12px 32px;
     }
     .view-pane { display: none; }
     .view-pane.active { display: block; }
 
-    .hero-banner {
-      background: linear-gradient(135deg, #0F172A 0%, #134E4A 100%);
-      color: #F8FAFC;
-      border-radius: var(--radius-lg);
-      padding: 20px 18px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow);
-    }
-    .hero-pill {
-      display: inline-block;
-      background: rgba(20, 184, 166, 0.22);
-      border: 1px solid rgba(94, 234, 212, 0.4);
-      color: #99F6E4;
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 999px;
-      margin-bottom: 8px;
-    }
-    .hero-title {
-      font-family: 'Noto Serif Bengali', serif;
-      font-size: 1.38rem;
-      line-height: 1.48;
-      margin-bottom: 8px;
-      color: #FFFFFF;
-    }
-    .hero-sub {
-      font-size: 0.98rem;
-      color: #CBD5E1;
-      line-height: 1.6;
-      margin-bottom: 12px;
-    }
-    .voice-hero-btn {
-      width: 100%;
-      background: #14B8A6;
-      color: #042F2E;
-      border: none;
-      font-family: inherit;
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 11px 16px;
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      margin-bottom: 10px;
-      line-height: 1.45;
-    }
-    .off-duty-bar {
-      padding: 10px 14px;
-      border-radius: var(--radius-md);
-      background: rgba(255, 255, 255, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .off-duty-btn {
-      background: #10B981;
-      color: #052E16;
-      border: none;
-      font-family: inherit;
-      font-weight: 700;
-      font-size: 0.9rem;
-      padding: 7px 14px;
-      border-radius: 999px;
-      cursor: pointer;
-    }
-
+    /* Day Strip & Calendar Row at Top (Like 🌸 কল্যাণী) */
     .day-strip {
       display: flex;
-      gap: 8px;
+      gap: 7px;
       overflow-x: auto;
-      padding: 6px 2px 12px;
-      margin-bottom: 10px;
+      padding: 4px 2px 10px;
+      margin-bottom: 8px;
     }
     .day-chip {
       flex: 0 0 auto;
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       background: var(--bg-card);
       color: var(--ink-2);
       font-family: inherit;
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 7px 14px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 13px;
       border-radius: 999px;
       cursor: pointer;
-      line-height: 1.48;
+      line-height: 1.45;
     }
     .day-chip.active {
       background: var(--brand);
@@ -251,21 +234,120 @@
       border-color: #6EE7B7;
     }
 
+    /* Day Hero Card (Matches 🌸 কল্যাণী `.day-hero-card`) */
+    .hero-banner {
+      background: linear-gradient(135deg, #0F172A 0%, #134E4A 100%);
+      color: #F8FAFC;
+      border-radius: var(--radius-lg);
+      padding: 16px 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+    .hero-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+    .hero-pill {
+      display: inline-block;
+      background: rgba(20, 184, 166, 0.22);
+      border: 1px solid rgba(94, 234, 212, 0.4);
+      color: #99F6E4;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .hero-title {
+      font-family: 'Noto Serif Bengali', serif;
+      font-size: 1.26rem;
+      line-height: 1.45;
+      margin-bottom: 6px;
+      color: #FFFFFF;
+    }
+    .hero-sub {
+      font-size: 0.94rem;
+      color: #CBD5E1;
+      line-height: 1.56;
+      margin-bottom: 12px;
+    }
+    .big-voice-btn {
+      width: 100%;
+      background: #14B8A6;
+      color: #042F2E;
+      border: none;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.98rem;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      line-height: 1.45;
+      transition: all 0.15s ease;
+    }
+    .big-voice-btn.playing {
+      background: var(--brand-active);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(216, 82, 46, 0.35);
+    }
+    .day-prev-next-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .day-nav-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.12);
+      color: #F8FAFC;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 7px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      line-height: 1.45;
+    }
+    .day-nav-btn:disabled { opacity: 0.4; cursor: default; }
+
+    /* Game Selector Card (Matches 🌸 কল্যাণী `.game-nav-card`) */
+    .game-nav-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+    .game-nav-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .game-nav-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--ink-2);
+    }
     .game-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
       gap: 8px;
-      margin-bottom: 14px;
     }
     .game-tile {
       border: 1.5px solid var(--border);
-      background: var(--bg-card);
+      background: var(--bg-subtle);
       color: var(--ink-1);
-      padding: 10px 12px;
+      padding: 9px 11px;
       border-radius: var(--radius-md);
       font-family: inherit;
-      font-weight: 600;
-      font-size: 0.92rem;
+      font-weight: 700;
+      font-size: 0.9rem;
       cursor: pointer;
       text-align: left;
       line-height: 1.48;
@@ -274,20 +356,33 @@
     .game-tile.active {
       border-color: var(--brand);
       background: #F0FDFA;
+      color: var(--brand);
       box-shadow: 0 3px 10px rgba(15, 118, 110, 0.12);
     }
     .game-tile.done {
       background: var(--emerald-soft);
       border-color: #34D399;
+      color: var(--emerald);
     }
 
+    /* Game Card & Action Buttons (Minimal Pointer Travel!) */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 20px 18px;
-      margin-bottom: 16px;
+      padding: 18px 16px;
+      margin-bottom: 12px;
       box-shadow: var(--shadow);
+    }
+    .card-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed var(--border);
     }
     .card-badge {
       display: inline-block;
@@ -297,113 +392,156 @@
       border-radius: 999px;
       background: var(--brand-soft);
       color: var(--brand);
-      margin-bottom: 10px;
       line-height: 1.45;
     }
+    /* Inline Quick Toolbar right at the top of the card (Zero Mouse Travel from Game Tiles!) */
+    .card-inline-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .ag-btn {
+      border: 1.5px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--ink-1);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 8px 13px;
+      border-radius: 10px;
+      cursor: pointer;
+      line-height: 1.45;
+      transition: all 0.15s ease;
+    }
+    .ag-btn:disabled { opacity: 0.42; cursor: default; }
+    .ag-btn.listen {
+      background: #FEF3C7;
+      border-color: #F59E0B;
+      color: #78350F;
+    }
+    .ag-btn.listen.playing {
+      background: var(--brand-active);
+      border-color: var(--brand-active);
+      color: #FFFFFF;
+      box-shadow: 0 3px 10px rgba(216, 82, 46, 0.28);
+    }
+    .ag-btn.check {
+      background: #F0FDFA;
+      border-color: #5EEAD4;
+      color: var(--brand);
+    }
+    .ag-btn.check.checked {
+      background: var(--emerald-soft);
+      border-color: #34D399;
+      color: var(--emerald);
+    }
+
     .card-title {
       font-family: 'Noto Serif Bengali', serif;
-      font-size: 1.28rem;
+      font-size: 1.24rem;
       line-height: 1.48;
       margin-bottom: 10px;
       color: var(--ink-1);
     }
+    .card-story {
+      font-size: 1.01rem;
+      color: var(--ink-2);
+      line-height: 1.66;
+      margin-bottom: 12px;
+    }
+    .reframe-box {
+      background: #FFFBEB;
+      border-left: 4px solid #F59E0B;
+      padding: 11px 14px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      font-size: 0.96rem;
+      color: #78350F;
+    }
+    .prompt-box {
+      background: #F0FDFA;
+      border: 1px solid #99F6E4;
+      padding: 13px 14px;
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+    }
+    .prompt-lbl-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+    .prompt-lbl {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--brand);
+    }
+    .prompt-txt {
+      font-size: 1.04rem;
+      font-weight: 600;
+      color: var(--ink-1);
+      line-height: 1.55;
+    }
+    .agenda-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .agenda-actions .ag-btn {
+      flex: 1 1 140px;
+      text-align: center;
+    }
+    .game-stepper-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .game-stepper-row .ag-btn {
+      flex: 1;
+      text-align: center;
+    }
+
+    /* Slide View (Matches 🌸 কল্যাণী `💌 চিঠি`) */
     .slide-img-wrap {
       width: 100%;
       border-radius: 14px;
       overflow: hidden;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       border: 1px solid var(--border);
       background: #0F172A;
     }
     .slide-img {
       width: 100%;
-      max-height: 400px;
+      max-height: 390px;
       object-fit: cover;
       display: block;
     }
     .slide-dots {
       display: flex;
       justify-content: center;
-      gap: 8px;
-      margin-bottom: 14px;
+      gap: 6px;
+      margin-bottom: 12px;
     }
     .slide-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      border: none;
-      background: #CBD5E1;
+      min-width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--ink-2);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
       cursor: pointer;
     }
     .slide-dot.active {
-      width: 26px;
-      border-radius: 999px;
-      background: var(--brand);
-    }
-    .card-story {
-      font-size: 1.03rem;
-      color: var(--ink-2);
-      line-height: 1.68;
-      margin-bottom: 14px;
-    }
-    .reframe-box {
-      background: #FFFBEB;
-      border-left: 4px solid #F59E0B;
-      padding: 12px 14px;
-      border-radius: 10px;
-      margin-bottom: 14px;
-      font-size: 0.98rem;
-      color: #78350F;
-    }
-    .prompt-box {
-      background: #F0FDFA;
-      border: 1px solid #99F6E4;
-      padding: 14px;
-      border-radius: var(--radius-md);
-      margin-bottom: 14px;
-    }
-    .prompt-lbl {
-      font-size: 0.86rem;
-      font-weight: 700;
-      color: var(--brand);
-      margin-bottom: 6px;
-    }
-    .prompt-txt {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--ink-1);
-      line-height: 1.55;
-    }
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
-    .btn {
-      flex: 1 1 160px;
-      border: 1px solid var(--border);
-      background: var(--bg-subtle);
-      color: var(--ink-1);
-      font-family: inherit;
-      font-weight: 700;
-      font-size: 0.95rem;
-      padding: 11px 14px;
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      line-height: 1.45;
-      text-align: center;
-      text-decoration: none;
-    }
-    .btn-primary {
       background: var(--brand);
       color: #FFFFFF;
       border-color: var(--brand);
-    }
-    .btn-done {
-      background: var(--emerald-soft);
-      color: var(--emerald);
-      border-color: #34D399;
     }
 
     .modal-backdrop {
@@ -445,7 +583,7 @@
     }
     .toast {
       position: fixed;
-      bottom: 64px;
+      bottom: 18px;
       left: 50%;
       transform: translateX(-50%);
       background: #0F172A;
@@ -462,46 +600,73 @@
 </head>
 <body>
 
+  <!-- SINGLE-ROW STICKY GLASS HEADER + COMPACT PROGRESS RIBBON (Inspired by 🌸 কল্যাণী — Zero Bottom Bar!) -->
   <header class="top-bar">
-    <div class="brand-wrap">
-      <span>⚡ আনন্দ (ANANDO)</span>
-      <span style="font-size:0.8rem;font-weight:500;color:var(--ink-3);">• কৌশিকের সঙ্গী</span>
+    <div class="top-bar-inner">
+      <div class="brand-wrap" onclick="switchTab('play')">
+        <span>⚡ আনন্দ</span>
+      </div>
+      <nav class="nav-tabs">
+        <button id="tabPlay" class="tab-btn active" onclick="switchTab('play')">🎯 আজকের মুক্তি</button>
+        <button id="tabLetter" class="tab-btn" onclick="switchTab('letter')">💌 চিঠি</button>
+        <button id="tabPillars" class="tab-btn" onclick="switchTab('pillars')">🧭 ৭টি চাবি</button>
+      </nav>
+      <div style="display:flex;align-items:center;gap:5px;">
+        <button id="topPlayBtn" class="hctrl-btn" data-default-label="🔊 শোনো" onclick="toggleMasterAudio()">🔊 শোনো</button>
+        <button class="sos-btn" onclick="openSosModal()">🚨 শান্ত সুইচ</button>
+      </div>
     </div>
-    <nav class="nav-tabs">
-      <button id="tabPlay" class="tab-btn active" onclick="switchTab('play')">🎯 আজকের মুক্তি</button>
-      <button id="tabLetter" class="tab-btn" onclick="switchTab('letter')">💌 নিজের কাছে চিঠি</button>
-      <button id="tabPillars" class="tab-btn" onclick="switchTab('pillars')">🧭 ৭টি মনের চাবি</button>
-      <button class="sos-btn" onclick="openSosModal()">🚨 ৬০ সেকেন্ডে ঝড় থামাও</button>
-    </nav>
+    <!-- Compact Progress Ribbon right inside header (Just like 🌸 কল্যাণী) -->
+    <div id="nowPlayingBar" class="now-playing-bar" aria-live="polite">
+      <span class="eq-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span id="npTitle" class="np-title">চলছে...</span>
+      <div id="npTrack" class="np-track" onclick="seekAudioFromTrack(event)">
+        <div id="npFill" class="np-fill"></div>
+      </div>
+      <span id="npTime" class="np-time">০:০০</span>
+    </div>
   </header>
 
   <main class="container">
     <!-- TAB 1: DAILY COMPANION -->
     <section id="viewPlay" class="view-pane active">
+      <div id="dayStrip" class="day-strip"></div>
+
       <div class="hero-banner">
-        <span class="hero-pill">✨ যেদিন যেরকম, সেদিন সেরকম • Zero-Rule Living</span>
+        <div class="hero-top-row">
+          <span class="hero-pill">✨ যেদিন যেরকম, সেদিন সেরকম • Zero-Rule Living</span>
+          <button class="off-duty-btn" onclick="toggleOffDutyMode()" id="offDutyBtn">🌿 নিজের ছুটিতে আছি</button>
+        </div>
         <div class="hero-title" id="heroDayTitle"></div>
         <div class="hero-sub" id="heroDaySub"></div>
-        <button id="btnDayVoice" class="voice-hero-btn" onclick="playDayVoice(true)">🔊 আজকের কথাগুলো শোনো (Aoede কণ্ঠ)</button>
-        <div class="off-duty-bar">
-          <span id="offDutyStatus" style="font-size:0.9rem;color:#E2E8F0;">🛡️ কেয়ারটেকার ইউনিফর্ম: সন্ধে ৬টার পর থেকে তুমি ১০০% ছুটি-তে আছো।</span>
-          <button class="off-duty-btn" onclick="toggleOffDutyMode()">🌿 আমি এখন নিজের ছুটিতে আছি</button>
+        <button id="btnDayMainPlay" class="big-voice-btn" data-default-label="🔊 আজকের কথাগুলো শোনো" onclick="toggleDayVoice()">
+          🔊 আজকের কথাগুলো শোনো
+        </button>
+        <div class="day-prev-next-row">
+          <button id="prevDayBtn" class="day-nav-btn" onclick="selectDay(curDay - 1, true)">⬅️ আগের দিন</button>
+          <button id="nextDayBtn" class="day-nav-btn" onclick="selectDay(curDay + 1, true)">পরের দিন ➡️</button>
         </div>
       </div>
 
-      <div id="dayStrip" class="day-strip"></div>
-      <div id="gameGrid" class="game-grid"></div>
+      <div class="game-nav-card">
+        <div class="game-nav-header">
+          <span class="game-nav-title">🎯 আজকের খেলাগুলো (যেকোনোটায় ছুঁয়ে খোলো):</span>
+        </div>
+        <div id="gameGrid" class="game-grid"></div>
+      </div>
+
       <div id="activeGameStage"></div>
     </section>
 
     <!-- TAB 2: 8-SLIDE LETTER TO SELF -->
     <section id="viewLetter" class="view-pane">
       <div class="card" style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-color:#FCD34D;">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;">
-          <span style="font-size:0.86rem;font-weight:700;color:#92400E;">☀️ আজকের মনে রাখার সত্যি (ট্যাপ করে বদলাও):</span>
-          <button class="tab-btn" style="background:#FDE68A;color:#78350F;border-color:#F59E0B;" onclick="playCurrentQuote()">🔊 শোনো</button>
+        <div style="font-size:0.86rem;font-weight:700;color:#92400E;margin-bottom:6px;">☀️ আজকের অনুপ্রেরণা</div>
+        <div id="quoteBox" style="font-size:1.04rem;font-weight:600;color:#78350F;margin-bottom:10px;"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button id="btnQuotePlay" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="toggleQuoteAudio()">🔊 শোনো</button>
+          <button class="ag-btn" onclick="nextQuote(true)">🎲 নতুন বাণী</button>
         </div>
-        <div id="quoteBox" style="font-size:1.05rem;font-weight:600;color:#78350F;cursor:pointer;" onclick="nextQuote(true)"></div>
       </div>
 
       <div id="letterStage" class="card"></div>
@@ -519,15 +684,6 @@
       </div>
     </section>
   </main>
-
-  <!-- STICKY NOW PLAYING BAR -->
-  <div id="nowPlayingBar" class="now-playing-bar">
-    <div id="npLabel" class="np-label">🔊 চলছে...</div>
-    <div class="np-controls">
-      <button id="npToggleBtn" class="np-btn" onclick="toggleAudioPauseResume()">⏸️ থামাও</button>
-      <button class="np-btn" style="background:#334155;border-color:#475569;" onclick="stopAudio()">⏹️ বন্ধ</button>
-    </div>
-  </div>
 
   <!-- EMERGENCY 60-SECOND HARDWARE RESET MODAL -->
   <div id="sosModal" class="modal-backdrop">
@@ -551,7 +707,7 @@
         <p style="font-size:0.94rem;color:#78350F;">পাকা দেয়ালে দু-হাত রেখে ২০ সেকেন্ড গায়ের জোরে ঠেলো, তারপর হাত নামিয়ে লম্বা শ্বাস ছাড়ো। শরীরের সব অতিরিক্ত অ্যাড্রেনালিন পেশী দিয়ে বেরিয়ে যাবে।</p>
         <div style="text-align:center;">
           <div id="sosTimerDisplay" class="timer-pill">২০ সেকেন্ড</div><br/>
-          <button class="btn btn-primary" style="max-width:240px;margin-top:6px;" onclick="startSosTimer(20)">⏱️ ২০ সেকেন্ডের টাইমার চালাও</button>
+          <button class="ag-btn listen" style="margin-top:6px;" onclick="startSosTimer(20)">⏱️ ২০ সেকেন্ডের টাইমার চালাও</button>
         </div>
       </div>
 
@@ -562,9 +718,9 @@
         </p>
       </div>
 
-      <div class="btn-row">
-        <a class="btn" href="tel:14416" style="background:#FFF1F2;color:#BE123C;border-color:#FECDD3;">📞 Tele-MANAS (14416 — 24/7 Free)</a>
-        <button class="btn btn-primary" onclick="closeSosModal()">🌿 আমার শরীর এখন অনেকটা শান্ত</button>
+      <div class="agenda-actions">
+        <a class="ag-btn" href="tel:14416" style="background:#FFF1F2;color:#BE123C;border-color:#FECDD3;text-decoration:none;">📞 Tele-MANAS (14416)</a>
+        <button class="ag-btn check checked" onclick="closeSosModal()">🌿 আমার শরীর এখন অনেকটা শান্ত</button>
       </div>
     </div>
   </div>
@@ -612,16 +768,21 @@
       }
     ];
 
+    /* Unified Audio Engine (Modelled directly on 🌸 কল্যাণী `src/js/audio.js`) */
     const audioEl = new Audio();
     audioEl.preload = "auto";
-    let activeLabel = "";
-    let chainNextGameOnEnd = false;
+    let activeAudioBtnId = null;
+    let activeAudioKey = null;
+    let activeAudioTitle = "";
 
+    let curTab = "play";
     let curDay = 1;
     let curGame = 0;
     let curSlide = 0;
     let curQuote = 0;
+    let autoAdvanceSlides = true;
     let sosInterval = null;
+
     const STORAGE_KEY = "anando_koushik_done_v1";
     let doneMap = {};
     try {
@@ -632,81 +793,159 @@
       return String(n).replace(/[0-9]/g, d => "০১২৩৪৫৬৭৮৯"[d]);
     }
 
-    function playUrl(url, label, chainToGame) {
-      if (!url) return;
-      chainNextGameOnEnd = !!chainToGame;
-      activeLabel = label || "🔊 চলছে...";
-      audioEl.pause();
-      audioEl.src = url;
-      audioEl.currentTime = 0;
-      const p = audioEl.play();
-      if (p && p.catch) p.catch(() => {});
-      syncAudioBar();
+    function formatAudioSecondsBn(sec) {
+      if (!sec || !isFinite(sec) || sec < 0) return "০:০০";
+      const s = Math.floor(sec);
+      const mins = Math.floor(s / 60);
+      const rem = s % 60;
+      return toBn(mins) + ":" + toBn(rem < 10 ? "0" + rem : rem);
     }
 
-    function toggleAudioPauseResume() {
-      if (!audioEl.src) return;
-      if (audioEl.paused) {
-        const p = audioEl.play();
-        if (p && p.catch) p.catch(() => {});
-      } else {
-        audioEl.pause();
-      }
-      syncAudioBar();
-    }
-
-    function stopAudio() {
-      chainNextGameOnEnd = false;
-      audioEl.pause();
-      audioEl.currentTime = 0;
-      document.getElementById("nowPlayingBar").classList.remove("visible");
-    }
-
-    function syncAudioBar() {
+    function updateNowPlayingBar(showBar) {
       const bar = document.getElementById("nowPlayingBar");
-      const lbl = document.getElementById("npLabel");
-      const btn = document.getElementById("npToggleBtn");
-      if (!audioEl.src) {
+      if (!bar) return;
+      if (!showBar) {
         bar.classList.remove("visible");
         return;
       }
       bar.classList.add("visible");
-      lbl.textContent = activeLabel;
-      btn.textContent = audioEl.paused ? "▶️ চালাও" : "⏸️ থামাও";
+      const titleEl = document.getElementById("npTitle");
+      const fillEl = document.getElementById("npFill");
+      const timeEl = document.getElementById("npTime");
+      if (titleEl) titleEl.textContent = activeAudioTitle || "চলছে...";
+      const dur = audioEl.duration || 0;
+      const cur = audioEl.currentTime || 0;
+      if (fillEl) {
+        const pct = dur > 0 ? Math.min(100, Math.max(0, (cur / dur) * 100)) : 0;
+        fillEl.style.width = pct.toFixed(1) + "%";
+      }
+      if (timeEl) {
+        timeEl.textContent = dur > 0
+          ? (formatAudioSecondsBn(cur) + " / " + formatAudioSecondsBn(dur))
+          : formatAudioSecondsBn(cur);
+      }
     }
 
-    audioEl.addEventListener("play", syncAudioBar);
-    audioEl.addEventListener("pause", syncAudioBar);
+    function seekAudioFromTrack(ev) {
+      const track = document.getElementById("npTrack");
+      if (!track || !audioEl.duration || !isFinite(audioEl.duration)) return;
+      const rect = track.getBoundingClientRect();
+      if (!rect.width) return;
+      const ratio = Math.min(1, Math.max(0, (ev.clientX - rect.left) / rect.width));
+      audioEl.currentTime = ratio * audioEl.duration;
+      updateNowPlayingBar(true);
+    }
+
+    /* Every button with [data-default-label] toggles in-place between its label and `⏸️ থামাও`! */
+    function syncAllAudioButtonsUI(isPlaying) {
+      document.querySelectorAll("[data-default-label]").forEach(btn => {
+        const matchesActive = (btn.id === activeAudioBtnId) ||
+          (btn.getAttribute("data-audio-key") && btn.getAttribute("data-audio-key") === activeAudioKey);
+        if (matchesActive && isPlaying) {
+          btn.classList.add("playing");
+          btn.innerHTML = "⏸️ থামাও";
+        } else {
+          btn.classList.remove("playing");
+          btn.innerHTML = btn.getAttribute("data-default-label");
+        }
+      });
+      const topBtn = document.getElementById("topPlayBtn");
+      if (topBtn) {
+        if (isPlaying) {
+          topBtn.classList.add("playing");
+          topBtn.innerHTML = "⏸️ থামাও";
+        } else {
+          topBtn.classList.remove("playing");
+          topBtn.innerHTML = "🔊 শোনো";
+        }
+      }
+      updateNowPlayingBar(isPlaying);
+    }
+
+    function stopAllAudio() {
+      audioEl.pause();
+      activeAudioBtnId = null;
+      activeAudioKey = null;
+      syncAllAudioButtonsUI(false);
+    }
+
+    function playOrToggleAudio(btnId, audioKey, srcUrl, titleText) {
+      if (!srcUrl) return;
+      if (activeAudioKey === audioKey && !audioEl.paused) {
+        audioEl.pause();
+        syncAllAudioButtonsUI(false);
+        return;
+      }
+      if (activeAudioKey === audioKey && audioEl.paused && audioEl.currentTime > 0 && !audioEl.ended) {
+        activeAudioBtnId = btnId;
+        syncAllAudioButtonsUI(true);
+        audioEl.play().catch(() => syncAllAudioButtonsUI(false));
+        return;
+      }
+      audioEl.pause();
+      activeAudioBtnId = btnId;
+      activeAudioKey = audioKey;
+      activeAudioTitle = titleText || "";
+      audioEl.src = srcUrl;
+      audioEl.currentTime = 0;
+      syncAllAudioButtonsUI(true);
+      const p = audioEl.play();
+      if (p && p.catch) p.catch(() => stopAllAudio());
+    }
+
+    audioEl.addEventListener("timeupdate", () => {
+      if (!audioEl.paused) updateNowPlayingBar(true);
+    });
+
     audioEl.addEventListener("ended", () => {
-      if (chainNextGameOnEnd) {
-        chainNextGameOnEnd = false;
-        playGameVoice(curDay, curGame);
-      } else {
-        document.getElementById("nowPlayingBar").classList.remove("visible");
+      const finishedKey = activeAudioKey;
+      stopAllAudio();
+      if (curTab === "letter" && autoAdvanceSlides && finishedKey && finishedKey.startsWith("slide_") && curSlide < ANANDO_DATA.slides.length - 1) {
+        setTimeout(() => goToSlide(curSlide + 1, true), 800);
+      } else if (curTab === "play" && finishedKey && finishedKey.startsWith("day_main_")) {
+        toggleGameVoice(curDay, curGame);
       }
     });
 
-    function playDayVoice(chainToOpenGame) {
+    function toggleDayVoice() {
       const dObj = ANANDO_DATA.days[curDay - 1];
       if (!dObj) return;
-      playUrl(dObj.audio_url, `🔊 দিন ${toBn(curDay)}: আজকের কথা`, chainToOpenGame);
+      playOrToggleAudio("btnDayMainPlay", "day_main_" + curDay, dObj.audio_url, `দিন ${toBn(curDay)}: আজকের কথা`);
     }
 
-    function playGameVoice(dNum, gIdx) {
+    function toggleGameVoice(dNum, gIdx) {
       const dObj = ANANDO_DATA.days[dNum - 1];
       if (!dObj || !dObj.games[gIdx]) return;
       const g = dObj.games[gIdx];
-      playUrl(g.audio_url, `🔊 ${g.short}: ${g.title}`, false);
+      const key = `ag_${dNum}_${gIdx}`;
+      playOrToggleAudio(`btnAgPlay_${dNum}_${gIdx}`, key, g.audio_url, g.short);
     }
 
-    function playCurrentQuote() {
+    function toggleQuoteAudio() {
       const q = ANANDO_DATA.quotes[curQuote];
-      if (q) playUrl(q.audio_url, "🔊 আজকের অনুপ্রেরণা", false);
+      if (!q) return;
+      playOrToggleAudio("btnQuotePlay", "quote_" + curQuote, q.audio_url, "আজকের অনুপ্রেরণা");
     }
 
-    function playCurrentSlide() {
+    function toggleSlideAudio() {
       const s = ANANDO_DATA.slides[curSlide];
-      if (s) playUrl(s.audio_url, `🔊 চিঠি (${s.badge})`, false);
+      if (!s) return;
+      playOrToggleAudio("btnSlideMainPlay", "slide_" + s.id, s.audio_url, s.badge);
+    }
+
+    function toggleMasterAudio() {
+      if (!audioEl.paused) {
+        audioEl.pause();
+        syncAllAudioButtonsUI(false);
+        return;
+      }
+      if (activeAudioKey && audioEl.paused && audioEl.currentTime > 0 && !audioEl.ended) {
+        syncAllAudioButtonsUI(true);
+        audioEl.play().catch(() => stopAllAudio());
+        return;
+      }
+      if (curTab === "letter") toggleSlideAudio();
+      else toggleGameVoice(curDay, curGame);
     }
 
     function showToast(msg) {
@@ -718,20 +957,22 @@
     }
 
     function switchTab(tab) {
+      curTab = tab;
       ["play", "letter", "pillars"].forEach(t => {
         document.getElementById("view" + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle("active", t === tab);
         document.getElementById("tab" + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle("active", t === tab);
       });
       if (tab === "letter") {
         curQuote = (curQuote + 1) % ANANDO_DATA.quotes.length;
+        stopAllAudio();
         renderLetterView();
-        playCurrentSlide();
+        toggleSlideAudio();
       }
     }
 
     function toggleOffDutyMode() {
-      const el = document.getElementById("offDutyStatus");
-      el.innerHTML = "✅ <strong>কেয়ারটেকার শিফট অফ:</strong> এখন তুমি কারোর ত্রাতা নও—এখন ১০০% নিজের আনন্দে, গানে আর আরামে থাকার সময়!";
+      const btn = document.getElementById("offDutyBtn");
+      btn.textContent = "✅ কেয়ারটেকার শিফট অফ (১০০% ছুটি)";
       showToast("🌿 কেয়ারটেকার ইউনিফর্ম খুলে রাখা হয়েছে—এখন শুধু তোমার নিজের সময়!");
     }
 
@@ -746,6 +987,8 @@
       const dObj = ANANDO_DATA.days[curDay - 1];
       document.getElementById("heroDayTitle").textContent = `দিন ${toBn(dObj.day)} • ${dObj.title}`;
       document.getElementById("heroDaySub").textContent = dObj.sub;
+      document.getElementById("prevDayBtn").disabled = (curDay <= 1);
+      document.getElementById("nextDayBtn").disabled = (curDay >= ANANDO_DATA.days.length);
 
       const grid = document.getElementById("gameGrid");
       grid.innerHTML = dObj.games.map((g, idx) => {
@@ -756,45 +999,68 @@
 
       const ag = dObj.games[curGame] || dObj.games[0];
       const isDone = !!doneMap[curDay + "_" + curGame];
+      const agAudioKey = `ag_${curDay}_${curGame}`;
+      const btnId = `btnAgPlay_${curDay}_${curGame}`;
+      const topBtnId = `btnAgPlayTop_${curDay}_${curGame}`;
+
       document.getElementById("activeGameStage").innerHTML = `
         <article class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
-            <span class="card-badge" style="margin:0;">${ag.category}</span>
-            <button class="tab-btn" style="background:var(--brand-soft);color:var(--brand);border-color:#5EEAD4;" onclick="playGameVoice(${curDay}, ${curGame})">🔊 এই খেলাটি শোনো</button>
+          <!-- Top Inline Control Bar right below game tiles (Minimal mouse travel!) -->
+          <div class="card-top-bar">
+            <span class="card-badge">${ag.category}</span>
+            <div class="card-inline-controls">
+              <button id="${topBtnId}" class="ag-btn listen" data-default-label="🔊 শোনো" data-audio-key="${agAudioKey}" onclick="toggleGameVoice(${curDay}, ${curGame})">🔊 শোনো</button>
+              <button class="ag-btn check ${isDone ? 'checked' : ''}" onclick="toggleDone(${curDay}, ${curGame})">
+                ${isDone ? '✅ করা হয়েছে' : '⬜ করেছি'}
+              </button>
+              <button class="ag-btn" ${curGame <= 0 ? "disabled" : ""} onclick="selectGame(${curGame - 1}, true)" title="আগের খেলা">⬅️</button>
+              <button class="ag-btn" ${curGame >= dObj.games.length - 1 ? "disabled" : ""} onclick="selectGame(${curGame + 1}, true)" title="পরের খেলা">➡️</button>
+            </div>
           </div>
+
           <h2 class="card-title">${ag.title}</h2>
           <p class="card-story">${ag.detail}</p>
           <div class="reframe-box">${ag.reframe}</div>
+
           <div class="prompt-box">
-            <div class="prompt-lbl">🎙️ নিজের বন্ধু ও দার্শনিক জেমিনির সাথে আড্ডা দেওয়ার কথা:</div>
+            <div class="prompt-lbl-row">
+              <span class="prompt-lbl">🎙️ নিজের বন্ধু ও দার্শনিক জেমিনির সাথে আড্ডা দেওয়ার কথা:</span>
+              <button class="ag-btn" style="padding:4px 10px;font-size:0.82rem;" onclick="copyPrompt('${ag.prompt.replace(/'/g, "\\'")}')">📋 প্রম্পট কপি</button>
+            </div>
             <div class="prompt-txt">“${ag.prompt}”</div>
           </div>
-          <div class="btn-row">
-            <button class="btn btn-primary" onclick="copyPrompt('${ag.prompt.replace(/'/g, "\\'")}')">📋 প্রম্পট কপি করো</button>
-            <button class="btn ${isDone ? 'btn-done' : ''}" onclick="toggleDone(${curDay}, ${curGame})">
+
+          <!-- Bottom Card Action Row (Matches 🌸 কল্যাণী `.agenda-actions` + `.game-stepper-row`) -->
+          <div class="agenda-actions">
+            <button id="${btnId}" class="ag-btn listen" data-default-label="🔊 শোনো" data-audio-key="${agAudioKey}" onclick="toggleGameVoice(${curDay}, ${curGame})">🔊 শোনো</button>
+            <button class="ag-btn check ${isDone ? 'checked' : ''}" onclick="toggleDone(${curDay}, ${curGame})">
               ${isDone ? '✅ নিজের আনন্দে করেছি' : '⬜ আমি এটা উপভোগ করেছি'}
             </button>
           </div>
-          <div class="btn-row" style="margin-top:10px;">
-            <button class="btn" ${curGame <= 0 ? "disabled" : ""} onclick="selectGame(${curGame - 1}, true)">⬅️ আগের খেলা</button>
-            <button class="btn" ${curGame >= dObj.games.length - 1 ? "disabled" : ""} onclick="selectGame(${curGame + 1}, true)">পরের খেলা ➡️</button>
+          <div class="game-stepper-row">
+            <button class="ag-btn" ${curGame <= 0 ? "disabled" : ""} onclick="selectGame(${curGame - 1}, true)">⬅️ আগের খেলা</button>
+            <button class="ag-btn" ${curGame >= dObj.games.length - 1 ? "disabled" : ""} onclick="selectGame(${curGame + 1}, true)">পরের খেলা ➡️</button>
           </div>
         </article>
       `;
+      syncAllAudioButtonsUI(!audioEl.paused);
     }
 
     function selectDay(d, autoPlay) {
+      if (d < 1 || d > ANANDO_DATA.days.length) return;
       curDay = d;
       curGame = 0;
+      stopAllAudio();
       renderPlayView();
-      if (autoPlay) playDayVoice(true);
+      if (autoPlay) toggleDayVoice();
     }
 
     function selectGame(idx, autoPlay) {
       const dObj = ANANDO_DATA.days[curDay - 1];
       curGame = Math.max(0, Math.min(dObj.games.length - 1, idx));
+      stopAllAudio();
       renderPlayView();
-      if (autoPlay) playGameVoice(curDay, curGame);
+      if (autoPlay) toggleGameVoice(curDay, curGame);
     }
 
     function toggleDone(d, idx) {
@@ -806,8 +1072,9 @@
         const dObj = ANANDO_DATA.days[d - 1];
         if (idx + 1 < dObj.games.length) {
           curGame = idx + 1;
+          stopAllAudio();
           renderPlayView();
-          playGameVoice(d, curGame);
+          toggleGameVoice(d, curGame);
           return;
         }
       }
@@ -822,14 +1089,16 @@
     function nextQuote(autoPlay) {
       curQuote = (curQuote + 1) % ANANDO_DATA.quotes.length;
       document.getElementById("quoteBox").textContent = "“" + ANANDO_DATA.quotes[curQuote].text + "”";
-      if (autoPlay) playCurrentQuote();
+      stopAllAudio();
+      if (autoPlay) toggleQuoteAudio();
     }
 
     function renderLetterView() {
       document.getElementById("quoteBox").textContent = "“" + ANANDO_DATA.quotes[curQuote].text + "”";
       const s = ANANDO_DATA.slides[curSlide];
+      const slideAudioKey = "slide_" + s.id;
       const dotsHtml = ANANDO_DATA.slides.map((item, idx) =>
-        `<button class="slide-dot ${idx === curSlide ? 'active' : ''}" onclick="goToSlide(${idx}, true)"></button>`
+        `<button class="slide-dot ${idx === curSlide ? 'active' : ''}" onclick="goToSlide(${idx}, true)">${toBn(idx + 1)}</button>`
       ).join("");
       const imgHtml = s.img_b64 ? `
         <div class="slide-img-wrap">
@@ -837,32 +1106,45 @@
         </div>` : "";
 
       document.getElementById("letterStage").innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-          <span class="card-badge" style="margin:0;">${s.badge}</span>
-          <button class="tab-btn" style="background:var(--brand-soft);color:var(--brand);border-color:#5EEAD4;" onclick="playCurrentSlide()">🔊 চিঠির এই পাতাটি শোনো</button>
+        <div class="card-top-bar">
+          <span class="card-badge">${s.badge}</span>
+          <div class="card-inline-controls">
+            <button id="btnSlideTopPlay" class="ag-btn listen" data-default-label="🔊 এই পাতাটা শোনো" data-audio-key="${slideAudioKey}" onclick="toggleSlideAudio()">🔊 এই পাতাটা শোনো</button>
+            <button class="ag-btn" ${curSlide <= 0 ? "disabled" : ""} onclick="changeSlide(-1, true)">⬅️ আগে</button>
+            <button class="ag-btn" ${curSlide >= ANANDO_DATA.slides.length - 1 ? "disabled" : ""} onclick="changeSlide(1, true)">পরে ➡️</button>
+          </div>
         </div>
         ${imgHtml}
         <div class="slide-dots">${dotsHtml}</div>
         <h2 class="card-title">${s.title}</h2>
         <div class="reframe-box" style="font-weight:700;">✨ ${s.highlight}</div>
         <p class="card-story">${s.text}</p>
-        <div class="btn-row">
-          <button class="btn" ${curSlide <= 0 ? "disabled" : ""} onclick="changeSlide(-1, true)">⬅️ আগের পাতা</button>
-          <button class="btn btn-primary" ${curSlide >= ANANDO_DATA.slides.length - 1 ? "disabled" : ""} onclick="changeSlide(1, true)">পরের পাতা ➡️</button>
+        <button id="btnSlideMainPlay" class="big-voice-btn" data-default-label="🔊 এই পাতাটা শোনো" data-audio-key="${slideAudioKey}" onclick="toggleSlideAudio()" style="margin-bottom:10px;">
+          🔊 এই পাতাটা শোনো
+        </button>
+        <div class="game-stepper-row">
+          <button class="ag-btn" ${curSlide <= 0 ? "disabled" : ""} onclick="changeSlide(-1, true)">⬅️ আগে</button>
+          <button class="ag-btn" onclick="toggleAutoAdvanceSlides()">${autoAdvanceSlides ? "🔁 পরপর: চালু" : "🔁 পরপর: বন্ধ"}</button>
+          <button class="ag-btn" ${curSlide >= ANANDO_DATA.slides.length - 1 ? "disabled" : ""} onclick="changeSlide(1, true)">পরে ➡️</button>
         </div>
       `;
+      syncAllAudioButtonsUI(!audioEl.paused);
+    }
+
+    function toggleAutoAdvanceSlides() {
+      autoAdvanceSlides = !autoAdvanceSlides;
+      renderLetterView();
     }
 
     function goToSlide(idx, autoPlay) {
-      curSlide = idx;
+      curSlide = Math.max(0, Math.min(ANANDO_DATA.slides.length - 1, idx));
+      stopAllAudio();
       renderLetterView();
-      if (autoPlay) playCurrentSlide();
+      if (autoPlay) toggleSlideAudio();
     }
 
     function changeSlide(delta, autoPlay) {
-      curSlide = Math.max(0, Math.min(ANANDO_DATA.slides.length - 1, curSlide + delta));
-      renderLetterView();
-      if (autoPlay) playCurrentSlide();
+      goToSlide(curSlide + delta, autoPlay);
     }
 
     function renderPillarsView() {
