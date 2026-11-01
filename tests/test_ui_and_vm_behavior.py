@@ -189,10 +189,10 @@ const audio = getEl('audioPlayer');
   assert.strictEqual(audio.paused, false, 'Clicking Prev Game must automatically play that game voice');
   assert.ok(audio.src.includes('ma-audio/audio/games/day_1_ag_0.mp3'));
 
-  // 2. Game Tiles have ZERO duplicate numbers and support custom v2 badges & variable wave counts!
+  // 2. Game Tiles have ZERO duplicate numbers and support custom v2 badges & 4-6 game waves!
   const stageHtml = getEl('activeDayStage').innerHTML;
-  assert.ok(stageHtml.includes('এআই বন্ধু') && stageHtml.includes('🌿 মনের আরাম'));
-  assert.ok(stageHtml.includes('data-count="3"'), 'Day 1 should render a 3-game gentle wave');
+  assert.ok(stageHtml.includes('নির্ভয় বন্ধু') && stageHtml.includes('🔤 ইংরেজি কথা'));
+  assert.ok(stageHtml.includes('data-count="5"'), 'Day 1 should render a 5-game wave (4-6 games/day rule)');
   assert.ok(!stageHtml.includes('খেলা ১'), 'Game buttons must not contain duplicate খেলা ১');
   assert.ok(!stageHtml.includes('১. '), 'Game buttons must not contain ১. prefix');
 
@@ -205,8 +205,8 @@ const audio = getEl('audioPlayer');
     !stageHtml.includes('গানটা শোনা হয়ে গেলে এর মানে আর গল্পটা জানতে জেমিনিকে বলো:'),
     'Non-song game card must NEVER display the song follow-up header'
   );
-  // Select Day 1 Game 2 (Song game) and verify song headers appear on song card:
-  selectGame(2, false);
+  // Select Day 1 Game 3 (Song game) and verify song headers appear on song card:
+  selectGame(3, false);
   const songStageHtml = getEl('activeDayStage').innerHTML;
   assert.ok(songStageHtml.includes('🎵 মা, আজকের গান ও মনের টান:'));
   assert.ok(songStageHtml.includes('💬 গানটা শোনা হয়ে গেলে এর মানে আর গল্পটা জানতে জেমিনিকে বলো:'));
@@ -230,14 +230,14 @@ const audio = getEl('audioPlayer');
   togglePrimaryCalendarGrid();
   assert.strictEqual(getEl('primaryCalGridWrap').style.display, 'none');
 
-  // 5. Completing all games of Day 1 unlocks Day 2 (4-game wave) and auto-advances!
+  // 5. Completing all games of Day 1 unlocks Day 2 (5-game wave) and auto-advances!
   for (let g = 0; g < DAYS_21[0].agendas.length; g++) {
     toggleAgendaDone(1, g);
   }
   assert.strictEqual(isDayUnlocked(2), true);
   assert.strictEqual(isDayUnlocked(3), false);
   assert.strictEqual(curDayNum, 2);
-  assert.ok(getEl('activeDayStage').innerHTML.includes('data-count="4"'), 'Day 2 should render a 4-game wave');
+  assert.ok(getEl('activeDayStage').innerHTML.includes('data-count="5"'), 'Day 2 should render a 5-game wave');
 
   // 5b. App Re-Open Simulation: if Day 2 Game 0 was skipped and Game 1 is the latest finished game,
   // opening the app focuses Game 2 (next game after latest done = index 2) and plays day_main_2 -> ag_2_2!
