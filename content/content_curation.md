@@ -1,24 +1,22 @@
 # 🌸 কল্যাণী (Kalyani) — Agentic Content Curation & LLM Improvement Rubric (`content_curation.md`)
 
-This Markdown document governs the **Agentic LLM Evaluator-Optimizer Loop** (`scripts/curate_loop.py`). Instead of brittle hardcoded regexes or character counters, the **Critic Agent** and **Refiner Agent** read all **4 Canonical Input Reference Files**—[`students/ma_kalyani/persona.md`](../students/ma_kalyani/persona.md), [`docs/student-persona.md`](../docs/student-persona.md), [`curriculum.md`](curriculum.md), and this rubric (`content_curation.md`)—to evaluate, iteratively refine, and harmonize:
+This Markdown document governs the **Agentic LLM Evaluator-Optimizer Loop** (`scripts/curate_loop.py`). Instead of brittle hardcoded regexes or character counters, the **Critic Agent** and **Refiner Agent** read all **3 Canonical Portable Input Reference Files**—[`students/ma_kalyani/persona.md`](../students/ma_kalyani/persona.md) (or `students/<student_id>/persona.md` for any new student), [`curriculum.md`](curriculum.md), and this rubric (`content_curation.md`)—to evaluate, iteratively refine, and harmonize:
 1. The Markdown curriculum content (`content/days/part1_days.md` & `content/days/part2_days.md`), and
 2. The Client-Side Android Gemini Master Instruction (`docs/client-side-gemini.md`).
 
 ---
 
-## 1. Agentic Evaluator-Optimizer Workflow (7-File MD5 Reference Contract)
+## 1. Agentic Evaluator-Optimizer Workflow (6-File Portable MD5 Contract)
 
 ```text
 ┌────────────────────────────────────┐
-│  students/ma_kalyani/persona.md    │────┐
-├────────────────────────────────────┤    │
-│  docs/student-persona.md           │────┤
+│  students/<student_id>/persona.md  │────┐
 ├────────────────────────────────────┤    ▼
 │  content/curriculum.md             │───▶┌─────────────────────────────┐
 ├────────────────────────────────────┤    │   Agentic LLM Orchestrator  │
 │  content/content_curation.md       │───▶│   (scripts/curate_loop.py)  │
 └────────────────────────────────────┘    │                             │
-                                          │  1. 7-File MD5 Detection    │
+                                          │  1. 6-File MD5 Detection    │
                                           │  2. LLM Critic Evaluation   │
                                           │  3. LLM Refiner Rewrite     │
                                           │  4. Re-Evaluate Until Pass  │

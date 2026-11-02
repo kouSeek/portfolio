@@ -1,7 +1,7 @@
 # 🌸 কল্যাণী (Kalyani App) — Technical Architecture & Artisanal UX Specification (`docs/spec.md`)
 
 ## 1. Product Vision
-- **Learner:** Ma — Shikha Chakraborty (~64, Dumdum Cantonment; see [`student-persona.md`](student-persona.md)).
+- **Learner:** Ma — Shikha Chakraborty (~65, Dum Dum Cantonment; see [`../students/ma_kalyani/persona.md`](../students/ma_kalyani/persona.md)).
 - **Companion Architecture:** Works hand-in-hand with the Android Gemini app on Ma's phone (configured via [`client-side-gemini.md`](client-side-gemini.md)).
 - **Experience:** A calm, zero-shame, heirloom-quality Bengali mobile Progressive Web App combining:
   1. **`🎓 আজকের খেলা`:**

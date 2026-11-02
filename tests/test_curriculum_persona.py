@@ -66,8 +66,7 @@ class TestCurriculumAndPersona(unittest.TestCase):
 
         md5s = collect_md5_fingerprints()
         for k in (
-            "persona_card_md5",
-            "student_persona_spec_md5",
+            "persona_md5",
             "curriculum_md5",
             "content_curation_md5",
             "part1_days_md5",
@@ -79,7 +78,6 @@ class TestCurriculumAndPersona(unittest.TestCase):
         gemini_md = (APP_ROOT / "GEMINI.md").read_text(encoding="utf-8")
         for ref_file in (
             "students/ma_kalyani/persona.md",
-            "docs/student-persona.md",
             "content/curriculum.md",
             "content/content_curation.md",
             "content/days/part1_days.md",

@@ -20,7 +20,6 @@ class TestArchitectureAndDocs(unittest.TestCase):
             ".gemini/config/rules/kalyani_app_rules.md",
             "docs/spec.md",
             "docs/content-pipeline.md",
-            "docs/student-persona.md",
             "docs/client-side-gemini.md",
             "students/ma_kalyani/persona.md",
             "students/ma_kalyani/curriculum_v2_draft.md",
@@ -60,8 +59,9 @@ class TestArchitectureAndDocs(unittest.TestCase):
         self.assertIn("audio/**/*.mp3", gitignore_txt)
         self.assertIn("!audio/tts_manifest.json", gitignore_txt)
 
-        # Legacy monolithic curriculum_data.py must not exist in scripts/
+        # Legacy monolithic curriculum_data.py and duplicate docs/student-persona.md must not exist
         self.assertFalse((APP_ROOT / "scripts" / "curriculum_data.py").exists())
+        self.assertFalse((APP_ROOT / "docs" / "student-persona.md").exists())
 
         # build_app.py must remain a lean Jinja2 modular assembler (<220 lines, zero inline JS/CSS strings)
         build_src = (APP_ROOT / "scripts" / "build_app.py").read_text(encoding="utf-8")

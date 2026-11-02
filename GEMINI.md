@@ -25,11 +25,10 @@ Maintain the codebase like a **Principal Software Architect**: every file must h
 ├── docs/                               # Product, Pedagogy, Pipeline & Downstream AI Specifications
 │   ├── spec.md                         # End-to-end Technical, Audio & Mobile UX Architecture
 │   ├── content-pipeline.md             # Reusable 5-stage Multi-Student Pipeline & Dynamic Evolution Blueprint
-│   ├── student-persona.md              # Ma's deep psychological/CBT blocker spec, banned stiff words & 20-rep spiral
 │   └── client-side-gemini.md           # Downstream Android Gemini Master Prompt (English rules, strictly Bangla speech)
-├── students/                           # Multi-Student Persona & Review-Stage Curriculum Drafts (Pre-TTS Gate)
+├── students/                           # Portable Per-Student Persona & Review-Stage Curriculum Drafts
 │   └── ma_kalyani/
-│       ├── persona.md                  # Canonical student profile card & constraints for Ma (Shikha Chakraborty)
+│       ├── persona.md                  # Single unified portable persona spec for Ma (profile, clinical CBT blockers, tone)
 │       └── curriculum_v2_draft.md      # Human-reviewable curriculum draft
 ├── content/                            # Declarative Markdown Blueprints, Markdown Days & Thin Loaders
 │   ├── __init__.py                     # Exports SLIDES, MORNING_QUOTES, GAME_META, DAYS_21, DAYS_PART2_30
@@ -107,18 +106,17 @@ Design every screen and interaction like a **Genius Artist UX Designer** craftin
 
 ## 3. CRITICAL RULE: Mandatory Persona/Blueprint Reference Set, Pure Agentic LLM Curation Gate & Explicit-Only TTS
 
-1. **Mandatory Reference Files for Every Content Creation & Curation Run (`7-File MD5 Contract`):**
-   - Whenever any agent or script (`scripts/curate_loop.py`) creates, edits, or evaluates curriculum games or downstream prompts, it **MUST read, cross-reference, and MD5-verify all 4 canonical input specifications**:
-     1. [`students/ma_kalyani/persona.md`](students/ma_kalyani/persona.md) (`persona_card_md5`) — Learner quick profile card, asthma/`25–26°C` & joint constraints, dietary exclusions (no soya bean/mushroom/egg mentions), and banned stiff Bengali words (`দয়া করে`, `মস্তিষ্ক`, `সংকোচ`, `ভুল থেকে শিক্ষা`, `পার্ট ১`, `পার্ট ২`).
-     2. [`docs/student-persona.md`](docs/student-persona.md) (`student_persona_spec_md5`) — Full psychological & clinical blocker matrix (11 emotional/scarcity blockers, 4 subconscious procedures, and the 20-repetition dopamine neuroplasticity spiral).
-     3. [`content/curriculum.md`](content/curriculum.md) (`curriculum_md5`) — Master 51-day syllabus blueprint (`60%` Day-to-Day English / `30%` Fluent Hindi Gossip / `10%` Clear Bengali Mind-Expression, 3-pillar Gemini Live Tech Onboarding for Voice Therapy + Phone Control [`@YouTube Music`, `@Phone` Calling, `@Google Photos`] + `Live Streaming Video Camera 📹`, 1-in-2-days Covert CBT on Even Days, and Personal Psychotherapy on Odd Days).
-     4. [`content/content_curation.md`](content/content_curation.md) (`content_curation_md5`) — The 12-Dimension Agentic Evaluator-Optimizer rubric and Critic -> Refiner rewrite rules (alongside workflow governance in [`docs/content-pipeline.md`](docs/content-pipeline.md)).
-   - From these 4 input specifications, the Agentic Loop co-curates and MD5-tracks the **3 canonical output files**:
-     5. [`content/days/part1_days.md`](content/days/part1_days.md) (`part1_days_md5`) — Days 1–21 Foundation Markdown content (loaded by `content/part1_days.py`).
-     6. [`content/days/part2_days.md`](content/days/part2_days.md) (`part2_days_md5`) — Days 22–51 Extended Calendar Markdown content (loaded by `content/part2_days.py`).
-     7. [`docs/client-side-gemini.md`](docs/client-side-gemini.md) (`client_gemini_md5`) — Downstream Android Gemini Master Prompt (English rules, strictly Bengali speech to Ma, mandatory persistent memory profiling, and master psychotherapist protocol).
+1. **Mandatory Reference Files for Every Content Creation & Curation Run (`6-File Portable MD5 Contract`):**
+   - Whenever any agent or script (`scripts/curate_loop.py --student <student_id>`) creates, edits, or evaluates curriculum games or downstream prompts, it **MUST read, cross-reference, and MD5-verify all 3 canonical input specifications**:
+     1. [`students/ma_kalyani/persona.md`](students/ma_kalyani/persona.md) (`persona_md5` — or `students/<student_id>/persona.md` for any new student) — Single unified portable student persona containing learner profile, asthma/`25–26°C` & joint constraints, dietary exclusions, 11 clinical emotional/scarcity blockers, 4 subconscious procedures, 20-repetition dopamine neuroplasticity spiral, and banned stiff Bengali words (`দয়া করে`, `মস্তিষ্ক`, `সংকোচ`, `ভুল থেকে শিক্ষা`, `পার্ট ১`, `পার্ট ২`).
+     2. [`content/curriculum.md`](content/curriculum.md) (`curriculum_md5`) — Master 51-day syllabus blueprint (`60%` Day-to-Day English / `30%` Fluent Hindi Gossip / `10%` Clear Bengali Mind-Expression, 3-pillar Gemini Live Tech Onboarding for Voice Therapy + Phone Control [`@YouTube Music`, `@Phone` Calling, `@Google Photos`] + `Live Streaming Video Camera 📹`, 1-in-2-days Covert CBT on Even Days, and Personal Psychotherapy on Odd Days).
+     3. [`content/content_curation.md`](content/content_curation.md) (`content_curation_md5`) — The 12-Dimension Agentic Evaluator-Optimizer rubric and Critic -> Refiner rewrite rules (alongside workflow governance in [`docs/content-pipeline.md`](docs/content-pipeline.md)).
+   - From these 3 input specifications, the Agentic Loop co-curates and MD5-tracks the **3 canonical output files**:
+     4. [`content/days/part1_days.md`](content/days/part1_days.md) (`part1_days_md5`) — Days 1–21 Foundation Markdown content (loaded by `content/part1_days.py`).
+     5. [`content/days/part2_days.md`](content/days/part2_days.md) (`part2_days_md5`) — Days 22–51 Extended Calendar Markdown content (loaded by `content/part2_days.py`).
+     6. [`docs/client-side-gemini.md`](docs/client-side-gemini.md) (`client_gemini_md5`) — Downstream Android Gemini Master Prompt (English rules, strictly Bengali speech to Ma, mandatory persistent memory profiling, and master psychotherapist protocol).
 2. **Pure Agentic LLM 12-Dimension Quality Gate (`scripts/curate_loop.py`):**
-   - **Zero hardcoded regex/character-length rules** in `scripts/curate_loop.py`—quality evaluation and iterative rewriting (`Critic Agent -> Refiner Agent -> Re-Evaluate`) are driven purely by the LLM reading the 4 Markdown specifications above (`python3 scripts/curate_loop.py --live-loop`), storing the verified 7-file MD5 ledger in `content/curation_manifest.json`:
+   - **Zero hardcoded regex/character-length rules** in `scripts/curate_loop.py`—quality evaluation and iterative rewriting (`Critic Agent -> Refiner Agent -> Re-Evaluate`) are driven purely by the LLM reading the 3 Markdown specifications above (`python3 scripts/curate_loop.py --live-loop`), storing the verified 6-file MD5 ledger in `content/curation_manifest.json`:
      1. **CBT Effectiveness & Subconscious Reprogramming** (Indirect Ericksonian metaphors, third-person stories, zero clinical/scolding words).
      2. **Personalization & Personal-Level Connect** (Ranaghat, Dum Dum, Koushik, Didi, Aishee, Ayush, Maa Sarada, Dakshineswar, Santiniketan).
      3. **Relationship Warmth & Ma–Koushik–Didi Empathy** (How Ma, Koushik, and Didi share the exact same sensitive heart and deep unspoken love).
