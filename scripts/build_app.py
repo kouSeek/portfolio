@@ -1,29 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Modular Static Compiler for 🌸 কল্যাণী (Kalyani App).
+"""Modular Jinja2 + Markdown Static Compiler for 🌸 কল্যাণী (Kalyani App).
 
 Assembles:
-  - Declarative curriculum & content (`content/`)
+  - Markdown-backed curriculum (`content/days/{part1,part2}_days.md` via `content/{part1,part2}_days.py`)
   - Artisanal CSS design-token layers (`src/styles/{tokens,layout,components}.css`)
   - Modular JS application controllers (`src/js/{state,audio,plan-view,letter-view,boot}.js`)
-  - Semantic HTML5 shell (`src/template.html`)
+  - Jinja2 HTML5 shell (`src/templates/index.html.j2`)
 Into:
-  1. `index.html` (Single canonical CDN-backed mobile PWA entrypoint)
-  2. Standalone Google Drive / Artifact HTML bundle (when requested)
+  - `index.html` (Single canonical CDN-backed mobile PWA entrypoint)
 
 CRITICAL GOVERNANCE RULE (defined in GEMINI.md):
-- Runs in <0.5s and NEVER invokes TTS voice generation.
-- Performs a non-blocking SHA-256 manifest check (`audio/tts_manifest.json`) and reports any stale audio clips.
+  - Runs in <0.5s and NEVER invokes TTS voice generation.
+  - Performs a non-blocking SHA-256 manifest check (`audio/tts_manifest.json`) and reports any stale audio clips.
 """
 
 from __future__ import annotations
 
 import base64
 import json
-import os
 from pathlib import Path
 import shutil
 import sys
+
+import jinja2
 
 APP_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(APP_ROOT))
@@ -33,9 +33,9 @@ from content import DAYS_21, DAYS_PART2_30, GAME_META, LETTER_VIDEO_URL, MORNING
 from curate_loop import run_quality_gate  # noqa: E402
 from refresh_voices import get_stale_or_missing_files, load_manifest  # noqa: E402
 
-AUDIO_DIR = APP_ROOT / "audio"
 SLIDES_IMG_DIR = APP_ROOT / "assets" / "slides"
 SRC_DIR = APP_ROOT / "src"
+TEMPLATES_DIR = SRC_DIR / "templates"
 GH_RAW_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ma-audio/"
 
 CSS_MODULES = (
@@ -105,13 +105,13 @@ def assemble_data_js(embed_offline_b64: bool, url_prefix: str) -> str:
             "audio_b64": b64_uri(APP_ROOT / aud_rel, "audio/mpeg") if embed_offline_b64 else "",
         })
 
-    quotes_audio = []
-    for q_idx in range(len(MORNING_QUOTES)):
-        q_rel = f"audio/quotes/quote_{q_idx}.mp3"
-        quotes_audio.append({
-            "url": url_prefix + q_rel,
-            "b64": b64_uri(APP_ROOT / q_rel, "audio/mpeg") if embed_offline_b64 else "",
-        })
+    quotes_audio = [
+        {
+            "url": url_prefix + f"audio/quotes/quote_{q_idx}.mp3",
+            "b64": b64_uri(APP_ROOT / f"audio/quotes/quote_{q_idx}.mp3", "audio/mpeg") if embed_offline_b64 else "",
+        }
+        for q_idx in range(len(MORNING_QUOTES))
+    ]
 
     day1_ag_map = {}
     if embed_offline_b64 and DAYS_21:
@@ -137,41 +137,42 @@ def assemble_data_js(embed_offline_b64: bool, url_prefix: str) -> str:
     ])
 
 
-def render_bundle(template_html: str, css_bundle: str, js_bundle: str, data_js: str) -> str:
-    return (
-        template_html
-        .replace("/*__INJECT_CSS__*/", css_bundle)
-        .replace("/*__INJECT_DATA__*/", data_js)
-        .replace("/*__INJECT_JS__*/", js_bundle)
+def render_jinja_bundle(css_bundle: str, js_bundle: str, data_js: str) -> str:
+    env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(str(TEMPLATES_DIR)),
+        autoescape=False,
+        keep_trailing_newline=True,
+    )
+    template = env.get_template("index.html.j2")
+    return template.render(
+        css_bundle=css_bundle,
+        data_js=data_js,
+        js_bundle=js_bundle,
+        letter_video_url=LETTER_VIDEO_URL,
     )
 
 
 def build_html() -> None:
-    # 0. Mandatory 12-Dimension Content Quality Gate & Curation Check
     passed, issues, dim_scores = run_quality_gate(verbose=False)
     if not passed:
-        raise RuntimeError(f"12-Dimension Content Quality Gate failed: {issues}")
-    print(f"[Content Quality Gate] PASSED all {len(dim_scores)}/12 pedagogical & emotional dimensions.")
+        raise RuntimeError(f"Agentic LLM Content Quality Gate failed: {issues}")
+    print(f"[Agentic Quality Gate] PASSED all {len(dim_scores)}/12 dimensions.")
 
-    # Sync root favicon.svg from canonical assets/icons/favicon.svg
     src_icon = APP_ROOT / "assets" / "icons" / "favicon.svg"
     dst_icon = APP_ROOT / "favicon.svg"
     if src_icon.is_file() and src_icon.read_bytes() != (dst_icon.read_bytes() if dst_icon.is_file() else b""):
         shutil.copyfile(src_icon, dst_icon)
 
-    template_html = (SRC_DIR / "template.html").read_text(encoding="utf-8")
     css_bundle = "\n\n".join(p.read_text(encoding="utf-8").strip() for p in CSS_MODULES)
     js_bundle = "\n\n".join(p.read_text(encoding="utf-8").strip() for p in JS_MODULES)
 
-    # 1. Single Canonical Public CDN-backed Mobile PWA HTML (index.html)
     cdn_data_js = assemble_data_js(embed_offline_b64=False, url_prefix=GH_RAW_BASE)
-    cdn_html = render_bundle(template_html, css_bundle, js_bundle, cdn_data_js)
+    cdn_html = render_jinja_bundle(css_bundle, js_bundle, cdn_data_js)
 
     out_idx = APP_ROOT / "index.html"
     out_idx.write_text(cdn_html, encoding="utf-8")
-    print(f"Built {out_idx.name} ({out_idx.stat().st_size:,} bytes)")
+    print(f"Built {out_idx.name} via Jinja2 ({out_idx.stat().st_size:,} bytes)")
 
-    # 2. Non-blocking TTS hash check (NEVER auto-regenerates voices!)
     stale, expected, _ = get_stale_or_missing_files(scope="all")
     if not stale:
         print(f"[TTS Check] All {len(expected)} Aoede MP3 files are 100% in sync with content/.")

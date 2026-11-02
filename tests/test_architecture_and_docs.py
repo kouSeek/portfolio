@@ -25,10 +25,16 @@ class TestArchitectureAndDocs(unittest.TestCase):
             "students/ma_kalyani/persona.md",
             "students/ma_kalyani/curriculum_v2_draft.md",
             "content/__init__.py",
+            "content/curriculum.md",
+            "content/content_curation.md",
+            "content/markdown_loader.py",
+            "content/days/part1_days.md",
+            "content/days/part2_days.md",
             "content/slides_and_quotes.py",
             "content/part1_days.py",
             "content/part2_days.py",
             "src/template.html",
+            "src/templates/index.html.j2",
             "src/styles/tokens.css",
             "src/styles/layout.css",
             "src/styles/components.css",
@@ -57,11 +63,18 @@ class TestArchitectureAndDocs(unittest.TestCase):
         # Legacy monolithic curriculum_data.py must not exist in scripts/
         self.assertFalse((APP_ROOT / "scripts" / "curriculum_data.py").exists())
 
-        # build_app.py must remain a lean modular assembler (<220 lines, zero inline JS/CSS strings)
+        # build_app.py must remain a lean Jinja2 modular assembler (<220 lines, zero inline JS/CSS strings)
         build_src = (APP_ROOT / "scripts" / "build_app.py").read_text(encoding="utf-8")
         self.assertLess(len(build_src.splitlines()), 220)
+        self.assertIn("jinja2", build_src)
         self.assertNotIn("<!DOCTYPE html>", build_src)
         self.assertNotIn("function renderPlanView", build_src)
+
+        # part1_days.py and part2_days.py must be smart thin Markdown loaders (<30 lines each, zero giant dict blobs)
+        for loader_rel in ("content/part1_days.py", "content/part2_days.py"):
+            loader_src = (APP_ROOT / loader_rel).read_text(encoding="utf-8")
+            self.assertLess(len(loader_src.splitlines()), 30, f"{loader_rel} should be a thin Markdown loader")
+            self.assertIn("load_days_markdown", loader_src)
 
     def test_no_auto_tts_rule_and_manifest_tracking(self) -> None:
         """Verify build_app.py never calls TTS and refresh_voices.py tracks all expected audio clips."""

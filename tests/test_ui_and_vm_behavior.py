@@ -191,7 +191,7 @@ const audio = getEl('audioPlayer');
 
   // 2. Game Tiles have ZERO duplicate numbers and support custom 7-pillar badges & 6-game waves!
   const stageHtml = getEl('activeDayStage').innerHTML;
-  assert.ok(stageHtml.includes('💬 মনের কথা') && stageHtml.includes('🔤 ইংরেজি কথা') && stageHtml.includes('🗣️ হিন্দি কথা'));
+  assert.ok(stageHtml.includes('💬 মনের কথা') && stageHtml.includes('🔤 ইংরেজি কথা') && stageHtml.includes('🗣️ হিন্দি আড্ডা'));
   assert.ok(stageHtml.includes('data-count="6"'), 'Day 1 should render a 6-game wave across the 7 pillars');
   assert.ok(!stageHtml.includes('খেলা ১'), 'Game buttons must not contain duplicate খেলা ১');
   assert.ok(!stageHtml.includes('১. '), 'Game buttons must not contain ১. prefix');

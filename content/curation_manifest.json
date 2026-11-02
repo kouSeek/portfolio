@@ -1,1217 +1,234 @@
 {
-  "engine": "Agentic LLM Evaluator-Optimizer Loop (Critic -> Refiner -> Re-Evaluate)",
-  "max_iterations": 3,
-  "min_dimension_score": 9,
-  "total_days_evaluated": 51,
+  "engine": "Pure Agentic LLM Evaluator-Optimizer Loop (Blueprint-Driven via curriculum.md + content_curation.md)",
+  "iterations_run": 1,
   "total_refinements_applied": 0,
-  "cbt_cadence": {
-    "rule": "1 in 2 days (50% alternate-day cadence on even days)",
-    "part1_cbt_days": [
-      2,
-      4,
-      6,
-      8,
-      10,
-      12,
-      14,
-      16,
-      18,
-      20
-    ],
-    "part2_cbt_days": [
-      22,
-      24,
-      26,
-      28,
-      30,
-      32,
-      34,
-      36,
-      38,
-      40,
-      42,
-      44,
-      46,
-      48,
-      50
-    ],
-    "total_cbt_days": 25,
-    "total_days": 51,
-    "cbt_day_ratio": 0.4902
+  "passed": true,
+  "dimension_scores": {
+    "cbt_effectiveness": 10,
+    "personal_connect": 10,
+    "relationship_warmth": 10,
+    "inspiration_and_pride": 10,
+    "charm_and_fun": 10,
+    "curiosity_and_wonder": 10,
+    "storytelling_depth": 10,
+    "ease_of_learning": 10,
+    "zero_fear_and_shame": 10,
+    "urge_to_express_mind": 10,
+    "freedom_and_autonomy": 10,
+    "growing_own_dreams": 10
+  },
+  "summary_critique": "The curriculum is meticulously aligned with the therapeutic and pedagogical goals set for Ma. The alternating structure of CBT/Reminiscence therapy ensures consistent psychological scaffolding without fatigue. The language distribution (60/30/10) is perfectly executed, and the tech-onboarding through spaced repetition (Gemini Live/Vision) is integrated naturally into daily tasks. The tone remains consistently warm, using authentic West Bengal colloquial Bengali ('চলিত বাংলা') that respects Ma's dignity and family identity. All 12 dimensions are met with high precision.",
+  "md5_fingerprints": {
+    "curriculum_md5": "29228b7b1bc57a318e7e4149ef3f1821",
+    "content_curation_md5": "3775b581abe1e12acbe4c1612b796bd1",
+    "part1_days_md5": "89ce66e38d7d029181c71234a154245a",
+    "part2_days_md5": "558d5ef5718bcf522cd3d4b5f97382f0",
+    "client_gemini_md5": "8a590c5ffeecd34c3b1f5a061b0967be"
   },
   "days": {
     "1": {
-      "day": 1,
-      "hash": "8401db00169108de17c450be766da0000764708989df71235fccc84cf3427e77",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "2": {
-      "day": 2,
-      "hash": "dd718886548ee9140e79bc2ed71c7627acf7e88b1ec08479070cc24e5e50a985",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "3": {
-      "day": 3,
-      "hash": "f6434703530b5c617fc9913d2e10368634c744cd777b1e23067e9115d9b6fa8c",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "4": {
-      "day": 4,
-      "hash": "9f2812fb7d0893587a4342d4f0ddc611af12a005c1d1546694f3144b78f43276",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "5": {
-      "day": 5,
-      "hash": "d1e6734b62db0bb94e0277956c7626d4718a3f3c7105afb950d598637e2ef010",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "6": {
-      "day": 6,
-      "hash": "b77b340cb08ccf24cf0ed5bc35bd1f9b69533b19f8d2d3070c922f7d54e2a2f1",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "7": {
-      "day": 7,
-      "hash": "2c79b75061935bae20a695093dad71d4b4fc8584179f3d05bc353a9afeae7a23",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "8": {
-      "day": 8,
-      "hash": "878486cba917e79a1837aecea9b337455146b9b9cf432d9c7698fb122eea73bc",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "9": {
-      "day": 9,
-      "hash": "1dd67f4befafaac73be0cbebfc43ad750cc1f283ee76c6e02f2292b119217aa9",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "10": {
-      "day": 10,
-      "hash": "7643dba4f05b1d9a363ef7a23d8798b5cc0e18d407a784ce352b137efc8d9c55",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "11": {
-      "day": 11,
-      "hash": "0c68584020011d04c5a6aa3bf1e6de1595518c82a5c541125813db1912f30519",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "12": {
-      "day": 12,
-      "hash": "f024245e795a28b5f8af2654215dd0f9bb17c6e98674109e2746284a4b5daba9",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "13": {
-      "day": 13,
-      "hash": "912a606f69c26e0150d0948f3e4d0fdbf904508d1772d228361feff8fd52dc9f",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "14": {
-      "day": 14,
-      "hash": "e2fe1d89020012f9b430b6732c66174992311b560b58a5005ceb3b2524edb9d8",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "15": {
-      "day": 15,
-      "hash": "71fd8968d7b3b207d72b4f1e538ccb0ab8a01c9d7f5d831c28aaaed259ffb1f2",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "16": {
-      "day": 16,
-      "hash": "40bedb7493a9d98c5f7cd7b8b1e883446031336bffcb18aeb1a46284436076f5",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "17": {
-      "day": 17,
-      "hash": "88f0fcc5bd21eaa27ada02aa7eb799469675ded2ab3c6eff0f7cecd7ff88299b",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "18": {
-      "day": 18,
-      "hash": "3352d4b50cfe6fae78bd6f35ca9ff8966b576cb63e1ba87826d9ae88013c4b52",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "19": {
-      "day": 19,
-      "hash": "c20b7b16c4c9db09309cef2b3b99679daeb0a26c0917d7e23af2051d4754b851",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "20": {
-      "day": 20,
-      "hash": "da900bcf590a89db7610e3501e49f1827bbd236e0be9bb221b43468f23866cc6",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "21": {
-      "day": 21,
-      "hash": "619e26571e2a135535609ade7cdd65744c1bd2dc0626df7f23b1cc01aeedded3",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "22": {
-      "day": 22,
-      "hash": "0b9662aa4df38a9f356f0493ea2dfae444825dd757cf763a890ad9c002d631bc",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "23": {
-      "day": 23,
-      "hash": "82b4ffbffd7193a6a00662559d137e2d6179302227e5d8b95e949cba62e1f6ed",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "24": {
-      "day": 24,
-      "hash": "f8816babccc0f0bdbe663687ec649a30cd093329d2369c140e5d312c0ff7b851",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "25": {
-      "day": 25,
-      "hash": "342e00c0734cac234c2503010ce7ce8c7ec098139e9b1ca2d0ef70d2991ce94b",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "26": {
-      "day": 26,
-      "hash": "87558a4987d570d7913289ac360fbdb2cf645147f0629cad54667bc0e7ea9326",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "27": {
-      "day": 27,
-      "hash": "be24bf48ff5e6e829deaeac8a3a362ef8d6e2499a94617771da48c6f01f325ea",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "28": {
-      "day": 28,
-      "hash": "5aa298c30e348e54de4cedd321f725cc7fb71b136882895fce3c49d00f5c9334",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "29": {
-      "day": 29,
-      "hash": "9f8b507f8c58f73afd5192387cd2ff8ed4f4e0f697f768fcaa7251aee235e108",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "30": {
-      "day": 30,
-      "hash": "2297bada2822854ecad753b38d9bfb8db0c1758f37785cf2429ca0bc22e97cfc",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "31": {
-      "day": 31,
-      "hash": "01064e56fd19675d7a8893ff306b2c3082cc14e8c3058225c42a2c35f66d0b6b",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "32": {
-      "day": 32,
-      "hash": "935147597ffd22496511ae36c56fe9302f10f27965f32590fe1910d12688b2df",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "33": {
-      "day": 33,
-      "hash": "e6d0fbf0d6d0cd204b9c008638dd1488add840b906982e50b30dca9ea31e979f",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "34": {
-      "day": 34,
-      "hash": "8bc045dff62b6187674a12b1f2979c3906ef21934bf94d63c6e2970092c07319",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "35": {
-      "day": 35,
-      "hash": "309da0485db73ce401a96e3cc55033559cf81e993e30150339e4e54b7e03c91f",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "36": {
-      "day": 36,
-      "hash": "2fb1d229bfdf16d6901314979d6299ebab056a17e889a366e633ab123f8c91cd",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "37": {
-      "day": 37,
-      "hash": "1ac372efd4ba512c854cc8a8af1ec6a3eb88be74edc0ea90110642f6fef5e7e2",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "38": {
-      "day": 38,
-      "hash": "9161feaaf4c2931d26169b9c206c46e598bf7ab2f9c4942b954a7eb8e2bb5d49",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "39": {
-      "day": 39,
-      "hash": "9a7f3538bd503336b6960679b67900ef152b1b1161934f1659f0b2bfe85d274f",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "40": {
-      "day": 40,
-      "hash": "9ca1dc172da76137818d055ce6df5d253dd34dc4f9491e2390382f81f7860116",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "41": {
-      "day": 41,
-      "hash": "5107542fa5ff8c81ccffb0fa51708e8e3175791059674ef34c02c5a3cfb759fd",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "42": {
-      "day": 42,
-      "hash": "aa0972b4d27464d7e43db15d528959dd831c6f0888677e8d4998d600903d52e6",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "43": {
-      "day": 43,
-      "hash": "29e787a19a69295aa5913e24eba7cd4f66b25cd084dc989da331414c9ccf7e80",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "44": {
-      "day": 44,
-      "hash": "eb5487617d2dc46fc2c5cc88c88703053dc1c6cf932ef07fac269b12dd40656b",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "45": {
-      "day": 45,
-      "hash": "11631b53a385896ed3d54a303c2f41aeb15679eb18ea5f6db0dc983d556f58f4",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "46": {
-      "day": 46,
-      "hash": "8a8e377e8059845076ec4013db1b60c00a21f97d1e7a8965696203c238c29027",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "47": {
-      "day": 47,
-      "hash": "7b52ce54e49fadcf86ffc54436006aed595814a00c67e0b286b72b70b658c946",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "48": {
-      "day": 48,
-      "hash": "6611253a760cc39e3729a2c71e1004725f90763b38f3c0ac6a2c2ce28b93c08a",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "49": {
-      "day": 49,
-      "hash": "01b31da51e57d40b3f6c9d81d8a32b694dd124fc2c7486992699d2d26b1b58b6",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "50": {
-      "day": 50,
-      "hash": "87404a7eebfdd487bb43b594d0406359f1cc4e8628f9da494a901b6685db8f18",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     },
     "51": {
-      "day": 51,
-      "hash": "850fafccd004e265b329889da3cffd09a4952f8dd96d3a48f95e651692e78967",
-      "passed": true,
-      "dimension_scores": {
-        "cbt_effectiveness": 10,
-        "personal_connect": 10,
-        "relationship_warmth": 10,
-        "inspiration_and_pride": 10,
-        "charm_and_fun": 10,
-        "curiosity_and_wonder": 10,
-        "storytelling_depth": 10,
-        "ease_of_learning": 10,
-        "zero_fear_and_shame": 10,
-        "urge_to_express_mind": 10,
-        "freedom_and_autonomy": 10,
-        "growing_own_dreams": 10
-      },
-      "weak_games": [],
-      "structural_issues": [],
-      "summary_critique": "Verified 5-pillar depth, 4-6 games/day, 2-turn prompts, and 1-in-2-days Covert CBT cadence.",
-      "iterations_run": 1
+      "iterations_run": 1,
+      "passed": true
     }
   }
 }
