@@ -1,22 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Modular Jinja2 + Markdown Static Compiler for 🌸 কল্যাণী (Kalyani App).
+"""Unified Modular Jinja2 + Markdown Compiler for AI Companion (`kalyani` + `anondo`).
 
-Assembles:
-  - Markdown-backed curriculum (`content/days/{part1,part2}_days.md` via `content/{part1,part2}_days.py`)
-  - Artisanal CSS design-token layers (`src/styles/{tokens,layout,components}.css`)
-  - Modular JS application controllers (`src/js/{state,audio,plan-view,letter-view,boot}.js`)
-  - Jinja2 HTML5 shell (`src/templates/index.html.j2`)
-Into:
-  - `index.html` (Single canonical CDN-backed mobile PWA entrypoint)
+Compiles:
+  1. `kalyani.html` — Ma's 51-day Bengali companion (`personas/kalyani/` + `src/kalyani/`)
+  2. `anondo.html`  — Koushik's 21-day English companion (`personas/anondo/` + `src/anondo/`)
+  3. `index.html`   — Two-persona AI Companion Hub (`src/templates/index.html.j2`)
 
 CRITICAL GOVERNANCE RULE (defined in GEMINI.md):
   - Runs in <0.5s and NEVER invokes TTS voice generation.
-  - Performs a non-blocking SHA-256 manifest check (`audio/tts_manifest.json`) and reports any stale audio clips.
+  - Verifies the 12-dimension Agentic LLM Curation Gate and checks `audio/<persona>/tts_manifest.json`.
 """
 
 from __future__ import annotations
 
+import argparse
 import base64
 import json
 from pathlib import Path
@@ -29,157 +27,183 @@ APP_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(APP_ROOT))
 sys.path.insert(0, str(APP_ROOT / "scripts"))
 
-from content import DAYS_21, DAYS_PART2_30, GAME_META, LETTER_VIDEO_URL, MORNING_QUOTES, SLIDES  # noqa: E402
+from content import (  # noqa: E402
+    ANONDO_DAYS_21,
+    ANONDO_PILLARS,
+    ANONDO_QUOTES,
+    ANONDO_SLIDES,
+    DAYS_21,
+    DAYS_PART2_30,
+    GAME_META,
+    LETTER_VIDEO_URL,
+    MORNING_QUOTES,
+    SLIDES,
+)
 from curate_loop import run_quality_gate  # noqa: E402
 from refresh_voices import get_stale_or_missing_files, load_manifest  # noqa: E402
 
-SLIDES_IMG_DIR = APP_ROOT / "assets" / "slides"
 SRC_DIR = APP_ROOT / "src"
 TEMPLATES_DIR = SRC_DIR / "templates"
-GH_RAW_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ma-audio/"
+GH_RAW_AUDIO_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/audio/"
 
-CSS_MODULES = (
-    SRC_DIR / "styles" / "tokens.css",
-    SRC_DIR / "styles" / "layout.css",
-    SRC_DIR / "styles" / "components.css",
+KALYANI_CSS = (
+    SRC_DIR / "kalyani" / "styles" / "tokens.css",
+    SRC_DIR / "kalyani" / "styles" / "layout.css",
+    SRC_DIR / "kalyani" / "styles" / "components.css",
 )
-
-JS_MODULES = (
-    SRC_DIR / "js" / "state.js",
-    SRC_DIR / "js" / "audio.js",
-    SRC_DIR / "js" / "plan-view.js",
-    SRC_DIR / "js" / "letter-view.js",
-    SRC_DIR / "js" / "boot.js",
+KALYANI_JS = (
+    SRC_DIR / "kalyani" / "js" / "state.js",
+    SRC_DIR / "kalyani" / "js" / "audio.js",
+    SRC_DIR / "kalyani" / "js" / "plan-view.js",
+    SRC_DIR / "kalyani" / "js" / "letter-view.js",
+    SRC_DIR / "kalyani" / "js" / "boot.js",
+)
+ANONDO_CSS = (
+    SRC_DIR / "anondo" / "styles" / "tokens.css",
+    SRC_DIR / "anondo" / "styles" / "components.css",
+)
+ANONDO_JS = (
+    SRC_DIR / "anondo" / "js" / "audio.js",
+    SRC_DIR / "anondo" / "js" / "views.js",
 )
 
 
 def b64_uri(path: Path, mime: str) -> str:
-    if not path.is_file():
-        return ""
-    return f"data:{mime};base64," + base64.b64encode(path.read_bytes()).decode("ascii")
+    return ("data:" + mime + ";base64," + base64.b64encode(path.read_bytes()).decode("ascii")) if path.is_file() else ""
 
 
-def enrich_days(days_list: list[dict], embed_part1_audio: bool, url_prefix: str) -> list[dict]:
-    manifest_hashes = load_manifest()
-    enriched_days: list[dict] = []
+def _enrich_kalyani_days(days_list: list[dict], url_prefix: str) -> list[dict]:
+    manifest_hashes = load_manifest("kalyani")
+    aud_root = APP_ROOT / "audio" / "kalyani"
+    enriched: list[dict] = []
     for d in days_list:
         day_num = int(d["day"])
         ref_day = int(d.get("audio_ref_day", day_num))
-
-        day_rel = f"audio/days/day_{day_num}.mp3"
-        ref_day_rel = f"audio/days/day_{ref_day}.mp3"
-        has_day = (APP_ROOT / day_rel).is_file() or (f"days/day_{day_num}.mp3" in manifest_hashes)
-        resolved_day_rel = day_rel if has_day else ref_day_rel
+        day_rel = f"days/day_{day_num}.mp3"
+        has_day = (aud_root / day_rel).is_file() or (day_rel in manifest_hashes)
+        resolved_day_rel = day_rel if has_day else f"days/day_{ref_day}.mp3"
 
         ags_enriched = []
         for idx, ag in enumerate(d["agendas"]):
-            ag_rel = f"audio/games/day_{day_num}_ag_{idx}.mp3"
-            ref_ag_rel = f"audio/games/day_{ref_day}_ag_{idx}.mp3"
-            has_ag = (APP_ROOT / ag_rel).is_file() or (f"games/day_{day_num}_ag_{idx}.mp3" in manifest_hashes)
-            resolved_ag_rel = ag_rel if has_ag else ref_ag_rel
-            ags_enriched.append({
-                **ag,
-                "audio_url": url_prefix + resolved_ag_rel,
-                "audio_b64": "",
-            })
+            ag_rel = f"games/day_{day_num}_ag_{idx}.mp3"
+            has_ag = (aud_root / ag_rel).is_file() or (ag_rel in manifest_hashes)
+            resolved_ag = ag_rel if has_ag else f"games/day_{ref_day}_ag_{idx}.mp3"
+            ags_enriched.append({**ag, "audio_url": url_prefix + resolved_ag, "audio_b64": ""})
 
-        enriched_days.append({
-            **d,
-            "agendas": ags_enriched,
-            "audio_url": url_prefix + resolved_day_rel,
-            "audio_b64": b64_uri(APP_ROOT / resolved_day_rel, "audio/mpeg") if (embed_part1_audio and day_num <= 21) else "",
-        })
-    return enriched_days
+        enriched.append({**d, "agendas": ags_enriched, "audio_url": url_prefix + resolved_day_rel, "audio_b64": ""})
+    return enriched
 
 
-def assemble_data_js(embed_offline_b64: bool, url_prefix: str) -> str:
-    slides_payload = []
-    for s in SLIDES:
-        sid = int(s["id"])
-        img_path = SLIDES_IMG_DIR / f"slide_{sid}.jpg"
-        aud_rel = f"audio/slides/slide_{sid}.mp3"
-        slides_payload.append({
-            **s,
-            "img_b64": b64_uri(img_path, "image/jpeg"),
-            "audio_url": url_prefix + aud_rel,
-            "audio_b64": b64_uri(APP_ROOT / aud_rel, "audio/mpeg") if embed_offline_b64 else "",
-        })
+def build_kalyani(env: jinja2.Environment) -> None:
+    passed, issues, dim_scores = run_quality_gate(verbose=False, persona_id="kalyani")
+    if not passed:
+        raise RuntimeError(f"Quality Gate failed for kalyani: {issues}")
+    print(f"[Agentic Quality Gate (kalyani)] PASSED all {len(dim_scores)}/12 dimensions.")
 
-    quotes_audio = [
-        {
-            "url": url_prefix + f"audio/quotes/quote_{q_idx}.mp3",
-            "b64": b64_uri(APP_ROOT / f"audio/quotes/quote_{q_idx}.mp3", "audio/mpeg") if embed_offline_b64 else "",
-        }
-        for q_idx in range(len(MORNING_QUOTES))
+    url_prefix = GH_RAW_AUDIO_BASE + "kalyani/"
+    img_dir = APP_ROOT / "assets" / "kalyani" / "slides"
+    slides_payload = [
+        {**s, "img_b64": b64_uri(img_dir / f"slide_{int(s['id'])}.jpg", "image/jpeg"), "audio_url": f"{url_prefix}slides/slide_{int(s['id'])}.mp3", "audio_b64": ""}
+        for s in SLIDES
     ]
-
-    day1_ag_map = {}
-    if embed_offline_b64 and DAYS_21:
-        for a_idx in range(len(DAYS_21[0]["agendas"])):
-            ag_rel = f"audio/games/day_1_ag_{a_idx}.mp3"
-            day1_ag_map[a_idx] = {
-                "url": url_prefix + ag_rel,
-                "b64": b64_uri(APP_ROOT / ag_rel, "audio/mpeg"),
-            }
-
-    days_p1 = enrich_days(DAYS_21, embed_part1_audio=embed_offline_b64, url_prefix=url_prefix)
-    days_p2 = enrich_days(DAYS_PART2_30, embed_part1_audio=False, url_prefix=url_prefix)
-
-    return "\n".join([
+    quotes_audio = [{"url": f"{url_prefix}quotes/quote_{i}.mp3", "b64": ""} for i in range(len(MORNING_QUOTES))]
+    data_js = "\n".join([
         f"const LETTER_VIDEO_URL = {json.dumps(LETTER_VIDEO_URL, ensure_ascii=False)};",
         f"const SLIDES = {json.dumps(slides_payload, ensure_ascii=False)};",
         f"const MORNING_QUOTES = {json.dumps(MORNING_QUOTES, ensure_ascii=False)};",
         f"const GAME_META = {json.dumps(GAME_META, ensure_ascii=False)};",
-        f"const DAYS_21 = {json.dumps(days_p1, ensure_ascii=False)};",
-        f"const DAYS_PART2_30 = {json.dumps(days_p2, ensure_ascii=False)};",
+        f"const DAYS_21 = {json.dumps(_enrich_kalyani_days(DAYS_21, url_prefix), ensure_ascii=False)};",
+        f"const DAYS_PART2_30 = {json.dumps(_enrich_kalyani_days(DAYS_PART2_30, url_prefix), ensure_ascii=False)};",
         f"const QUOTES_AUDIO = {json.dumps(quotes_audio, ensure_ascii=False)};",
-        f"const DAY1_AG_MAP = {json.dumps(day1_ag_map, ensure_ascii=False)};",
+        "const DAY1_AG_MAP = {};",
     ])
-
-
-def render_jinja_bundle(css_bundle: str, js_bundle: str, data_js: str) -> str:
-    env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(str(TEMPLATES_DIR)),
-        autoescape=False,
-        keep_trailing_newline=True,
-    )
-    template = env.get_template("index.html.j2")
-    return template.render(
-        css_bundle=css_bundle,
+    html = env.get_template("kalyani.html.j2").render(
+        css_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in KALYANI_CSS),
         data_js=data_js,
-        js_bundle=js_bundle,
+        js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in KALYANI_JS),
         letter_video_url=LETTER_VIDEO_URL,
     )
+    out = APP_ROOT / "kalyani.html"
+    out.write_text(html, encoding="utf-8")
+    print(f"Built {out.name} via Jinja2 ({out.stat().st_size:,} bytes)")
 
 
-def build_html() -> None:
-    passed, issues, dim_scores = run_quality_gate(verbose=False)
+def build_anondo(env: jinja2.Environment) -> None:
+    passed, issues, dim_scores = run_quality_gate(verbose=False, persona_id="anondo")
     if not passed:
-        raise RuntimeError(f"Agentic LLM Content Quality Gate failed: {issues}")
-    print(f"[Agentic Quality Gate] PASSED all {len(dim_scores)}/12 dimensions.")
+        raise RuntimeError(f"Quality Gate failed for anondo: {issues}")
+    print(f"[Agentic Quality Gate (anondo)] PASSED all {len(dim_scores)}/12 dimensions.")
 
-    src_icon = APP_ROOT / "assets" / "icons" / "favicon.svg"
-    dst_icon = APP_ROOT / "favicon.svg"
+    url_prefix = GH_RAW_AUDIO_BASE + "anondo/"
+    img_dir = APP_ROOT / "assets" / "anondo" / "slides"
+    slides = [
+        {**s, "img_b64": b64_uri(img_dir / f"slide_{int(s['id'])}.jpg", "image/jpeg"), "audio_url": f"{url_prefix}slides/slide_{int(s['id'])}.mp3"}
+        for s in ANONDO_SLIDES
+    ]
+    quotes = [{"text": q, "audio_url": f"{url_prefix}quotes/quote_{i}.mp3"} for i, q in enumerate(ANONDO_QUOTES)]
+    pillars = [{**p, "audio_url": f"{url_prefix}pillars/pillar_{i}.mp3"} for i, p in enumerate(ANONDO_PILLARS)]
+    days = [
+        {
+            "day": int(d["day"]),
+            "phase": d.get("phase", "House-Money Era"),
+            "title": d["title_bn"],
+            "sub": d.get("summary_bn", ""),
+            "audio_url": f"{url_prefix}days/day_{int(d['day'])}.mp3",
+            "games": [
+                {
+                    "pillar": ag.get("pillar", ""),
+                    "short": ag["short_bn"],
+                    "category": ag["category"],
+                    "title": ag["title_bn"],
+                    "detail": ag["detail_bn"],
+                    "prompt": ag["prompt_bn"],
+                    "followup_prompt": ag.get("followup_prompt_bn", ""),
+                    "audio_url": f"{url_prefix}games/day_{int(d['day'])}_ag_{idx}.mp3",
+                }
+                for idx, ag in enumerate(d["agendas"])
+            ],
+        }
+        for d in ANONDO_DAYS_21
+    ]
+    data_js = "\n".join([
+        f"const ANONDO_DATA = {json.dumps({'slides': slides, 'quotes': quotes, 'days': days}, ensure_ascii=False)};",
+        f"const PILLARS_DATA = {json.dumps(pillars, ensure_ascii=False)};",
+    ])
+    html = env.get_template("anondo.html.j2").render(
+        css_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in ANONDO_CSS),
+        data_js=data_js,
+        js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in ANONDO_JS),
+    )
+    out = APP_ROOT / "anondo.html"
+    out.write_text(html, encoding="utf-8")
+    print(f"Built {out.name} via Jinja2 ({out.stat().st_size:,} bytes)")
+
+
+def build_all(persona: str = "all") -> None:
+    src_icon, dst_icon = APP_ROOT / "assets" / "icons" / "favicon.svg", APP_ROOT / "favicon.svg"
     if src_icon.is_file() and src_icon.read_bytes() != (dst_icon.read_bytes() if dst_icon.is_file() else b""):
         shutil.copyfile(src_icon, dst_icon)
 
-    css_bundle = "\n\n".join(p.read_text(encoding="utf-8").strip() for p in CSS_MODULES)
-    js_bundle = "\n\n".join(p.read_text(encoding="utf-8").strip() for p in JS_MODULES)
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(TEMPLATES_DIR)), autoescape=False, keep_trailing_newline=True)
+    targets = ("kalyani", "anondo") if persona == "all" else (persona,)
+    if "kalyani" in targets:
+        build_kalyani(env)
+    if "anondo" in targets:
+        build_anondo(env)
 
-    cdn_data_js = assemble_data_js(embed_offline_b64=False, url_prefix=GH_RAW_BASE)
-    cdn_html = render_jinja_bundle(css_bundle, js_bundle, cdn_data_js)
+    hub = APP_ROOT / "index.html"
+    hub.write_text(env.get_template("index.html.j2").render(), encoding="utf-8")
+    print(f"Built {hub.name} Persona Hub via Jinja2 ({hub.stat().st_size:,} bytes)")
 
-    out_idx = APP_ROOT / "index.html"
-    out_idx.write_text(cdn_html, encoding="utf-8")
-    print(f"Built {out_idx.name} via Jinja2 ({out_idx.stat().st_size:,} bytes)")
-
-    stale, expected, _ = get_stale_or_missing_files(scope="all")
-    if not stale:
-        print(f"[TTS Check] All {len(expected)} Aoede MP3 files are 100% in sync with content/.")
-    else:
-        print(f"[TTS Notice] {len(stale)}/{len(expected)} audio file(s) pending voice refresh: {stale[:8]}")
-        print("[TTS Rule] Skipping automatic TTS regeneration (per GEMINI.md). Ask Koushik before running: python3 scripts/refresh_voices.py --confirm")
+    for pid in targets:
+        stale, expected, _ = get_stale_or_missing_files(scope="all", persona_id=pid)
+        if not stale:
+            print(f"[TTS Check ({pid})] All {len(expected)} Aoede MP3 files are 100% in sync.")
+        else:
+            print(f"[TTS Notice ({pid})] {len(stale)}/{len(expected)} audio file(s) pending voice refresh: {stale[:6]}")
 
 
 if __name__ == "__main__":
-    build_html()
+    parser = argparse.ArgumentParser(description="Compile AI Companion (`kalyani.html`, `anondo.html`, `index.html`).")
+    parser.add_argument("--persona", default="all", choices=("all", "kalyani", "anondo"))
+    build_all(parser.parse_args().persona)

@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Pure Agentic LLM Evaluator-Optimizer Loop for 🌸 কল্যাণী & ⚡ ANANDO (Zero Hardcoded Rules).
+"""Pure Agentic LLM Evaluator-Optimizer Loop for AI Companion (`kalyani` + `anondo`).
 
-Driven exclusively by three portable Markdown reference specifications per student (`--student <id>`):
-  1. `students/<student_id>/persona.md`          — Unified portable student persona, clinical blockers & tone guardrails
-  2. `content/curriculum.md` (or `students/<id>/curriculum.md`) — Master syllabus & daily pillar blueprint
-  3. `content/content_curation.md` (or `students/<id>/content_curation.md`) — 12-Dimension LLM Critic-Refiner rubric
+Driven exclusively by portable Markdown reference specifications inside `personas/<persona_id>/`:
+  1. `personas/<persona_id>/persona.md`            — Unified persona, clinical blockers & tone guardrails
+  2. `personas/<persona_id>/curriculum.md`         — Master syllabus & daily pillar blueprint
+  3. `personas/<persona_id>/content_curation.md`   — 12-Dimension LLM Critic-Refiner rubric
 
 Produces, evaluates, and iteratively refines:
-  - `content/days/{part1,part2}_days.md` (for `ma_kalyani`) or `content/days/<id>_days.md` (for `<id>`)
-  - `docs/client-side-gemini.md` (or `students/<id>/client-side-gemini.md`)
-  - `content/curation_manifest.json` (or `content/curation_manifest_<id>.json`)
+  - `personas/<persona_id>/days/*.md`
+  - `personas/<persona_id>/client-side-gemini.md`
+  - `personas/<persona_id>/curation_manifest.json`
 """
 
 from __future__ import annotations
@@ -32,42 +32,32 @@ sys.path.insert(0, str(APP_ROOT))
 
 from content.markdown_loader import dump_days_markdown, load_days_markdown  # noqa: E402
 
-DEFAULT_STUDENT_ID = "ma_kalyani"
-CURRICULUM_MD_PATH = APP_ROOT / "content" / "curriculum.md"
-CONTENT_CURATION_MD_PATH = APP_ROOT / "content" / "content_curation.md"
-PART1_MD_PATH = APP_ROOT / "content" / "days" / "part1_days.md"
-PART2_MD_PATH = APP_ROOT / "content" / "days" / "part2_days.md"
-CLIENT_GEMINI_MD_PATH = APP_ROOT / "docs" / "client-side-gemini.md"
-CURATION_MANIFEST_PATH = APP_ROOT / "content" / "curation_manifest.json"
+DEFAULT_PERSONA_ID = "kalyani"
+PERSONA_ALIASES = {"ma_kalyani": "kalyani", "ma": "kalyani", "koushik": "anondo", "me": "anondo"}
 GEN_BIN = "/google/bin/releases/gemini-agents-generate/generate"
 
 
-def get_student_persona_path(student_id: str = DEFAULT_STUDENT_ID) -> Path:
-    """Resolve the single unified persona Markdown file for a given student_id."""
-    return APP_ROOT / "students" / student_id / "persona.md"
+def normalize_persona_id(persona_id: str = DEFAULT_PERSONA_ID) -> str:
+    return PERSONA_ALIASES.get(persona_id, persona_id)
 
 
-def resolve_student_spec_paths(student_id: str = DEFAULT_STUDENT_ID) -> dict[str, Path | list[Path]]:
+def resolve_persona_spec_paths(persona_id: str = DEFAULT_PERSONA_ID) -> dict[str, Path | list[Path]]:
     """Resolve the 3 input specs, Markdown day file(s), client-side Gemini doc, and manifest path."""
-    if student_id == DEFAULT_STUDENT_ID:
-        return {
-            "persona": get_student_persona_path(student_id),
-            "curriculum": CURRICULUM_MD_PATH,
-            "curation": CONTENT_CURATION_MD_PATH,
-            "days_files": [PART1_MD_PATH, PART2_MD_PATH],
-            "client_gemini": CLIENT_GEMINI_MD_PATH,
-            "manifest": CURATION_MANIFEST_PATH,
-        }
+    pid = normalize_persona_id(persona_id)
+    pdir = APP_ROOT / "personas" / pid
+    days_dir = pdir / "days"
+    if pid == "kalyani":
+        days_files = [days_dir / "part1_days.md", days_dir / "part2_days.md"]
+    else:
+        days_files = sorted(days_dir.glob("*.md")) or [days_dir / f"{pid}_days.md"]
 
-    student_dir = APP_ROOT / "students" / student_id
-    student_curation = student_dir / "content_curation.md"
     return {
-        "persona": get_student_persona_path(student_id),
-        "curriculum": student_dir / "curriculum.md",
-        "curation": student_curation if student_curation.is_file() else CONTENT_CURATION_MD_PATH,
-        "days_files": [APP_ROOT / "content" / "days" / f"{student_id}_days.md"],
-        "client_gemini": student_dir / "client-side-gemini.md",
-        "manifest": APP_ROOT / "content" / f"curation_manifest_{student_id}.json",
+        "persona": pdir / "persona.md",
+        "curriculum": pdir / "curriculum.md",
+        "curation": pdir / "content_curation.md",
+        "days_files": days_files,
+        "client_gemini": pdir / "client-side-gemini.md",
+        "manifest": pdir / "curation_manifest.json",
     }
 
 
@@ -88,26 +78,26 @@ DIMENSIONS: tuple[tuple[str, str], ...] = (
 
 
 def md5_file(path: Path) -> str:
-    """Compute the MD5 hex digest of a file."""
     if not path.is_file():
         return ""
     return hashlib.md5(path.read_bytes()).hexdigest()
 
 
-def collect_md5_fingerprints(student_id: str = DEFAULT_STUDENT_ID) -> dict[str, str]:
+def collect_md5_fingerprints(persona_id: str = DEFAULT_PERSONA_ID) -> dict[str, str]:
     """Collect MD5 digests of the 3 unified input specs and curated Markdown outputs."""
-    paths = resolve_student_spec_paths(student_id)
-    if student_id == DEFAULT_STUDENT_ID:
+    pid = normalize_persona_id(persona_id)
+    paths = resolve_persona_spec_paths(pid)
+    days_files: list[Path] = paths["days_files"]  # type: ignore[assignment]
+    if pid == "kalyani":
         return {
             "persona_md5": md5_file(paths["persona"]),  # type: ignore[arg-type]
             "curriculum_md5": md5_file(paths["curriculum"]),  # type: ignore[arg-type]
             "content_curation_md5": md5_file(paths["curation"]),  # type: ignore[arg-type]
-            "part1_days_md5": md5_file(PART1_MD_PATH),
-            "part2_days_md5": md5_file(PART2_MD_PATH),
+            "part1_days_md5": md5_file(days_files[0]),
+            "part2_days_md5": md5_file(days_files[1]),
             "client_gemini_md5": md5_file(paths["client_gemini"]),  # type: ignore[arg-type]
         }
 
-    days_files: list[Path] = paths["days_files"]  # type: ignore[assignment]
     return {
         "persona_md5": md5_file(paths["persona"]),  # type: ignore[arg-type]
         "curriculum_md5": md5_file(paths["curriculum"]),  # type: ignore[arg-type]
@@ -118,17 +108,14 @@ def collect_md5_fingerprints(student_id: str = DEFAULT_STUDENT_ID) -> dict[str, 
 
 
 def classify_game_pillar(ag: dict) -> str:
-    """Read the declarative `pillar` tag from a Markdown-loaded game dictionary."""
     return str(ag.get("pillar", "")).strip() or "gk_inspiring"
 
 
 def is_covert_cbt_day(day_obj: dict) -> bool:
-    """Return True if any game in the day carries `pillar: covert_cbt`."""
     return any(classify_game_pillar(ag) == "covert_cbt" for ag in day_obj.get("agendas", []))
 
 
 def call_gemini_llm(prompt: str, timeout_s: int = 75) -> str:
-    """Invoke Gemini LLM via GEMINI_API_KEY REST endpoint or local `generate` CLI."""
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
     if api_key:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
@@ -176,7 +163,6 @@ def build_agentic_critic_prompt(
     days_payload: list[dict],
     client_gemini_md: str,
 ) -> str:
-    """Construct the pure LLM Critic prompt from unified `persona.md` + `curriculum.md` + `content_curation.md`."""
     dim_keys = [k for k, _ in DIMENSIONS]
     pillar_counts: dict[str, int] = {}
     for d in days_payload:
@@ -186,12 +172,12 @@ def build_agentic_critic_prompt(
 
     sampled_days = days_payload if len(days_payload) <= 6 else (days_payload[:3] + days_payload[-2:])
     return (
-        "You are the Autonomous Critic Agent for the Kalyani / ANANDO Multi-Student Companion Architecture.\n\n"
-        "=== REFERENCE 1: students/<student_id>/persona.md ===\n"
+        "You are the Autonomous Critic Agent for the AI Companion Multi-Persona Architecture.\n\n"
+        "=== REFERENCE 1: personas/<persona_id>/persona.md ===\n"
         f"{persona_md}\n\n"
-        "=== REFERENCE 2: curriculum.md ===\n"
+        "=== REFERENCE 2: personas/<persona_id>/curriculum.md ===\n"
         f"{curriculum_md}\n\n"
-        "=== REFERENCE 3: content_curation.md ===\n"
+        "=== REFERENCE 3: personas/<persona_id>/content_curation.md ===\n"
         f"{curation_md}\n\n"
         "=== GLOBAL CURRICULUM TELEMETRY ===\n"
         f"Total days: {len(days_payload)} | Game counts per day: {[len(d.get('agendas', [])) for d in days_payload]}\n"
@@ -220,11 +206,10 @@ def build_agentic_refiner_prompt(
     game_idx: int,
     critique: str,
 ) -> str:
-    """Construct the pure LLM Refiner prompt from unified `persona.md` + `curriculum.md` + `content_curation.md`."""
     ag = day_obj["agendas"][game_idx]
     return (
-        "You are the Autonomous Refiner Agent for Kalyani / ANANDO.\n\n"
-        f"=== students/<student_id>/persona.md ===\n{persona_md[:2500]}\n\n"
+        "You are the Autonomous Refiner Agent for AI Companion.\n\n"
+        f"=== persona.md ===\n{persona_md[:2500]}\n\n"
         f"=== curriculum.md ===\n{curriculum_md[:2000]}\n\n"
         f"=== content_curation.md ===\n{curation_md[:2000]}\n\n"
         f"Rewrite Day {day_obj['day']} Game #{game_idx} to resolve this Critic feedback:\n"
@@ -237,15 +222,16 @@ def build_agentic_refiner_prompt(
 def run_agentic_improvement_loop(
     days_list: list[dict] | None = None,
     llm_callable: Callable[[str], str] | None = None,
-    student_id: str = DEFAULT_STUDENT_ID,
+    persona_id: str = DEFAULT_PERSONA_ID,
+    student_id: str | None = None,
     max_iterations: int = 3,
     min_score: int = 9,
     persist_markdown: bool = False,
     verbose: bool = False,
 ) -> tuple[bool, list[dict], dict]:
-    """Run the pure LLM Critic -> Refiner -> Re-Evaluate loop driven by unified `persona.md`, `curriculum.md` & `content_curation.md`."""
+    pid = normalize_persona_id(student_id or persona_id)
     caller = llm_callable or call_gemini_llm
-    spec_paths = resolve_student_spec_paths(student_id)
+    spec_paths = resolve_persona_spec_paths(pid)
     persona_md = Path(spec_paths["persona"]).read_text(encoding="utf-8")  # type: ignore[arg-type]
     curriculum_md = Path(spec_paths["curriculum"]).read_text(encoding="utf-8")  # type: ignore[arg-type]
     curation_md = Path(spec_paths["curation"]).read_text(encoding="utf-8")  # type: ignore[arg-type]
@@ -291,7 +277,7 @@ def run_agentic_improvement_loop(
             g_idx = int(wg.get("game_idx", 0))
             if d_num in day_map and 0 <= g_idx < len(day_map[d_num]["agendas"]):
                 if verbose:
-                    print(f"[Agentic Refiner] Iter {iteration} -> Day {d_num} Game #{g_idx}: {wg.get('critique')}")
+                    print(f"[Agentic Refiner ({pid})] Iter {iteration} -> Day {d_num} Game #{g_idx}: {wg.get('critique')}")
                 ref_prompt = build_agentic_refiner_prompt(
                     persona_md=persona_md,
                     curriculum_md=curriculum_md,
@@ -308,32 +294,32 @@ def run_agentic_improvement_loop(
 
     refined_days = list(day_map.values())
     if persist_markdown and total_refinements > 0 and days_list is None:
-        if student_id == DEFAULT_STUDENT_ID:
+        if pid == "kalyani":
             p1 = [d for d in refined_days if int(d["day"]) <= 21]
             p2 = [d for d in refined_days if int(d["day"]) > 21]
-            PART1_MD_PATH.write_text(
+            days_files[0].write_text(
                 dump_days_markdown("🌸 কল্যাণী — Part 1 Foundation Curriculum (Days 1–21 · Markdown Source of Truth)", p1),
                 encoding="utf-8",
             )
-            PART2_MD_PATH.write_text(
+            days_files[1].write_text(
                 dump_days_markdown("🌸 কল্যাণী — Part 2 Extended Calendar Curriculum (Days 22–51 · Markdown Source of Truth)", p2),
                 encoding="utf-8",
             )
         else:
             days_files[0].write_text(
-                dump_days_markdown(f"⚡ ANANDO — {student_id.title()}'s Companion Curriculum", refined_days),
+                dump_days_markdown(f"⚡ {pid.upper()} — Companion Curriculum", refined_days),
                 encoding="utf-8",
             )
 
     report = {
-        "engine": "Pure Agentic LLM Evaluator-Optimizer Loop (Unified Persona + Curriculum + Curation Blueprints)",
-        "student_id": student_id,
+        "engine": "Pure Agentic LLM Evaluator-Optimizer Loop (Modular Persona Package)",
+        "persona_id": pid,
         "iterations_run": iteration,
         "total_refinements_applied": total_refinements,
         "passed": bool(eval_result.get("passed", False)),
         "dimension_scores": eval_result.get("dimension_scores", {k: 10 for k, _ in DIMENSIONS}),
         "summary_critique": eval_result.get("summary_critique", ""),
-        "md5_fingerprints": collect_md5_fingerprints(student_id),
+        "md5_fingerprints": collect_md5_fingerprints(pid),
         "days": {
             str(d["day"]): {"iterations_run": iteration, "passed": bool(eval_result.get("passed", False))}
             for d in refined_days
@@ -342,8 +328,8 @@ def run_agentic_improvement_loop(
     return report["passed"], refined_days, report
 
 
-def load_curation_manifest(student_id: str = DEFAULT_STUDENT_ID) -> dict:
-    manifest_path = Path(resolve_student_spec_paths(student_id)["manifest"])  # type: ignore[arg-type]
+def load_curation_manifest(persona_id: str = DEFAULT_PERSONA_ID) -> dict:
+    manifest_path = Path(resolve_persona_spec_paths(persona_id)["manifest"])  # type: ignore[arg-type]
     if not manifest_path.is_file():
         return {}
     try:
@@ -352,8 +338,8 @@ def load_curation_manifest(student_id: str = DEFAULT_STUDENT_ID) -> dict:
         return {}
 
 
-def save_curation_manifest(report: dict, student_id: str = DEFAULT_STUDENT_ID) -> None:
-    manifest_path = Path(resolve_student_spec_paths(student_id)["manifest"])  # type: ignore[arg-type]
+def save_curation_manifest(report: dict, persona_id: str = DEFAULT_PERSONA_ID) -> None:
+    manifest_path = Path(resolve_persona_spec_paths(persona_id)["manifest"])  # type: ignore[arg-type]
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -362,36 +348,37 @@ def run_quality_gate(
     verbose: bool = False,
     live_llm: bool = False,
     llm_callable: Callable[[str], str] | None = None,
-    student_id: str = DEFAULT_STUDENT_ID,
+    persona_id: str = DEFAULT_PERSONA_ID,
+    student_id: str | None = None,
 ) -> tuple[bool, list[str], dict[str, int]]:
-    """Verify MD5 state or run the live Agentic LLM Critic-Refiner Loop."""
+    pid = normalize_persona_id(student_id or persona_id)
     issues: list[str] = []
-    current_md5s = collect_md5_fingerprints(student_id)
+    current_md5s = collect_md5_fingerprints(pid)
 
     for key, digest in current_md5s.items():
         if not digest:
-            issues.append(f"Missing required Markdown file for {key}")
+            issues.append(f"Missing required Markdown file for {pid}:{key}")
 
-    manifest = load_curation_manifest(student_id)
+    manifest = load_curation_manifest(pid)
     recorded_md5s = manifest.get("md5_fingerprints", {}) if isinstance(manifest, dict) else {}
     md5_in_sync = (recorded_md5s == current_md5s) and bool(manifest.get("passed", False))
 
     if live_llm or llm_callable is not None:
         passed_loop, _, report = run_agentic_improvement_loop(
             llm_callable=llm_callable,
-            student_id=student_id,
+            persona_id=pid,
             persist_markdown=(llm_callable is None),
             verbose=verbose,
         )
         if llm_callable is None:
-            save_curation_manifest(report, student_id)
+            save_curation_manifest(report, pid)
         manifest = report
         if not passed_loop:
-            issues.append(f"Agentic LLM Critic rejected content: {report.get('summary_critique')}")
+            issues.append(f"Agentic LLM Critic rejected {pid} content: {report.get('summary_critique')}")
     elif not md5_in_sync:
         mismatched = [k for k in current_md5s if recorded_md5s.get(k) != current_md5s[k]]
         issues.append(
-            f"MD5 state out of sync for {mismatched}. Run `python3 scripts/curate_loop.py --student {student_id} --live-loop`."
+            f"MD5 state out of sync for {pid}:{mismatched}. Run `python3 scripts/curate_loop.py --persona {pid} --live-loop`."
         )
 
     dim_scores = {
@@ -402,9 +389,9 @@ def run_quality_gate(
 
     if verbose:
         print("=" * 78)
-        print(f"⚡ Agentic LLM Loop (student='{student_id}')")
+        print(f"⚡ AI Companion — Agentic LLM Loop (persona='{pid}')")
         print("=" * 78)
-        for k_md5, v_md5 in collect_md5_fingerprints(student_id).items():
+        for k_md5, v_md5 in collect_md5_fingerprints(pid).items():
             print(f"  • {k_md5:22s}: {v_md5}")
         print("-" * 78)
         for k, label in DIMENSIONS:
@@ -421,10 +408,14 @@ def run_quality_gate(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Blueprint-Driven Multi-Student Agentic LLM Content Loop.")
-    parser.add_argument("--student", default=DEFAULT_STUDENT_ID, help="Student directory under students/ (default: ma_kalyani).")
+    parser = argparse.ArgumentParser(description="Multi-Persona Agentic LLM Content Loop (`kalyani` & `anondo`).")
+    parser.add_argument("--persona", default="all", choices=("all", "kalyani", "anondo"), help="Target persona (default: all).")
     parser.add_argument("--live-loop", action="store_true", help="Run live Gemini LLM Critic-Refiner loop and update MD5 state.")
     args = parser.parse_args()
 
-    ok, _, _ = run_quality_gate(verbose=True, live_llm=args.live_loop, student_id=args.student)
-    raise SystemExit(0 if ok else 1)
+    targets = ("kalyani", "anondo") if args.persona == "all" else (args.persona,)
+    all_ok = True
+    for p_target in targets:
+        ok, _, _ = run_quality_gate(verbose=True, live_llm=args.live_loop, persona_id=p_target)
+        all_ok = all_ok and ok
+    raise SystemExit(0 if all_ok else 1)

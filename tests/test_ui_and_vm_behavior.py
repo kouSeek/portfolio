@@ -35,7 +35,11 @@ class TestUIAndVMBehavior(unittest.TestCase):
 
     def test_compiled_html_ux_and_node_vm_interactions(self) -> None:
         """Verify crisp Bengali typography, zero tickers, sequential lock, auto-unlocked calendar grid, and proactive audio."""
-        idx_html_path = APP_ROOT / "index.html"
+        hub_html = (APP_ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn('href="kalyani.html"', hub_html)
+        self.assertIn('href="anondo.html"', hub_html)
+
+        idx_html_path = APP_ROOT / "kalyani.html"
         self.assertTrue(idx_html_path.is_file())
         self.assertFalse((APP_ROOT / "ma-presentation.html").exists(), "Duplicate ma-presentation.html must not exist")
 
@@ -169,26 +173,26 @@ const audio = getEl('audioPlayer');
   assert.strictEqual(curGameIdx, 0);
   assert.strictEqual(audio.paused, false, 'Proactive welcome audio should engage immediately on load');
   assert.strictEqual(activeAudioKey, 'day_main_1');
-  assert.ok(audio.src.includes('ma-audio/audio/days/day_1.mp3'), 'Audio URL must point to ma-audio orphan branch');
+  assert.ok(audio.src.includes('ai-companion-audio/audio/kalyani/days/day_1.mp3'), 'Audio URL must point to ai-companion-audio orphan branch');
   assert.strictEqual(getEl('nowPlayingBar').classList.contains('visible'), true);
 
   // Chaining: when day_main_1 finishes, it automatically reads out Current Open Game (ag_1_0)
   audio.listeners['ended']();
   assert.strictEqual(activeAudioKey, 'ag_1_0');
-  assert.ok(audio.src.includes('ma-audio/audio/games/day_1_ag_0.mp3'));
+  assert.ok(audio.src.includes('ai-companion-audio/audio/kalyani/games/day_1_ag_0.mp3'));
 
   // Next Game & Prev Game buttons automatically play the voice for that game!
   selectGame(curGameIdx + 1, true);
   assert.strictEqual(curGameIdx, 1);
   assert.strictEqual(activeAudioKey, 'ag_1_1');
   assert.strictEqual(audio.paused, false, 'Clicking Next Game must automatically play that game voice');
-  assert.ok(audio.src.includes('ma-audio/audio/games/day_1_ag_1.mp3'));
+  assert.ok(audio.src.includes('ai-companion-audio/audio/kalyani/games/day_1_ag_1.mp3'));
 
   selectGame(curGameIdx - 1, true);
   assert.strictEqual(curGameIdx, 0);
   assert.strictEqual(activeAudioKey, 'ag_1_0');
   assert.strictEqual(audio.paused, false, 'Clicking Prev Game must automatically play that game voice');
-  assert.ok(audio.src.includes('ma-audio/audio/games/day_1_ag_0.mp3'));
+  assert.ok(audio.src.includes('ai-companion-audio/audio/kalyani/games/day_1_ag_0.mp3'));
 
   // 2. Game Tiles have ZERO duplicate numbers and support custom 7-pillar badges & 6-game waves!
   const stageHtml = getEl('activeDayStage').innerHTML;
@@ -298,17 +302,18 @@ vm.runInContext(code + "\n" + testBlock, sandbox, {filename: 'kalyani-bundle.js'
         )
         self.assertEqual(proc.returncode, 0, f"VM test failed: {proc.stderr}")
 
-    def test_koushik_app_vm_rendering_and_inline_audio_controls(self) -> None:
-        """Verify koushik.html (⚡ আনন্দ) compiles cleanly, renders all game & slide content, and has inline audio controls."""
-        k_path = APP_ROOT / "koushik.html"
-        self.assertTrue(k_path.is_file(), "koushik.html must exist")
+    def test_anondo_app_vm_rendering_and_inline_audio_controls(self) -> None:
+        """Verify anondo.html (⚡ ANONDO) compiles cleanly, renders all game & slide content, and has inline audio controls."""
+        k_path = APP_ROOT / "anondo.html"
+        self.assertTrue(k_path.is_file(), "anondo.html must exist")
         k_html = k_path.read_text(encoding="utf-8")
         self.assertNotIn("position: fixed;\n      bottom: 0", k_html)
         self.assertIn('id="topPlayBtn"', k_html)
         self.assertIn('id="nowPlayingBar"', k_html)
+        self.assertIn('⚡ ANONDO', k_html)
 
         m = re.search(r"<script>([\s\S]*?)</script>", k_html)
-        self.assertIsNotNone(m, "Missing <script> block in koushik.html")
+        self.assertIsNotNone(m, "Missing <script> block in anondo.html")
 
         vm_harness = r"""
 const fs = require('fs'), vm = require('vm'), assert = require('assert');

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Curriculum, 60/30/10 Language Split, Gemini Live Tech Onboarding & Blueprint-Driven Agentic Loop Tests."""
+"""Curriculum, Language Splits, Gemini Live Onboarding & Multi-Persona Agentic Loop Tests (`kalyani` + `anondo`)."""
 
 import copy
 import json
@@ -12,7 +12,7 @@ APP_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(APP_ROOT))
 sys.path.insert(0, str(APP_ROOT / "scripts"))
 
-from content import DAYS_21, DAYS_PART2_30, KOUSHIK_DAYS_21, KOUSHIK_SLIDES, SLIDES  # noqa: E402
+from content import ANONDO_DAYS_21, ANONDO_SLIDES, DAYS_21, DAYS_PART2_30, SLIDES  # noqa: E402
 from curate_loop import (  # noqa: E402
     DIMENSIONS,
     classify_game_pillar,
@@ -25,8 +25,8 @@ from curate_loop import (  # noqa: E402
 
 class TestCurriculumAndPersona(unittest.TestCase):
 
-    def test_zero_physio_exercises_across_curriculum(self) -> None:
-        """Verify 100% zero physical exercises inside Kalyani App (delegated to Ma's personal trainer)."""
+    def test_zero_physio_exercises_across_kalyani_curriculum(self) -> None:
+        """Verify 100% zero physical exercises inside Kalyani (delegated to Ma's personal trainer)."""
         forbidden_physio_tokens = (
             "সকালের ব্যায়াম",
             "ফিজিওথেরাপি",
@@ -40,8 +40,8 @@ class TestCurriculumAndPersona(unittest.TestCase):
                 for tok in forbidden_physio_tokens:
                     self.assertNotIn(tok, blob, f"Day {d['day']} contains forbidden physio token: {tok}")
 
-    def test_six_games_per_day_and_one_in_two_days_cbt_cadence(self) -> None:
-        """Verify every day has 6 deep games (within 4..6), daily pillars, and Covert CBT strictly 1 in 2 days."""
+    def test_kalyani_six_games_per_day_and_one_in_two_days_cbt_cadence(self) -> None:
+        """Verify Kalyani has 6 deep games/day, daily pillars, and Covert CBT strictly 1 in 2 days."""
         all_days = DAYS_21 + DAYS_PART2_30
         for d in all_days:
             day_num = int(d["day"])
@@ -64,7 +64,7 @@ class TestCurriculumAndPersona(unittest.TestCase):
         cbt_days = [int(d["day"]) for d in all_days if is_covert_cbt_day(d)]
         self.assertEqual(cbt_days, [d_num for d_num in range(1, 52) if d_num % 2 == 0])
 
-        md5s = collect_md5_fingerprints()
+        md5s = collect_md5_fingerprints("kalyani")
         for k in (
             "persona_md5",
             "curriculum_md5",
@@ -77,20 +77,20 @@ class TestCurriculumAndPersona(unittest.TestCase):
 
         gemini_md = (APP_ROOT / "GEMINI.md").read_text(encoding="utf-8")
         for ref_file in (
-            "students/ma_kalyani/persona.md",
-            "content/curriculum.md",
-            "content/content_curation.md",
-            "content/days/part1_days.md",
-            "content/days/part2_days.md",
-            "docs/client-side-gemini.md",
+            "personas/kalyani/persona.md",
+            "personas/kalyani/curriculum.md",
+            "personas/kalyani/content_curation.md",
+            "personas/anondo/persona.md",
+            "personas/anondo/curriculum.md",
+            "personas/anondo/content_curation.md",
         ):
             self.assertIn(ref_file, gemini_md, f"GEMINI.md must mandate reading {ref_file}")
 
-        passed, issues, dim_scores = run_quality_gate(verbose=False)
+        passed, issues, dim_scores = run_quality_gate(verbose=False, persona_id="kalyani")
         self.assertTrue(passed, f"Blueprint-Driven Agentic Quality Gate failed: {issues}")
         self.assertEqual(len(dim_scores), 12)
 
-    def test_language_focus_split_60_english_30_hindi_10_bengali(self) -> None:
+    def test_kalyani_language_focus_split_60_english_30_hindi_10_bengali(self) -> None:
         """Verify the 60% English, 30% Fluent Hindi Gossip, and 10% Clear Bengali Mind-Expression split."""
         all_days = DAYS_21 + DAYS_PART2_30
         eng = sum(1 for d in all_days for a in d["agendas"] if classify_game_pillar(a) == "english")
@@ -122,9 +122,9 @@ class TestCurriculumAndPersona(unittest.TestCase):
         self.assertGreaterEqual(len(live_cam_days), 18, "Live Camera usage must be reinforced via spaced repetition")
 
     def test_blueprint_driven_agentic_llm_loop_critique_and_refine(self) -> None:
-        """Verify pure LLM Critic -> Refiner -> Re-Evaluate loop driven by curriculum.md & content_curation.md."""
+        """Verify pure LLM Critic -> Refiner -> Re-Evaluate loop driven by persona Markdown specs."""
         curate_src = (APP_ROOT / "scripts" / "curate_loop.py").read_text(encoding="utf-8")
-        self.assertNotIn("len(detail) <", curate_src, "curate_loop.py must not contain hardcoded character-length gates")
+        self.assertNotIn("len(detail) <", curate_src)
 
         sample_day = copy.deepcopy(DAYS_21[0])
         call_log: list[str] = []
@@ -161,6 +161,7 @@ class TestCurriculumAndPersona(unittest.TestCase):
         passed, refined_days, report = run_agentic_improvement_loop(
             days_list=[sample_day],
             llm_callable=mock_llm_agent,
+            persona_id="kalyani",
             max_iterations=3,
             min_score=9,
         )
@@ -185,10 +186,10 @@ class TestCurriculumAndPersona(unittest.TestCase):
                 seen_pairs.add(pair)
         self.assertEqual(len(seen_pairs), 180)
 
-    def test_letter_slides_and_client_side_gemini_master_prompt(self) -> None:
-        """Verify Slide 1..8 and updated Client-Side Gemini Master Prompt in docs/client-side-gemini.md."""
+    def test_kalyani_letter_slides_and_client_side_gemini_master_prompt(self) -> None:
+        """Verify Slide 1..8 and updated Client-Side Gemini Master Prompt in personas/kalyani/client-side-gemini.md."""
         self.assertEqual(len(SLIDES), 8)
-        client_doc = (APP_ROOT / "docs" / "client-side-gemini.md").read_text(encoding="utf-8")
+        client_doc = (APP_ROOT / "personas" / "kalyani" / "client-side-gemini.md").read_text(encoding="utf-8")
         for required_phrase in (
             "IRONCLAD LANGUAGE RULE (SPEAK TO MA STRICTLY IN BENGALI)",
             "MANDATORY PERSISTENT MEMORY & PROACTIVE PROFILING PROTOCOL",
@@ -202,20 +203,20 @@ class TestCurriculumAndPersona(unittest.TestCase):
         ):
             self.assertIn(required_phrase, client_doc)
 
-    def test_koushik_english_curriculum_pillars_and_agentic_gate(self) -> None:
-        """Verify Koushik's 21-day English companion (`⚡ ANANDO`) has 105 unique games, 1-in-2-days CBT & active listening."""
-        self.assertEqual(len(KOUSHIK_SLIDES), 8)
-        self.assertEqual(len(KOUSHIK_DAYS_21), 21)
+    def test_anondo_english_curriculum_pillars_and_agentic_gate(self) -> None:
+        """Verify Koushik's 21-day English companion (`anondo`) has 105 unique games, 1-in-2-days CBT & active listening."""
+        self.assertEqual(len(ANONDO_SLIDES), 8)
+        self.assertEqual(len(ANONDO_DAYS_21), 21)
 
         seen_titles: set[str] = set()
-        for d in KOUSHIK_DAYS_21:
+        for d in ANONDO_DAYS_21:
             day_num = int(d["day"])
             ags = d["agendas"]
-            self.assertEqual(len(ags), 5, f"Koushik Day {day_num} must have 5 deep games")
+            self.assertEqual(len(ags), 5, f"Anondo Day {day_num} must have 5 deep games")
 
             pillars = [classify_game_pillar(ag) for ag in ags]
             for daily_p in ("listening_comp", "music", "gk_inspiring", "adhd_zorba"):
-                self.assertIn(daily_p, pillars, f"Koushik Day {day_num} missing daily pillar '{daily_p}'")
+                self.assertIn(daily_p, pillars, f"Anondo Day {day_num} missing daily pillar '{daily_p}'")
 
             if day_num % 2 == 0:
                 self.assertEqual(pillars.count("covert_cbt"), 1)
@@ -228,28 +229,28 @@ class TestCurriculumAndPersona(unittest.TestCase):
             self.assertIn("YouTube Music", song_ag["prompt_bn"])
 
             for ag in ags:
-                self.assertNotIn(ag["title_bn"], seen_titles, f"Duplicate Koushik game title: {ag['title_bn']}")
+                self.assertNotIn(ag["title_bn"], seen_titles, f"Duplicate Anondo game title: {ag['title_bn']}")
                 seen_titles.add(ag["title_bn"])
-                self.assertTrue(ag.get("followup_prompt_bn", "").strip(), "Every Koushik game must include Turn 2 prompt")
+                self.assertTrue(ag.get("followup_prompt_bn", "").strip(), "Every Anondo game must include Turn 2 prompt")
 
         self.assertEqual(len(seen_titles), 105)
 
-        k_md5s = collect_md5_fingerprints("koushik")
+        a_md5s = collect_md5_fingerprints("anondo")
         for key in ("persona_md5", "curriculum_md5", "content_curation_md5", "days_md5", "client_gemini_md5"):
-            self.assertEqual(len(k_md5s[key]), 32, f"Missing Koushik MD5 digest for {key}")
+            self.assertEqual(len(a_md5s[key]), 32, f"Missing Anondo MD5 digest for {key}")
 
-        passed, issues, dim_scores = run_quality_gate(verbose=False, student_id="koushik")
-        self.assertTrue(passed, f"Koushik Agentic Quality Gate failed: {issues}")
+        passed, issues, dim_scores = run_quality_gate(verbose=False, persona_id="anondo")
+        self.assertTrue(passed, f"Anondo Agentic Quality Gate failed: {issues}")
         self.assertEqual(len(dim_scores), 12)
 
-        k_client = (APP_ROOT / "students" / "koushik" / "client-side-gemini.md").read_text(encoding="utf-8")
+        a_client = (APP_ROOT / "personas" / "anondo" / "client-side-gemini.md").read_text(encoding="utf-8")
         for phrase in (
             "ACTIVE LISTENING & REAL-TIME COMPREHENSION COACHING",
             "MULTILINGUAL SONG MEANING, BHAAVNA & MUSICAL EAR CURIOSITY",
             "@YouTube Music",
             "COVERT WINK-WINK FRAME",
         ):
-            self.assertIn(phrase, k_client)
+            self.assertIn(phrase, a_client)
 
 
 if __name__ == "__main__":

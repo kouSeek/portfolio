@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Architectural & Governance Invariant Tests for 🌸 কল্যাণী."""
+"""Architectural & Governance Invariant Tests for AI Companion (`kalyani` + `anondo`)."""
 
 from pathlib import Path
 import py_compile
@@ -13,85 +13,95 @@ APP_ROOT = Path(__file__).resolve().parent.parent
 
 class TestArchitectureAndDocs(unittest.TestCase):
 
-    def test_modular_directory_topology_and_zero_monoliths(self) -> None:
-        """Verify strict modular separation across docs/, content/, src/, assets/, audio/, scripts/, tests/."""
+    def test_modular_two_persona_directory_topology_and_zero_monoliths(self) -> None:
+        """Verify strict modular separation across personas/{kalyani,anondo}/, content/, src/, assets/, audio/, scripts/."""
         required_files = [
             "GEMINI.md",
-            ".gemini/config/rules/kalyani_app_rules.md",
+            ".gemini/config/rules/ai_companion_rules.md",
             "docs/spec.md",
             "docs/content-pipeline.md",
-            "docs/client-side-gemini.md",
-            "students/ma_kalyani/persona.md",
-            "students/ma_kalyani/curriculum_v2_draft.md",
-            "students/koushik/persona.md",
-            "students/koushik/curriculum.md",
-            "students/koushik/content_curation.md",
-            "students/koushik/client-side-gemini.md",
+            "personas/kalyani/persona.md",
+            "personas/kalyani/curriculum.md",
+            "personas/kalyani/content_curation.md",
+            "personas/kalyani/client-side-gemini.md",
+            "personas/kalyani/curation_manifest.json",
+            "personas/kalyani/days/part1_days.md",
+            "personas/kalyani/days/part2_days.md",
+            "personas/anondo/persona.md",
+            "personas/anondo/curriculum.md",
+            "personas/anondo/content_curation.md",
+            "personas/anondo/client-side-gemini.md",
+            "personas/anondo/curation_manifest.json",
+            "personas/anondo/days/anondo_days.md",
             "content/__init__.py",
-            "content/curriculum.md",
-            "content/content_curation.md",
             "content/markdown_loader.py",
-            "content/days/part1_days.md",
-            "content/days/part2_days.md",
-            "content/days/koushik_days.md",
-            "content/slides_and_quotes.py",
-            "content/part1_days.py",
-            "content/part2_days.py",
-            "content/koushik_days.py",
-            "src/template.html",
+            "content/kalyani/__init__.py",
+            "content/kalyani/slides_and_quotes.py",
+            "content/kalyani/part1_days.py",
+            "content/kalyani/part2_days.py",
+            "content/anondo/__init__.py",
+            "content/anondo/anondo_days.py",
             "src/templates/index.html.j2",
-            "src/templates/koushik.html.j2",
-            "src/styles/tokens.css",
-            "src/styles/layout.css",
-            "src/styles/components.css",
-            "src/js/state.js",
-            "src/js/audio.js",
-            "src/js/plan-view.py" if False else "src/js/plan-view.js",
-            "src/js/letter-view.js",
-            "src/js/boot.js",
+            "src/templates/kalyani.html.j2",
+            "src/templates/anondo.html.j2",
+            "src/kalyani/styles/tokens.css",
+            "src/kalyani/styles/layout.css",
+            "src/kalyani/styles/components.css",
+            "src/kalyani/js/state.js",
+            "src/kalyani/js/audio.js",
+            "src/kalyani/js/plan-view.js",
+            "src/kalyani/js/letter-view.js",
+            "src/kalyani/js/boot.js",
+            "src/anondo/styles/tokens.css",
+            "src/anondo/styles/components.css",
+            "src/anondo/js/audio.js",
+            "src/anondo/js/views.js",
             "assets/icons/favicon.svg",
             "favicon.svg",
-            "ma-manifest.json",
-            "ma-sw.js",
+            "kalyani-manifest.json",
+            "kalyani-sw.js",
             ".gitignore",
-            "audio/tts_manifest.json",
+            "audio/kalyani/tts_manifest.json",
+            "audio/anondo/tts_manifest.json",
             "scripts/build_app.py",
+            "scripts/curate_loop.py",
             "scripts/refresh_voices.py",
             "scripts/sync_audio_branch.py",
+            "index.html",
+            "kalyani.html",
+            "anondo.html",
         ]
         for rel in required_files:
             self.assertTrue((APP_ROOT / rel).is_file(), f"Missing required modular file: {rel}")
 
         gitignore_txt = (APP_ROOT / ".gitignore").read_text(encoding="utf-8")
         self.assertIn("audio/**/*.mp3", gitignore_txt)
-        self.assertIn("!audio/tts_manifest.json", gitignore_txt)
+        self.assertIn("!audio/kalyani/tts_manifest.json", gitignore_txt)
+        self.assertIn("!audio/anondo/tts_manifest.json", gitignore_txt)
 
-        # Legacy monolithic curriculum_data.py and duplicate docs/student-persona.md must not exist
-        self.assertFalse((APP_ROOT / "scripts" / "curriculum_data.py").exists())
-        self.assertFalse((APP_ROOT / "docs" / "student-persona.md").exists())
+        # Obsolete paths must not exist
+        for obsolete in ("students", "scripts/build_koushik_app.py", "koushik.html", "docs/student-persona.md"):
+            self.assertFalse((APP_ROOT / obsolete).exists(), f"Obsolete path should not exist: {obsolete}")
 
-        # build_app.py & build_koushik_app.py must remain lean Jinja2 modular assemblers (<220 lines, zero inline JS/CSS)
-        for builder_rel in ("scripts/build_app.py", "scripts/build_koushik_app.py"):
-            build_src = (APP_ROOT / builder_rel).read_text(encoding="utf-8")
-            self.assertLess(len(build_src.splitlines()), 220, f"{builder_rel} must remain <220 lines")
-            self.assertIn("jinja2", build_src)
-            self.assertNotIn("<!DOCTYPE html>", build_src)
-            self.assertNotIn("function renderPlanView", build_src)
-            self.assertNotIn("gemini-agents-generate/generate", build_src)
+        # build_app.py must remain a lean Jinja2 modular assembler (<220 lines, zero inline JS/CSS strings)
+        build_src = (APP_ROOT / "scripts" / "build_app.py").read_text(encoding="utf-8")
+        self.assertLess(len(build_src.splitlines()), 220)
+        self.assertIn("jinja2", build_src)
+        self.assertNotIn("<!DOCTYPE html>", build_src)
+        self.assertNotIn("function renderPlanView", build_src)
 
-        # part1_days.py and part2_days.py must be smart thin Markdown loaders (<30 lines each, zero giant dict blobs)
-        for loader_rel in ("content/part1_days.py", "content/part2_days.py"):
+        for loader_rel in ("content/kalyani/part1_days.py", "content/kalyani/part2_days.py"):
             loader_src = (APP_ROOT / loader_rel).read_text(encoding="utf-8")
-            self.assertLess(len(loader_src.splitlines()), 30, f"{loader_rel} should be a thin Markdown loader")
+            self.assertLess(len(loader_src.splitlines()), 25, f"{loader_rel} should be a thin Markdown loader")
             self.assertIn("load_days_markdown", loader_src)
 
     def test_no_auto_tts_rule_and_manifest_tracking(self) -> None:
-        """Verify build_app.py never calls TTS and refresh_voices.py tracks all expected audio clips."""
+        """Verify build_app.py never calls TTS and refresh_voices.py tracks all expected audio clips for both personas."""
         sys.path.insert(0, str(APP_ROOT))
         sys.path.insert(0, str(APP_ROOT / "scripts"))
         from refresh_voices import collect_expected_audio_items  # noqa: PLC0415
 
-        for py_file in [*(APP_ROOT / "scripts").glob("*.py"), *(APP_ROOT / "content").glob("*.py")]:
+        for py_file in [*(APP_ROOT / "scripts").glob("*.py"), *(APP_ROOT / "content").rglob("*.py")]:
             py_compile.compile(str(py_file), doraise=True)
 
         build_src = (APP_ROOT / "scripts" / "build_app.py").read_text(encoding="utf-8")
@@ -101,17 +111,18 @@ class TestArchitectureAndDocs(unittest.TestCase):
         gemini_md = (APP_ROOT / "GEMINI.md").read_text(encoding="utf-8")
         self.assertIn("Principal Software Architecture", gemini_md)
         self.assertIn("Genius Artist UX Design", gemini_md)
-        self.assertIn("refresh_voices.py --confirm", gemini_md)
+        self.assertIn("refresh_voices.py --persona", gemini_md)
 
-        expected_count = len(collect_expected_audio_items())
-        proc = subprocess.run(
-            [sys.executable, str(APP_ROOT / "scripts" / "refresh_voices.py"), "--status", "--scope", "all"],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        self.assertEqual(proc.returncode, 0, proc.stderr)
-        self.assertIn(str(expected_count), proc.stdout)
+        for pid in ("kalyani", "anondo"):
+            expected_count = len(collect_expected_audio_items(pid))
+            proc = subprocess.run(
+                [sys.executable, str(APP_ROOT / "scripts" / "refresh_voices.py"), "--persona", pid, "--status", "--scope", "all"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            self.assertIn(str(expected_count), proc.stdout)
 
 
 if __name__ == "__main__":
