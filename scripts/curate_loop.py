@@ -106,16 +106,19 @@ def call_gemini_llm(prompt: str, timeout_s: int = 60) -> str:
             return body["candidates"][0]["content"]["parts"][0]["text"]
 
     if Path(GEN_BIN).is_file():
-        proc = subprocess.run(
-            [GEN_BIN, f"-timeout={timeout_s}s", "text", prompt],
-            capture_output=True,
-            text=True,
-            timeout=timeout_s + 5,
-            check=False,
-        )
-        if proc.returncode == 0 and proc.stdout.strip():
-            return proc.stdout.strip()
-        raise RuntimeError(f"Gemini CLI returned code {proc.returncode}: {proc.stderr[:240]}")
+        last_err = ""
+        for attempt in range(3):
+            proc = subprocess.run(
+                [GEN_BIN, f"-timeout={timeout_s}s", "text", prompt],
+                capture_output=True,
+                text=True,
+                timeout=timeout_s + 5,
+                check=False,
+            )
+            if proc.returncode == 0 and proc.stdout.strip():
+                return proc.stdout.strip()
+            last_err = proc.stderr[:240]
+        raise RuntimeError(f"Gemini CLI failed after 3 attempts: {last_err}")
 
     raise RuntimeError("No Gemini LLM transport available.")
 

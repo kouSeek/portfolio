@@ -11,12 +11,15 @@
 
 - **Student ID:** `ma_kalyani`
 - **Name & Age:** Shikha Chakraborty ("Ma" / `মা`), ~65 years old (childhood roots in Ranaghat, Nadia; lives in Dum Dum Cantonment, Kolkata).
-- **Family Context:** Deeply loves and is proud of her son **Koushik** (Senior AI Engineer at Google, Hyderabad) and her daughter **Didi / Kankana** (married to Pratik; mother of **Ayush** and **Aishee**). Lost her husband (**Baba**) suddenly in 2016, who previously shielded her from external/technical tasks.
-- **Shared Family Heart (`একই নরম মাটির মানুষ`):** Ma, Koushik, and Didi share the exact same sensitive, emotional, deeply loving heart. Didi silently battles heavy stress, loneliness, and depression in her own life, so past sharp words came from burnout rather than lack of love; Koushik works tirelessly so Ma can live in royal comfort, peace, and dignity.
-- **Physical & Dietary Guardrails:**
+- **Cognitive & Temperamental Profile (Ma vs. Koushik vs. Didi):**
+  - **Ma & Koushik (Shared Softness & ADHD, Opposite IQ/Ambition):** Ma and Koushik share **inattentive ADHD, a soft nature, emotional sensitivity, and deep empathy**. However, **Ma has very low analytical IQ and low ambition** (whereas Koushik has high IQ and high ambition). Therefore, **never** give Ma abstract/complex explanations or ambitious achievement pressure—keep every lesson concrete, sensory, ultra-simple, 1-step-at-a-time, and grounded in everyday comfort and warmth.
+  - **Didi / Kankana (Sharp, Independent, Zero ADHD — Currently Numb from Marital Depression):** Unlike Ma and Koushik, **Didi has zero ADHD**—she is a **very strong, independent, sharp, practical woman** who is naturally **materialistic** and **loves to love everybody and keep warm rapport**. However, heavy **family pressures, marital depression, and chronic marital fights** with Pratik have made her **emotionally numb, very rude, and self-centered** as a survival shell. When helping Ma understand Didi, validate Ma's hurt while gently explaining that Didi's sharp/rude behavior comes from marital depression and emotional numbness rather than lack of love.
+- **Physical & Dietary Guardrails (Food Dislikes & Fear of Judgment):**
   - **100% Zero Physiotherapy / Physical Exercise Prompts Inside the App:** All physical mobility and joint rehab is handled in person by Ma's dedicated live trainer.
   - **Comfort Constraints:** Cold/asthma sensitivity (`25–26°C` comfortable AC temperature); leg/foot/waist pain (encourage speakerphone hands-free calls, light travel bags, resting after 80–90% of a task is done).
-  - **Dietary Exclusions:** Never mention soya bean, mushroom, or egg dislikes in slides, stories, or prompts.
+  - **Exact Food Dislikes & Unspoken Fear of Judgment/Insult:** Ma **hates eggs (`ডিম`), soybean (`সয়াবিন`), and mushroom (`মাশরুম`)**, and **does NOT prefer eating dal (`ডাল`) or paneer (`পনির`)**. Critically, **she does NOT feel the freedom to say these food dislikes aloud because she fears people will judge, lecture, or insult her**.
+    - *Rule 1:* Never suggest eggs, soybean, mushroom, dal, or paneer as meals for Ma.
+    - *Rule 2:* Actively liberate her from food-judgment fear—affirm that disliking certain foods is 100% normal and respectable, and help her state her true food preferences calmly and unapologetically without fearing judgment.
 
 ---
 

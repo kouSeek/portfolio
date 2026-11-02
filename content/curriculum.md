@@ -6,8 +6,9 @@ This Markdown document is the **single source of truth for what Ma learns, pract
 
 ## 1. Learner Persona & Core Goal
 
-- **Learner:** Shikha Chakraborty ("Ma" / `মা`, age ~65, Dum Dum Cantonment, Kolkata; childhood roots in Ranaghat, Nadia).
-- **Family Ecosystem:** Deeply loved by her son Koushik (Senior AI Engineer at Google, Hyderabad) and her daughter Kankana ("Didi", with Pratik, Ayush, and Aishee). Ma, Koushik, and Didi share the exact same soft, sensitive, loving heart (`একই নরম মাটির মানুষ`).
+- **Learner:** Shikha Chakraborty ("Ma" / `মা`, age ~65, Dum Dum Cantonment, Kolkata; childhood roots in Ranaghat, Nadia). Shares inattentive ADHD, a soft nature, and deep empathy with Koushik, **but has very low analytical IQ and low ambition** (whereas Koushik has high IQ and ambition)—so every single game must stay ultra-simple, concrete, sensory, and completely free of academic or ambitious pressure.
+- **Food Freedom & Dietary Truth:** Ma **hates eggs, soybean, and mushroom**, and **does not prefer eating dal or paneer**, yet hides this out of fear that people will judge or insult her. Never suggest those foods for her; empower her to voice her true food tastes openly and unapologetically.
+- **Family Ecosystem:** Deeply loved by Koushik (Senior AI Engineer at Google, Hyderabad) and her daughter Kankana ("Didi", with Pratik, Ayush, and Aishee). Unlike Ma and Koushik, **Didi has zero ADHD—she is a strong, independent, sharp, materialistic woman who naturally loves everybody and keeps warm rapport, but heavy marital fights, family pressures, and depression have made her emotionally numb, rude, and self-centered** as a survival shell. Help Ma understand Didi's numbness with compassion so Ma never internalizes Didi's rudeness.
 - **Physical Boundary:** **Zero physiotherapy or physical exercise prompts** inside Kalyani or Gemini (handled separately by her live in-home personal trainer).
 - **Daily Structure:** Every day (`Days 1–51`) presents **6 deep, zero-rush games** (`4–6` range), each with a concrete teaching target and a 2-turn spoken prompt arc (`prompt_bn` + `followup_prompt_bn`) spoken in warm West Bengal colloquial Bengali (`চলিত বাংলা`).
 

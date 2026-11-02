@@ -18,14 +18,14 @@
     "freedom_and_autonomy": 10,
     "growing_own_dreams": 10
   },
-  "summary_critique": "The curriculum is meticulously aligned with the Ma `ma_kalyani` persona. The 50/50 split between personal psychotherapy/reminiscence and covert CBT is strictly maintained. The language distribution (60% English, 30% Hindi, 10% Bengali) is effectively integrated into the game prompts. Technical scaffolding for Gemini Live and the 📹 Live Camera is well-paced, ensuring no intimidation. All pedagogical, emotional, and clinical guardrails—including the 'Zero Physical Exercise' rule and 'Adult Dignity' tone—are strictly adhered to.",
+  "summary_critique": "The curriculum is meticulously aligned with Ma's persona, clinical triggers, and the 51-day scaffolding requirements. The integration of 1-in-2-day CBT storytelling (using the 'First-Press' metaphor) is perfectly executed. The tech onboarding for Gemini Live, Camera Vision, and Media Control follows the recommended spaced repetition pattern. Language usage maintains the prescribed 60/30/10 split with authentic, warm, and non-patronizing Bengali, effectively avoiding the banned 'stiff' vocabulary list. The inclusion of relatable role models and song-based curiosities provides the necessary dopamine-driven learning environment required to overcome Ma's ADHD-related anxiety.",
   "md5_fingerprints": {
-    "persona_md5": "495cc7729475d77654acc5f7a6c223e3",
-    "curriculum_md5": "29228b7b1bc57a318e7e4149ef3f1821",
+    "persona_md5": "7296cc9947f0613b15adbc88a71fcb44",
+    "curriculum_md5": "6e3461ba3ecf7c8b17d03cbf456dfd7e",
     "content_curation_md5": "4bf914e76bedb75d0fc395e2bbd40918",
-    "part1_days_md5": "8ab3889fe0c930a0c0c277a7403be083",
-    "part2_days_md5": "28792cad97364bd8320b3057406f5755",
-    "client_gemini_md5": "8a590c5ffeecd34c3b1f5a061b0967be"
+    "part1_days_md5": "df1da813500865b5224227a50f63344b",
+    "part2_days_md5": "a596f7d27be87533e1f25cf25a825c15",
+    "client_gemini_md5": "e46e476993d3846fc0fbaeeca4269b36"
   },
   "days": {
     "1": {

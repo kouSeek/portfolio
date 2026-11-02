@@ -197,6 +197,8 @@ class TestCurriculumAndPersona(unittest.TestCase):
             "GEMINI LIVE TECH ONBOARDING & SPACED REPETITION",
             "@Google Photos",
             "Live Video Camera",
+            "Hidden Food Preferences & Fear of Judgment",
+            "Didi has ZERO ADHD",
         ):
             self.assertIn(required_phrase, client_doc)
 
