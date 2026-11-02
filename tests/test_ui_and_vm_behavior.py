@@ -69,6 +69,7 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertIn('https://drive.google.com/file/d/1gzEnSqp72VlguNK0YirZHRARGmJFR-4g/view', ma_html)
         self.assertIn('id="slideDotsRow"', ma_html)
         self.assertLess(ma_html.index('id="slideBadge"'), ma_html.index('class="slide-img-wrap"'))
+        self.assertGreater(ma_html.index('id="videoLetterCard"'), ma_html.index('id="letterSlideCard"'))
         self.assertNotIn("speechSynthesis", ma_html)
 
         m = re.search(r"<script>([\s\S]*?)</script>", ma_html)
