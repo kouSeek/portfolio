@@ -77,23 +77,20 @@ Without ever sounding clinical or pointing fingers, CBT-inspired games and stori
 
 ---
 
-## 4. Smart Unpredictable Volume (Dopamine Waves) & Pillar Mix
+## 4. Daily Game Structure (`4–6` Deep Games/Day), `60/30/10` Language Split & 3-Pillar Gemini Live Onboarding
 
-### A. Variable Daily Game Waves (No Monotonous Fixed Count)
-To eliminate predictability fatigue and create light curiosity ("আজ কটা খেলা আছে দেখি তো!"), v2 uses **3-day variable waves (`3–5` games/day)**:
-- **Day 1 (Ultra-Light Start):** `3` games (~6 mins) — zero overwhelm, instant win.
-- **Wave Rhythm:** Alternates unpredictably across `3` (light & casual), `4` (story + exploration), and `5` (rich variety) games—for example:
-  - **Days 1–3:** `3 → 4 → 3`
-  - **Days 4–6:** `5 → 3 → 4`
-  - **Days 7–9:** `3 → 5 → 4`
-  - *(Live v1 retains its 6-game structure intact until v2 draft is reviewed and promoted.)*
+### A. Daily Volume (`6` Deep Games/Day Across `Days 1–51`)
+Every single day across `Days 1–21` (`content/days/part1_days.md`) and `Days 22–51` (`content/days/part2_days.md`) presents **6 deep, non-cloned games** (`4–6` range), each achieving a concrete teaching or therapeutic target with a 2-turn spoken prompt arc (`prompt_bn` + `followup_prompt_bn`).
 
-### B. Upgraded Content Pillars & Ratios (v2 — Zero Physio in App; Deep CBT, Songs, GK & Lifestyle Alignment)
-1. **🤖 AI as Friend, Personal Assistant & Philosopher (`Every Day`):** Practical, surprising ways AI helps her daily life—deciding tasty Bengali menus, decoding medicine/packet labels via Camera `📷`, chatting about life philosophy and family warmth, planning her evening, or answering random *"কেন এমন হয়?"* curiosities.
-2. **🌿 Deep CBT, Abundance & Fear-Dissolving Reprogramming (`Every Day`):** Using **Ericksonian Metaphors, Covert Sensitization, Narrative Reframing, and Covert Autosuggestion** to melt *kanjoosi*/last-drop saving, low-ROI effort, fear of wasting paint/pages/pencils, fear of making mistakes, clutter hoarding, and fear that touching a working phone/appliance will break it—aligning her mindset with Koushik's high-quality, abundant lifestyle.
-3. **📖 Indirect Habit-Shifting Story Games (`Every Alternate Day — 50% of Days`):** Rich third-person therapeutic stories (e.g., the Santiniketan painter who saved dried-up paint tubes, the flower-seller who let fresh hibiscus rot, Moyna Mashi's 20 plastic bags vs. 1 open tray, the harmonium that never breaks when touched) where Ma acts as the wise observer advising Gemini.
-4. **🔤 Better Everyday Spoken English (`~75% of Days`):** Move past dull `ON/OFF` button labels to genuinely classy, useful everyday spoken English words (`Comfortable`, `Peaceful`, `Actually`, `Definitely`, `Choice`, `Relax`, `Prefer`, `Manage`) inside short **6–9 word single-breath sentences** she speaks aloud to Gemini.
-5. **🌍 Fun Facts, GK, Stepping Out & High-Quality Living (`~60–70% of Days`, Zero Physio Drills):**
-   - **Zero Physio / Exercise in App:** Physical training is handled 100% by her live personal physiotherapist/trainer.
-   - **Fun Facts, GK & High-Quality Lifestyle Joy:** Fascinating everyday science/history/GK, painting/sketching generously without worrying about wasting pages or colors, decluttering 1 small shelf corner, and the simple independent pleasure of strolling out to pick something fresh and high-quality for herself.
-6. **🎵 Music, Deep Lyric Meanings & Fearless Tech Adoption (`~60% of Days`):** Commanding Gemini to play Hemanta, Sandhya, Manna Dey, or Rabindra Sangeet on YouTube Music, exploring the deep emotional meaning/story behind the lyrics, and fearless hands-on tech adoption (Google Lens camera reading, voice queries, scam safety).
+### B. Canonical Pillar & Ratio Mix (Synced with `content/curriculum.md`)
+1. **🔤 + 🗣️ Language Mastery (`60% English : 30% Hindi Gossip : 10% Clear Bengali` across `102` Language Games):**
+   - **`60%` Confident Day-to-Day Simple Spoken English (`61/102` games):** Short 6–9 word single-breath everyday English sentences spoken with ease, natural flow, and confidence.
+   - **`30%` Fluent Spoken Hindi & Warm Gossiping/Chatting (`31/102` games):** Clean, natural everyday Hindi (*গপশপ ও আড্ডা*, feminine verb agreement) for chatting warmly with neighbours in Hyderabad, guests, co-passengers, and shopkeepers.
+   - **`10%` Clear Bengali Mind-Expression (`10/102` games):** Stating her wishes, tiredness, boundaries, and food preferences clearly and calmly in Bengali without hinting or silent *abhiman*.
+2. **📱 + 📹 3-Pillar Gemini Live Tech Onboarding (`Days 1–3`) & Spaced Repetition (`Days 4–51`):**
+   - **(a) Talking to Gemini Live (`🎙️`)** hands-free as an uninterrupted therapy & *adda* session.
+   - **(b) Controlling Her Phone via Gemini (`📱`)**: `@YouTube Music`, calling people hands-free (`@Phone`), and showing family/trip photos from **`@Google Photos`**.
+   - **(c) Gemini Live Streaming Video Camera (`📹`)**: Repeated across 18+ days for random day-to-day visual questions (medicines, remotes, fridge veggies, bills, sarees, plants, drawings).
+3. **📖 Covert CBT Therapy (`Strictly 1 in 2 Days` — Even Days `2, 4, ..., 50` = `50%`):** Third-person Ericksonian stories dissolving scarcity, clutter, page-saving, and device/mistake fear.
+4. **💬 Personal Conversation as Psychotherapy (Odd Days `1, 3, ..., 51` = `50%`):** Golden-days reminiscence therapy (Ranaghat childhood, school, Baba, raising Koushik & Didi) + safe cathartic unburdening of buried grief and emotional weight.
+5. **🎵 Song Lyrics Curiosity (`Every Day` via `@YouTube Music`) & 🌍 Relatable World GK / Inspiring Figures (`Every Day`).**

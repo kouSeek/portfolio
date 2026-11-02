@@ -1,32 +1,36 @@
 # 🌸 কল্যাণী (Kalyani) — Agentic Content Curation & LLM Improvement Rubric (`content_curation.md`)
 
-This Markdown document governs the **Agentic LLM Evaluator-Optimizer Loop** (`scripts/curate_loop.py`). Instead of brittle hardcoded regexes or character counters, the **Critic Agent** and **Refiner Agent** read [`curriculum.md`](curriculum.md) and this rubric (`content_curation.md`) to evaluate, iteratively refine, and harmonize:
+This Markdown document governs the **Agentic LLM Evaluator-Optimizer Loop** (`scripts/curate_loop.py`). Instead of brittle hardcoded regexes or character counters, the **Critic Agent** and **Refiner Agent** read all **4 Canonical Input Reference Files**—[`students/ma_kalyani/persona.md`](../students/ma_kalyani/persona.md), [`docs/student-persona.md`](../docs/student-persona.md), [`curriculum.md`](curriculum.md), and this rubric (`content_curation.md`)—to evaluate, iteratively refine, and harmonize:
 1. The Markdown curriculum content (`content/days/part1_days.md` & `content/days/part2_days.md`), and
 2. The Client-Side Android Gemini Master Instruction (`docs/client-side-gemini.md`).
 
 ---
 
-## 1. Agentic Evaluator-Optimizer Workflow
+## 1. Agentic Evaluator-Optimizer Workflow (7-File MD5 Reference Contract)
 
 ```text
-┌─────────────────────────┐     ┌─────────────────────────────┐
-│  content/curriculum.md  │────▶│                             │
-└─────────────────────────┘     │   Agentic LLM Orchestrator  │
-┌─────────────────────────┐     │   (scripts/curate_loop.py)  │
-│content/content_curation │────▶│                             │
-└─────────────────────────┘     │  1. MD5 Change Detection    │
-                                │  2. LLM Critic Evaluation   │
-                                │  3. LLM Refiner Rewrite     │
-                                │  4. Re-Evaluate Until Pass  │
-                                └──────────────┬──────────────┘
-                                               │
-                 ┌─────────────────────────────┴─────────────────────────────┐
-                 ▼                                                           ▼
-┌─────────────────────────────────────────┐               ┌─────────────────────────────────────────┐
-│  content/days/{part1,part2}_days.md     │               │  docs/client-side-gemini.md             │
-│  Loaded by part1_days.py & part2_days.py│               │  English rules, Bengali speech output,  │
-│  Rendered via Jinja2 -> index.html      │               │  Persistent Memory & Psychotherapist AI │
-└─────────────────────────────────────────┘               └─────────────────────────────────────────┘
+┌────────────────────────────────────┐
+│  students/ma_kalyani/persona.md    │────┐
+├────────────────────────────────────┤    │
+│  docs/student-persona.md           │────┤
+├────────────────────────────────────┤    ▼
+│  content/curriculum.md             │───▶┌─────────────────────────────┐
+├────────────────────────────────────┤    │   Agentic LLM Orchestrator  │
+│  content/content_curation.md       │───▶│   (scripts/curate_loop.py)  │
+└────────────────────────────────────┘    │                             │
+                                          │  1. 7-File MD5 Detection    │
+                                          │  2. LLM Critic Evaluation   │
+                                          │  3. LLM Refiner Rewrite     │
+                                          │  4. Re-Evaluate Until Pass  │
+                                          └──────────────┬──────────────┘
+                                                         │
+                 ┌───────────────────────────────────────┴───────────────────────┐
+                 ▼                                                               ▼
+┌─────────────────────────────────────────┐                     ┌─────────────────────────────────────────┐
+│  content/days/{part1,part2}_days.md     │                     │  docs/client-side-gemini.md             │
+│  Loaded by part1_days.py & part2_days.py│                     │  English rules, Bengali speech output,  │
+│  Rendered via Jinja2 -> index.html      │                     │  Persistent Memory & Psychotherapist AI │
+└─────────────────────────────────────────┘                     └─────────────────────────────────────────┘
 ```
 
 ---

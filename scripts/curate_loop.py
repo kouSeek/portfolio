@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 """Pure Agentic LLM Evaluator-Optimizer Loop for 🌸 কল্যাণী (Zero Hardcoded Rules).
 
-Driven exclusively by two declarative Markdown blueprints:
-  1. `content/curriculum.md`       — Master syllabus, 60/30/10 language split & 3-pillar Gemini Live tech onboarding
-  2. `content/content_curation.md` — 12-Dimension LLM Critic-Refiner rubric & generation rules
+Driven exclusively by four declarative Markdown reference specifications:
+  1. `students/ma_kalyani/persona.md` — Learner quick profile card, constraints & tone guardrails
+  2. `docs/student-persona.md`        — Deep psychological/CBT blocker matrix & 20-rep dopamine neuroplasticity spec
+  3. `content/curriculum.md`          — Master syllabus, 60/30/10 language split & 3-pillar Gemini Live tech onboarding
+  4. `content/content_curation.md`    — 12-Dimension LLM Critic-Refiner rubric & generation rules
 
 Produces, evaluates, and iteratively refines:
   - `content/days/part1_days.md` & `content/days/part2_days.md` (loaded by `part1_days.py` & `part2_days.py`)
   - `docs/client-side-gemini.md` (Client-Side Android Gemini Master Instruction)
-  - `content/curation_manifest.json` (MD5 state ledger tracking `curriculum_md5`, `content_curation_md5`,
-    `part1_days_md5`, `part2_days_md5`, `client_gemini_md5`, and the LLM Critic's 12-dimension audit)
+  - `content/curation_manifest.json` (7-file MD5 state ledger + the LLM Critic's 12-dimension audit)
 """
 
 from __future__ import annotations
@@ -32,6 +33,8 @@ sys.path.insert(0, str(APP_ROOT))
 
 from content.markdown_loader import dump_days_markdown, load_days_markdown  # noqa: E402
 
+PERSONA_CARD_MD_PATH = APP_ROOT / "students" / "ma_kalyani" / "persona.md"
+STUDENT_PERSONA_SPEC_MD_PATH = APP_ROOT / "docs" / "student-persona.md"
 CURRICULUM_MD_PATH = APP_ROOT / "content" / "curriculum.md"
 CONTENT_CURATION_MD_PATH = APP_ROOT / "content" / "content_curation.md"
 PART1_MD_PATH = APP_ROOT / "content" / "days" / "part1_days.md"
@@ -64,8 +67,10 @@ def md5_file(path: Path) -> str:
 
 
 def collect_md5_fingerprints() -> dict[str, str]:
-    """Collect MD5 digests of both Markdown blueprints and all generated Markdown outputs."""
+    """Collect MD5 digests of all 4 persona/curriculum input specs and all 3 curated Markdown outputs."""
     return {
+        "persona_card_md5": md5_file(PERSONA_CARD_MD_PATH),
+        "student_persona_spec_md5": md5_file(STUDENT_PERSONA_SPEC_MD_PATH),
         "curriculum_md5": md5_file(CURRICULUM_MD_PATH),
         "content_curation_md5": md5_file(CONTENT_CURATION_MD_PATH),
         "part1_days_md5": md5_file(PART1_MD_PATH),
@@ -124,14 +129,15 @@ def _parse_llm_json(raw_text: str) -> dict:
 
 
 def build_agentic_critic_prompt(
+    persona_card_md: str,
+    student_persona_spec_md: str,
     curriculum_md: str,
     curation_md: str,
     days_payload: list[dict],
     client_gemini_md: str,
 ) -> str:
-    """Construct the pure LLM Critic prompt directly from `curriculum.md` and `content_curation.md`."""
+    """Construct the pure LLM Critic prompt from Persona specs + `curriculum.md` + `content_curation.md`."""
     dim_keys = [k for k, _ in DIMENSIONS]
-    # Summarize global stats + sample/target days so prompt fits comfortably in fast LLM context
     pillar_counts: dict[str, int] = {}
     for d in days_payload:
         for ag in d.get("agendas", []):
@@ -141,9 +147,13 @@ def build_agentic_critic_prompt(
     sampled_days = days_payload if len(days_payload) <= 6 else (days_payload[:3] + days_payload[-2:])
     return (
         "You are the Autonomous Critic Agent for Kalyani.\n\n"
-        "=== BLUEPRINT 1: curriculum.md ===\n"
+        "=== REFERENCE 1: students/ma_kalyani/persona.md ===\n"
+        f"{persona_card_md}\n\n"
+        "=== REFERENCE 2: docs/student-persona.md ===\n"
+        f"{student_persona_spec_md}\n\n"
+        "=== REFERENCE 3: content/curriculum.md ===\n"
         f"{curriculum_md}\n\n"
-        "=== BLUEPRINT 2: content_curation.md ===\n"
+        "=== REFERENCE 4: content/content_curation.md ===\n"
         f"{curation_md}\n\n"
         "=== GLOBAL CURRICULUM TELEMETRY ===\n"
         f"Total days: {len(days_payload)} | Game counts per day: {[len(d.get('agendas', [])) for d in days_payload]}\n"
@@ -153,7 +163,7 @@ def build_agentic_critic_prompt(
         f"{json.dumps(sampled_days, ensure_ascii=False)}\n\n"
         "=== CLIENT-SIDE GEMINI INSTRUCTION (docs/client-side-gemini.md) ===\n"
         f"{client_gemini_md[:3500]}\n\n"
-        "Evaluate the curriculum days and client-side Gemini prompt strictly against `curriculum.md` and `content_curation.md`.\n"
+        "Evaluate the curriculum days and client-side Gemini prompt strictly against all 4 reference specifications above.\n"
         "Return ONLY valid JSON matching this schema:\n"
         "{\n"
         '  "passed": true,\n'
@@ -165,18 +175,22 @@ def build_agentic_critic_prompt(
 
 
 def build_agentic_refiner_prompt(
+    persona_card_md: str,
+    student_persona_spec_md: str,
     curriculum_md: str,
     curation_md: str,
     day_obj: dict,
     game_idx: int,
     critique: str,
 ) -> str:
-    """Construct the pure LLM Refiner prompt directly from `curriculum.md` and `content_curation.md`."""
+    """Construct the pure LLM Refiner prompt from Persona specs + `curriculum.md` + `content_curation.md`."""
     ag = day_obj["agendas"][game_idx]
     return (
         "You are the Autonomous Refiner Agent for Kalyani.\n\n"
-        f"=== curriculum.md ===\n{curriculum_md[:2000]}\n\n"
-        f"=== content_curation.md ===\n{curation_md[:2000]}\n\n"
+        f"=== students/ma_kalyani/persona.md ===\n{persona_card_md}\n\n"
+        f"=== docs/student-persona.md (Excerpt) ===\n{student_persona_spec_md[:2000]}\n\n"
+        f"=== content/curriculum.md ===\n{curriculum_md[:2000]}\n\n"
+        f"=== content/content_curation.md ===\n{curation_md[:2000]}\n\n"
         f"Rewrite Day {day_obj['day']} Game #{game_idx} to resolve this Critic feedback:\n"
         f"Critique: {critique}\n\n"
         f"Current Game JSON:\n{json.dumps(ag, ensure_ascii=False)}\n\n"
@@ -192,8 +206,10 @@ def run_agentic_improvement_loop(
     persist_markdown: bool = False,
     verbose: bool = False,
 ) -> tuple[bool, list[dict], dict]:
-    """Run the pure LLM Critic -> Refiner -> Re-Evaluate loop driven by `curriculum.md` & `content_curation.md`."""
+    """Run the pure LLM Critic -> Refiner -> Re-Evaluate loop driven by Persona specs + `curriculum.md` & `content_curation.md`."""
     caller = llm_callable or call_gemini_llm
+    persona_card_md = PERSONA_CARD_MD_PATH.read_text(encoding="utf-8")
+    student_persona_spec_md = STUDENT_PERSONA_SPEC_MD_PATH.read_text(encoding="utf-8")
     curriculum_md = CURRICULUM_MD_PATH.read_text(encoding="utf-8")
     curation_md = CONTENT_CURATION_MD_PATH.read_text(encoding="utf-8")
     client_gemini_md = CLIENT_GEMINI_MD_PATH.read_text(encoding="utf-8")
@@ -211,6 +227,8 @@ def run_agentic_improvement_loop(
     while iteration < max_iterations:
         iteration += 1
         critic_prompt = build_agentic_critic_prompt(
+            persona_card_md=persona_card_md,
+            student_persona_spec_md=student_persona_spec_md,
             curriculum_md=curriculum_md,
             curation_md=curation_md,
             days_payload=list(day_map.values()),
@@ -236,11 +254,13 @@ def run_agentic_improvement_loop(
                 if verbose:
                     print(f"[Agentic Refiner] Iter {iteration} -> Day {d_num} Game #{g_idx}: {wg.get('critique')}")
                 ref_prompt = build_agentic_refiner_prompt(
+                    persona_card_md=persona_card_md,
+                    student_persona_spec_md=student_persona_spec_md,
                     curriculum_md=curriculum_md,
                     curation_md=curation_md,
                     day_obj=day_map[d_num],
                     game_idx=g_idx,
-                    critique=wg.get("critique", "Deepen pedagogical clarity per curriculum.md"),
+                    critique=wg.get("critique", "Deepen pedagogical clarity per persona and curriculum specs"),
                 )
                 rewritten = _parse_llm_json(caller(ref_prompt))
                 for field in ("title_bn", "detail_bn", "prompt_bn", "followup_prompt_bn"):

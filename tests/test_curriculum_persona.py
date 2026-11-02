@@ -65,8 +65,28 @@ class TestCurriculumAndPersona(unittest.TestCase):
         self.assertEqual(cbt_days, [d_num for d_num in range(1, 52) if d_num % 2 == 0])
 
         md5s = collect_md5_fingerprints()
-        for k in ("curriculum_md5", "content_curation_md5", "part1_days_md5", "part2_days_md5", "client_gemini_md5"):
+        for k in (
+            "persona_card_md5",
+            "student_persona_spec_md5",
+            "curriculum_md5",
+            "content_curation_md5",
+            "part1_days_md5",
+            "part2_days_md5",
+            "client_gemini_md5",
+        ):
             self.assertEqual(len(md5s[k]), 32, f"Missing MD5 digest for {k}")
+
+        gemini_md = (APP_ROOT / "GEMINI.md").read_text(encoding="utf-8")
+        for ref_file in (
+            "students/ma_kalyani/persona.md",
+            "docs/student-persona.md",
+            "content/curriculum.md",
+            "content/content_curation.md",
+            "content/days/part1_days.md",
+            "content/days/part2_days.md",
+            "docs/client-side-gemini.md",
+        ):
+            self.assertIn(ref_file, gemini_md, f"GEMINI.md must mandate reading {ref_file}")
 
         passed, issues, dim_scores = run_quality_gate(verbose=False)
         self.assertTrue(passed, f"Blueprint-Driven Agentic Quality Gate failed: {issues}")
