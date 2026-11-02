@@ -18,13 +18,13 @@
     "freedom_and_autonomy": 10,
     "growing_own_dreams": 10
   },
-  "summary_critique": "The curriculum is meticulously aligned with Ma's persona, clinical triggers, and the 51-day scaffolding requirements. The integration of 1-in-2-day CBT storytelling (using the 'First-Press' metaphor) is perfectly executed. The tech onboarding for Gemini Live, Camera Vision, and Media Control follows the recommended spaced repetition pattern. Language usage maintains the prescribed 60/30/10 split with authentic, warm, and non-patronizing Bengali, effectively avoiding the banned 'stiff' vocabulary list. The inclusion of relatable role models and song-based curiosities provides the necessary dopamine-driven learning environment required to overcome Ma's ADHD-related anxiety.",
+  "summary_critique": "The curriculum content is perfectly aligned with the persona and clinical requirements. It maintains the delicate balance of 60/30/10 language focus, strictly adheres to the 'Even/Odd' day pedagogical splits for CBT and Personal Therapy, and embeds technology onboarding (Gemini Live/Camera) naturally within everyday contexts. The tone is consistently warm, dignified, and free of patronizing language, perfectly reflecting the 'Cholit Bangla' persona.",
   "md5_fingerprints": {
     "persona_md5": "7296cc9947f0613b15adbc88a71fcb44",
     "curriculum_md5": "6e3461ba3ecf7c8b17d03cbf456dfd7e",
     "content_curation_md5": "4bf914e76bedb75d0fc395e2bbd40918",
-    "part1_days_md5": "df1da813500865b5224227a50f63344b",
-    "part2_days_md5": "a596f7d27be87533e1f25cf25a825c15",
+    "part1_days_md5": "58e1846dabe6f6687a016bfb758ce469",
+    "part2_days_md5": "4fc9b86d38bdf840b22167f2cbaab860",
     "client_gemini_md5": "e46e476993d3846fc0fbaeeca4269b36"
   },
   "days": {
