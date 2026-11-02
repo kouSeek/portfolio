@@ -12,7 +12,7 @@ APP_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(APP_ROOT))
 sys.path.insert(0, str(APP_ROOT / "scripts"))
 
-from content import DAYS_21, DAYS_PART2_30, SLIDES  # noqa: E402
+from content import DAYS_21, DAYS_PART2_30, KOUSHIK_DAYS_21, KOUSHIK_SLIDES, SLIDES  # noqa: E402
 from curate_loop import (  # noqa: E402
     DIMENSIONS,
     classify_game_pillar,
@@ -201,6 +201,55 @@ class TestCurriculumAndPersona(unittest.TestCase):
             "Didi has ZERO ADHD",
         ):
             self.assertIn(required_phrase, client_doc)
+
+    def test_koushik_english_curriculum_pillars_and_agentic_gate(self) -> None:
+        """Verify Koushik's 21-day English companion (`⚡ ANANDO`) has 105 unique games, 1-in-2-days CBT & active listening."""
+        self.assertEqual(len(KOUSHIK_SLIDES), 8)
+        self.assertEqual(len(KOUSHIK_DAYS_21), 21)
+
+        seen_titles: set[str] = set()
+        for d in KOUSHIK_DAYS_21:
+            day_num = int(d["day"])
+            ags = d["agendas"]
+            self.assertEqual(len(ags), 5, f"Koushik Day {day_num} must have 5 deep games")
+
+            pillars = [classify_game_pillar(ag) for ag in ags]
+            for daily_p in ("listening_comp", "music", "gk_inspiring", "adhd_zorba"):
+                self.assertIn(daily_p, pillars, f"Koushik Day {day_num} missing daily pillar '{daily_p}'")
+
+            if day_num % 2 == 0:
+                self.assertEqual(pillars.count("covert_cbt"), 1)
+                self.assertEqual(pillars.count("personal_therapy"), 0)
+            else:
+                self.assertEqual(pillars.count("covert_cbt"), 0)
+                self.assertEqual(pillars.count("personal_therapy"), 1)
+
+            song_ag = [ag for ag in ags if classify_game_pillar(ag) == "music"][0]
+            self.assertIn("YouTube Music", song_ag["prompt_bn"])
+
+            for ag in ags:
+                self.assertNotIn(ag["title_bn"], seen_titles, f"Duplicate Koushik game title: {ag['title_bn']}")
+                seen_titles.add(ag["title_bn"])
+                self.assertTrue(ag.get("followup_prompt_bn", "").strip(), "Every Koushik game must include Turn 2 prompt")
+
+        self.assertEqual(len(seen_titles), 105)
+
+        k_md5s = collect_md5_fingerprints("koushik")
+        for key in ("persona_md5", "curriculum_md5", "content_curation_md5", "days_md5", "client_gemini_md5"):
+            self.assertEqual(len(k_md5s[key]), 32, f"Missing Koushik MD5 digest for {key}")
+
+        passed, issues, dim_scores = run_quality_gate(verbose=False, student_id="koushik")
+        self.assertTrue(passed, f"Koushik Agentic Quality Gate failed: {issues}")
+        self.assertEqual(len(dim_scores), 12)
+
+        k_client = (APP_ROOT / "students" / "koushik" / "client-side-gemini.md").read_text(encoding="utf-8")
+        for phrase in (
+            "ACTIVE LISTENING & REAL-TIME COMPREHENSION COACHING",
+            "MULTILINGUAL SONG MEANING, BHAAVNA & MUSICAL EAR CURIOSITY",
+            "@YouTube Music",
+            "COVERT WINK-WINK FRAME",
+        ):
+            self.assertIn(phrase, k_client)
 
 
 if __name__ == "__main__":

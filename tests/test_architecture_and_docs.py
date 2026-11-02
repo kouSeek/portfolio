@@ -23,17 +23,24 @@ class TestArchitectureAndDocs(unittest.TestCase):
             "docs/client-side-gemini.md",
             "students/ma_kalyani/persona.md",
             "students/ma_kalyani/curriculum_v2_draft.md",
+            "students/koushik/persona.md",
+            "students/koushik/curriculum.md",
+            "students/koushik/content_curation.md",
+            "students/koushik/client-side-gemini.md",
             "content/__init__.py",
             "content/curriculum.md",
             "content/content_curation.md",
             "content/markdown_loader.py",
             "content/days/part1_days.md",
             "content/days/part2_days.md",
+            "content/days/koushik_days.md",
             "content/slides_and_quotes.py",
             "content/part1_days.py",
             "content/part2_days.py",
+            "content/koushik_days.py",
             "src/template.html",
             "src/templates/index.html.j2",
+            "src/templates/koushik.html.j2",
             "src/styles/tokens.css",
             "src/styles/layout.css",
             "src/styles/components.css",
@@ -63,12 +70,14 @@ class TestArchitectureAndDocs(unittest.TestCase):
         self.assertFalse((APP_ROOT / "scripts" / "curriculum_data.py").exists())
         self.assertFalse((APP_ROOT / "docs" / "student-persona.md").exists())
 
-        # build_app.py must remain a lean Jinja2 modular assembler (<220 lines, zero inline JS/CSS strings)
-        build_src = (APP_ROOT / "scripts" / "build_app.py").read_text(encoding="utf-8")
-        self.assertLess(len(build_src.splitlines()), 220)
-        self.assertIn("jinja2", build_src)
-        self.assertNotIn("<!DOCTYPE html>", build_src)
-        self.assertNotIn("function renderPlanView", build_src)
+        # build_app.py & build_koushik_app.py must remain lean Jinja2 modular assemblers (<220 lines, zero inline JS/CSS)
+        for builder_rel in ("scripts/build_app.py", "scripts/build_koushik_app.py"):
+            build_src = (APP_ROOT / builder_rel).read_text(encoding="utf-8")
+            self.assertLess(len(build_src.splitlines()), 220, f"{builder_rel} must remain <220 lines")
+            self.assertIn("jinja2", build_src)
+            self.assertNotIn("<!DOCTYPE html>", build_src)
+            self.assertNotIn("function renderPlanView", build_src)
+            self.assertNotIn("gemini-agents-generate/generate", build_src)
 
         # part1_days.py and part2_days.py must be smart thin Markdown loaders (<30 lines each, zero giant dict blobs)
         for loader_rel in ("content/part1_days.py", "content/part2_days.py"):

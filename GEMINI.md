@@ -26,26 +26,35 @@ Maintain the codebase like a **Principal Software Architect**: every file must h
 │   ├── spec.md                         # End-to-end Technical, Audio & Mobile UX Architecture
 │   ├── content-pipeline.md             # Reusable 5-stage Multi-Student Pipeline & Dynamic Evolution Blueprint
 │   └── client-side-gemini.md           # Downstream Android Gemini Master Prompt (English rules, strictly Bangla speech)
-├── students/                           # Portable Per-Student Persona & Review-Stage Curriculum Drafts
-│   └── ma_kalyani/
-│       ├── persona.md                  # Single unified portable persona spec for Ma (profile, clinical CBT blockers, tone)
-│       └── curriculum_v2_draft.md      # Human-reviewable curriculum draft
+├── students/                           # Portable Per-Student Persona & Blueprint Specs
+│   ├── ma_kalyani/
+│   │   ├── persona.md                  # Single unified portable persona spec for Ma (profile, clinical CBT blockers, tone)
+│   │   └── curriculum_v2_draft.md      # Human-reviewable curriculum draft
+│   └── koushik/
+│       ├── persona.md                  # Wiki-grounded 2e-ADHD/High-IQ persona & 10 Covert CBT targets for Koushik
+│       ├── curriculum.md               # 21-day English syllabus (1-in-2-days CBT, Active Listening, Song Bhaavna, Frontier GK)
+│       ├── content_curation.md         # 12-dimension Agentic Evaluator-Optimizer rubric for ⚡ ANANDO
+│       └── client-side-gemini.md       # Downstream Gemini Live sparring partner Master Prompt for Koushik
 ├── content/                            # Declarative Markdown Blueprints, Markdown Days & Thin Loaders
-│   ├── __init__.py                     # Exports SLIDES, MORNING_QUOTES, GAME_META, DAYS_21, DAYS_PART2_30
+│   ├── __init__.py                     # Exports SLIDES, MORNING_QUOTES, GAME_META, DAYS_21, DAYS_PART2_30, KOUSHIK_DAYS_21
 │   ├── curriculum.md                   # Master 51-day syllabus, 60/30/10 language split & 3-pillar Gemini Live tech spec
 │   ├── content_curation.md             # 12-Dimension Agentic Evaluator-Optimizer rubric & rewrite protocol
-│   ├── curation_manifest.json          # 7-file MD5 state ledger + live Gemini LLM Critic evaluation
+│   ├── curation_manifest.json          # Ma's MD5 state ledger + live Gemini LLM Critic evaluation
+│   ├── curation_manifest_koushik.json  # Koushik's MD5 state ledger + live Gemini LLM Critic evaluation
 │   ├── markdown_loader.py              # Structured Markdown parser/serializer for daily curriculum files
 │   ├── days/
-│   │   ├── part1_days.md               # Markdown source of truth for Days 1–21 (126 games)
-│   │   └── part2_days.md               # Markdown source of truth for Days 22–51 (180 games)
+│   │   ├── part1_days.md               # Markdown source of truth for Ma's Days 1–21 (126 games)
+│   │   ├── part2_days.md               # Markdown source of truth for Ma's Days 22–51 (180 games)
+│   │   └── koushik_days.md             # Markdown source of truth for Koushik's Days 1–21 (105 English games)
 │   ├── slides_and_quotes.py            # 8 Thanksgiving letter slides + 7 morning quotes + 6 clean game slot labels
 │   ├── part1_days.py                   # Thin 13-line declarative loader for content/days/part1_days.md
-│   └── part2_days.py                   # Thin 13-line declarative loader for content/days/part2_days.md
+│   ├── part2_days.py                   # Thin 13-line declarative loader for content/days/part2_days.md
+│   └── koushik_days.py                 # Declarative loader + English Letter/Quotes/7 Keys for ⚡ ANANDO
 ├── src/                                # Modular Frontend Source Layer
 │   ├── template.html                   # Semantic accessible HTML5 shell
 │   ├── templates/
-│   │   └── index.html.j2               # Jinja2 HTML5 shell rendered by scripts/build_app.py
+│   │   ├── index.html.j2               # Jinja2 HTML5 shell rendered by scripts/build_app.py
+│   │   └── koushik.html.j2             # Jinja2 HTML5 shell rendered by scripts/build_koushik_app.py
 │   ├── styles/
 │   │   ├── tokens.css                  # "Shantiniketan Handloom Ivory & Shiuli" design tokens & crisp Bengali typography
 │   │   ├── layout.css                  # 42px single-row sticky glass header, live audio bar & micro-toast
@@ -66,19 +75,21 @@ Maintain the codebase like a **Principal Software Architect**: every file must h
 │   ├── days/day_1..51.mp3              # Local cache -> published to `ma-audio` orphan branch
 │   └── games/day_1..51_ag_*.mp3        # Local cache -> published to `ma-audio` orphan branch
 ├── scripts/                            # Fast Build, Content Quality Gate, Explicit TTS & Orphan Audio Branch Tooling
-│   ├── build_app.py                    # <0.5s static bundler + mandatory 12-dimension quality gate + stale-voice detector
-│   ├── curate_loop.py                  # Automated 12-Dimension Content Quality Gate & Continuous Improvement Auditor
-│   ├── refresh_voices.py               # Explicit-only (--confirm) parallel Gemini Aoede TTS generator
+│   ├── build_app.py                    # <0.5s static bundler for Ma (`index.html`) + quality gate + stale-voice detector
+│   ├── build_koushik_app.py            # <0.5s static bundler for Koushik (`koushik.html`) + quality gate + stale-voice detector
+│   ├── curate_loop.py                  # Multi-student (`--student {ma_kalyani,koushik}`) 12-Dimension Agentic LLM Curation Gate
+│   ├── refresh_voices.py               # Explicit-only (`--confirm [--student koushik]`) parallel Gemini Aoede TTS generator
 │   └── sync_audio_branch.py            # Publishes `audio/` as a 1-commit snapshot to `ma-audio` orphan branch
 ├── tests/                              # Multi-Layer Automated Verification Suite
 │   ├── run_tests.py                    # Unified test runner
 │   ├── test_architecture_and_docs.py   # Enforces modular structure, docs & No-Auto-TTS rule
-│   ├── test_curriculum_persona.py      # Enforces 6-game structure, ego-safety, zero number bloat & YT Music prompts
-│   └── test_ui_and_vm_behavior.py      # Headless Node VM behavioral suite (locking, calendar unlock, proactive audio)
+│   ├── test_curriculum_persona.py      # Enforces 6-game/5-game structures, ego-safety, active listening & YT Music prompts
+│   └── test_ui_and_vm_behavior.py      # Headless Node VM behavioral suite (`index.html` & `koushik.html`)
 ├── favicon.svg                         # Root PWA icon (synced automatically from assets/icons/favicon.svg)
 ├── ma-manifest.json                    # Android Chrome PWA Web App Manifest
 ├── ma-sw.js                            # Service Worker for notifications & window focus
-└── index.html                          # Single compiled root PWA entrypoint (zero duplicate HTML bundles)
+├── index.html                          # Ma's compiled root PWA entrypoint (🌸 কল্যাণী)
+└── koushik.html                        # Koushik's compiled English companion entrypoint (⚡ ANANDO)
 ```
 
 ---
@@ -162,7 +173,8 @@ python3 /usr/local/google/home/koushikchak/kalyani-app/scripts/sync_audio_branch
   1. **`ma-course` (Main App Branch):** Code, docs, curriculum, `audio/tts_manifest.json`, and single compiled `index.html` (`audio/**/*.mp3` gitignored so code commits stay tiny).
   2. **`ma-audio` (1-Commit Orphan Audio Branch):** Stores active `Aoede` `.mp3` assets (`raw.githubusercontent.com/kouSeek/portfolio/ma-audio/audio/...`) as a single-commit snapshot—zero historical MP3 bloat, zero Git LFS pointer/quota issues.
   3. **`kalyani-app-v0` (Backup & Fallback Branch):** Preserved v0 snapshot from commit `279e36f2d9851608444ffd34177dea174abda6d0` (`https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/kalyani-app-v0/index.html`).
-- **Public Clickable Mobile Link (Never output `localhost` links):**
-  https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/ma-course/index.html
+- **Public Clickable Mobile Links (Never output `localhost` links):**
+  - Ma (`🌸 কল্যাণী`): https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/ma-course/index.html
+  - Koushik (`⚡ ANANDO`): https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/ma-course/koushik.html
 - **Video Letter MP4 in `Kortex` Drive (linked inside `💌 চিঠি`, zero website HTML/MP3 artifacts in `Kortex`):**
   https://drive.google.com/file/d/1gzEnSqp72VlguNK0YirZHRARGmJFR-4g/view

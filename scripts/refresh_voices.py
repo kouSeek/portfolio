@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Explicit-only incremental Gemini Aoede (`gemini-v4s-tts`) voice refresher for 🌸 কল্যাণী.
+"""Explicit-only incremental Gemini Aoede (`gemini-v4s-tts`) voice refresher for 🌸 কল্যাণী & ⚡ ANANDO.
 
 CRITICAL GOVERNANCE RULE (defined in GEMINI.md):
 - NEVER run this script with `--confirm` automatically during UI tweaks or content/data edits.
-- `scripts/build_app.py` inspects `audio/tts_manifest.json` in <0.1s and reports stale/missing voices without calling TTS.
-- Only run `python3 scripts/refresh_voices.py --confirm` when Koushik explicitly asks to refresh voices.
+- `scripts/build_app.py` & `scripts/build_koushik_app.py` inspect TTS manifests in <0.1s without calling TTS.
+- Only run `python3 scripts/refresh_voices.py [--student koushik] --confirm` when Koushik explicitly approves.
 """
 
 from __future__ import annotations
@@ -26,9 +26,19 @@ AUDIO_DIR = APP_ROOT / "audio"
 MANIFEST_PATH = AUDIO_DIR / "tts_manifest.json"
 GEN_BIN = "/google/bin/releases/gemini-agents-generate/generate"
 TTS_MODELS = ("gemini-v4s-tts-no-transcriber", "gemini-v4s-tts")
+DEFAULT_STUDENT_ID = "ma_kalyani"
 
 sys.path.insert(0, str(APP_ROOT))
-from content import DAYS_21, DAYS_PART2_30, MORNING_QUOTES, SLIDES  # noqa: E402
+from content import (  # noqa: E402
+    DAYS_21,
+    DAYS_PART2_30,
+    KOUSHIK_DAYS_21,
+    KOUSHIK_PILLARS,
+    KOUSHIK_QUOTES,
+    KOUSHIK_SLIDES,
+    MORNING_QUOTES,
+    SLIDES,
+)
 
 BN_DIGITS = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
 
@@ -47,8 +57,93 @@ def sha256_text(text: str) -> str:
     return hashlib.sha256(text.strip().encode("utf-8")).hexdigest()
 
 
-def collect_expected_audio_items() -> dict[str, dict[str, str]]:
-    """Return mapping of relative audio path (under `audio/`) -> {hash, scope, part, text, part1, part2}."""
+def get_audio_root(student_id: str = DEFAULT_STUDENT_ID) -> Path:
+    return AUDIO_DIR if student_id == DEFAULT_STUDENT_ID else (AUDIO_DIR / student_id)
+
+
+def get_manifest_path(student_id: str = DEFAULT_STUDENT_ID) -> Path:
+    return MANIFEST_PATH if student_id == DEFAULT_STUDENT_ID else (get_audio_root(student_id) / "tts_manifest.json")
+
+
+def _collect_koushik_audio_items() -> dict[str, dict[str, str]]:
+    """Collect expected English Aoede voice items for Koushik (`audio/koushik/...`)."""
+    items: dict[str, dict[str, str]] = {}
+
+    for s in KOUSHIK_SLIDES:
+        sid = int(s["id"])
+        rel_path = f"slides/en_slide_{sid}.mp3"
+        txt = f"{s['title']}. {s['highlight']} {s['text']}"
+        items[rel_path] = {
+            "hash": sha256_text(txt),
+            "scope": "slides",
+            "part": "0",
+            "text": txt,
+            "part1": txt,
+            "part2": "",
+        }
+
+    for q_idx, q_txt in enumerate(KOUSHIK_QUOTES):
+        rel_path = f"quotes/en_quote_{q_idx}.mp3"
+        items[rel_path] = {
+            "hash": sha256_text(q_txt),
+            "scope": "quotes",
+            "part": "0",
+            "text": q_txt,
+            "part1": q_txt,
+            "part2": "",
+        }
+
+    for p_idx, p_obj in enumerate(KOUSHIK_PILLARS):
+        rel_path = f"pillars/en_pillar_{p_idx}.mp3"
+        p_txt = f"{p_obj['title']}. {p_obj['detail']}"
+        items[rel_path] = {
+            "hash": sha256_text(p_txt),
+            "scope": "pillars",
+            "part": "0",
+            "text": p_txt,
+            "part1": p_txt,
+            "part2": "",
+        }
+
+    for d in KOUSHIK_DAYS_21:
+        day_num = int(d["day"])
+        day_rel = f"days/en_day_{day_num}.mp3"
+        day_txt = d.get("voice_script_bn") or f"Good morning Koushik! Welcome to Day {day_num}: {d['title_bn']}."
+        items[day_rel] = {
+            "hash": sha256_text(day_txt),
+            "scope": "days",
+            "part": "1",
+            "text": day_txt,
+            "part1": day_txt,
+            "part2": "",
+        }
+
+        for idx, ag in enumerate(d["agendas"]):
+            ag_rel = f"games/en_day_{day_num}_ag_{idx}.mp3"
+            part1_en = f"{ag['title_bn']}. {ag['detail_bn']}"
+            if ag.get("followup_prompt_bn"):
+                follow_en = f" And in Turn 2, ask: {ag['followup_prompt_bn']}"
+            else:
+                follow_en = ""
+            part2_en = f"Open Gemini Live and say: {ag['prompt_bn']}{follow_en}"
+            full_txt = f"{part1_en} {part2_en}"
+            items[ag_rel] = {
+                "hash": sha256_text(full_txt),
+                "scope": "games",
+                "part": "1",
+                "text": full_txt,
+                "part1": part1_en,
+                "part2": part2_en,
+            }
+
+    return items
+
+
+def collect_expected_audio_items(student_id: str = DEFAULT_STUDENT_ID) -> dict[str, dict[str, str]]:
+    """Return mapping of relative audio path (under student's audio root) -> {hash, scope, part, text, part1, part2}."""
+    if student_id == "koushik":
+        return _collect_koushik_audio_items()
+
     items: dict[str, dict[str, str]] = {}
 
     for s in SLIDES:
@@ -114,24 +209,27 @@ def collect_expected_audio_items() -> dict[str, dict[str, str]]:
     return items
 
 
-def load_manifest() -> dict[str, str]:
-    if not MANIFEST_PATH.is_file():
+def load_manifest(student_id: str = DEFAULT_STUDENT_ID) -> dict[str, str]:
+    mpath = get_manifest_path(student_id)
+    if not mpath.is_file():
         return {}
     try:
-        data = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        data = json.loads(mpath.read_text(encoding="utf-8"))
         return data.get("hashes", {}) if isinstance(data, dict) else {}
     except Exception:
         return {}
 
 
-def save_manifest(hashes: dict[str, str]) -> None:
-    AUDIO_DIR.mkdir(parents=True, exist_ok=True)
+def save_manifest(hashes: dict[str, str], student_id: str = DEFAULT_STUDENT_ID) -> None:
+    mpath = get_manifest_path(student_id)
+    mpath.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "voice_model": "gemini-v4s-tts (Aoede)",
+        "student_id": student_id,
         "total_tracked": len(hashes),
         "hashes": dict(sorted(hashes.items())),
     }
-    MANIFEST_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    mpath.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def matches_scope(rel_path: str, info: dict[str, str], scope: str) -> bool:
@@ -139,10 +237,8 @@ def matches_scope(rel_path: str, info: dict[str, str], scope: str) -> bool:
         return True
     if scope == "days-and-games":
         return info["scope"] in ("days", "games")
-    if scope == "days":
-        return info["scope"] == "days"
-    if scope == "games":
-        return info["scope"] == "games"
+    if scope in ("days", "games", "slides", "quotes", "pillars"):
+        return info["scope"] == scope
     if scope == "part1":
         return info["scope"] in ("days", "games") and info["part"] == "1"
     if scope == "part2":
@@ -151,19 +247,24 @@ def matches_scope(rel_path: str, info: dict[str, str], scope: str) -> bool:
 
 
 def get_stale_or_missing_files(
-    scope: str = "all", require_local_mp3: bool | None = None
+    scope: str = "all",
+    require_local_mp3: bool | None = None,
+    student_id: str = DEFAULT_STUDENT_ID,
 ) -> tuple[list[str], dict[str, dict[str, str]], dict[str, str]]:
-    expected = collect_expected_audio_items()
-    recorded = load_manifest()
+    expected = collect_expected_audio_items(student_id)
+    recorded = load_manifest(student_id)
+    aud_root = get_audio_root(student_id)
     if require_local_mp3 is None:
-        # On local dev machines with audio/ cache present, verify both MP3 files & hashes;
-        # on fresh code-only clones of `ma-course` (where MP3s live on `ma-audio`), verify manifest hashes.
-        require_local_mp3 = any(AUDIO_DIR.rglob("*.mp3"))
+        sub_mp3s = [
+            p for p in aud_root.rglob("*.mp3")
+            if student_id != DEFAULT_STUDENT_ID or "koushik" not in p.parts
+        ]
+        require_local_mp3 = bool(sub_mp3s)
     stale: list[str] = []
     for rel_path, info in expected.items():
         if not matches_scope(rel_path, info, scope):
             continue
-        mp3_path = AUDIO_DIR / rel_path
+        mp3_path = aud_root / rel_path
         if require_local_mp3 and (not mp3_path.is_file() or mp3_path.stat().st_size < 4000):
             stale.append(rel_path)
         elif recorded.get(rel_path) != info["hash"]:
@@ -204,21 +305,19 @@ def _wav_to_mp3(wav_paths: list[Path], out_mp3: Path) -> bool:
     return res.returncode == 0 and out_mp3.is_file() and out_mp3.stat().st_size >= 4000
 
 
-def build_one(rel_path: str, info: dict[str, str]) -> tuple[str, bool]:
-    out_mp3 = AUDIO_DIR / rel_path
-    safe_tag = rel_path.replace("/", "_").replace(".mp3", "")
+def build_one(rel_path: str, info: dict[str, str], aud_root: Path = AUDIO_DIR) -> tuple[str, bool]:
+    out_mp3 = aud_root / rel_path
+    safe_tag = f"{aud_root.name}_" + rel_path.replace("/", "_").replace(".mp3", "")
     w_full = Path(f"/tmp/kalyani_full_{os.getpid()}_{safe_tag}.wav")
     w1 = Path(f"/tmp/kalyani_p1_{os.getpid()}_{safe_tag}.wav")
     w2 = Path(f"/tmp/kalyani_p2_{os.getpid()}_{safe_tag}.wav")
 
     for attempt, model_name in enumerate((TTS_MODELS[0], TTS_MODELS[0], TTS_MODELS[1])):
         try:
-            # Strategy 1: Seamless single-shot synthesis for continuous prosody
             if _synthesize_wav(info["text"], w_full, model_name, timeout_s=75):
                 if _wav_to_mp3([w_full], out_mp3):
                     return rel_path, True
 
-            # Strategy 2: Two-part synthesis fallback if full text hit window limits
             if info["part2"]:
                 if _synthesize_wav(info["part1"], w1, model_name, timeout_s=55) and _synthesize_wav(info["part2"], w2, model_name, timeout_s=45):
                     if _wav_to_mp3([w1, w2], out_mp3):
@@ -234,13 +333,14 @@ def build_one(rel_path: str, info: dict[str, str]) -> tuple[str, bool]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Explicit-only incremental Gemini Aoede voice refresher.")
+    parser.add_argument("--student", default=DEFAULT_STUDENT_ID, choices=("ma_kalyani", "koushik"), help="Target student voice set.")
     parser.add_argument("--init-manifest", action="store_true", help="Snapshot current text hashes for existing MP3s.")
     parser.add_argument("--status", action="store_true", help="Check which audio files are stale/missing without regenerating.")
     parser.add_argument("--confirm", action="store_true", help="Explicit confirmation from Koushik to regenerate stale/missing voices.")
     parser.add_argument(
         "--scope",
         default="all",
-        choices=("all", "days-and-games", "days", "games", "part1", "part2", "slides", "quotes"),
+        choices=("all", "days-and-games", "days", "games", "part1", "part2", "slides", "quotes", "pillars"),
         help="Target subset of voices to check or refresh.",
     )
     parser.add_argument("--workers", type=int, default=16, help="Parallel TTS worker count (default: 16).")
@@ -248,9 +348,11 @@ def main() -> int:
     parser.add_argument("--publish", action="store_true", help="Also force-push updated audio/ snapshot to `ma-audio` orphan branch.")
     args = parser.parse_args()
 
+    aud_root = get_audio_root(args.student)
     stale, expected, recorded = get_stale_or_missing_files(
         scope=args.scope,
         require_local_mp3=True if args.confirm else None,
+        student_id=args.student,
     )
     scoped_keys = [k for k, v in expected.items() if matches_scope(k, v, args.scope)]
 
@@ -258,33 +360,33 @@ def main() -> int:
         hashes = {
             rel_path: info["hash"]
             for rel_path, info in expected.items()
-            if (AUDIO_DIR / rel_path).is_file() and (AUDIO_DIR / rel_path).stat().st_size >= 4000
+            if (aud_root / rel_path).is_file() and (aud_root / rel_path).stat().st_size >= 4000
         }
-        save_manifest(hashes)
-        print(f"[TTS Manifest] Initialized {MANIFEST_PATH} with {len(hashes)}/{len(expected)} verified MP3 hashes.")
+        save_manifest(hashes, args.student)
+        print(f"[TTS Manifest] Initialized {get_manifest_path(args.student)} with {len(hashes)}/{len(expected)} verified MP3 hashes.")
         return 0
 
     if args.status or not args.confirm:
         if not stale:
-            print(f"[TTS Status] All {len(scoped_keys)} Aoede MP3 files in scope='{args.scope}' are 100% in sync.")
+            print(f"[TTS Status ({args.student})] All {len(scoped_keys)} Aoede MP3 files in scope='{args.scope}' are 100% in sync.")
         else:
-            print(f"[TTS Status] {len(stale)}/{len(scoped_keys)} audio file(s) in scope='{args.scope}' need refresh: {stale[:10]}")
+            print(f"[TTS Status ({args.student})] {len(stale)}/{len(scoped_keys)} audio file(s) in scope='{args.scope}' need refresh: {stale[:10]}")
             if not args.confirm:
                 print("[TTS Rule] Automatic TTS regeneration is disabled by GEMINI.md. Ask Koushik before running with --confirm.")
         return 0
 
     targets = scoped_keys if args.all else stale
     if not targets:
-        print(f"[TTS Refresh] Nothing to regenerate in scope='{args.scope}' — all voices match current text hashes.")
+        print(f"[TTS Refresh ({args.student})] Nothing to regenerate in scope='{args.scope}' — all voices match current text hashes.")
         return 0
 
     t0 = time.time()
-    print(f"[TTS Refresh] Regenerating {len(targets)} Gemini Aoede MP3 file(s) (scope={args.scope}, workers={args.workers})...", flush=True)
+    print(f"[TTS Refresh ({args.student})] Regenerating {len(targets)} Gemini Aoede MP3 file(s) (scope={args.scope}, workers={args.workers})...", flush=True)
     ok_count = 0
     failed: list[str] = []
 
     with ThreadPoolExecutor(max_workers=max(1, args.workers)) as ex:
-        futs = {ex.submit(build_one, rel_path, expected[rel_path]): rel_path for rel_path in targets}
+        futs = {ex.submit(build_one, rel_path, expected[rel_path], aud_root): rel_path for rel_path in targets}
         for i, fut in enumerate(as_completed(futs), 1):
             rel_path, ok = fut.result()
             if ok:
@@ -293,20 +395,19 @@ def main() -> int:
             else:
                 failed.append(rel_path)
             if i % 15 == 0 or i == len(targets):
-                save_manifest(recorded)
+                save_manifest(recorded, args.student)
                 print(
                     f"Progress: {i}/{len(targets)} (ok={ok_count}, failed={len(failed)}, elapsed={time.time() - t0:.1f}s)",
                     flush=True,
                 )
 
-    # Prune orphan manifest entries & obsolete MP3 files when running full/days-and-games refresh
     if args.scope in ("all", "days-and-games"):
         orphan_keys = [k for k in list(recorded.keys()) if k not in expected]
         for ok_key in orphan_keys:
             recorded.pop(ok_key, None)
         pruned_files = 0
-        for sub in ("slides", "quotes", "days", "games"):
-            sub_dir = AUDIO_DIR / sub
+        for sub in ("slides", "quotes", "pillars", "days", "games"):
+            sub_dir = aud_root / sub
             if not sub_dir.is_dir():
                 continue
             for mp3_file in sub_dir.glob("*.mp3"):
@@ -317,10 +418,10 @@ def main() -> int:
         if orphan_keys or pruned_files:
             print(f"[TTS Prune] Cleaned {pruned_files} obsolete MP3 file(s) and {len(orphan_keys)} manifest key(s).", flush=True)
 
-    save_manifest(recorded)
-    print(f"[TTS Refresh] Done: {ok_count}/{len(targets)} updated in {time.time() - t0:.1f}s.")
+    save_manifest(recorded, args.student)
+    print(f"[TTS Refresh ({args.student})] Done: {ok_count}/{len(targets)} updated in {time.time() - t0:.1f}s.")
     if failed:
-        print(f"[TTS Refresh] Failed ({len(failed)}): {failed[:15]}", flush=True)
+        print(f"[TTS Refresh ({args.student})] Failed ({len(failed)}): {failed[:15]}", flush=True)
         return 1
     if args.publish:
         from sync_audio_branch import sync_ma_audio_orphan_branch  # noqa: PLC0415

@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Pure Agentic LLM Evaluator-Optimizer Loop for 🌸 কল্যাণী (Zero Hardcoded Rules).
+"""Pure Agentic LLM Evaluator-Optimizer Loop for 🌸 কল্যাণী & ⚡ ANANDO (Zero Hardcoded Rules).
 
-Driven exclusively by three portable Markdown reference specifications:
-  1. `students/<student_id>/persona.md` — Unified portable student persona, clinical blockers & tone guardrails
-  2. `content/curriculum.md`            — Master syllabus, 60/30/10 language split & 3-pillar Gemini Live tech onboarding
-  3. `content/content_curation.md`      — 12-Dimension LLM Critic-Refiner rubric & generation rules
+Driven exclusively by three portable Markdown reference specifications per student (`--student <id>`):
+  1. `students/<student_id>/persona.md`          — Unified portable student persona, clinical blockers & tone guardrails
+  2. `content/curriculum.md` (or `students/<id>/curriculum.md`) — Master syllabus & daily pillar blueprint
+  3. `content/content_curation.md` (or `students/<id>/content_curation.md`) — 12-Dimension LLM Critic-Refiner rubric
 
 Produces, evaluates, and iteratively refines:
-  - `content/days/part1_days.md` & `content/days/part2_days.md` (loaded by `part1_days.py` & `part2_days.py`)
-  - `docs/client-side-gemini.md` (Client-Side Android Gemini Master Instruction)
-  - `content/curation_manifest.json` (6-file MD5 state ledger + the LLM Critic's 12-dimension audit)
+  - `content/days/{part1,part2}_days.md` (for `ma_kalyani`) or `content/days/<id>_days.md` (for `<id>`)
+  - `docs/client-side-gemini.md` (or `students/<id>/client-side-gemini.md`)
+  - `content/curation_manifest.json` (or `content/curation_manifest_<id>.json`)
 """
 
 from __future__ import annotations
@@ -46,19 +46,44 @@ def get_student_persona_path(student_id: str = DEFAULT_STUDENT_ID) -> Path:
     """Resolve the single unified persona Markdown file for a given student_id."""
     return APP_ROOT / "students" / student_id / "persona.md"
 
+
+def resolve_student_spec_paths(student_id: str = DEFAULT_STUDENT_ID) -> dict[str, Path | list[Path]]:
+    """Resolve the 3 input specs, Markdown day file(s), client-side Gemini doc, and manifest path."""
+    if student_id == DEFAULT_STUDENT_ID:
+        return {
+            "persona": get_student_persona_path(student_id),
+            "curriculum": CURRICULUM_MD_PATH,
+            "curation": CONTENT_CURATION_MD_PATH,
+            "days_files": [PART1_MD_PATH, PART2_MD_PATH],
+            "client_gemini": CLIENT_GEMINI_MD_PATH,
+            "manifest": CURATION_MANIFEST_PATH,
+        }
+
+    student_dir = APP_ROOT / "students" / student_id
+    student_curation = student_dir / "content_curation.md"
+    return {
+        "persona": get_student_persona_path(student_id),
+        "curriculum": student_dir / "curriculum.md",
+        "curation": student_curation if student_curation.is_file() else CONTENT_CURATION_MD_PATH,
+        "days_files": [APP_ROOT / "content" / "days" / f"{student_id}_days.md"],
+        "client_gemini": student_dir / "client-side-gemini.md",
+        "manifest": APP_ROOT / "content" / f"curation_manifest_{student_id}.json",
+    }
+
+
 DIMENSIONS: tuple[tuple[str, str], ...] = (
     ("cbt_effectiveness", "1. 1-in-2-Days Covert CBT Precision"),
-    ("personal_connect", "2. Deep Reminiscence & Cathartic Psychotherapy"),
-    ("relationship_warmth", "3. Family Attachment Healing (Ma, Koushik & Didi)"),
-    ("inspiration_and_pride", "4. Relatable Inspiring Figures"),
+    ("personal_connect", "2. Deep Reminiscence / Inner-Child Clarity"),
+    ("relationship_warmth", "3. Family Attachment & Healthy Differentiation"),
+    ("inspiration_and_pride", "4. Inspiring Figures & First-Principles Pride"),
     ("charm_and_fun", "5. Song Lyrics Curiosity via @YouTube Music"),
-    ("curiosity_and_wonder", "6. Relatable Everyday World GK"),
-    ("storytelling_depth", "7. Concrete Teaching Target per Game"),
-    ("ease_of_learning", "8. 60% English / 30% Hindi Gossip / 10% Bengali Clarity"),
-    ("zero_fear_and_shame", "9. 3-Pillar Gemini Live Tech Onboarding & Live Video Camera"),
+    ("curiosity_and_wonder", "6. World & Frontier Polymathic GK"),
+    ("storytelling_depth", "7. Concrete Teaching Target & 2-Turn Depth"),
+    ("ease_of_learning", "8. Language / Active Listening Mastery"),
+    ("zero_fear_and_shame", "9. Zero Shame, Tech Ease & Plain Clarity"),
     ("urge_to_express_mind", "10. Authentic Voice & 2-Turn Agency"),
-    ("freedom_and_autonomy", "11. Zero Physio & Effortless Pacing"),
-    ("growing_own_dreams", "12. Client-Side Gemini Harmony & Persistent Memory"),
+    ("freedom_and_autonomy", "11. Effortless Pacing & Zorba Autonomy"),
+    ("growing_own_dreams", "12. Client-Side Gemini Harmony & Memory"),
 )
 
 
@@ -70,14 +95,25 @@ def md5_file(path: Path) -> str:
 
 
 def collect_md5_fingerprints(student_id: str = DEFAULT_STUDENT_ID) -> dict[str, str]:
-    """Collect MD5 digests of the 3 unified input specs and 3 curated Markdown outputs."""
+    """Collect MD5 digests of the 3 unified input specs and curated Markdown outputs."""
+    paths = resolve_student_spec_paths(student_id)
+    if student_id == DEFAULT_STUDENT_ID:
+        return {
+            "persona_md5": md5_file(paths["persona"]),  # type: ignore[arg-type]
+            "curriculum_md5": md5_file(paths["curriculum"]),  # type: ignore[arg-type]
+            "content_curation_md5": md5_file(paths["curation"]),  # type: ignore[arg-type]
+            "part1_days_md5": md5_file(PART1_MD_PATH),
+            "part2_days_md5": md5_file(PART2_MD_PATH),
+            "client_gemini_md5": md5_file(paths["client_gemini"]),  # type: ignore[arg-type]
+        }
+
+    days_files: list[Path] = paths["days_files"]  # type: ignore[assignment]
     return {
-        "persona_md5": md5_file(get_student_persona_path(student_id)),
-        "curriculum_md5": md5_file(CURRICULUM_MD_PATH),
-        "content_curation_md5": md5_file(CONTENT_CURATION_MD_PATH),
-        "part1_days_md5": md5_file(PART1_MD_PATH),
-        "part2_days_md5": md5_file(PART2_MD_PATH),
-        "client_gemini_md5": md5_file(CLIENT_GEMINI_MD_PATH),
+        "persona_md5": md5_file(paths["persona"]),  # type: ignore[arg-type]
+        "curriculum_md5": md5_file(paths["curriculum"]),  # type: ignore[arg-type]
+        "content_curation_md5": md5_file(paths["curation"]),  # type: ignore[arg-type]
+        "days_md5": md5_file(days_files[0]),
+        "client_gemini_md5": md5_file(paths["client_gemini"]),  # type: ignore[arg-type]
     }
 
 
@@ -91,7 +127,7 @@ def is_covert_cbt_day(day_obj: dict) -> bool:
     return any(classify_game_pillar(ag) == "covert_cbt" for ag in day_obj.get("agendas", []))
 
 
-def call_gemini_llm(prompt: str, timeout_s: int = 60) -> str:
+def call_gemini_llm(prompt: str, timeout_s: int = 75) -> str:
     """Invoke Gemini LLM via GEMINI_API_KEY REST endpoint or local `generate` CLI."""
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
     if api_key:
@@ -107,7 +143,7 @@ def call_gemini_llm(prompt: str, timeout_s: int = 60) -> str:
 
     if Path(GEN_BIN).is_file():
         last_err = ""
-        for attempt in range(3):
+        for _attempt in range(3):
             proc = subprocess.run(
                 [GEN_BIN, f"-timeout={timeout_s}s", "text", prompt],
                 capture_output=True,
@@ -150,12 +186,12 @@ def build_agentic_critic_prompt(
 
     sampled_days = days_payload if len(days_payload) <= 6 else (days_payload[:3] + days_payload[-2:])
     return (
-        "You are the Autonomous Critic Agent for Kalyani.\n\n"
+        "You are the Autonomous Critic Agent for the Kalyani / ANANDO Multi-Student Companion Architecture.\n\n"
         "=== REFERENCE 1: students/<student_id>/persona.md ===\n"
         f"{persona_md}\n\n"
-        "=== REFERENCE 2: content/curriculum.md ===\n"
+        "=== REFERENCE 2: curriculum.md ===\n"
         f"{curriculum_md}\n\n"
-        "=== REFERENCE 3: content/content_curation.md ===\n"
+        "=== REFERENCE 3: content_curation.md ===\n"
         f"{curation_md}\n\n"
         "=== GLOBAL CURRICULUM TELEMETRY ===\n"
         f"Total days: {len(days_payload)} | Game counts per day: {[len(d.get('agendas', [])) for d in days_payload]}\n"
@@ -163,14 +199,14 @@ def build_agentic_critic_prompt(
         f"CBT day numbers: {[d['day'] for d in days_payload if is_covert_cbt_day(d)]}\n\n"
         "=== SAMPLED / TARGET DAYS PAYLOAD ===\n"
         f"{json.dumps(sampled_days, ensure_ascii=False)}\n\n"
-        "=== CLIENT-SIDE GEMINI INSTRUCTION (docs/client-side-gemini.md) ===\n"
+        "=== CLIENT-SIDE GEMINI INSTRUCTION ===\n"
         f"{client_gemini_md[:3500]}\n\n"
         "Evaluate the curriculum days and client-side Gemini prompt strictly against all 3 reference specifications above.\n"
         "Return ONLY valid JSON matching this schema:\n"
         "{\n"
         '  "passed": true,\n'
         f'  "dimension_scores": {{{", ".join(f"{json.dumps(k)}: 10" for k in dim_keys)}}},\n'
-        '  "weak_games": [{"day": 1, "game_idx": 0, "pillar": "tech_65", "critique": "..."}],\n'
+        '  "weak_games": [{"day": 1, "game_idx": 0, "pillar": "music", "critique": "..."}],\n'
         '  "summary_critique": "Holistic clinical and pedagogical evaluation"\n'
         "}"
     )
@@ -187,10 +223,10 @@ def build_agentic_refiner_prompt(
     """Construct the pure LLM Refiner prompt from unified `persona.md` + `curriculum.md` + `content_curation.md`."""
     ag = day_obj["agendas"][game_idx]
     return (
-        "You are the Autonomous Refiner Agent for Kalyani.\n\n"
+        "You are the Autonomous Refiner Agent for Kalyani / ANANDO.\n\n"
         f"=== students/<student_id>/persona.md ===\n{persona_md[:2500]}\n\n"
-        f"=== content/curriculum.md ===\n{curriculum_md[:2000]}\n\n"
-        f"=== content/content_curation.md ===\n{curation_md[:2000]}\n\n"
+        f"=== curriculum.md ===\n{curriculum_md[:2000]}\n\n"
+        f"=== content_curation.md ===\n{curation_md[:2000]}\n\n"
         f"Rewrite Day {day_obj['day']} Game #{game_idx} to resolve this Critic feedback:\n"
         f"Critique: {critique}\n\n"
         f"Current Game JSON:\n{json.dumps(ag, ensure_ascii=False)}\n\n"
@@ -209,13 +245,17 @@ def run_agentic_improvement_loop(
 ) -> tuple[bool, list[dict], dict]:
     """Run the pure LLM Critic -> Refiner -> Re-Evaluate loop driven by unified `persona.md`, `curriculum.md` & `content_curation.md`."""
     caller = llm_callable or call_gemini_llm
-    persona_md = get_student_persona_path(student_id).read_text(encoding="utf-8")
-    curriculum_md = CURRICULUM_MD_PATH.read_text(encoding="utf-8")
-    curation_md = CONTENT_CURATION_MD_PATH.read_text(encoding="utf-8")
-    client_gemini_md = CLIENT_GEMINI_MD_PATH.read_text(encoding="utf-8")
+    spec_paths = resolve_student_spec_paths(student_id)
+    persona_md = Path(spec_paths["persona"]).read_text(encoding="utf-8")  # type: ignore[arg-type]
+    curriculum_md = Path(spec_paths["curriculum"]).read_text(encoding="utf-8")  # type: ignore[arg-type]
+    curation_md = Path(spec_paths["curation"]).read_text(encoding="utf-8")  # type: ignore[arg-type]
+    client_gemini_md = Path(spec_paths["client_gemini"]).read_text(encoding="utf-8")  # type: ignore[arg-type]
+    days_files: list[Path] = spec_paths["days_files"]  # type: ignore[assignment]
 
     if days_list is None:
-        target_days = load_days_markdown(PART1_MD_PATH) + load_days_markdown(PART2_MD_PATH)
+        target_days: list[dict] = []
+        for md_path in days_files:
+            target_days.extend(load_days_markdown(md_path))
     else:
         target_days = copy.deepcopy(days_list)
 
@@ -268,16 +308,22 @@ def run_agentic_improvement_loop(
 
     refined_days = list(day_map.values())
     if persist_markdown and total_refinements > 0 and days_list is None:
-        p1 = [d for d in refined_days if int(d["day"]) <= 21]
-        p2 = [d for d in refined_days if int(d["day"]) > 21]
-        PART1_MD_PATH.write_text(
-            dump_days_markdown("🌸 কল্যাণী — Part 1 Foundation Curriculum (Days 1–21 · Markdown Source of Truth)", p1),
-            encoding="utf-8",
-        )
-        PART2_MD_PATH.write_text(
-            dump_days_markdown("🌸 কল্যাণী — Part 2 Extended Calendar Curriculum (Days 22–51 · Markdown Source of Truth)", p2),
-            encoding="utf-8",
-        )
+        if student_id == DEFAULT_STUDENT_ID:
+            p1 = [d for d in refined_days if int(d["day"]) <= 21]
+            p2 = [d for d in refined_days if int(d["day"]) > 21]
+            PART1_MD_PATH.write_text(
+                dump_days_markdown("🌸 কল্যাণী — Part 1 Foundation Curriculum (Days 1–21 · Markdown Source of Truth)", p1),
+                encoding="utf-8",
+            )
+            PART2_MD_PATH.write_text(
+                dump_days_markdown("🌸 কল্যাণী — Part 2 Extended Calendar Curriculum (Days 22–51 · Markdown Source of Truth)", p2),
+                encoding="utf-8",
+            )
+        else:
+            days_files[0].write_text(
+                dump_days_markdown(f"⚡ ANANDO — {student_id.title()}'s Companion Curriculum", refined_days),
+                encoding="utf-8",
+            )
 
     report = {
         "engine": "Pure Agentic LLM Evaluator-Optimizer Loop (Unified Persona + Curriculum + Curation Blueprints)",
@@ -296,18 +342,20 @@ def run_agentic_improvement_loop(
     return report["passed"], refined_days, report
 
 
-def load_curation_manifest() -> dict:
-    if not CURATION_MANIFEST_PATH.is_file():
+def load_curation_manifest(student_id: str = DEFAULT_STUDENT_ID) -> dict:
+    manifest_path = Path(resolve_student_spec_paths(student_id)["manifest"])  # type: ignore[arg-type]
+    if not manifest_path.is_file():
         return {}
     try:
-        return json.loads(CURATION_MANIFEST_PATH.read_text(encoding="utf-8"))
+        return json.loads(manifest_path.read_text(encoding="utf-8"))
     except Exception:
         return {}
 
 
-def save_curation_manifest(report: dict) -> None:
-    CURATION_MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
-    CURATION_MANIFEST_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+def save_curation_manifest(report: dict, student_id: str = DEFAULT_STUDENT_ID) -> None:
+    manifest_path = Path(resolve_student_spec_paths(student_id)["manifest"])  # type: ignore[arg-type]
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def run_quality_gate(
@@ -316,7 +364,7 @@ def run_quality_gate(
     llm_callable: Callable[[str], str] | None = None,
     student_id: str = DEFAULT_STUDENT_ID,
 ) -> tuple[bool, list[str], dict[str, int]]:
-    """Verify 6-file MD5 state or run the live Agentic LLM Critic-Refiner Loop."""
+    """Verify MD5 state or run the live Agentic LLM Critic-Refiner Loop."""
     issues: list[str] = []
     current_md5s = collect_md5_fingerprints(student_id)
 
@@ -324,7 +372,7 @@ def run_quality_gate(
         if not digest:
             issues.append(f"Missing required Markdown file for {key}")
 
-    manifest = load_curation_manifest()
+    manifest = load_curation_manifest(student_id)
     recorded_md5s = manifest.get("md5_fingerprints", {}) if isinstance(manifest, dict) else {}
     md5_in_sync = (recorded_md5s == current_md5s) and bool(manifest.get("passed", False))
 
@@ -336,14 +384,14 @@ def run_quality_gate(
             verbose=verbose,
         )
         if llm_callable is None:
-            save_curation_manifest(report)
+            save_curation_manifest(report, student_id)
         manifest = report
         if not passed_loop:
             issues.append(f"Agentic LLM Critic rejected content: {report.get('summary_critique')}")
     elif not md5_in_sync:
         mismatched = [k for k in current_md5s if recorded_md5s.get(k) != current_md5s[k]]
         issues.append(
-            f"MD5 state out of sync for {mismatched}. Run `python3 scripts/curate_loop.py --live-loop`."
+            f"MD5 state out of sync for {mismatched}. Run `python3 scripts/curate_loop.py --student {student_id} --live-loop`."
         )
 
     dim_scores = {
@@ -354,7 +402,7 @@ def run_quality_gate(
 
     if verbose:
         print("=" * 78)
-        print(f"🌸 কল্যাণী — Agentic LLM Loop (student='{student_id}')")
+        print(f"⚡ Agentic LLM Loop (student='{student_id}')")
         print("=" * 78)
         for k_md5, v_md5 in collect_md5_fingerprints(student_id).items():
             print(f"  • {k_md5:22s}: {v_md5}")

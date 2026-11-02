@@ -8,3 +8,4 @@ __pycache__/
 audio/*.mp3
 audio/**/*.mp3
 !audio/tts_manifest.json
+!audio/koushik/tts_manifest.json

@@ -370,12 +370,13 @@ const scriptAndTests = code + `
 })();
 `;
 vm.runInNewContext(scriptAndTests, ctx, {filename: 'koushik-bundle.js'});
-assert.ok(els['dayStrip'].innerHTML.includes('দিন ১'), 'dayStrip must render');
+assert.ok(els['dayStrip'].innerHTML.includes('Day 1'), 'dayStrip must render English Day 1');
 assert.ok(els['gameGrid'].innerHTML.length > 50, 'gameGrid must render game tiles');
 assert.ok(els['activeGameStage'].innerHTML.includes('card-top-bar'), 'activeGameStage must render top inline controls');
+assert.ok(els['activeGameStage'].innerHTML.includes('Turn 2'), 'activeGameStage must render Turn 2 follow-up prompt');
 assert.ok(els['activeGameStage'].innerHTML.includes('agenda-actions'), 'activeGameStage must render bottom actions');
 assert.ok(els['letterStage'].innerHTML.includes('btnSlideTopPlay'), 'letterStage must render top slide play button');
-assert.ok(els['pillarsContainer'].innerHTML.includes('অপরাধবোধ থেকে মুক্তি'), 'pillarsContainer must render 7 pillars');
+assert.ok(els['pillarsContainer'].innerHTML.includes('Guilt Amnesty'), 'pillarsContainer must render 7 English pillars');
 """
         proc = subprocess.run(
             [str(NODE_BIN), "-e", vm_harness],
