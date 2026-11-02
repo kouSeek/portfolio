@@ -57,24 +57,31 @@ DIMENSIONS: tuple[tuple[str, str], ...] = (
     ("growing_own_dreams", "12. Growing as Per Her Own Dreams (Art, Music, Learning & Joy)"),
 )
 
-FIVE_PILLARS: tuple[str, ...] = (
+SEVEN_PILLARS: tuple[str, ...] = (
     "english",
+    "hindi",
     "music",
     "gk_inspiring",
     "tech_65",
     "covert_cbt",
+    "personal_therapy",
 )
+FIVE_PILLARS = SEVEN_PILLARS
 
 
 def classify_game_pillar(ag: dict) -> str:
-    """Classify a game card into one of the 5 core Kalyani pillars."""
+    """Classify a game card into one of the 7 core Kalyani pillars."""
     explicit = ag.get("pillar", "")
-    if explicit in FIVE_PILLARS:
+    if explicit in SEVEN_PILLARS:
         return explicit
     cat = (ag.get("category", "") + " " + ag.get("short_bn", "")).strip()
     title = ag.get("title_bn", "")
     prompt = ag.get("prompt_bn", "")
 
+    if "🗣️" in cat or "হিন্দি" in cat:
+        return "hindi"
+    if "💬" in cat or "স্মৃতির ঝাঁপি" in cat or "মনের গভীর কথা" in cat:
+        return "personal_therapy"
     if "🔤" in cat or "ইংরেজি" in cat or "জেমিনি, শোনো—" in prompt:
         return "english"
     if "🎵" in cat or "ইউটিউব মিউজিক" in prompt or "গানটা চালিয়ে দাও" in prompt:
@@ -181,13 +188,14 @@ def build_critic_prompt(day_obj: dict, persona_excerpt: str) -> str:
     return (
         "You are the Principal Pedagogical & Clinical CBT Critic Agent for the Kalyani App (for Koushik's 65-year-old mother).\n"
         f"Persona Context:\n{persona_excerpt[:1200]}\n\n"
-        "Evaluate the following Day curriculum against Koushik's 5 Core Pillars and 12 Quality Dimensions:\n"
+        "Evaluate the following Day curriculum against Koushik's 7 Core Pillars and 12 Quality Dimensions:\n"
         "1. Game Count: Must have between 4 and 6 games inclusive.\n"
-        "2. 5 Pillars Coverage & Cadence:\n"
+        "2. 7 Pillars Coverage & Cadence:\n"
         "   - Every day MUST include: (a) 'english' (common day-to-day English words spoken with ease, natural flow & confidence), "
-        "(b) 'music' (song lyrics curiosity via YouTube Music), (c) 'gk_inspiring' (relatable world GK or inspiring figures), "
-        "and (d) 'tech_65' (fearless technology for a 65-year-old).\n"
+        "(b) 'hindi' (proper, confident everyday spoken Hindi), (c) 'music' (song lyrics curiosity via YouTube Music), "
+        "(d) 'gk_inspiring' (relatable world GK or inspiring figures), and (e) 'tech_65' (fearless technology for a 65-year-old).\n"
         f"   - Covert CBT ('covert_cbt') strictly follows a 1-in-2-days cadence (even days only). For Day {day_num}, expected_cbt={expected_cbt}.\n"
+        f"   - Personal Conversation Therapy ('personal_therapy' — golden-days reminiscence + cathartic release of buried trauma) runs on odd days ({not expected_cbt}).\n"
         "3. Concrete Depth: Every game must teach a concrete concept or achieve a clear target, with warm Bengali detail_bn (>=95 chars), "
         "a natural 1-breath prompt_bn starting with 'জেমিনি,', and a meaningful 2nd-turn followup_prompt_bn.\n\n"
         f"Day Payload:\n{json.dumps({'day': day_num, 'title_bn': day_obj.get('title_bn'), 'games': games_summary}, ensure_ascii=False)}\n\n"
@@ -231,17 +239,20 @@ def evaluate_day_structure(day_obj: dict) -> tuple[list[str], list[dict]]:
         issues.append(f"Day {d_num}: expected 4..6 games, found {len(ags)}")
 
     pillars = [classify_game_pillar(ag) for ag in ags]
-    for required_pillar in ("english", "music", "gk_inspiring", "tech_65"):
+    for required_pillar in ("english", "hindi", "music", "gk_inspiring", "tech_65"):
         if required_pillar not in pillars:
             issues.append(f"Day {d_num}: missing required daily pillar '{required_pillar}' (found {pillars})")
 
     cbt_count = pillars.count("covert_cbt")
+    pt_count = pillars.count("personal_therapy")
     if d_num % 2 == 0:
         if cbt_count != 1:
             issues.append(f"Day {d_num} (even CBT day): expected exactly 1 'covert_cbt' game, found {cbt_count}")
     else:
         if cbt_count != 0:
             issues.append(f"Day {d_num} (odd non-CBT day): expected 0 'covert_cbt' games for 1-in-2-days cadence, found {cbt_count}")
+        if pt_count != 1:
+            issues.append(f"Day {d_num} (odd Personal Therapy day): expected 1 'personal_therapy' game, found {pt_count}")
 
     for idx, ag in enumerate(ags):
         pillar = classify_game_pillar(ag)

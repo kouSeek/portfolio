@@ -109,11 +109,15 @@ function buildAgendaCardHtml(d, ag, idx) {
   let stepHeading = '✨ মা, আজ কী করবো দেখো:';
   if (isSongGame) {
     stepHeading = '🎵 মা, আজকের গান ও মনের টান:';
+  } else if (catStr.includes('💬') || catStr.includes('স্মৃতির ঝাঁপি') || catStr.includes('মনের গভীর কথা')) {
+    stepHeading = '💬 মা, আজকের মনের গভীর কথা ও স্মৃতির ঝাঁপি:';
   } else if (catStr.includes('📖') || catStr.includes('গল্প')) {
     stepHeading = '📖 মা, আজকের গল্প ও মনের কথা:';
   } else if (catStr.includes('🌿') || catStr.includes('মনের আরাম') || catStr.includes('মনের আনন্দ')) {
     stepHeading = '🌿 মা, আজকের মনের আরাম ও ভাবনা:';
-  } else if (catStr.includes('🌍') || catStr.includes('জানাশোনা') || catStr.includes('বিস্ময়')) {
+  } else if (catStr.includes('🗣️') || catStr.includes('হিন্দি')) {
+    stepHeading = '🗣️ মা, আজকের সহজ ও আত্মবিশ্বাসী হিন্দি খেলা:';
+  } else if (catStr.includes('🌍') || catStr.includes('জানাশোনা') || catStr.includes('বিস্ময়') || catStr.includes('🌟')) {
     stepHeading = '🌍 মা, আজকের অবাক করা জানাশোনা:';
   } else if (catStr.includes('🔤') || catStr.includes('ইংরেজি')) {
     stepHeading = '🔤 মা, আজকের সহজ ইংরেজি খেলা:';

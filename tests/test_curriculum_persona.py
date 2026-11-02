@@ -49,14 +49,16 @@ class TestCurriculumAndPersona(unittest.TestCase):
             self.assertLessEqual(len(ags), 6, f"Day {day_num} has more than 6 games ({len(ags)})")
 
             pillars = [classify_game_pillar(ag) for ag in ags]
-            for daily_pillar in ("english", "music", "gk_inspiring", "tech_65"):
+            for daily_pillar in ("english", "hindi", "music", "gk_inspiring", "tech_65"):
                 self.assertIn(daily_pillar, pillars, f"Day {day_num} missing daily pillar '{daily_pillar}'")
 
             cbt_count = pillars.count("covert_cbt")
+            pt_count = pillars.count("personal_therapy")
             if day_num % 2 == 0:
                 self.assertEqual(cbt_count, 1, f"Even Day {day_num} must have exactly 1 covert_cbt game")
             else:
                 self.assertEqual(cbt_count, 0, f"Odd Day {day_num} must have 0 covert_cbt games (1-in-2-days rule)")
+                self.assertEqual(pt_count, 1, f"Odd Day {day_num} must have 1 personal_therapy game")
 
         cbt_days = [int(d["day"]) for d in all_days if is_covert_cbt_day(d)]
         self.assertEqual(cbt_days, [d_num for d_num in range(1, 52) if d_num % 2 == 0])
@@ -126,13 +128,15 @@ class TestCurriculumAndPersona(unittest.TestCase):
 
         for d in DAYS_21:
             day_eng = [ag for ag in d["agendas"] if classify_game_pillar(ag) == "english"]
+            day_hin = [ag for ag in d["agendas"] if classify_game_pillar(ag) == "hindi"]
             self.assertGreaterEqual(len(day_eng), 1, f"Day {d['day']} must have a Spoken English game")
+            self.assertGreaterEqual(len(day_hin), 1, f"Day {d['day']} must have a Spoken Hindi game")
             for ag in d["agendas"]:
                 txt = (ag["title_bn"] + " " + ag["detail_bn"] + " " + ag["prompt_bn"]).lower()
                 for w in core_words:
                     if w in txt:
                         word_hits[w] += 1
-                if "জেমিনি, শোনো—" in ag["prompt_bn"]:
+                if classify_game_pillar(ag) == "english" and "জেমিনি, শোনো—" in ag["prompt_bn"]:
                     eng_prompts.append(ag["prompt_bn"])
                     self.assertTrue(
                         ag.get("followup_prompt_bn", "").startswith("জেমিনি,"),
@@ -198,13 +202,14 @@ class TestCurriculumAndPersona(unittest.TestCase):
 
         client_doc = (APP_ROOT / "docs" / "client-side-gemini.md").read_text(encoding="utf-8")
         for required_phrase in (
-            "HOW TO BEHAVE",
-            "HOW NOT TO BEHAVE",
-            "THE 5 CORE PILLARS IN HARMONY WITH KALYANI APP",
-            "Dynamic Learning & Evolution",
+            "IRONCLAD LANGUAGE RULE (SPEAK TO MA STRICTLY IN BENGALI)",
+            "MANDATORY PERSISTENT MEMORY & PROACTIVE PROFILING PROTOCOL",
+            "EXTRAORDINARY PSYCHOTHERAPIST PROTOCOL (PERSONAL CONVERSATION AS THERAPY)",
+            "HOW TO BEHAVE vs. HOW NOT TO BEHAVE",
+            "Proper, Confident Everyday Spoken Hindi",
             "Covert CBT Therapy",
             "লেবুর তিতো খোসা",
-            "এক মাটির মন",
+            "একই নরম মাটির মানুষ",
         ):
             self.assertIn(required_phrase, client_doc)
 
