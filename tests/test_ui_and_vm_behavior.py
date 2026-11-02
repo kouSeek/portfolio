@@ -74,6 +74,9 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertIn('id="slideDotsRow"', ma_html)
         self.assertLess(ma_html.index('id="slideBadge"'), ma_html.index('class="slide-img-wrap"'))
         self.assertGreater(ma_html.index('id="videoLetterCard"'), ma_html.index('id="letterSlideCard"'))
+        self.assertIn("object-fit: contain", ma_html)
+        self.assertNotIn("object-fit: cover", ma_html)
+        self.assertNotIn("aspect-ratio: 16 / 10", ma_html)
         self.assertNotIn("speechSynthesis", ma_html)
 
         m = re.search(r"<script>([\s\S]*?)</script>", ma_html)
@@ -311,6 +314,8 @@ vm.runInContext(code + "\n" + testBlock, sandbox, {filename: 'kalyani-bundle.js'
         self.assertIn('id="topPlayBtn"', k_html)
         self.assertIn('id="nowPlayingBar"', k_html)
         self.assertIn('⚡ ANONDO', k_html)
+        self.assertIn("object-fit: contain", k_html)
+        self.assertNotIn("object-fit: cover", k_html)
 
         m = re.search(r"<script>([\s\S]*?)</script>", k_html)
         self.assertIsNotNone(m, "Missing <script> block in anondo.html")

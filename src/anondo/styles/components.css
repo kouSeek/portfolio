@@ -291,12 +291,22 @@
 .agenda-actions .ag-btn, .game-stepper-row .ag-btn { flex: 1; }
 
 .slide-img-wrap {
+  width: 100%;
   border-radius: 14px;
   overflow: hidden;
   margin-bottom: 10px;
   border: 1px solid var(--border);
+  background: var(--bg-subtle);
 }
-.slide-img { width: 100%; display: block; }
+.slide-img {
+  width: 100%;
+  height: auto;
+  max-height: min(76vh, 680px);
+  max-height: min(76dvh, 680px);
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
 .slide-dots {
   display: flex;
   gap: 6px;
