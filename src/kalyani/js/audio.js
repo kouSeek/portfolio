@@ -298,12 +298,14 @@ function fireMorningMotivationNotification(isManualTest) {
   const quote = MORNING_QUOTES[curQuoteIdx];
   playMorningChimeSound();
   const title = '☀️ সুপ্রভাত মা! আজকের অনুপ্রেরণা';
+  const favEl = document.getElementById('pageFavicon');
+  const notifIcon = (favEl && favEl.getAttribute && favEl.getAttribute('href')) || 'favicon.svg';
   if ('Notification' in window && Notification.permission === 'granted') {
     if (navigator.serviceWorker && navigator.serviceWorker.ready) {
       navigator.serviceWorker.ready.then(reg => {
         reg.showNotification(title, {
           body: quote,
-          icon: 'favicon.svg',
+          icon: notifIcon,
           vibrate: [200, 100, 200],
           tag: 'ma-morning-motivation'
         });

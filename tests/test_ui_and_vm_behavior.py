@@ -38,12 +38,16 @@ class TestUIAndVMBehavior(unittest.TestCase):
         hub_html = (APP_ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn('href="kalyani.html"', hub_html)
         self.assertIn('href="anondo.html"', hub_html)
+        self.assertIn('id="pageFavicon"', hub_html)
+        self.assertIn("data:image/svg+xml;base64,", hub_html)
 
         idx_html_path = APP_ROOT / "kalyani.html"
         self.assertTrue(idx_html_path.is_file())
         self.assertFalse((APP_ROOT / "ma-presentation.html").exists(), "Duplicate ma-presentation.html must not exist")
 
         ma_html = idx_html_path.read_text(encoding="utf-8")
+        self.assertIn('id="pageFavicon"', ma_html)
+        self.assertIn("data:image/svg+xml;base64,", ma_html)
 
         # 1. Crisp Bengali ১ (U+09E7) Font & Anti-Clipping Invariants
         self.assertIn("Noto+Sans+Bengali", ma_html)
@@ -315,6 +319,8 @@ vm.runInContext(code + "\n" + testBlock, sandbox, {filename: 'kalyani-bundle.js'
         self.assertIn('id="topPlayBtn"', k_html)
         self.assertIn('id="nowPlayingBar"', k_html)
         self.assertIn('⚡ ANONDO', k_html)
+        self.assertIn('id="pageFavicon"', k_html)
+        self.assertIn("data:image/svg+xml;base64,", k_html)
         self.assertIn("object-fit: contain", k_html)
         self.assertNotIn("object-fit: cover", k_html)
 

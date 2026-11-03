@@ -294,6 +294,42 @@ function startSosTimer(sec) {
   }, 1000);
 }
 
+(function hydratePageFavicon() {
+  try {
+    if (!document.head || typeof document.createElement !== "function") return;
+    const el = document.getElementById("pageFavicon");
+    const href = el && (el.getAttribute ? el.getAttribute("href") : el.href);
+    if (!href) return;
+    const applyHref = (uri, mime) => {
+      document.querySelectorAll('link[rel*="icon"]').forEach(n => { if (n.parentNode) n.parentNode.removeChild(n); });
+      ["icon", "shortcut icon", "apple-touch-icon"].forEach(rel => {
+        const lk = document.createElement("link");
+        if (rel === "icon") lk.id = "pageFavicon";
+        lk.rel = rel;
+        if (rel !== "apple-touch-icon") lk.type = mime;
+        lk.href = uri;
+        document.head.appendChild(lk);
+      });
+    };
+    applyHref(href, "image/svg+xml");
+    if (typeof Image === "function") {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const c = document.createElement("canvas");
+          c.width = 64; c.height = 64;
+          const ctx = c.getContext && c.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, 64, 64);
+            applyHref(c.toDataURL("image/png"), "image/png");
+          }
+        } catch (e) {}
+      };
+      img.src = href;
+    }
+  } catch (e) {}
+})();
+
 findInitialCurrentDay();
 renderPlayView();
 renderLetterView();

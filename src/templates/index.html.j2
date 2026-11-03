@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0F172A" />
   <title>✨ AI Companion — Kalyani (Ma) & Anondo (Koushik)</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link id="pageFavicon" rel="icon" type="image/svg+xml" sizes="any" href="{{ favicon_uri }}" />
+  <link rel="shortcut icon" type="image/svg+xml" href="{{ favicon_uri }}" />
+  <link rel="apple-touch-icon" href="{{ favicon_uri }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@700&family=Noto+Sans+Bengali:wght@600;700&display=swap" rel="stylesheet" />
@@ -147,5 +149,42 @@
       </a>
     </div>
   </main>
+  <script>
+    (function hydratePageFavicon() {
+      try {
+        if (!document.head || typeof document.createElement !== "function") return;
+        const el = document.getElementById("pageFavicon");
+        const href = el && (el.getAttribute ? el.getAttribute("href") : el.href);
+        if (!href) return;
+        const applyHref = (uri, mime) => {
+          document.querySelectorAll('link[rel*="icon"]').forEach(n => { if (n.parentNode) n.parentNode.removeChild(n); });
+          ["icon", "shortcut icon", "apple-touch-icon"].forEach(rel => {
+            const lk = document.createElement("link");
+            if (rel === "icon") lk.id = "pageFavicon";
+            lk.rel = rel;
+            if (rel !== "apple-touch-icon") lk.type = mime;
+            lk.href = uri;
+            document.head.appendChild(lk);
+          });
+        };
+        applyHref(href, "image/svg+xml");
+        if (typeof Image === "function") {
+          const img = new Image();
+          img.onload = () => {
+            try {
+              const c = document.createElement("canvas");
+              c.width = 64; c.height = 64;
+              const ctx = c.getContext && c.getContext("2d");
+              if (ctx) {
+                ctx.drawImage(img, 0, 0, 64, 64);
+                applyHref(c.toDataURL("image/png"), "image/png");
+              }
+            } catch (e) {}
+          };
+          img.src = href;
+        }
+      } catch (e) {}
+    })();
+  </script>
 </body>
 </html>
