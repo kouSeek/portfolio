@@ -74,6 +74,7 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertIn('id="slideDotsRow"', ma_html)
         self.assertLess(ma_html.index('id="slideBadge"'), ma_html.index('class="slide-img-wrap"'))
         self.assertGreater(ma_html.index('id="videoLetterCard"'), ma_html.index('id="letterSlideCard"'))
+        self.assertGreater(ma_html.index('id="dailyQuoteCard"'), ma_html.index('id="videoLetterCard"'))
         self.assertIn("object-fit: contain", ma_html)
         self.assertNotIn("object-fit: cover", ma_html)
         self.assertNotIn("aspect-ratio: 16 / 10", ma_html)

@@ -63,19 +63,8 @@
     <div id="activeDayStage"></div>
   </section>
 
-  <!-- VIEW 2: MORNING INSPIRATION + 8-SLIDE HEIRLOOM LETTER (💌 চিঠি) -->
+  <!-- VIEW 2: 8-SLIDE HEIRLOOM LETTER + VIDEO LETTER + DAILY INSPIRATION (💌 চিঠি) -->
   <section id="viewSlides" class="view-sec">
-    <div class="quote-card">
-      <div>
-        <div class="quote-eyebrow">☀️ আজকের অনুপ্রেরণা</div>
-        <div id="dailyQuoteText" class="quote-text"></div>
-      </div>
-      <div class="quote-actions-row">
-        <button id="btnQuotePlay" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="toggleMorningQuoteAudio()">🔊 শোনো</button>
-        <button id="btnNextRandomQuote" class="ag-btn" onclick="pickNewRandomQuote(true)">🎲 নতুন বাণী</button>
-      </div>
-    </div>
-
     <div class="alpana-divider">❈ মায়ের জন্য খোলা চিঠি ❈</div>
 
     <div id="letterSlideCard" class="slide-card">
@@ -109,6 +98,17 @@
       <a id="btnWatchMovieLetter" class="video-letter-btn" href="{{ letter_video_url }}" target="_blank" rel="noopener noreferrer" onclick="stopAllAudio()">
         🎬 পুরো ভিডিও চিঠিটি দেখো ▶️
       </a>
+    </div>
+
+    <div id="dailyQuoteCard" class="quote-card">
+      <div>
+        <div class="quote-eyebrow">☀️ আজকের অনুপ্রেরণা</div>
+        <div id="dailyQuoteText" class="quote-text"></div>
+      </div>
+      <div class="quote-actions-row">
+        <button id="btnQuotePlay" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="toggleMorningQuoteAudio()">🔊 শোনো</button>
+        <button id="btnNextRandomQuote" class="ag-btn" onclick="pickNewRandomQuote(true)">🎲 নতুন বাণী</button>
+      </div>
     </div>
   </section>
 
