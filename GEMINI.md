@@ -1,10 +1,10 @@
-# GEMINI.md — ✨ AI Companion (`kalyani` + `anondo`) Master Architecture, UX Artistry & Governance
+# GEMINI.md — 🪷 AI Companion (`kalyani` + `anondo`) Master Architecture, UX Artistry & Governance
 
-This file is the **single, canonical, Git-tracked source of truth** governing how any AI engineer/agent designs, architects, tests, and maintains **✨ AI Companion**, located in its dedicated repository at [`/usr/local/google/home/koushikchak/ai-companion`](file:///usr/local/google/home/koushikchak/ai-companion) (published on branch `ai-companion` of `git@github.com:kouSeek/portfolio.git`).
+This file is the **single, canonical, Git-tracked source of truth** governing how any AI engineer/agent designs, architects, tests, and maintains **🪷 AI Companion**, located in its dedicated repository at [`/usr/local/google/home/koushikchak/ai-companion`](file:///usr/local/google/home/koushikchak/ai-companion) (published on branch `ai-companion` of `git@github.com:kouSeek/portfolio.git`).
 
 It hosts **two modular, self-contained companion personas**:
 1. **`kalyani` (Ma — `🌸 কল্যাণী` -> `kalyani.html`):** 51-day Bengali companion (`306` games) for Ma (Shikha Chakraborty).
-2. **`anondo` (Me — `⚡ ANONDO` -> `anondo.html`):** 21-day English high-IQ companion (`105` explorations) for Koushik Chakraborty.
+2. **`anondo` (Me — `🌻 ANONDO` -> `anondo.html`):** 21-day English high-IQ companion (`105` explorations) for Koushik Chakraborty.
 
 > **Strict Isolation from `koushik-wiki`:** Keep all AI Companion rules, specs, persona packages, frontend source, audio, scripts, and tests strictly inside `/usr/local/google/home/koushikchak/ai-companion`.
 
@@ -93,9 +93,9 @@ Every persona (`kalyani`, `anondo`, and any future persona) is organized symmetr
 ├── favicon.svg
 ├── kalyani-manifest.json
 ├── kalyani-sw.js
-├── index.html                                 # Compiled Two-Persona Hub (`🌸 Kalyani` & `⚡ Anondo`)
+├── index.html                                 # Compiled Two-Persona Hub (`🪷` Hub · `🌸 Kalyani` & `🌻 Anondo`)
 ├── kalyani.html                               # Compiled Ma's Companion App (`🌸 কল্যাণী`)
-└── anondo.html                                # Compiled Koushik's Companion App (`⚡ ANONDO`)
+└── anondo.html                                # Compiled Koushik's Companion App (`🌻 ANONDO`)
 ```
 
 ---

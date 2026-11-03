@@ -42,35 +42,33 @@ if ('serviceWorker' in navigator) {
   try {
     if (!document.head || typeof document.createElement !== 'function') return;
     const el = document.getElementById('pageFavicon');
-    const href = el && (el.getAttribute ? el.getAttribute('href') : el.href);
-    if (!href) return;
-    const applyHref = (uri, mime) => {
-      document.querySelectorAll('link[rel*="icon"]').forEach(n => { if (n.parentNode) n.parentNode.removeChild(n); });
-      ['icon', 'shortcut icon', 'apple-touch-icon'].forEach(rel => {
-        const lk = document.createElement('link');
-        if (rel === 'icon') lk.id = 'pageFavicon';
-        lk.rel = rel;
-        if (rel !== 'apple-touch-icon') lk.type = mime;
-        lk.href = uri;
-        document.head.appendChild(lk);
-      });
-    };
-    applyHref(href, 'image/svg+xml');
-    if (typeof Image === 'function') {
-      const img = new Image();
-      img.onload = () => {
-        try {
-          const c = document.createElement('canvas');
-          c.width = 64; c.height = 64;
-          const ctx = c.getContext && c.getContext('2d');
-          if (ctx) {
-            ctx.drawImage(img, 0, 0, 64, 64);
-            applyHref(c.toDataURL('image/png'), 'image/png');
-          }
-        } catch (e) {}
-      };
-      img.src = href;
+    if (!el) return;
+    const emoji = el.getAttribute && el.getAttribute('data-emoji');
+    let uri = el.getAttribute ? el.getAttribute('href') : el.href;
+    let mime = 'image/svg+xml';
+    if (emoji) {
+      const c = document.createElement('canvas');
+      c.width = 64; c.height = 64;
+      const ctx = c.getContext && c.getContext('2d');
+      if (ctx) {
+        ctx.font = '54px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(emoji, 32, 35);
+        uri = c.toDataURL('image/png');
+        mime = 'image/png';
+      }
     }
+    if (!uri) return;
+    document.querySelectorAll('link[rel*="icon"]').forEach(n => { if (n.parentNode) n.parentNode.removeChild(n); });
+    ['icon', 'shortcut icon', 'apple-touch-icon'].forEach(rel => {
+      const lk = document.createElement('link');
+      if (rel === 'icon') { lk.id = 'pageFavicon'; if (emoji) lk.setAttribute('data-emoji', emoji); }
+      lk.rel = rel;
+      if (rel !== 'apple-touch-icon') lk.type = mime;
+      lk.href = uri;
+      document.head.appendChild(lk);
+    });
   } catch (e) {}
 })();
 

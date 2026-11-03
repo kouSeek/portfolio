@@ -39,6 +39,7 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertIn('href="kalyani.html"', hub_html)
         self.assertIn('href="anondo.html"', hub_html)
         self.assertIn('id="pageFavicon"', hub_html)
+        self.assertIn('data-emoji="🪷"', hub_html)
         self.assertIn("data:image/svg+xml;base64,", hub_html)
 
         idx_html_path = APP_ROOT / "kalyani.html"
@@ -47,6 +48,7 @@ class TestUIAndVMBehavior(unittest.TestCase):
 
         ma_html = idx_html_path.read_text(encoding="utf-8")
         self.assertIn('id="pageFavicon"', ma_html)
+        self.assertIn('data-emoji="🌸"', ma_html)
         self.assertIn("data:image/svg+xml;base64,", ma_html)
 
         # 1. Crisp Bengali ১ (U+09E7) Font & Anti-Clipping Invariants
@@ -311,15 +313,16 @@ vm.runInContext(code + "\n" + testBlock, sandbox, {filename: 'kalyani-bundle.js'
         self.assertEqual(proc.returncode, 0, f"VM test failed: {proc.stderr}")
 
     def test_anondo_app_vm_rendering_and_inline_audio_controls(self) -> None:
-        """Verify anondo.html (⚡ ANONDO) compiles cleanly, renders all game & slide content, and has inline audio controls."""
+        """Verify anondo.html (🌻 ANONDO) compiles cleanly, renders all game & slide content, and has inline audio controls."""
         k_path = APP_ROOT / "anondo.html"
         self.assertTrue(k_path.is_file(), "anondo.html must exist")
         k_html = k_path.read_text(encoding="utf-8")
         self.assertNotIn("position: fixed;\n      bottom: 0", k_html)
         self.assertIn('id="topPlayBtn"', k_html)
         self.assertIn('id="nowPlayingBar"', k_html)
-        self.assertIn('⚡ ANONDO', k_html)
+        self.assertIn('🌻 ANONDO', k_html)
         self.assertIn('id="pageFavicon"', k_html)
+        self.assertIn('data-emoji="🌻"', k_html)
         self.assertIn("data:image/svg+xml;base64,", k_html)
         self.assertIn("object-fit: contain", k_html)
         self.assertNotIn("object-fit: cover", k_html)
