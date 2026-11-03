@@ -122,7 +122,7 @@ def build_kalyani(env: jinja2.Environment) -> None:
         data_js=data_js,
         js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in KALYANI_JS),
         letter_video_url=LETTER_VIDEO_URL,
-        favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / "favicon-kalyani.svg", "image/svg+xml"),
+        favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / "favicon-kalyani.png", "image/png"),
     )
     out = APP_ROOT / "kalyani.html"
     out.write_text(html, encoding="utf-8")
@@ -174,7 +174,7 @@ def build_anondo(env: jinja2.Environment) -> None:
         css_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in ANONDO_CSS),
         data_js=data_js,
         js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in ANONDO_JS),
-        favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / "favicon-anondo.svg", "image/svg+xml"),
+        favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / "favicon-anondo.png", "image/png"),
     )
     out = APP_ROOT / "anondo.html"
     out.write_text(html, encoding="utf-8")
@@ -195,7 +195,7 @@ def build_all(persona: str = "all") -> None:
 
     hub = APP_ROOT / "index.html"
     hub.write_text(
-        env.get_template("index.html.j2").render(favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / "favicon-hub.svg", "image/svg+xml")),
+        env.get_template("index.html.j2").render(favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / "favicon-hub.png", "image/png")),
         encoding="utf-8",
     )
     print(f"Built {hub.name} Persona Hub via Jinja2 ({hub.stat().st_size:,} bytes)")

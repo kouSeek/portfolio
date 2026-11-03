@@ -40,7 +40,9 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertIn('href="anondo.html"', hub_html)
         self.assertIn('id="pageFavicon"', hub_html)
         self.assertIn('data-emoji="🪷"', hub_html)
-        self.assertIn("data:image/svg+xml;base64,", hub_html)
+        self.assertIn("favicon-hub.png", hub_html)
+        self.assertIn("data:image/png;base64,", hub_html)
+        self.assertIn("<title>AI Companion — Kalyani (Ma) & Anondo (Koushik) 🪷</title>", hub_html)
 
         idx_html_path = APP_ROOT / "kalyani.html"
         self.assertTrue(idx_html_path.is_file())
@@ -49,7 +51,9 @@ class TestUIAndVMBehavior(unittest.TestCase):
         ma_html = idx_html_path.read_text(encoding="utf-8")
         self.assertIn('id="pageFavicon"', ma_html)
         self.assertIn('data-emoji="🌸"', ma_html)
-        self.assertIn("data:image/svg+xml;base64,", ma_html)
+        self.assertIn("favicon-kalyani.png", ma_html)
+        self.assertIn("data:image/png;base64,", ma_html)
+        self.assertIn("<title>কল্যাণী — আজকের খেলা ও চিঠি 🌸</title>", ma_html)
 
         # 1. Crisp Bengali ১ (U+09E7) Font & Anti-Clipping Invariants
         self.assertIn("Noto+Sans+Bengali", ma_html)
@@ -323,7 +327,9 @@ vm.runInContext(code + "\n" + testBlock, sandbox, {filename: 'kalyani-bundle.js'
         self.assertIn('🌻 ANONDO', k_html)
         self.assertIn('id="pageFavicon"', k_html)
         self.assertIn('data-emoji="🌻"', k_html)
-        self.assertIn("data:image/svg+xml;base64,", k_html)
+        self.assertIn("favicon-anondo.png", k_html)
+        self.assertIn("data:image/png;base64,", k_html)
+        self.assertIn("Zorba Companion 🌻</title>", k_html)
         self.assertIn("object-fit: contain", k_html)
         self.assertNotIn("object-fit: cover", k_html)
 

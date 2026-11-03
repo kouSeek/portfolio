@@ -295,37 +295,37 @@ function startSosTimer(sec) {
 }
 
 (function hydratePageFavicon() {
-  try {
-    if (!document.head || typeof document.createElement !== "function") return;
-    const el = document.getElementById("pageFavicon");
-    if (!el) return;
-    const emoji = el.getAttribute && el.getAttribute("data-emoji");
-    let uri = el.getAttribute ? el.getAttribute("href") : el.href;
-    let mime = "image/svg+xml";
-    if (emoji) {
-      const c = document.createElement("canvas");
-      c.width = 64; c.height = 64;
-      const ctx = c.getContext && c.getContext("2d");
-      if (ctx) {
-        ctx.font = '54px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(emoji, 32, 35);
-        uri = c.toDataURL("image/png");
-        mime = "image/png";
-      }
-    }
-    if (!uri) return;
-    document.querySelectorAll('link[rel*="icon"]').forEach(n => { if (n.parentNode) n.parentNode.removeChild(n); });
-    ["icon", "shortcut icon", "apple-touch-icon"].forEach(rel => {
-      const lk = document.createElement("link");
-      if (rel === "icon") { lk.id = "pageFavicon"; if (emoji) lk.setAttribute("data-emoji", emoji); }
-      lk.rel = rel;
-      if (rel !== "apple-touch-icon") lk.type = mime;
-      lk.href = uri;
-      document.head.appendChild(lk);
-    });
-  } catch (e) {}
+  function apply() {
+    try {
+      if (!document.head || typeof document.createElement !== "function") return;
+      const el = document.getElementById("pageFavicon");
+      if (!el || !el.getAttribute) return;
+      const emoji = el.getAttribute("data-emoji") || "";
+      const b64 = el.getAttribute("data-png-b64") || "";
+      const httpsPng = el.getAttribute("data-https-png") || b64;
+      const httpsIco = el.getAttribute("data-https-ico") || httpsPng;
+      const useHttps = (typeof location !== "undefined" && /^https?:$/i.test(location.protocol) && (typeof navigator === "undefined" || navigator.onLine !== false));
+      const pngHref = useHttps ? httpsPng : (b64 || httpsPng);
+      const icoHref = useHttps ? httpsIco : (b64 || httpsIco);
+      document.querySelectorAll('link[rel*="icon"]').forEach(n => { if (n.parentNode) n.parentNode.removeChild(n); });
+      const l1 = document.createElement("link");
+      l1.id = "pageFavicon";
+      l1.setAttribute("data-emoji", emoji);
+      l1.setAttribute("data-png-b64", b64);
+      l1.setAttribute("data-https-png", httpsPng);
+      l1.setAttribute("data-https-ico", httpsIco);
+      l1.rel = "icon"; l1.type = "image/png"; l1.sizes = "64x64"; l1.href = pngHref;
+      document.head.appendChild(l1);
+      const l2 = document.createElement("link");
+      l2.rel = "shortcut icon"; l2.type = useHttps ? "image/x-icon" : "image/png"; l2.href = icoHref;
+      document.head.appendChild(l2);
+      const l3 = document.createElement("link");
+      l3.rel = "apple-touch-icon"; l3.sizes = "64x64"; l3.href = b64 || pngHref;
+      document.head.appendChild(l3);
+    } catch (e) {}
+  }
+  apply();
+  if (typeof setTimeout === "function") setTimeout(apply, 90);
 })();
 
 findInitialCurrentDay();
