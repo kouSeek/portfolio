@@ -267,11 +267,17 @@ const audio = getEl('audioPlayer');
   switchView('plan');
   selectGame(0, false);
 
-  // 2d. Proactive Agent Card, 21 Delight Stories (Gods/Comedy/Animals, Zero Fights), & Collapsible Optional Walkie-Talkie + Live Video Studio:
+  // 2d. Proactive Agent Card & 21 Delight Stories at top of TV tab (#tvHubStage), while #activeDayStage keeps only daily games:
   assert.ok(typeof KALYANI_SYSTEM_PROMPT === 'string' && KALYANI_SYSTEM_PROMPT.includes('IRONCLAD LANGUAGE RULE'));
   assert.strictEqual(DELIGHT_STORIES_21.length, 21);
-  assert.ok(getEl('activeDayStage').innerHTML.includes('id="kalyaniAgentCard"'), 'Proactive Agent Companion Card must render at top of day');
-  assert.ok(getEl('activeDayStage').innerHTML.includes('id="dailyDelightCard"'), 'Daily Innocent Comedy / Sweet Gods / Cute Animals card must render');
+  assert.ok(!getEl('activeDayStage').innerHTML.includes('id="kalyaniAgentCard"'), 'Game tab must keep only daily games (no agent card)');
+  assert.ok(!getEl('activeDayStage').innerHTML.includes('id="dailyDelightCard"'), 'Game tab must keep only daily games (no delight story card)');
+  assert.ok(getEl('tvHubStage').innerHTML.includes('id="kalyaniAgentCard"'), 'Proactive Agent Companion Card must render at top of TV tab');
+  assert.ok(getEl('tvHubStage').innerHTML.includes('id="dailyDelightCard"'), 'Daily Delight Story card must render at top of TV tab');
+  assert.ok(
+    getEl('tvHubStage').innerHTML.indexOf('id="kalyaniAgentCard"') < getEl('tvHubStage').innerHTML.indexOf('tv-hub-grid'),
+    'Agent and Short Story cards must appear at the top of TV tab above TV channel grid'
+  );
   assert.ok(getEl('activeDayStage').innerHTML.includes('id="vnStudio_1_0"'));
   assert.ok(getEl('activeDayStage').innerHTML.includes('কল্যাণীকে ভয়েস মেসেজ বা ভিডিও তুলে পাঠাও:'), 'Studio header must match requested text');
   assert.ok(getEl('activeDayStage').innerHTML.includes('🎙️ ভয়েস পাঠাও'), 'Send Voice button must be present');

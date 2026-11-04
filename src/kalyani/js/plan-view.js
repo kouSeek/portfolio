@@ -255,6 +255,7 @@ function toggleDelightLiked(dayNum) {
     showCelebrationToast('🌸 মা, তোমার ভালো লাগার কথাটি কল্যাণীর স্মৃতি-উইকিতে যত্ন করে রাখা হলো!');
   }
   renderPlanView();
+  if (typeof renderTvView === 'function') renderTvView();
   if (typeof renderKoushikAdminPanel === 'function') renderKoushikAdminPanel();
 }
 
@@ -689,9 +690,6 @@ function renderPlanView() {
       </div>
     </div>
 
-    ${buildProactiveAgentCardHtml(d)}
-    ${buildDailyDelightCardHtml(d)}
-
     <div class="game-nav-card">
       <div class="game-nav-header">
         <span class="game-nav-title">🎯 আজকের খেলা:</span>
@@ -706,6 +704,7 @@ function renderPlanView() {
   `;
   attachLiveStreamToVideoElement();
   preloadOpenGameAudio(d, curGameIdx);
+  if (typeof renderTvView === 'function') renderTvView();
   syncAllAudioButtonsUI(!audioEl.paused);
 }
 
@@ -792,6 +791,7 @@ const TV_HUB_CHANNELS = [
 function renderTvView() {
   const stage = document.getElementById('tvHubStage');
   if (!stage) return;
+  const d = findDayObj(curDayNum);
   const cardsHtml = TV_HUB_CHANNELS.map((ch, idx) => {
     const url = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(ch.query);
     return `
@@ -807,6 +807,8 @@ function renderTvView() {
   }).join('');
 
   stage.innerHTML = `
+    ${buildProactiveAgentCardHtml(d)}
+    ${buildDailyDelightCardHtml(d)}
     <div class="day-hero-card">
       <div class="day-hero-badge">📺 মায়ের নিজের টিভি ও গানের ঘর</div>
       <div class="day-hero-title">শুধু একটা বোতামে ছুঁয়ে দেখো বা শোনো</div>
