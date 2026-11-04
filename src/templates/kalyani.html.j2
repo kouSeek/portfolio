@@ -29,6 +29,7 @@
     </div>
     <div class="header-tabs" role="tablist" aria-label="মূল বিভাগ">
       <button id="htabPlan" class="htab-btn active" role="tab" onclick="switchView('plan')">🎓 আজকের খেলা</button>
+      <button id="htabTv" class="htab-btn" role="tab" onclick="switchView('tv')">📺 টিভি ও গান</button>
       <button id="htabSlides" class="htab-btn" role="tab" onclick="switchView('slides')">💌 চিঠি</button>
     </div>
     <div class="header-right">
@@ -112,6 +113,11 @@
         <button id="btnNextRandomQuote" class="ag-btn" onclick="pickNewRandomQuote(true)">🎲 নতুন বাণী</button>
       </div>
     </div>
+  </section>
+
+  <!-- VIEW 3: 1-TAP BENGALI TV, MOVIES, SONGS & AUDIO STORIES (📺 টিভি ও গান) -->
+  <section id="viewTv" class="view-sec">
+    <div id="tvHubStage"></div>
   </section>
 
 </main>

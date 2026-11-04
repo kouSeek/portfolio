@@ -19,6 +19,9 @@ let showAllGamesInDay = false;
 let primaryCalOpen = false;
 let extCalOpen = true;
 let autoAdvance = true;
+let radioAutoPlay = true;
+let storyOnlyAudio = true;
+let unlockAllDaysMode = true;
 let curQuoteIdx = Math.floor(Date.now() / 86400000) % MORNING_QUOTES.length;
 let toastTimer = null;
 
@@ -75,6 +78,7 @@ function isDayFullyDone(dayNum) {
 }
 
 function isDayUnlocked(dayNum) {
+  if (unlockAllDaysMode) return true;
   if (dayNum <= 1) return true;
   for (let k = 1; k < dayNum; k++) {
     if (!isDayFullyDone(k)) return false;
@@ -83,6 +87,7 @@ function isDayUnlocked(dayNum) {
 }
 
 function areFirst21DaysComplete() {
+  if (unlockAllDaysMode) return true;
   for (let i = 0; i < DAYS_21.length; i++) {
     if (!isDayFullyDone(DAYS_21[i].day)) return false;
   }

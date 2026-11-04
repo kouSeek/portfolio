@@ -6,8 +6,12 @@ function switchView(mode) {
   stopAllAudio();
   document.getElementById('viewPlan').className = 'view-sec' + (mode === 'plan' ? ' active' : '');
   document.getElementById('viewSlides').className = 'view-sec' + (mode === 'slides' ? ' active' : '');
+  const tvSec = document.getElementById('viewTv');
+  if (tvSec) tvSec.className = 'view-sec' + (mode === 'tv' ? ' active' : '');
   document.getElementById('htabPlan').className = 'htab-btn' + (mode === 'plan' ? ' active' : '');
   document.getElementById('htabSlides').className = 'htab-btn' + (mode === 'slides' ? ' active' : '');
+  const htabTv = document.getElementById('htabTv');
+  if (htabTv) htabTv.className = 'htab-btn' + (mode === 'tv' ? ' active' : '');
 
   if (mode === 'plan') {
     renderPlanView();
@@ -16,6 +20,8 @@ function switchView(mode) {
     pickNewRandomQuote(false);
     renderSlide();
     toggleSlideAudio();
+  } else if (mode === 'tv' && typeof renderTvView === 'function') {
+    renderTvView();
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -24,10 +30,9 @@ function initMorningQuoteAndAlarm() {
   const qEl = document.getElementById('dailyQuoteText');
   if (qEl) qEl.textContent = MORNING_QUOTES[curQuoteIdx];
 
-  const notifGranted = ('Notification' in window) && Notification.permission === 'granted';
   const permBanner = document.getElementById('permBanner');
   if (permBanner) {
-    permBanner.style.display = (maProfile.permsGranted && notifGranted) ? 'none' : 'flex';
+    permBanner.style.display = 'none';
   }
 
   checkAndFireDailyMorningNotification();
@@ -75,6 +80,7 @@ if ('serviceWorker' in navigator) {
 initMorningQuoteAndAlarm();
 findInitialCurrentDay();
 renderSlide();
+if (typeof renderTvView === 'function') renderTvView();
 renderPlanView();
 scrollActiveDayChipIntoView();
 engageProactiveWelcomeAudio();

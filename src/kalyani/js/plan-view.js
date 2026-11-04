@@ -46,6 +46,23 @@ function toggleShowAllGames() {
   renderPlanView();
 }
 
+function toggleRadioMode() {
+  radioAutoPlay = !radioAutoPlay;
+  renderPlanView();
+}
+
+function toggleStoryOnlyAudio() {
+  storyOnlyAudio = !storyOnlyAudio;
+  renderPlanView();
+}
+
+function extractSongSearchUrl(ag) {
+  const src = (ag.prompt_bn || '') + ' ' + (ag.title_bn || '');
+  const m = src.match(/[‘'“"]([^’'”"]{3,60})[’'”"]/);
+  const query = (m && m[1]) ? (m[1] + ' বাংলা গান') : ((ag.title_bn || 'বাংলা পুরনো দিনের গান') + ' বাংলা গান');
+  return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(query);
+}
+
 function toggleAgendaDone(dayNum, agIdx) {
   const key = dayNum + '_' + agIdx;
   const newlyDone = !doneMap[key];
@@ -145,6 +162,11 @@ function buildAgendaCardHtml(d, ag, idx) {
     ? '🎙️ ইউটিউব মিউজিকে আজকের গানটা চালাতে ফোনে জেমিনি (Gemini) খুলে মাইক ছুঁয়ে বলো:'
     : '🎙️ এবার ফোনে জেমিনি (Gemini) খুলে মাইক ছুঁয়ে মুখে বলো:';
 
+  const ytDirectBtnHtml = isSongGame ? `
+      <a class="yt-direct-btn" href="${extractSongSearchUrl(ag)}" target="_blank" rel="noopener noreferrer" onclick="stopAllAudio()">
+        🎵 ইউটিউবে এই গানটা সরাসরি চালাও ▶️
+      </a>` : '';
+
   return `
     <article class="agenda-card ${isDone ? 'done-card' : ''}" data-accent="${accent}" id="agendaCard_${d.day}_${idx}">
       <div class="agenda-card-header">
@@ -154,18 +176,24 @@ function buildAgendaCardHtml(d, ag, idx) {
       <div class="step-section">
         <div class="agenda-step-heading">${stepHeading}</div>
         <div class="agenda-detail">${ag.detail_bn}</div>
-      </div>${ytMusicGuideHtml}
-      <div class="agenda-prompt-box">
-        <div class="agenda-prompt-label">${promptLabel}</div>
-        <div class="agenda-prompt-speech">“${ag.prompt_bn}”</div>
-        <div class="agenda-prompt-howto">💡 (নিজের মতো সহজ বাংলায় বললেই হবে, ভুল হওয়ার কোনো ভয় নেই—বলো আর শোনো ও কী করে!)</div>
-      </div>${followupHtml}
+      </div>${ytDirectBtnHtml}
       <div class="agenda-actions">
-        <button id="${btnId}" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="playAgendaByIdx(${d.day}, ${idx}, this)">🔊 শোনো</button>
+        <button id="${btnId}" class="ag-btn listen" data-default-label="🔊 গল্পটা শোনো" onclick="playAgendaByIdx(${d.day}, ${idx}, this)">🔊 গল্পটা শোনো</button>
         <button class="ag-btn check ${isDone ? 'checked' : ''}" onclick="toggleAgendaDone(${d.day}, ${idx})">
-          ${isDone ? '✅ করা হয়েছে' : '⬜ আমি এটা করেছি'}
+          ${isDone ? '✅ ভালো লেগেছে' : '❤️ ভালো লাগলো'}
         </button>
       </div>
+      <details class="optional-prompt-drawer">
+        <summary class="optional-prompt-summary">💬 ইচ্ছে হলে জেমিনির সাথে কথা বলার ক্লু দেখো (বাধ্যতামূলক নয়) ▾</summary>
+        <div class="optional-prompt-body">${ytMusicGuideHtml}
+          <div class="agenda-prompt-box">
+            <div class="agenda-prompt-label">${promptLabel}</div>
+            <div class="agenda-prompt-speech">“${ag.prompt_bn}”</div>
+            <div class="agenda-prompt-howto">💡 (নিজের মতো সহজ বাংলায় বললেই হবে, ভুল হওয়ার কোনো ভয় নেই—বলো আর শোনো ও কী করে!)</div>
+          </div>${followupHtml}
+          <button class="ag-btn full-prompt-audio-btn" onclick="playAgendaByIdx(${d.day}, ${idx}, null, true)">🔊 ক্লু-সহ পুরো কথা শোনো</button>
+        </div>
+      </details>
     </article>
   `;
 }
@@ -282,6 +310,12 @@ function renderPlanView() {
       <button id="btnDayMainPlay" class="big-voice-btn" data-default-label="🔊 আজকের কথাগুলো শোনো" onclick="toggleDayOverviewAudio()">
         🔊 আজকের কথাগুলো শোনো
       </button>
+      <div class="radio-mode-banner">
+        <div class="radio-mode-text">📻 <strong>রেডিও মোড:</strong> শুধু আরাম করে গল্প শোনো — কিছু বলতে বা করতে হবে না!</div>
+        <button id="btnToggleRadioMode" class="radio-toggle-pill ${radioAutoPlay ? 'on' : ''}" onclick="toggleRadioMode()">
+          ${radioAutoPlay ? '📻 পরপর গল্প: চালু' : '⏸️ পরপর গল্প: বন্ধ'}
+        </button>
+      </div>
       <div class="day-prev-next-row">
         <button id="prevDayBtn" class="ag-btn" style="flex:1;" ${atFirstDay ? 'disabled' : ''} onclick="selectDay(${d.day - 1}, true)">⬅️ আগের দিন</button>
         <button id="nextDayBtn" class="${nextBtnCls}" style="flex:1;" ${atLastDay ? 'disabled' : ''} onclick="selectDay(${d.day + 1}, true)">${nextBtnLabel}</button>
@@ -301,4 +335,92 @@ function renderPlanView() {
     <div class="agenda-stack">${agendasHtml}</div>
   `;
   syncAllAudioButtonsUI(!audioEl.paused);
+}
+
+const TV_HUB_CHANNELS = [
+  {
+    icon: '🎬',
+    title_bn: 'উত্তম-সুচিত্রার চিরকালের বাংলা ছবি',
+    desc_bn: 'হারানো সুর, সপ্তপদী, পথে হলো দেরী ও পুরনো দিনের সেরা বাংলা সিনেমা',
+    query: 'Uttam Suchitra classic Bengali full movie',
+    accent: 'terra'
+  },
+  {
+    icon: '😂',
+    title_bn: 'ভানু বন্দ্যোপাধ্যায় ও জহর রায়ের হাসির ছবি',
+    desc_bn: 'যমালয়ে জীবন্ত মানুষ, সাড়ে চুয়াত্তর ও ভানু-জহরের পেট ফাটা হাসির দৃশ্য',
+    query: 'Bhanu Bandyopadhyay Jahar Roy Bengali comedy scenes movie',
+    accent: 'amber'
+  },
+  {
+    icon: '🎵',
+    title_bn: 'হেমন্ত মুখোপাধ্যায় ও সন্ধ্যা মুখোপাধ্যায়ের গান',
+    desc_bn: 'দুপুর বা বিকেলের শান্ত সময়ে শোনার মতো চিরসবুজ বাংলা আধুনিক গান',
+    query: 'Hemanta Mukherjee Sandhya Mukherjee Bengali evergreen songs jukebox',
+    accent: 'emerald'
+  },
+  {
+    icon: '🎶',
+    title_bn: 'মান্না দে ও রবীন্দ্রসঙ্গীতের শান্ত আসর',
+    desc_bn: 'কফি হাউসের সেই আড্ডাটা ও মন ভালো করা রবীন্দ্রসঙ্গীতের ডালি',
+    query: 'Manna Dey Rabindra Sangeet Bengali songs jukebox',
+    accent: 'indigo'
+  },
+  {
+    icon: '🎧',
+    title_bn: 'বাংলা অডিও গল্প (রবীন্দ্রনাথ ও শরৎচন্দ্র)',
+    desc_bn: 'চোখ বুজে শুয়ে শুয়ে শোনার মতো ছোটগল্প ও শ্রুতিনাটক',
+    query: 'Rabindranath Tagore Sarat Chandra Bengali audio story Golpo',
+    accent: 'plum'
+  },
+  {
+    icon: '🛕',
+    title_bn: 'দক্ষিণেশ্বর, বেলুড় মঠ ও মা সারদা জয়রামবাটী',
+    desc_bn: 'মা সারদার জীবনকথা, দক্ষিণেশ্বরের আরতি ও ভক্তিমূলক কথা ও গান',
+    query: 'Maa Sarada Jayrambati Dakshineswar Belur Math Bengali',
+    accent: 'rose'
+  },
+  {
+    icon: '🍲',
+    title_bn: 'বাংলার ঘরোয়া রান্না ও গ্রামের সকাল',
+    desc_bn: 'সাবেকি বাঙালি রান্না, ঠাকুরবাড়ির পদ ও শান্ত গ্রামের ভিডিও',
+    query: 'traditional Bengali recipe cooking village vlog',
+    accent: 'emerald'
+  },
+  {
+    icon: '📺',
+    title_bn: 'দাদাগিরি ও দিদি নাম্বার ১-এর মজার পর্ব',
+    desc_bn: 'সৌরভ গাঙ্গুলী ও রচনা ব্যানার্জীর সাথে হাসি-গল্পের ঘরোয়া আসর',
+    query: 'Didi No 1 Dadagiri Bengali episode',
+    accent: 'terra'
+  }
+];
+
+function renderTvView() {
+  const stage = document.getElementById('tvHubStage');
+  if (!stage) return;
+  const cardsHtml = TV_HUB_CHANNELS.map((ch, idx) => {
+    const url = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(ch.query);
+    return `
+      <a id="tvCard_${idx}" class="tv-channel-card" data-accent="${ch.accent}" href="${url}" target="_blank" rel="noopener noreferrer" onclick="stopAllAudio()">
+        <div class="tv-card-icon">${ch.icon}</div>
+        <div class="tv-card-body">
+          <div class="tv-card-title">${ch.title_bn}</div>
+          <div class="tv-card-desc">${ch.desc_bn}</div>
+          <div class="tv-card-cta">▶️ এক ছোঁয়ায় ইউটিউবে দেখো</div>
+        </div>
+      </a>
+    `;
+  }).join('');
+
+  stage.innerHTML = `
+    <div class="day-hero-card">
+      <div class="day-hero-badge">📺 মায়ের নিজের টিভি ও গানের ঘর</div>
+      <div class="day-hero-title">শুধু একটা বোতামে ছুঁয়ে দেখো বা শোনো</div>
+      <div class="day-hero-summary" style="margin-bottom:0;">
+        মা, এখানে কিছু টাইপ করতে বা মুখে বলতে হবে না। যেটা দেখতে বা শুনতে ইচ্ছে করছে, শুধু সেই কার্ডটায় একবার ছুঁলেই সরাসরি ইউটিউবে খুলে যাবে!
+      </div>
+    </div>
+    <div class="tv-hub-grid">${cardsHtml}</div>
+  `;
 }

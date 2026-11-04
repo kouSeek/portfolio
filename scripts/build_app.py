@@ -75,6 +75,8 @@ def b64_uri(path: Path, mime: str) -> str:
 def _enrich_kalyani_days(days_list: list[dict], url_prefix: str) -> list[dict]:
     manifest_hashes = load_manifest("kalyani")
     aud_root = APP_ROOT / "audio" / "kalyani"
+    mpath = aud_root / "tts_manifest.json"
+    story_cuts = json.loads(mpath.read_text(encoding="utf-8")).get("story_cuts", {}) if mpath.is_file() else {}
     enriched: list[dict] = []
     for d in days_list:
         day_num = int(d["day"])
@@ -88,7 +90,8 @@ def _enrich_kalyani_days(days_list: list[dict], url_prefix: str) -> list[dict]:
             ag_rel = f"games/day_{day_num}_ag_{idx}.mp3"
             has_ag = (aud_root / ag_rel).is_file() or (ag_rel in manifest_hashes)
             resolved_ag = ag_rel if has_ag else f"games/day_{ref_day}_ag_{idx}.mp3"
-            ags_enriched.append({**ag, "audio_url": url_prefix + resolved_ag, "audio_b64": ""})
+            cut_sec = story_cuts.get(resolved_ag, 0)
+            ags_enriched.append({**ag, "audio_url": url_prefix + resolved_ag, "audio_b64": "", "story_end": cut_sec})
 
         enriched.append({**d, "agendas": ags_enriched, "audio_url": url_prefix + resolved_day_rel, "audio_b64": ""})
     return enriched

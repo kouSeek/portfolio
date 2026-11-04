@@ -138,8 +138,8 @@ function getEl(id) {
 }
 [
   'headerBrand','topPlayBtn','nowPlayingBar','npTrack','npFill','npTime',
-  'permBanner','dailyQuoteText','btnQuotePlay','viewPlan','viewSlides',
-  'htabPlan','htabSlides','daysNavigatorWrap','dayStrip','btnToggleCalGrid',
+  'permBanner','dailyQuoteText','btnQuotePlay','viewPlan','viewTv','viewSlides',
+  'htabPlan','htabTv','htabSlides','tvHubStage','daysNavigatorWrap','dayStrip','btnToggleCalGrid',
   'primaryCalGridWrap','extendedPart2CalWrap','activeDayStage','videoLetterCard','btnWatchMovieLetter','letterSlideCard',
   'slideImg','slideBadge','slideDotsRow','slideTitleBn','slideHighlight',
   'slideBodyBn','btnSlideMainPlay','prevBtn','nextBtn','autoAdvanceBtn',
@@ -228,14 +228,38 @@ const audio = getEl('audioPlayer');
     !stageHtml.includes('গানটা শোনা হয়ে গেলে এর মানে আর গল্পটা জানতে জেমিনিকে বলো:'),
     'Non-song game card must NEVER display the song follow-up header'
   );
-  // Select Day 1 Game 5 (Song game) and verify song headers appear on song card:
+  // Select Day 1 Game 5 (Song game) and verify song headers + direct YouTube button appear on song card:
   selectGame(5, false);
   const songStageHtml = getEl('activeDayStage').innerHTML;
   assert.ok(songStageHtml.includes('🎵 মা, আজকের গান ও মনের টান:'));
+  assert.ok(songStageHtml.includes('🎵 ইউটিউবে এই গানটা সরাসরি চালাও ▶️'));
   assert.ok(songStageHtml.includes('💬 গানটা শোনা হয়ে গেলে এর মানে আর গল্পটা জানতে জেমিনিকে বলো:'));
+  assert.ok(songStageHtml.includes('optional-prompt-drawer'));
   selectGame(0, false);
 
-  // 3. Sequential Day Locking: Day 2..51 are locked until Day 1 is finished
+  // 2c. Zero-Pressure Defaults: All 51 days unlocked by default, Story-Only cutoff active, Radio Auto-Play chains ag_1_0 -> ag_1_1, and 📺 টিভি ও গান view renders 8 channels!
+  assert.strictEqual(unlockAllDaysMode, true);
+  assert.strictEqual(radioAutoPlay, true);
+  assert.strictEqual(storyOnlyAudio, true);
+  assert.strictEqual(isDayUnlocked(25), true);
+  assert.ok(DAYS_21[0].agendas[0].story_end > 10, 'Each game must carry a precomputed story_end silence cutoff');
+  playAgendaByIdx(1, 0, null);
+  assert.strictEqual(activeAudioKey, 'ag_1_0');
+  assert.ok(activeStoryEndSec > 10, 'Playing game in story-only mode must arm activeStoryEndSec');
+  audio.currentTime = activeStoryEndSec + 0.1;
+  audio.listeners['timeupdate']();
+  assert.strictEqual(activeAudioKey, 'ag_1_1', 'Reaching story_end in Radio Mode must auto-advance to ag_1_1 without speaking Gemini instructions');
+
+  switchView('tv');
+  assert.ok(getEl('viewTv').className.includes('active'));
+  assert.ok(getEl('tvHubStage').innerHTML.includes('উত্তম-সুচিত্রার চিরকালের বাংলা ছবি'));
+  assert.ok(getEl('tvHubStage').innerHTML.includes('মান্না দে ও রবীন্দ্রসঙ্গীতের শান্ত আসর'));
+  switchView('plan');
+  selectGame(0, false);
+
+  // 3. Sequential Day Locking (when unlockAllDaysMode = false): Day 2..51 are locked until Day 1 is finished
+  unlockAllDaysMode = false;
+  renderPlanView();
   assert.strictEqual(isDayUnlocked(1), true);
   assert.strictEqual(isDayUnlocked(2), false);
   assert.ok(getEl('dayChip_2').innerHTML.includes('🔒 দিন ২'));

@@ -6,8 +6,17 @@ const audioEl = document.getElementById('audioPlayer');
 const topPlayBtn = document.getElementById('topPlayBtn');
 let activeAudioBtnId = null;
 let activeAudioKey = null;
+let activeStoryEndSec = 0;
 let autoWelcomeSucceeded = false;
 let autoWelcomeFallbackArmed = false;
+
+function getEffectiveAudioDuration() {
+  const rawDur = audioEl.duration || 0;
+  if (storyOnlyAudio && activeStoryEndSec > 4 && (!rawDur || activeStoryEndSec < rawDur)) {
+    return activeStoryEndSec;
+  }
+  return rawDur;
+}
 
 function formatAudioSecondsBn(sec) {
   if (!sec || !isFinite(sec) || sec < 0) return '০:০০';
@@ -27,8 +36,8 @@ function updateNowPlayingBar(showBar) {
   bar.classList.add('visible');
   const fill = document.getElementById('npFill');
   const timeEl = document.getElementById('npTime');
-  const dur = audioEl.duration || 0;
-  const cur = audioEl.currentTime || 0;
+  const dur = getEffectiveAudioDuration();
+  const cur = Math.min(dur || (audioEl.currentTime || 0), audioEl.currentTime || 0);
   if (fill) {
     const pct = dur > 0 ? Math.min(100, Math.max(0, (cur / dur) * 100)) : 0;
     fill.style.width = pct.toFixed(1) + '%';
@@ -42,11 +51,12 @@ function updateNowPlayingBar(showBar) {
 
 function seekAudioFromTrack(ev) {
   const track = document.getElementById('npTrack');
-  if (!track || !audioEl.duration || !isFinite(audioEl.duration) || !track.getBoundingClientRect) return;
+  const effDur = getEffectiveAudioDuration();
+  if (!track || !effDur || !isFinite(effDur) || !track.getBoundingClientRect) return;
   const rect = track.getBoundingClientRect();
   if (!rect.width) return;
   const ratio = Math.min(1, Math.max(0, (ev.clientX - rect.left) / rect.width));
-  audioEl.currentTime = ratio * audioEl.duration;
+  audioEl.currentTime = ratio * effDur;
   updateNowPlayingBar(true);
 }
 
@@ -76,24 +86,28 @@ function stopAllAudio() {
   audioEl.pause();
   activeAudioBtnId = null;
   activeAudioKey = null;
+  activeStoryEndSec = 0;
   syncAllAudioButtonsUI(false);
 }
 
-function playOrToggleAudio(btnId, audioKey, srcUrl, fallbackB64, onBlockedFallback) {
+function playOrToggleAudio(btnId, audioKey, srcUrl, fallbackB64, onBlockedFallback, storyEndSec) {
   if (activeAudioKey === audioKey && !audioEl.paused) {
     audioEl.pause();
     syncAllAudioButtonsUI(false);
     return;
   }
   if (activeAudioKey === audioKey && audioEl.paused && audioEl.currentTime > 0 && !audioEl.ended) {
-    activeAudioBtnId = btnId;
-    syncAllAudioButtonsUI(true);
-    audioEl.play().catch(() => syncAllAudioButtonsUI(false));
-    return;
+    if (!storyOnlyAudio || !activeStoryEndSec || audioEl.currentTime < activeStoryEndSec - 0.3) {
+      activeAudioBtnId = btnId;
+      syncAllAudioButtonsUI(true);
+      audioEl.play().catch(() => syncAllAudioButtonsUI(false));
+      return;
+    }
   }
   audioEl.pause();
   activeAudioBtnId = btnId;
   activeAudioKey = audioKey;
+  activeStoryEndSec = (storyEndSec && storyEndSec > 4) ? Number(storyEndSec) : 0;
   audioEl.src = srcUrl || fallbackB64 || '';
   audioEl.currentTime = 0;
   syncAllAudioButtonsUI(true);
@@ -214,43 +228,54 @@ function toggleMasterAudio() {
   else playAgendaByIdx(curDayNum, curGameIdx, document.getElementById('btnAgPlay_' + curDayNum + '_' + curGameIdx));
 }
 
-async function playAgendaByIdx(dayNum, agIdx, btnEl) {
+async function playAgendaByIdx(dayNum, agIdx, btnEl, playFullWithPrompt) {
   const btnId = btnEl ? btnEl.id : ('btnAgPlay_' + dayNum + '_' + agIdx);
-  const audioKey = 'ag_' + dayNum + '_' + agIdx;
-
-  if (activeAudioKey === audioKey && !audioEl.paused) {
-    audioEl.pause();
-    syncAllAudioButtonsUI(false);
-    return;
-  }
-  if (activeAudioKey === audioKey && audioEl.paused && audioEl.currentTime > 0 && !audioEl.ended) {
-    activeAudioBtnId = btnId;
-    syncAllAudioButtonsUI(true);
-    audioEl.play().catch(() => stopAllAudio());
-    return;
-  }
+  const audioKey = 'ag_' + dayNum + '_' + agIdx + (playFullWithPrompt ? '_full' : '');
 
   const d = findDayObj(dayNum);
   const ag = (d && d.agendas && d.agendas[agIdx]) ? d.agendas[agIdx] : null;
   if (!ag) return;
 
+  const cutSec = (!playFullWithPrompt && storyOnlyAudio && ag.story_end) ? Number(ag.story_end) : 0;
   const fallbackB64 = (dayNum === 1 && DAY1_AG_MAP[agIdx]) ? DAY1_AG_MAP[agIdx].b64 : (d.audio_b64 || '');
-  playOrToggleAudio(btnId, audioKey, ag.audio_url, fallbackB64);
+  playOrToggleAudio(btnId, audioKey, ag.audio_url, fallbackB64, null, cutSec);
+}
+
+function handleAudioTrackCompleted() {
+  const finishedKey = activeAudioKey;
+  stopAllAudio();
+  if (!finishedKey) return;
+
+  if (curView === 'slides' && autoAdvance && finishedKey.startsWith('slide_') && curSlideIdx < SLIDES.length - 1) {
+    setTimeout(() => goToSlide(curSlideIdx + 1, true), 900);
+  } else if (curView === 'plan' && finishedKey.startsWith('day_main_')) {
+    const btnEl = document.getElementById('btnAgPlay_' + curDayNum + '_' + curGameIdx);
+    playAgendaByIdx(curDayNum, curGameIdx, btnEl);
+  } else if (curView === 'plan' && radioAutoPlay && finishedKey.startsWith('ag_')) {
+    const parts = finishedKey.split('_');
+    const dayNum = parseInt(parts[1] || String(curDayNum), 10);
+    const agIdx = parseInt(parts[2] || String(curGameIdx), 10);
+    const d = findDayObj(dayNum);
+    const totalInDay = (d && d.agendas) ? d.agendas.length : 6;
+    if (agIdx + 1 < totalInDay) {
+      selectGame(agIdx + 1, true);
+    } else if (dayNum < ALL_DAYS.length && isDayUnlocked(dayNum + 1)) {
+      selectDay(dayNum + 1, true);
+    }
+  }
 }
 
 audioEl.addEventListener('timeupdate', () => {
-  if (!audioEl.paused) updateNowPlayingBar(true);
+  if (audioEl.paused) return;
+  if (storyOnlyAudio && activeStoryEndSec > 4 && audioEl.currentTime >= activeStoryEndSec) {
+    handleAudioTrackCompleted();
+    return;
+  }
+  updateNowPlayingBar(true);
 });
 
 audioEl.addEventListener('ended', () => {
-  const finishedKey = activeAudioKey;
-  stopAllAudio();
-  if (curView === 'slides' && autoAdvance && finishedKey && finishedKey.startsWith('slide_') && curSlideIdx < SLIDES.length - 1) {
-    setTimeout(() => goToSlide(curSlideIdx + 1, true), 900);
-  } else if (curView === 'plan' && finishedKey && finishedKey.startsWith('day_main_')) {
-    const btnEl = document.getElementById('btnAgPlay_' + curDayNum + '_' + curGameIdx);
-    playAgendaByIdx(curDayNum, curGameIdx, btnEl);
-  }
+  handleAudioTrackCompleted();
 });
 
 /* Pleasant Morning Bell Chime via Web Audio API */
@@ -324,16 +349,10 @@ async function requestMicAndNotificationPermission() {
     if ('Notification' in window) {
       await Notification.requestPermission();
     }
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(t => t.stop());
-    }
     maProfile.permsGranted = true;
     saveMaProfile();
     const permBanner = document.getElementById('permBanner');
     if (permBanner) permBanner.style.display = 'none';
     fireMorningMotivationNotification(true);
-  } catch (err) {
-    alert('মা, ব্রাউজারের পপ-আপে "Allow" (অনুমতি দিন) বোতামটি ছোঁও।');
-  }
+  } catch (err) {}
 }
