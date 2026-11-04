@@ -71,7 +71,8 @@ class TestUIAndVMBehavior(unittest.TestCase):
         # 3. Header, Above-Image Letter Badge & Collapsible Calendar Containers
         self.assertIn('id="headerBrand"', ma_html)
         self.assertIn('🌸</span><span>কল্যাণী</span>', ma_html)
-        self.assertIn('🎓 আজকের খেলা', ma_html)
+        self.assertIn('🎓 খেলা', ma_html)
+        self.assertIn('📺 টিভি', ma_html)
         self.assertIn('💌 চিঠি', ma_html)
         self.assertIn('id="daysNavigatorWrap"', ma_html)
         self.assertIn('id="primaryCalGridWrap"', ma_html)
