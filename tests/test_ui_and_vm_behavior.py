@@ -586,6 +586,7 @@ const ctx = {
   process,
   Buffer,
   els,
+  audioListeners,
   testEnv,
   console,
   Date,
@@ -845,6 +846,62 @@ const edgeCaseTestSuite = code + `
   await finishAndSendVoiceNote(1, 1);
   assert.strictEqual(vnRecordingState.sending, false, 'Must recover cleanly via timeout race even if MediaRecorder.onstop hangs');
   testEnv.mockMediaRecorderShouldHangOnStop = false;
+
+  // 12. Story Listen Button: Instant Clicked Loading State + Small Chunks + Parallel Pre-Fetch + Seamless Chaining
+  const sampleStory = 'গোপাল ভাঁড় ও মিষ্টি জলের কুঁজো। একবার গরমকালে মহারাজ কৃষ্ণচন্দ্র গোপাল ভাঁড়কে বললেন— গোপাল, এমন জল খাওয়াও যা অমৃতের মতো মিষ্টি লাগে! গোপাল রাজামশাইকে বাগানের চারপাশে হাঁটিয়ে মাটির কুঁজোর ঠান্ডা জল দিল। রাজামশাই খেয়ে খুশি হয়ে হাসলেন।';
+  const chunks = splitBengaliStoryIntoChunks(sampleStory);
+  assert.ok(chunks.length >= 3, 'Multi-sentence story must split into small chunks for fast first-audio start');
+  assert.ok(chunks[0].length <= 60, 'First chunk must be short so Gemini TTS responds in ~0.8s');
+
+  let resolveChunk0 = null;
+  let ttsCallCount = 0;
+  testEnv.nextFetchHandler = (url, opts) => {
+    ttsCallCount += 1;
+    if (ttsCallCount === 1) {
+      return new Promise((resolve) => {
+        resolveChunk0 = () => resolve({
+          ok: true,
+          status: 200,
+          json: async () => ({
+            candidates: [{ content: { parts: [{ inlineData: { data: 'AAAAAAAA' } }] } }]
+          })
+        });
+      });
+    }
+    return Promise.resolve({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        candidates: [{ content: { parts: [{ inlineData: { data: 'BBBBBBBB' } }] } }]
+      })
+    });
+  };
+
+  const delightBtn = document.getElementById('btnDelightPlay_3');
+  delightBtn.setAttribute('data-default-label', '🔊 শোনো');
+  const playStoryPromise = playDelightStoryAudio(3);
+
+  // Immediately after clicking, before Chunk 0 finishes network fetch:
+  assert.strictEqual(activeAudioLoading, true, 'Must set activeAudioLoading = true immediately on click');
+  assert.ok(delightBtn.innerHTML.includes('⏳ জেমিনি পড়তে শুরু করছে'), 'Button must immediately show that it was clicked and Gemini is about to read');
+  assert.ok(delightBtn.classList.contains('loading-audio'), 'Button must have loading-audio class while preparing');
+  assert.ok(els['nowPlayingBar'].classList.contains('visible'), 'Top bar must be visible immediately on click');
+  assert.ok(els['npTime'].textContent.includes('জেমিনি তোমার জন্য পড়তে শুরু করছে'), 'Top bar must tell Ma Gemini is starting to read');
+  assert.ok(ttsCallCount >= 2, 'Must fire parallel lookahead pre-fetching for chunk 0 and chunk 1+ immediately');
+
+  // Now resolve Chunk 0 and verify playback starts immediately while subsequent chunks are already cached
+  resolveChunk0();
+  await playStoryPromise;
+  assert.strictEqual(activeAudioLoading, false, 'Once Chunk 0 resolves, loading indicator must clear');
+  assert.strictEqual(delightBtn.innerHTML, '⏸️ থামাও', 'Button must transition to ⏸️ থামাও once Chunk 0 starts playing');
+  assert.ok(activeChunkSession && activeChunkSession.idx === 0, 'Must be playing Chunk 0');
+  assert.ok(Boolean(vnAudioCache['delight_3_c1']), 'Chunk 1 must already be pre-fetched in vnAudioCache');
+
+  // Simulate Chunk 0 finishing -> must seamlessly chain into pre-fetched Chunk 1 without extra TTS network calls!
+  const callsBeforeNextChunk = ttsCallCount;
+  audioListeners['ended']();
+  assert.strictEqual(activeChunkSession.idx, 1, 'Ending Chunk 0 must advance to Chunk 1');
+  assert.strictEqual(ttsCallCount, callsBeforeNextChunk, 'Chunk 1 must play from pre-fetched cache with zero wait');
 })().catch(err => {
   console.error(err);
   process.exit(1);

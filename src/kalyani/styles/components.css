@@ -566,6 +566,20 @@
   box-shadow: 0 4px 12px rgba(216, 82, 46, 0.28);
 }
 
+@keyframes loadingAudioPulse {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.015); filter: brightness(1.08); }
+}
+
+.ag-btn.loading-audio,
+.big-voice-btn.loading-audio,
+.hctrl-btn.loading-audio {
+  background: linear-gradient(90deg, #B45309 0%, #D97706 50%, #0E8358 100%) !important;
+  color: #FFFFFF !important;
+  border-color: #B45309 !important;
+  animation: loadingAudioPulse 1.1s ease-in-out infinite;
+}
+
 .ag-btn.check.checked {
   background: var(--accent);
   color: #FFFFFF;

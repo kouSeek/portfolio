@@ -7,6 +7,11 @@ const topPlayBtn = document.getElementById('topPlayBtn');
 let activeAudioBtnId = null;
 let activeAudioKey = null;
 let activeStoryEndSec = 0;
+let activeAudioLoading = false;
+let activeChunkSession = null;
+let chunkSessionCounter = 0;
+const vnChunkInFlight = {};
+const mp3PreloadPool = {};
 let autoWelcomeSucceeded = false;
 let autoWelcomeFallbackArmed = false;
 
@@ -29,23 +34,37 @@ function formatAudioSecondsBn(sec) {
 function updateNowPlayingBar(showBar) {
   const bar = document.getElementById('nowPlayingBar');
   if (!bar) return;
-  if (!showBar) {
+  if (!showBar && !activeAudioLoading) {
     bar.classList.remove('visible');
     return;
   }
   bar.classList.add('visible');
   const fill = document.getElementById('npFill');
   const timeEl = document.getElementById('npTime');
+  if (activeAudioLoading) {
+    if (fill) fill.style.width = '24%';
+    if (timeEl) timeEl.textContent = '⏳ জেমিনি তোমার জন্য পড়তে শুরু করছে...';
+    return;
+  }
   const dur = getEffectiveAudioDuration();
   const cur = Math.min(dur || (audioEl.currentTime || 0), audioEl.currentTime || 0);
   if (fill) {
-    const pct = dur > 0 ? Math.min(100, Math.max(0, (cur / dur) * 100)) : 0;
-    fill.style.width = pct.toFixed(1) + '%';
+    if (activeChunkSession && activeChunkSession.chunks && activeChunkSession.chunks.length > 1) {
+      const chunkRatio = (activeChunkSession.idx + (dur > 0 ? Math.min(1, cur / dur) : 0.5)) / activeChunkSession.chunks.length;
+      fill.style.width = Math.min(100, Math.max(8, chunkRatio * 100)).toFixed(1) + '%';
+    } else {
+      const pct = dur > 0 ? Math.min(100, Math.max(0, (cur / dur) * 100)) : 0;
+      fill.style.width = pct.toFixed(1) + '%';
+    }
   }
   if (timeEl) {
-    timeEl.textContent = dur > 0
-      ? (formatAudioSecondsBn(cur) + ' / ' + formatAudioSecondsBn(dur))
-      : formatAudioSecondsBn(cur);
+    if (activeChunkSession && activeChunkSession.chunks && activeChunkSession.chunks.length > 1) {
+      timeEl.textContent = 'পর্ব ' + toBnDigits(activeChunkSession.idx + 1) + '/' + toBnDigits(activeChunkSession.chunks.length) + ' • ' + formatAudioSecondsBn(cur);
+    } else {
+      timeEl.textContent = dur > 0
+        ? (formatAudioSecondsBn(cur) + ' / ' + formatAudioSecondsBn(dur))
+        : formatAudioSecondsBn(cur);
+    }
   }
 }
 
@@ -60,26 +79,49 @@ function seekAudioFromTrack(ev) {
   updateNowPlayingBar(true);
 }
 
-function syncAllAudioButtonsUI(isPlaying) {
-  document.querySelectorAll('[data-default-label]').forEach(btn => {
-    if (btn.id === activeAudioBtnId && isPlaying) {
-      btn.classList.add('playing');
-      btn.innerHTML = '⏸️ থামাও';
+function syncSingleAudioButtonEl(btn, isPlaying) {
+  if (!btn) return;
+  if (btn.id === activeAudioBtnId && (isPlaying || activeAudioLoading)) {
+    btn.classList.add('playing');
+    if (activeAudioLoading) {
+      btn.classList.add('loading-audio');
+      btn.innerHTML = '⏳ জেমিনি পড়তে শুরু করছে...';
     } else {
-      btn.classList.remove('playing');
-      btn.innerHTML = btn.getAttribute('data-default-label');
+      btn.classList.remove('loading-audio');
+      btn.innerHTML = '⏸️ থামাও';
     }
+  } else {
+    btn.classList.remove('playing');
+    btn.classList.remove('loading-audio');
+    const defLbl = btn.getAttribute && btn.getAttribute('data-default-label');
+    if (defLbl) btn.innerHTML = defLbl;
+  }
+}
+
+function syncAllAudioButtonsUI(isPlaying) {
+  const seenActiveBtn = { found: false };
+  document.querySelectorAll('[data-default-label]').forEach(btn => {
+    if (btn && btn.id === activeAudioBtnId) seenActiveBtn.found = true;
+    syncSingleAudioButtonEl(btn, isPlaying);
   });
+  if (activeAudioBtnId && !seenActiveBtn.found) {
+    const directBtn = document.getElementById(activeAudioBtnId);
+    if (directBtn) syncSingleAudioButtonEl(directBtn, isPlaying);
+  }
   if (topPlayBtn) {
-    if (isPlaying) {
+    if (activeAudioLoading) {
+      topPlayBtn.classList.add('playing', 'loading-audio');
+      topPlayBtn.innerHTML = '⏳ তৈরি হচ্ছে...';
+    } else if (isPlaying) {
+      topPlayBtn.classList.remove('loading-audio');
       topPlayBtn.classList.add('playing');
       topPlayBtn.innerHTML = '⏸️ থামাও';
     } else {
-      topPlayBtn.classList.remove('playing');
+      topPlayBtn.classList.remove('playing', 'loading-audio');
       topPlayBtn.innerHTML = '🔊 শোনো';
     }
   }
-  updateNowPlayingBar(isPlaying);
+  updateNowPlayingBar(isPlaying || activeAudioLoading);
 }
 
 function stopAllAudio() {
@@ -87,42 +129,60 @@ function stopAllAudio() {
   activeAudioBtnId = null;
   activeAudioKey = null;
   activeStoryEndSec = 0;
+  activeAudioLoading = false;
+  activeChunkSession = null;
+  chunkSessionCounter += 1;
   syncAllAudioButtonsUI(false);
 }
 
 function playOrToggleAudio(btnId, audioKey, srcUrl, fallbackB64, onBlockedFallback, storyEndSec) {
+  if (activeAudioKey === audioKey && activeChunkSession) {
+    stopAllAudio();
+    return;
+  }
   if (activeAudioKey === audioKey && !audioEl.paused) {
     audioEl.pause();
+    activeAudioLoading = false;
     syncAllAudioButtonsUI(false);
     return;
   }
-  if (activeAudioKey === audioKey && audioEl.paused && audioEl.currentTime > 0 && !audioEl.ended) {
+  if (activeAudioKey === audioKey && !activeChunkSession && audioEl.paused && audioEl.currentTime > 0 && !audioEl.ended) {
     if (!storyOnlyAudio || !activeStoryEndSec || audioEl.currentTime < activeStoryEndSec - 0.3) {
       activeAudioBtnId = btnId;
+      activeAudioLoading = false;
       syncAllAudioButtonsUI(true);
       audioEl.play().catch(() => syncAllAudioButtonsUI(false));
       return;
     }
   }
   audioEl.pause();
+  activeChunkSession = null;
+  chunkSessionCounter += 1;
   activeAudioBtnId = btnId;
   activeAudioKey = audioKey;
   activeStoryEndSec = (storyEndSec && storyEndSec > 4) ? Number(storyEndSec) : 0;
-  audioEl.src = srcUrl || fallbackB64 || '';
+  const resolvedSrc = srcUrl || fallbackB64 || '';
+  const isRemoteUrl = /^https?:\/\//i.test(resolvedSrc) && !mp3PreloadPool[resolvedSrc];
+  audioEl.src = resolvedSrc;
   audioEl.currentTime = 0;
+  activeAudioLoading = isRemoteUrl;
   syncAllAudioButtonsUI(true);
 
   const playPromise = audioEl.play();
   if (playPromise && typeof playPromise.then === 'function') {
     playPromise.then(() => {
+      activeAudioLoading = false;
       autoWelcomeSucceeded = true;
       detachAutoWelcomeGestureFallback();
+      syncAllAudioButtonsUI(true);
     }).catch(() => {
       if (fallbackB64 && audioEl.src !== fallbackB64) {
         audioEl.src = fallbackB64;
         audioEl.play().then(() => {
+          activeAudioLoading = false;
           autoWelcomeSucceeded = true;
           detachAutoWelcomeGestureFallback();
+          syncAllAudioButtonsUI(true);
         }).catch(() => {
           stopAllAudio();
           if (typeof onBlockedFallback === 'function') onBlockedFallback();
@@ -132,6 +192,9 @@ function playOrToggleAudio(btnId, audioKey, srcUrl, fallbackB64, onBlockedFallba
         if (typeof onBlockedFallback === 'function') onBlockedFallback();
       }
     });
+  } else {
+    activeAudioLoading = false;
+    syncAllAudioButtonsUI(true);
   }
 }
 
@@ -146,14 +209,31 @@ function onFirstGestureWelcomeUnlock(ev) {
   toggleDayOverviewAudio();
 }
 
-function preloadOpenGameAudio(dayObj, gameIdx) {
+function prefetchUrlToAudioPool(url) {
   try {
-    if (!dayObj || !dayObj.agendas || !dayObj.agendas[gameIdx] || typeof Audio !== 'function') return;
-    const url = dayObj.agendas[gameIdx].audio_url;
-    if (!url) return;
+    if (!url || typeof Audio !== 'function' || mp3PreloadPool[url]) return;
+    const keys = Object.keys(mp3PreloadPool);
+    if (keys.length >= 12) {
+      delete mp3PreloadPool[keys[0]];
+    }
     const pre = new Audio();
     pre.preload = 'auto';
     pre.src = url;
+    if (typeof pre.load === 'function') pre.load();
+    mp3PreloadPool[url] = pre;
+  } catch (e) {}
+}
+
+function preloadOpenGameAudio(dayObj, gameIdx) {
+  try {
+    if (!dayObj) return;
+    if (dayObj.audio_url) prefetchUrlToAudioPool(dayObj.audio_url);
+    if (dayObj.agendas && dayObj.agendas[gameIdx] && dayObj.agendas[gameIdx].audio_url) {
+      prefetchUrlToAudioPool(dayObj.agendas[gameIdx].audio_url);
+    }
+    if (dayObj.agendas && dayObj.agendas[gameIdx + 1] && dayObj.agendas[gameIdx + 1].audio_url) {
+      prefetchUrlToAudioPool(dayObj.agendas[gameIdx + 1].audio_url);
+    }
   } catch (e) {}
 }
 
@@ -213,9 +293,8 @@ function toggleSlideAudio() {
 }
 
 function toggleMasterAudio() {
-  if (!audioEl.paused) {
-    audioEl.pause();
-    syncAllAudioButtonsUI(false);
+  if (!audioEl.paused || activeAudioLoading) {
+    stopAllAudio();
     return;
   }
   if (activeAudioKey && audioEl.paused && audioEl.currentTime > 0 && !audioEl.ended) {
@@ -236,12 +315,56 @@ async function playAgendaByIdx(dayNum, agIdx, btnEl, playFullWithPrompt) {
   const ag = (d && d.agendas && d.agendas[agIdx]) ? d.agendas[agIdx] : null;
   if (!ag) return;
 
+  preloadOpenGameAudio(d, agIdx);
   const cutSec = (!playFullWithPrompt && storyOnlyAudio && ag.story_end) ? Number(ag.story_end) : 0;
   const fallbackB64 = (dayNum === 1 && DAY1_AG_MAP[agIdx]) ? DAY1_AG_MAP[agIdx].b64 : (d.audio_b64 || '');
   playOrToggleAudio(btnId, audioKey, ag.audio_url, fallbackB64, null, cutSec);
 }
 
+async function advanceChunkedStorySession() {
+  const sess = activeChunkSession;
+  if (!sess || sess.token !== chunkSessionCounter) return false;
+  const nextIdx = sess.idx + 1;
+  if (!sess.chunks || nextIdx >= sess.chunks.length) {
+    activeChunkSession = null;
+    return false;
+  }
+  sess.idx = nextIdx;
+  const apiKey = getGeminiApiKey();
+  // Pre-fetch further ahead in parallel
+  if (apiKey) {
+    for (let look = nextIdx + 1; look <= Math.min(sess.chunks.length - 1, nextIdx + 2); look++) {
+      synthesizeOrGetCachedChunk(sess.audioKey + '_c' + look, sess.chunks[look], apiKey);
+    }
+  }
+  const chunkKey = sess.audioKey + '_c' + nextIdx;
+  let chunkUrl = vnAudioCache[chunkKey] || '';
+  if (!chunkUrl && apiKey) {
+    activeAudioLoading = true;
+    syncAllAudioButtonsUI(true);
+    chunkUrl = await synthesizeOrGetCachedChunk(chunkKey, sess.chunks[nextIdx], apiKey);
+    if (sess.token !== chunkSessionCounter) return true;
+  }
+  if (chunkUrl) {
+    activeAudioLoading = false;
+    audioEl.src = chunkUrl;
+    audioEl.currentTime = 0;
+    syncAllAudioButtonsUI(true);
+    const p = audioEl.play();
+    if (p && typeof p.catch === 'function') {
+      p.catch(() => stopAllAudio());
+    }
+    return true;
+  }
+  activeChunkSession = null;
+  return false;
+}
+
 function handleAudioTrackCompleted() {
+  if (activeChunkSession && activeChunkSession.audioKey === activeAudioKey && activeChunkSession.idx + 1 < activeChunkSession.chunks.length) {
+    advanceChunkedStorySession();
+    return;
+  }
   const finishedKey = activeAudioKey;
   stopAllAudio();
   if (!finishedKey || !autoVoicePlay) return;
@@ -265,8 +388,26 @@ function handleAudioTrackCompleted() {
   }
 }
 
+audioEl.addEventListener('waiting', () => {
+  if (!activeAudioKey || audioEl.paused) return;
+  activeAudioLoading = true;
+  syncAllAudioButtonsUI(true);
+});
+
+audioEl.addEventListener('playing', () => {
+  if (!activeAudioKey) return;
+  if (activeAudioLoading) {
+    activeAudioLoading = false;
+    syncAllAudioButtonsUI(true);
+  }
+});
+
 audioEl.addEventListener('timeupdate', () => {
   if (audioEl.paused) return;
+  if (activeAudioLoading) {
+    activeAudioLoading = false;
+    syncAllAudioButtonsUI(true);
+  }
   if (storyOnlyAudio && activeStoryEndSec > 4 && audioEl.currentTime >= activeStoryEndSec) {
     handleAudioTrackCompleted();
     return;
@@ -781,6 +922,148 @@ function blobToBase64(blob) {
   });
 }
 
+function splitBengaliStoryIntoChunks(textBn) {
+  const clean = String(textBn || '').replace(/\s+/g, ' ').trim();
+  if (!clean) return [];
+  if (clean.length <= 110) return [clean];
+  const rawSentences = clean
+    .split(/(?<=[।?!])\s+/)
+    .map(s => s.trim())
+    .filter(Boolean);
+  if (rawSentences.length <= 1) return [clean];
+
+  const chunks = [];
+  // Keep Chunk 0 short (just the opening sentence/title) so Gemini TTS plays the first voice in ~0.8s
+  chunks.push(rawSentences[0]);
+
+  let current = '';
+  for (let i = 1; i < rawSentences.length; i++) {
+    const sent = rawSentences[i];
+    if (!current) {
+      current = sent;
+    } else if ((current + ' ' + sent).length <= 135) {
+      current = current + ' ' + sent;
+    } else {
+      chunks.push(current);
+      current = sent;
+    }
+  }
+  if (current) chunks.push(current);
+  return chunks;
+}
+
+function synthesizeOrGetCachedChunk(chunkCacheKey, chunkText, apiKey) {
+  if (!chunkCacheKey || !chunkText) return Promise.resolve('');
+  if (vnAudioCache[chunkCacheKey]) {
+    return Promise.resolve(vnAudioCache[chunkCacheKey]);
+  }
+  if (vnChunkInFlight[chunkCacheKey]) {
+    return vnChunkInFlight[chunkCacheKey];
+  }
+  if (!apiKey) return Promise.resolve('');
+  const p = synthesizeKalyaniAoedeAudio(chunkText, apiKey).then(wavUrl => {
+    delete vnChunkInFlight[chunkCacheKey];
+    if (wavUrl) vnAudioCache[chunkCacheKey] = wavUrl;
+    return wavUrl || '';
+  }).catch(() => {
+    delete vnChunkInFlight[chunkCacheKey];
+    return '';
+  });
+  vnChunkInFlight[chunkCacheKey] = p;
+  return p;
+}
+
+function prefetchStoryAudioChunks(audioKey, fullTextBn, maxChunksToPrefetch) {
+  const apiKey = getGeminiApiKey();
+  if (!apiKey || !audioKey || !fullTextBn) return;
+  const chunks = splitBengaliStoryIntoChunks(fullTextBn);
+  const count = Math.min(chunks.length, maxChunksToPrefetch || 2);
+  for (let i = 0; i < count; i++) {
+    synthesizeOrGetCachedChunk(audioKey + '_c' + i, chunks[i], apiKey);
+  }
+}
+
+function prefetchStoryByDrawer(drawerType, dayNum) {
+  const apiKey = getGeminiApiKey();
+  if (!apiKey) return;
+  if (drawerType === 'delight') {
+    const storyObj = (typeof getDelightStoryForDay === 'function') ? getDelightStoryForDay(dayNum) : null;
+    if (storyObj) {
+      prefetchStoryAudioChunks('delight_' + dayNum, storyObj.title_bn + '। ' + storyObj.story_bn, 2);
+    }
+  } else if (drawerType === 'agent') {
+    const card = (kalyaniWikiVault.dynamicCards || {})[String(dayNum)];
+    if (card) {
+      const audioKey = 'dyn_agent_' + dayNum + '_' + (card.title_bn || '').slice(0, 12);
+      prefetchStoryAudioChunks(audioKey, card.title_bn + '। ' + card.story_bn + ' ' + (card.encourage_bn || ''), 2);
+    }
+  }
+}
+
+async function playChunkedGeminiStory(btnId, audioKey, fullTextBn, fallbackUrl, fallbackB64) {
+  if (activeAudioKey === audioKey && (!audioEl.paused || activeAudioLoading)) {
+    stopAllAudio();
+    return;
+  }
+  audioEl.pause();
+  activeStoryEndSec = 0;
+  const sessToken = ++chunkSessionCounter;
+  activeAudioBtnId = btnId;
+  activeAudioKey = audioKey;
+  activeAudioLoading = true;
+  syncAllAudioButtonsUI(true);
+
+  const apiKey = getGeminiApiKey();
+  const chunks = splitBengaliStoryIntoChunks(fullTextBn);
+
+  if (!apiKey || chunks.length === 0) {
+    activeAudioLoading = false;
+    activeChunkSession = null;
+    playOrToggleAudio(btnId, audioKey, fallbackUrl, fallbackB64);
+    return;
+  }
+
+  activeChunkSession = {
+    audioKey: audioKey,
+    btnId: btnId,
+    chunks: chunks,
+    idx: 0,
+    token: sessToken
+  };
+
+  // Fire lookahead pre-fetching for chunk 0 and chunk 1 in parallel
+  const c0Promise = synthesizeOrGetCachedChunk(audioKey + '_c0', chunks[0], apiKey);
+  if (chunks.length > 1) {
+    synthesizeOrGetCachedChunk(audioKey + '_c1', chunks[1], apiKey);
+  }
+  if (chunks.length > 2) {
+    synthesizeOrGetCachedChunk(audioKey + '_c2', chunks[2], apiKey);
+  }
+
+  const c0Url = await c0Promise;
+  if (sessToken !== chunkSessionCounter) return;
+
+  if (!c0Url) {
+    activeAudioLoading = false;
+    activeChunkSession = null;
+    playOrToggleAudio(btnId, audioKey, fallbackUrl, fallbackB64);
+    return;
+  }
+
+  if (chunks.length === 1) {
+    vnAudioCache[audioKey] = c0Url;
+  }
+
+  activeAudioLoading = false;
+  audioEl.src = c0Url;
+  audioEl.currentTime = 0;
+  syncAllAudioButtonsUI(true);
+  const playPromise = audioEl.play();
+  if (playPromise && typeof playPromise.catch === 'function') {
+    playPromise.catch(() => stopAllAudio());
+  }
+}
+
 async function finishAndSendVoiceNote(dayNum, agIdx) {
   if (vnRecordingState.sending) return;
   const hasActiveCam = !!(vnLiveCamState.active && vnLiveCamState.dayNum === dayNum && vnLiveCamState.agIdx === agIdx);
@@ -824,13 +1107,11 @@ async function finishAndSendVoiceNote(dayNum, agIdx) {
 
   const audioB64 = audioBlob ? await blobToBase64(audioBlob) : '';
   const turnResult = await callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, recMime, transcriptSnap, liveVideoObj);
-  const apiKey = getGeminiApiKey();
-  const wavUrl = await synthesizeKalyaniAoedeAudio(turnResult.reply_bn, apiKey);
 
   if (!kalyaniThreads[cardKey]) kalyaniThreads[cardKey] = [];
   const turnIdx = kalyaniThreads[cardKey].length;
   const turnCacheKey = cardKey + '_' + turnIdx;
-  if (wavUrl) vnAudioCache[turnCacheKey] = wavUrl;
+  const replyAudioKey = 'vn_reply_' + turnCacheKey;
 
   kalyaniThreads[cardKey].push({
     heard_bn: turnResult.heard_bn,
@@ -849,6 +1130,8 @@ async function finishAndSendVoiceNote(dayNum, agIdx) {
 
   if (autoVoicePlay) {
     await playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx);
+  } else {
+    prefetchStoryAudioChunks(replyAudioKey, turnResult.reply_bn, 1);
   }
 }
 
@@ -862,35 +1145,20 @@ async function playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx) {
   const btnId = 'btnVnReplyPlay_' + dayNum + '_' + agIdx + '_' + turnIdx;
   const audioKey = 'vn_reply_' + turnCacheKey;
 
-  let wavUrl = vnAudioCache[turnCacheKey] || '';
-  if (!wavUrl && getGeminiApiKey()) {
-    wavUrl = await synthesizeKalyaniAoedeAudio(turn.reply_bn, getGeminiApiKey());
-    if (wavUrl) vnAudioCache[turnCacheKey] = wavUrl;
-  }
-
   const d = findDayObj(dayNum);
   const ag = (d && d.agendas && d.agendas[agIdx]) ? d.agendas[agIdx] : null;
-  const fallbackAudioUrl = wavUrl || (ag && ag.audio_url) || (d && d.audio_url) || '';
-  playOrToggleAudio(btnId, audioKey, fallbackAudioUrl, '');
+  const fallbackAudioUrl = vnAudioCache[turnCacheKey] || (ag && ag.audio_url) || (d && d.audio_url) || '';
+  await playChunkedGeminiStory(btnId, audioKey, turn.reply_bn, fallbackAudioUrl, '');
 }
 
 async function playDelightStoryAudio(dayNum) {
   const btnId = 'btnDelightPlay_' + dayNum;
   const audioKey = 'delight_' + dayNum;
-  if (activeAudioKey === audioKey && !audioEl.paused) {
-    audioEl.pause();
-    syncAllAudioButtonsUI(false);
-    return;
-  }
   const storyObj = (typeof getDelightStoryForDay === 'function') ? getDelightStoryForDay(dayNum) : null;
-  let wavUrl = vnAudioCache[audioKey] || '';
-  if (!wavUrl && storyObj && getGeminiApiKey()) {
-    wavUrl = await synthesizeKalyaniAoedeAudio(storyObj.title_bn + '। ' + storyObj.story_bn, getGeminiApiKey());
-    if (wavUrl) vnAudioCache[audioKey] = wavUrl;
-  }
   const d = findDayObj(dayNum);
-  const fallbackUrl = wavUrl || (d && d.audio_url) || '';
-  playOrToggleAudio(btnId, audioKey, fallbackUrl, (d && d.audio_b64) || '');
+  const fallbackUrl = vnAudioCache[audioKey] || (d && d.audio_url) || '';
+  const fullText = storyObj ? (storyObj.title_bn + '। ' + storyObj.story_bn) : '';
+  await playChunkedGeminiStory(btnId, audioKey, fullText, fallbackUrl, (d && d.audio_b64) || '');
 }
 
 const DYNAMIC_AGENT_FALLBACK_POOL = {
@@ -1021,6 +1289,9 @@ async function generateDynamicAgentStory(dayNum, moodType) {
 
   if (autoVoicePlay) {
     await playDynamicAgentCardAudio(dayNum);
+  } else {
+    const audioKey = 'dyn_agent_' + dayNum + '_' + (chosenCard.title_bn || '').slice(0, 12);
+    prefetchStoryAudioChunks(audioKey, chosenCard.title_bn + '। ' + chosenCard.story_bn + ' ' + (chosenCard.encourage_bn || ''), 2);
   }
 }
 
@@ -1029,17 +1300,8 @@ async function playDynamicAgentCardAudio(dayNum) {
   if (!card) return;
   const btnId = 'btnDynAgentPlay_' + dayNum;
   const audioKey = 'dyn_agent_' + dayNum + '_' + (card.title_bn || '').slice(0, 12);
-  if (activeAudioKey === audioKey && !audioEl.paused) {
-    audioEl.pause();
-    syncAllAudioButtonsUI(false);
-    return;
-  }
-  let wavUrl = vnAudioCache[audioKey] || '';
-  if (!wavUrl && getGeminiApiKey()) {
-    wavUrl = await synthesizeKalyaniAoedeAudio(card.title_bn + '। ' + card.story_bn + ' ' + (card.encourage_bn || ''), getGeminiApiKey());
-    if (wavUrl) vnAudioCache[audioKey] = wavUrl;
-  }
   const d = findDayObj(dayNum);
-  const fallbackUrl = wavUrl || (d && d.audio_url) || '';
-  playOrToggleAudio(btnId, audioKey, fallbackUrl, (d && d.audio_b64) || '');
+  const fallbackUrl = vnAudioCache[audioKey] || (d && d.audio_url) || '';
+  const fullText = card.title_bn + '। ' + card.story_bn + ' ' + (card.encourage_bn || '');
+  await playChunkedGeminiStory(btnId, audioKey, fullText, fallbackUrl, (d && d.audio_b64) || '');
 }

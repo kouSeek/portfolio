@@ -286,7 +286,7 @@ function buildProactiveAgentCardHtml(d) {
   }
 
   return `
-    <details id="kalyaniAgentCard" class="agent-companion-card minimal-section-drawer"${isOpen ? ' open' : ''}>
+    <details id="kalyaniAgentCard" class="agent-companion-card minimal-section-drawer"${isOpen ? ' open' : ''} ontoggle="if(this.open && typeof prefetchStoryByDrawer==='function') prefetchStoryByDrawer('agent', ${d.day})">
       <summary class="minimal-drawer-summary">✨ নতুন গল্প ও মনের কথা (ঐচ্ছিক) ▾</summary>
       <div class="minimal-drawer-body">
         <div class="agent-flow-pills">
@@ -316,7 +316,7 @@ function buildDailyDelightCardHtml(d) {
   const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(s.yt_query);
 
   return `
-    <details id="dailyDelightCard" class="agenda-card delight-hero-card minimal-section-drawer" data-accent="amber">
+    <details id="dailyDelightCard" class="agenda-card delight-hero-card minimal-section-drawer" data-accent="amber" ontoggle="if(this.open && typeof prefetchStoryByDrawer==='function') prefetchStoryByDrawer('delight', ${d.day})">
       <summary class="minimal-drawer-summary">😄 আজকের ছোট গল্প: ${s.title_bn} (ঐচ্ছিক) ▾</summary>
       <div class="minimal-drawer-body">
         <div class="agenda-detail">${s.story_bn}</div>
@@ -705,6 +705,7 @@ function renderPlanView() {
     <div class="agenda-stack">${agendasHtml}</div>
   `;
   attachLiveStreamToVideoElement();
+  preloadOpenGameAudio(d, curGameIdx);
   syncAllAudioButtonsUI(!audioEl.paused);
 }
 
