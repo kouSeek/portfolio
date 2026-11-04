@@ -1,6 +1,6 @@
-# 🌸 কল্যাণী (Kalyani) — Master 51-Day Curriculum Blueprint (`curriculum.md`)
+# 🌸 কল্যাণী (Kalyani) — Master 21-Day Curriculum Blueprint (`curriculum.md`)
 
-This Markdown document is the **single source of truth for what Ma learns, practices, and experiences** across the 51-day `🌸 কল্যাণী` companion web app (`Days 1–21` Foundation + `Days 22–51` Extended Calendar) and her local **Client-Side Android Gemini App**.
+This Markdown document is the **single source of truth for what Ma learns, practices, and experiences** across the 21-day `🌸 কল্যাণী` companion web app (`Days 1–21` Foundation) and her local **Client-Side Android Gemini App**.
 
 ---
 
@@ -10,30 +10,30 @@ This Markdown document is the **single source of truth for what Ma learns, pract
 - **Food Freedom & Dietary Truth:** Ma **hates eggs, soybean, and mushroom**, and **does not prefer eating dal or paneer**, yet hides this out of fear that people will judge or insult her. Never suggest those foods for her; empower her to voice her true food tastes openly and unapologetically.
 - **Family Ecosystem:** Deeply loved by Koushik (Senior AI Engineer at Google, Hyderabad) and her daughter Kankana ("Didi", with Pratik, Ayush, and Aishee). Unlike Ma and Koushik, **Didi has zero ADHD—she is a strong, independent, sharp, materialistic woman who naturally loves everybody and keeps warm rapport, but heavy marital fights, family pressures, and depression have made her emotionally numb, rude, and self-centered** as a survival shell. Help Ma understand Didi's numbness with compassion so Ma never internalizes Didi's rudeness.
 - **Physical Boundary:** **Zero physiotherapy or physical exercise prompts** inside Kalyani or Gemini (handled separately by her live in-home personal trainer).
-- **Daily Structure:** Every day (`Days 1–51`) presents **6 deep, zero-rush games** (`4–6` range), each with a concrete teaching target and a 2-turn spoken prompt arc (`prompt_bn` + `followup_prompt_bn`) spoken in warm West Bengal colloquial Bengali (`চলিত বাংলা`).
+- **Daily Structure:** Every day (`Days 1–21`) presents **6 deep, zero-rush games** (`4–6` range), each with a concrete teaching target and a 2-turn spoken prompt arc (`prompt_bn` + `followup_prompt_bn`) spoken in warm West Bengal colloquial Bengali (`চলিত বাংলা`).
 
 ---
 
 ## 2. Spoken Language Focus Split (`60% English : 30% Hindi : 10% Bengali`)
 
-Across the 51-day curriculum (`2` dedicated communication/language games every day = `102` language games total) and inside Client-Side Gemini's ongoing coaching, language development follows an exact **60 / 30 / 10** focus distribution:
+Across the 21-day curriculum (`2` dedicated communication/language games every day = `42` language games total) and inside Client-Side Gemini's ongoing coaching, language development follows an exact **60 / 30 / 10** focus distribution:
 
-1. **`60%` Focus — Confident Day-to-Day Simple Spoken English (`🔤` — ~61 Games across 51 Days):**
+1. **`60%` Focus — Confident Day-to-Day Simple Spoken English (`🔤` — ~25 Games across 21 Days):**
    - **Goal:** Speak simple, everyday English words and short 6–9 word single-breath sentences aloud with ease, natural flow, and zero hesitation.
    - **Core Vocabulary & Real-Life Usage:** `Comfortable, Peaceful, Actually, Prefer, Choice, Definitely, Relax, Manage`, plus everyday conversational English (`Thank you, Please, Take your time, Excuse me, Wonderful, Enjoy, Available, Fresh, Convenient, Easy, Appointment, Schedule, Appreciate, Helpful, Check, Confirm, Speaker, Play, Pause, Next, Total, Date, Bill`) for shops, doctors, airports, cafes, and home life.
 
-2. **`30%` Focus — Speaking Fluently & Warmly Gossiping/Chatting in Hindi (`🗣️` — ~31 Games across 51 Days):**
+2. **`30%` Focus — Speaking Fluently & Warmly Gossiping/Chatting in Hindi (`🗣️` — ~13 Games across 21 Days):**
    - **Goal:** Speak clean, natural, grammatical everyday Hindi (with proper feminine verb agreement such as *রহি হুঁ, পিতি হুঁ, যাউঙ্গি, কর সকতি হুঁ*) so Ma can chat effortlessly, bond, and enjoy warm *adda*/gossip (`গল্পগুজব`) with neighbours in Hyderabad, society friends, guests, co-passengers on flights/trains, tailors, and shopkeepers—without shyness or awkward *Bangla-mixed* Hindi.
    - **Topics:** Friendly neighbour gossip & greetings (*“আরে বহনজি, আজকল ক্যায়া চল রহা হ্যায়?”*), discussing weather/food/sarees/festivals/serials, Hyderabad daily life, travel, cabs, markets, and hospitality—always written in easy Bengali phonetic script.
 
-3. **`10%` Focus — Expressing Her Mind & Clear Communication in Bengali (`🗣️ বাংলায় স্পষ্ট মনের কথা` — ~10 Games across 51 Days, Every 5th Day):**
+3. **`10%` Focus — Expressing Her Mind & Clear Communication in Bengali (`🗣️ বাংলায় স্পষ্ট মনের কথা` — ~4 Games across 21 Days, Every 5th Day):**
    - **Goal:** Articulate her own wishes, boundaries, physical tiredness, food preferences, and emotions **clearly, calmly, and directly in Bengali** without holding silent hurt (*অভিমান*), hinting indirectly, or feeling guilty for stating what she needs.
 
 ---
 
 ## 3. Technical Onboarding & Gemini Live Mastery (3 Core Tech Pillars Through Spaced Repetition)
 
-Technology learning centers on **3 transformative capabilities of Android Gemini Live**, introduced via a clear **Quick Onboarding Sequence in Days 1–3** and reinforced continuously through **spaced repetition across Days 4–51** until effortless:
+Technology learning centers on **3 transformative capabilities of Android Gemini Live**, introduced via a clear **Quick Onboarding Sequence in Days 1–3** and reinforced continuously through **spaced repetition across Days 4–21** until effortless:
 
 1. **Tech Pillar A — Talking to Gemini Live as a Personal Therapy & Heart-to-Heart Session (`🎙️ Gemini Live Voice`):**
    - Tapping the **Gemini Live** waveform button (`✨🎙️`) to put the phone down on a pillow or table and have an uninterrupted, hands-free, natural spoken Bengali conversation—pausing, thinking, sighing, or interrupting freely without pressing any mic button repeatedly.

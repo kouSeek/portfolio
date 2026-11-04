@@ -26,7 +26,6 @@ class TestArchitectureAndDocs(unittest.TestCase):
             "personas/kalyani/client-side-gemini.md",
             "personas/kalyani/curation_manifest.json",
             "personas/kalyani/days/part1_days.md",
-            "personas/kalyani/days/part2_days.md",
             "personas/anondo/persona.md",
             "personas/anondo/curriculum.md",
             "personas/anondo/content_curation.md",
@@ -38,7 +37,6 @@ class TestArchitectureAndDocs(unittest.TestCase):
             "content/kalyani/__init__.py",
             "content/kalyani/slides_and_quotes.py",
             "content/kalyani/part1_days.py",
-            "content/kalyani/part2_days.py",
             "content/anondo/__init__.py",
             "content/anondo/anondo_days.py",
             "src/templates/index.html.j2",
@@ -80,7 +78,14 @@ class TestArchitectureAndDocs(unittest.TestCase):
         self.assertIn("!audio/anondo/tts_manifest.json", gitignore_txt)
 
         # Obsolete paths must not exist
-        for obsolete in ("students", "scripts/build_koushik_app.py", "koushik.html", "docs/student-persona.md"):
+        for obsolete in (
+            "students",
+            "scripts/build_koushik_app.py",
+            "koushik.html",
+            "docs/student-persona.md",
+            "personas/kalyani/days/part2_days.md",
+            "content/kalyani/part2_days.py",
+        ):
             self.assertFalse((APP_ROOT / obsolete).exists(), f"Obsolete path should not exist: {obsolete}")
 
         # build_app.py must remain a lean Jinja2 modular assembler (<220 lines, zero inline JS/CSS strings)
@@ -90,10 +95,9 @@ class TestArchitectureAndDocs(unittest.TestCase):
         self.assertNotIn("<!DOCTYPE html>", build_src)
         self.assertNotIn("function renderPlanView", build_src)
 
-        for loader_rel in ("content/kalyani/part1_days.py", "content/kalyani/part2_days.py"):
-            loader_src = (APP_ROOT / loader_rel).read_text(encoding="utf-8")
-            self.assertLess(len(loader_src.splitlines()), 25, f"{loader_rel} should be a thin Markdown loader")
-            self.assertIn("load_days_markdown", loader_src)
+        loader_src = (APP_ROOT / "content/kalyani/part1_days.py").read_text(encoding="utf-8")
+        self.assertLess(len(loader_src.splitlines()), 25, "content/kalyani/part1_days.py should be a thin Markdown loader")
+        self.assertIn("load_days_markdown", loader_src)
 
     def test_no_auto_tts_rule_and_manifest_tracking(self) -> None:
         """Verify build_app.py never calls TTS and refresh_voices.py tracks all expected audio clips for both personas."""

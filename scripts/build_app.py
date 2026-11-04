@@ -3,7 +3,7 @@
 """Unified Modular Jinja2 + Markdown Compiler for AI Companion (`kalyani` + `anondo`).
 
 Compiles:
-  1. `kalyani.html` — Ma's 51-day Bengali companion (`personas/kalyani/` + `src/kalyani/`)
+  1. `kalyani.html` — Ma's 21-day Bengali companion (`personas/kalyani/` + `src/kalyani/`)
   2. `anondo.html`  — Koushik's 21-day English companion (`personas/anondo/` + `src/anondo/`)
   3. `index.html`   — Two-persona AI Companion Hub (`src/templates/index.html.j2`)
 
@@ -29,7 +29,7 @@ sys.path.insert(0, str(APP_ROOT / "scripts"))
 
 from content import (  # noqa: E402
     ANONDO_DAYS_21, ANONDO_PILLARS, ANONDO_QUOTES, ANONDO_SLIDES,
-    DAYS_21, DAYS_PART2_30, GAME_META, LETTER_VIDEO_URL, MORNING_QUOTES, SLIDES,
+    DAYS_21, GAME_META, LETTER_VIDEO_URL, MORNING_QUOTES, SLIDES,
 )
 from curate_loop import run_quality_gate  # noqa: E402
 from refresh_voices import get_stale_or_missing_files, load_manifest  # noqa: E402
@@ -111,7 +111,6 @@ def build_kalyani(env: jinja2.Environment) -> None:
         f"const MORNING_QUOTES = {json.dumps(MORNING_QUOTES, ensure_ascii=False)};",
         f"const GAME_META = {json.dumps(GAME_META, ensure_ascii=False)};",
         f"const DAYS_21 = {json.dumps(_enrich_kalyani_days(DAYS_21, url_prefix), ensure_ascii=False)};",
-        f"const DAYS_PART2_30 = {json.dumps(_enrich_kalyani_days(DAYS_PART2_30, url_prefix), ensure_ascii=False)};",
         f"const QUOTES_AUDIO = {json.dumps(quotes_audio, ensure_ascii=False)};",
         "const DAY1_AG_MAP = {};",
     ])

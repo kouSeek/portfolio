@@ -2,8 +2,8 @@
 """Structured Markdown Loader & Serializer for 🌸 কল্যাণী Curriculum Days.
 
 Stores all daily curriculum content cleanly in human-readable Markdown files
-(`content/days/part1_days.md` and `content/days/part2_days.md`) so `part1_days.py`
-and `part2_days.py` remain tiny declarative loaders with zero hardcoded Python dict walls.
+(`personas/kalyani/days/part1_days.md` and `personas/anondo/days/anondo_days.md`) so `part1_days.py`
+and `anondo_days.py` remain tiny declarative loaders with zero hardcoded Python dict walls.
 """
 
 from __future__ import annotations

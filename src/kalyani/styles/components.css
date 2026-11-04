@@ -130,36 +130,13 @@
   opacity: 0.76;
 }
 
-/* Collapsible Calendar Grid Panels (Days 1–21 & Unlocked Days 22–51) */
-.cal-collapse-panel,
-.ext-cal-card {
+/* Collapsible Calendar Grid Panel (Days 1–21) */
+.cal-collapse-panel {
   padding: 14px;
   border-radius: var(--radius-lg);
   background: var(--bg-surface);
   border: 1.5px solid var(--border);
   box-shadow: var(--shadow-sm);
-}
-
-.ext-cal-card {
-  background: linear-gradient(180deg, #F6FCF9 0%, #FFFFFF 100%);
-  border-color: var(--accent-border);
-}
-
-.ext-cal-header-btn {
-  width: 100%;
-  background: transparent;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 2px 2px 4px;
-  color: var(--accent);
-  font-size: 1rem;
-  line-height: 1.55;
-  font-weight: 700;
-  cursor: pointer;
-  text-align: left;
 }
 
 .cal-grid-subtitle {

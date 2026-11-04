@@ -75,7 +75,9 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertIn('💌 চিঠি', ma_html)
         self.assertIn('id="daysNavigatorWrap"', ma_html)
         self.assertIn('id="primaryCalGridWrap"', ma_html)
-        self.assertIn('id="extendedPart2CalWrap"', ma_html)
+        self.assertNotIn('id="extendedPart2CalWrap"', ma_html)
+        self.assertNotIn('DAYS_PART2_30', ma_html)
+        self.assertNotIn('নতুন ৩০ দিনের ক্যালেন্ডার', ma_html)
         self.assertIn('id="nowPlayingBar"', ma_html)
         self.assertIn('id="celebrationToast"', ma_html)
         self.assertIn('id="videoLetterCard"', ma_html)
@@ -140,7 +142,7 @@ function getEl(id) {
   'headerBrand','topPlayBtn','nowPlayingBar','npTrack','npFill','npTime',
   'permBanner','dailyQuoteText','btnQuotePlay','viewPlan','viewTv','viewSlides',
   'htabPlan','htabTv','htabSlides','tvHubStage','daysNavigatorWrap','dayStrip','btnToggleCalGrid',
-  'primaryCalGridWrap','extendedPart2CalWrap','activeDayStage','videoLetterCard','btnWatchMovieLetter','letterSlideCard',
+  'primaryCalGridWrap','activeDayStage','videoLetterCard','btnWatchMovieLetter','letterSlideCard',
   'slideImg','slideBadge','slideDotsRow','slideTitleBn','slideHighlight',
   'slideBodyBn','btnSlideMainPlay','prevBtn','nextBtn','autoAdvanceBtn',
   'celebrationToast','audioPlayer'
@@ -178,7 +180,7 @@ const sandbox = {
 vm.createContext(sandbox);
 const testBlock = `
 assert.strictEqual(DAYS_21.length, 21);
-assert.strictEqual(DAYS_PART2_30.length, 30);
+assert.strictEqual(ALL_DAYS.length, 21);
 
 const audio = getEl('audioPlayer');
 (async () => {
@@ -237,7 +239,7 @@ const audio = getEl('audioPlayer');
   assert.ok(songStageHtml.includes('optional-prompt-drawer'));
   selectGame(0, false);
 
-  // 2c. Zero-Pressure Defaults: All 51 days unlocked by default, Story-Only cutoff active, Radio Auto-Play chains ag_1_0 -> ag_1_1, and 📺 টিভি ও গান view renders 8 channels!
+  // 2c. Zero-Pressure Defaults: All 21 days unlocked by default, Story-Only cutoff active, Radio Auto-Play chains ag_1_0 -> ag_1_1, and 📺 টিভি ও গান view renders 8 channels!
   assert.strictEqual(unlockAllDaysMode, true);
   assert.strictEqual(radioAutoPlay, true);
   assert.strictEqual(storyOnlyAudio, true);
@@ -271,13 +273,12 @@ const audio = getEl('audioPlayer');
   delete doneMap['1_0'];
   delete kalyaniThreads['1_0'];
 
-  // 3. Sequential Day Locking (when unlockAllDaysMode = false): Day 2..51 are locked until Day 1 is finished
+  // 3. Sequential Day Locking (when unlockAllDaysMode = false): Day 2..21 are locked until Day 1 is finished
   unlockAllDaysMode = false;
   renderPlanView();
   assert.strictEqual(isDayUnlocked(1), true);
   assert.strictEqual(isDayUnlocked(2), false);
   assert.ok(getEl('dayChip_2').innerHTML.includes('🔒 দিন ২'));
-  assert.strictEqual(getEl('extendedPart2CalWrap').style.display, 'none', 'Days 22-51 stay hidden before Day 21 finishes');
 
   const blockedJump = selectDay(2, false);
   assert.strictEqual(blockedJump, false);
@@ -313,27 +314,15 @@ const audio = getEl('audioPlayer');
   assert.strictEqual(activeAudioKey, 'ag_2_2', 'After Day 2 voice finishes, should play current open game (index 2)');
   delete doneMap['2_1'];
 
-  // 6. Completing Days 2..21 automatically unlocks Days 22-51 as a Collapsible Calendar Grid View!
+  // 6. Completing Days 2..21 finishes the 21-day curriculum cleanly!
   for (let d = 2; d <= 21; d++) {
     const dayCount = DAYS_21[d - 1].agendas.length;
     for (let g = 0; g < dayCount; g++) {
       toggleAgendaDone(d, g);
     }
   }
-  assert.strictEqual(areFirst21DaysComplete(), true);
-  assert.strictEqual(curDayNum, 22);
-  assert.strictEqual(isDayUnlocked(22), true);
-  assert.strictEqual(isDayUnlocked(23), false);
-  assert.strictEqual(getEl('extendedPart2CalWrap').style.display, 'block');
-  assert.ok(getEl('extendedPart2CalWrap').innerHTML.includes('নতুন ৩০ দিনের ক্যালেন্ডার (দিন ২২ – ৫১)'));
-  assert.ok(getEl('extendedPart2CalWrap').innerHTML.includes('দিন ২২'));
-  assert.ok(getEl('extendedPart2CalWrap').innerHTML.includes('🔒 দিন ২৩'));
-
-  // Collapsing and re-expanding the Extended 30-Day Calendar Grid works smoothly
-  toggleExtendedCalendarGrid();
-  assert.ok(!getEl('extendedPart2CalWrap').innerHTML.includes('id="extCalendarGrid"'));
-  toggleExtendedCalendarGrid();
-  assert.ok(getEl('extendedPart2CalWrap').innerHTML.includes('id="extCalendarGrid"'));
+  assert.strictEqual(curDayNum, 21);
+  assert.strictEqual(isDayFullyDone(21), true);
 
   // 7. চিঠি view refreshes random quote & renders 8 slide dots
   const q0 = getEl('dailyQuoteText').textContent;

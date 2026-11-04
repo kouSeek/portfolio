@@ -139,7 +139,7 @@ function onFirstGestureWelcomeUnlock(ev) {
   detachAutoWelcomeGestureFallback();
   if (autoWelcomeSucceeded || !audioEl.paused || activeAudioKey || curView !== 'plan') return;
   const explicitTarget = (ev && ev.target && typeof ev.target.closest === 'function')
-    ? ev.target.closest('#topPlayBtn, #btnDayMainPlay, .ag-btn, .game-tile, .day-chip, .cal-day-cell, #btnToggleCalGrid, #btnToggleExtCal, .view-mode-toggle, #htabSlides, .perm-btn-primary')
+    ? ev.target.closest('#topPlayBtn, #btnDayMainPlay, .ag-btn, .game-tile, .day-chip, .cal-day-cell, #btnToggleCalGrid, .view-mode-toggle, #htabSlides, .perm-btn-primary')
     : null;
   if (explicitTarget) return;
   autoWelcomeSucceeded = true;

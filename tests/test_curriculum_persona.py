@@ -12,7 +12,7 @@ APP_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(APP_ROOT))
 sys.path.insert(0, str(APP_ROOT / "scripts"))
 
-from content import ANONDO_DAYS_21, ANONDO_SLIDES, DAYS_21, DAYS_PART2_30, SLIDES  # noqa: E402
+from content import ANONDO_DAYS_21, ANONDO_SLIDES, DAYS_21, SLIDES  # noqa: E402
 from curate_loop import (  # noqa: E402
     DIMENSIONS,
     classify_game_pillar,
@@ -34,7 +34,7 @@ class TestCurriculumAndPersona(unittest.TestCase):
             "হাঁটুর নিচে তোয়ালে",
             "কাঁধ ও ঘাড়ের আরাম",
         )
-        for d in DAYS_21 + DAYS_PART2_30:
+        for d in DAYS_21:
             for ag in d["agendas"]:
                 blob = f"{ag['category']} {ag['title_bn']} {ag['detail_bn']} {ag['prompt_bn']}"
                 for tok in forbidden_physio_tokens:
@@ -42,7 +42,7 @@ class TestCurriculumAndPersona(unittest.TestCase):
 
     def test_kalyani_six_games_per_day_and_one_in_two_days_cbt_cadence(self) -> None:
         """Verify Kalyani has 6 deep games/day, daily pillars, and Covert CBT strictly 1 in 2 days."""
-        all_days = DAYS_21 + DAYS_PART2_30
+        all_days = DAYS_21
         for d in all_days:
             day_num = int(d["day"])
             ags = d["agendas"]
@@ -62,7 +62,7 @@ class TestCurriculumAndPersona(unittest.TestCase):
                 self.assertEqual(pt_count, 1, f"Odd Day {day_num} must have 1 personal_therapy game")
 
         cbt_days = [int(d["day"]) for d in all_days if is_covert_cbt_day(d)]
-        self.assertEqual(cbt_days, [d_num for d_num in range(1, 52) if d_num % 2 == 0])
+        self.assertEqual(cbt_days, [d_num for d_num in range(1, 22) if d_num % 2 == 0])
 
         md5s = collect_md5_fingerprints("kalyani")
         for k in (
@@ -70,7 +70,6 @@ class TestCurriculumAndPersona(unittest.TestCase):
             "curriculum_md5",
             "content_curation_md5",
             "part1_days_md5",
-            "part2_days_md5",
             "client_gemini_md5",
         ):
             self.assertEqual(len(md5s[k]), 32, f"Missing MD5 digest for {k}")
@@ -92,13 +91,13 @@ class TestCurriculumAndPersona(unittest.TestCase):
 
     def test_kalyani_language_focus_split_60_english_30_hindi_10_bengali(self) -> None:
         """Verify the 60% English, 30% Fluent Hindi Gossip, and 10% Clear Bengali Mind-Expression split."""
-        all_days = DAYS_21 + DAYS_PART2_30
+        all_days = DAYS_21
         eng = sum(1 for d in all_days for a in d["agendas"] if classify_game_pillar(a) == "english")
         hin = sum(1 for d in all_days for a in d["agendas"] if classify_game_pillar(a) == "hindi")
         ben = sum(1 for d in all_days for a in d["agendas"] if classify_game_pillar(a) == "bengali_expr")
         total = eng + hin + ben
 
-        self.assertEqual(total, 102)
+        self.assertEqual(total, 42)
         self.assertAlmostEqual(eng / total, 0.60, delta=0.02)
         self.assertAlmostEqual(hin / total, 0.30, delta=0.02)
         self.assertAlmostEqual(ben / total, 0.10, delta=0.02)
@@ -107,7 +106,7 @@ class TestCurriculumAndPersona(unittest.TestCase):
         """Verify Tech Onboarding covers Google Photos, Calling, YouTube Music, and repeated Live Video Camera."""
         all_tech_text = " ".join(
             a["title_bn"] + " " + a["detail_bn"] + " " + a["prompt_bn"]
-            for d in (DAYS_21 + DAYS_PART2_30)
+            for d in DAYS_21
             for a in d["agendas"]
             if classify_game_pillar(a) == "tech_65"
         )
@@ -116,10 +115,10 @@ class TestCurriculumAndPersona(unittest.TestCase):
         self.assertIn("ইউটিউব মিউজিক", all_tech_text)
         live_cam_days = [
             d["day"]
-            for d in (DAYS_21 + DAYS_PART2_30)
+            for d in DAYS_21
             if any("ক্যামেরা" in (a["title_bn"] + a["detail_bn"]) for a in d["agendas"] if classify_game_pillar(a) == "tech_65")
         ]
-        self.assertGreaterEqual(len(live_cam_days), 18, "Live Camera usage must be reinforced via spaced repetition")
+        self.assertGreaterEqual(len(live_cam_days), 8, "Live Camera usage must be reinforced via spaced repetition")
 
     def test_blueprint_driven_agentic_llm_loop_critique_and_refine(self) -> None:
         """Verify pure LLM Critic -> Refiner -> Re-Evaluate loop driven by persona Markdown specs."""
@@ -170,21 +169,21 @@ class TestCurriculumAndPersona(unittest.TestCase):
         self.assertEqual(report["total_refinements_applied"], 1)
         self.assertIn("গুগল ফটোস", refined_days[0]["agendas"][3]["detail_bn"])
 
-    def test_youtube_music_and_part2_180_unique_games(self) -> None:
-        """Verify YouTube Music integration every day and 180 unique Part 2 games loaded from Markdown."""
-        for d in DAYS_21 + DAYS_PART2_30:
+    def test_youtube_music_and_21_days_126_unique_games(self) -> None:
+        """Verify YouTube Music integration every day and 126 unique games across the 21-day curriculum."""
+        for d in DAYS_21:
             song_games = [ag for ag in d["agendas"] if classify_game_pillar(ag) == "music"]
             self.assertEqual(len(song_games), 1)
             self.assertIn("ইউটিউব মিউজিকে", song_games[0]["prompt_bn"])
 
         seen_pairs: set[tuple[str, str]] = set()
-        for d in DAYS_PART2_30:
+        for d in DAYS_21:
             self.assertEqual(len(d["agendas"]), 6)
             for ag in d["agendas"]:
                 pair = (ag["category"], ag["title_bn"])
                 self.assertNotIn(pair, seen_pairs, f"Duplicate game on Day {d['day']}: {pair}")
                 seen_pairs.add(pair)
-        self.assertEqual(len(seen_pairs), 180)
+        self.assertEqual(len(seen_pairs), 126)
 
     def test_kalyani_letter_slides_and_client_side_gemini_master_prompt(self) -> None:
         """Verify Slide 1..8 and updated Client-Side Gemini Master Prompt in personas/kalyani/client-side-gemini.md."""

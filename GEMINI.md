@@ -3,7 +3,7 @@
 This file is the **single, canonical, Git-tracked source of truth** governing how any AI engineer/agent designs, architects, tests, and maintains **🪷 AI Companion**, located in its dedicated repository at [`/usr/local/google/home/koushikchak/ai-companion`](file:///usr/local/google/home/koushikchak/ai-companion) (published on branch `ai-companion` of `git@github.com:kouSeek/portfolio.git`).
 
 It hosts **two modular, self-contained companion personas**:
-1. **`kalyani` (Ma — `🌸 কল্যাণী` -> `kalyani.html`):** 51-day Bengali companion (`306` games) for Ma (Shikha Chakraborty).
+1. **`kalyani` (Ma — `🌸 কল্যাণী` -> `kalyani.html`):** 21-day Bengali companion (`126` games) for Ma (Shikha Chakraborty).
 2. **`anondo` (Me — `🌻 ANONDO` -> `anondo.html`):** 21-day English high-IQ companion (`105` explorations) for Koushik Chakraborty.
 
 > **Strict Isolation from `koushik-wiki`:** Keep all AI Companion rules, specs, persona packages, frontend source, audio, scripts, and tests strictly inside `/usr/local/google/home/koushikchak/ai-companion`.
@@ -32,13 +32,12 @@ Every persona (`kalyani`, `anondo`, and any future persona) is organized symmetr
 ├── personas/                                  # Self-Contained Modular Persona Packages
 │   ├── kalyani/                               # Ma (`kalyani`) — Bengali Companion
 │   │   ├── persona.md                         # Unified student persona, clinical blockers & tone
-│   │   ├── curriculum.md                      # 51-day syllabus, 60/30/10 language split & 3-pillar Gemini Live tech
+│   │   ├── curriculum.md                      # 21-day syllabus, 60/30/10 language split & 3-pillar Gemini Live tech
 │   │   ├── content_curation.md                # 12-Dimension Agentic Evaluator-Optimizer rubric
 │   │   ├── client-side-gemini.md              # Android Gemini Master Prompt (English rules, strictly Bangla speech)
-│   │   ├── curation_manifest.json             # 6-file MD5 state ledger + live Gemini LLM Critic evaluation
+│   │   ├── curation_manifest.json             # 5-file MD5 state ledger + live Gemini LLM Critic evaluation
 │   │   └── days/
-│   │       ├── part1_days.md                  # Days 1–21 Foundation Markdown (126 games)
-│   │       └── part2_days.md                  # Days 22–51 Extended Calendar Markdown (180 games)
+│   │       └── part1_days.md                  # Days 1–21 Foundation Markdown (126 games)
 │   └── anondo/                                # Me (`anondo`) — Koushik's English Companion
 │       ├── persona.md                         # Wiki-grounded 2e-ADHD/High-IQ persona & 10 Covert CBT targets
 │       ├── curriculum.md                      # 21-day English syllabus (1-in-2-days CBT, Active Listening, Song Bhaavna, Frontier GK)
@@ -53,8 +52,7 @@ Every persona (`kalyani`, `anondo`, and any future persona) is organized symmetr
 │   ├── kalyani/
 │   │   ├── __init__.py
 │   │   ├── slides_and_quotes.py               # 8 Thanksgiving letter slides + 7 morning quotes + 6 slot labels
-│   │   ├── part1_days.py                      # Thin loader -> personas/kalyani/days/part1_days.md
-│   │   └── part2_days.py                      # Thin loader -> personas/kalyani/days/part2_days.md
+│   │   └── part1_days.py                      # Thin loader -> personas/kalyani/days/part1_days.md
 │   └── anondo/
 │       ├── __init__.py
 │       └── anondo_days.py                     # Thin loader -> personas/anondo/days/anondo_days.md + Slides/Quotes/7 Keys
@@ -75,7 +73,7 @@ Every persona (`kalyani`, `anondo`, and any future persona) is organized symmetr
 │   └── anondo/slides/slide_1..8.jpg           # Personalized illustrations for Koushik's letter
 ├── audio/                                     # Per-Persona Aoede Cache -> published to `ai-companion-audio` orphan branch
 │   ├── kalyani/
-│   │   ├── tts_manifest.json                  # SHA-256 text-hash registry (372 Bengali voices)
+│   │   ├── tts_manifest.json                  # SHA-256 text-hash registry (162 Bengali voices)
 │   │   └── {slides,quotes,days,games}/*.mp3
 │   └── anondo/
 │       ├── tts_manifest.json                  # SHA-256 text-hash registry (148 English voices)
@@ -103,7 +101,7 @@ Every persona (`kalyani`, `anondo`, and any future persona) is organized symmetr
 ## 2. Genius Artist UX Design System
 
 - **Persona `kalyani` (`kalyani.html` — *"Shantiniketan Handloom Ivory & Shiuli"*):**
-  - Unclipped `Noto Sans Bengali` + `Noto Serif Bengali` typography (`line-height >= 1.48–1.6`, zero `Hind Siliguri`, zero `tabular-nums`), zero task-completion tickers or `"পার্ট ১"`/`"পার্ট ২"` labels, sequential day locking (`🔒 দিন N`), auto-unlocked collapsible calendar grid for `Days 22–51`, `#slideBadge` above photos, `#videoLetterCard` at the bottom of `💌 চিঠি`, and proactive auto-engage `Aoede` voice.
+  - Unclipped `Noto Sans Bengali` + `Noto Serif Bengali` typography (`line-height >= 1.48–1.6`, zero `Hind Siliguri`, zero `tabular-nums`), zero task-completion tickers or `"পার্ট ১"`/`"পার্ট ২"` labels, 21 freely unlocked days (`Days 1–21`), in-card walkie-talkie voice reply studio (`#vnStudio_<day>_<idx>`), `#slideBadge` above photos, `#videoLetterCard` at the bottom of `💌 চিঠি`, and proactive auto-engage `Aoede` voice.
 - **Persona `anondo` (`anondo.html` — *High-IQ Clarity, Active Listening & Zorba Flow*):**
   - Clean `Inter` + `Playfair Display` palette, non-judgmental freely accessible 21-day strip (*"As the day, so is the day"*), 2-turn Gemini Live conversational prompts (`Turn 1` + `Turn 2`), `@YouTube Music` `3-Pass Meaning-First` listening cards, 8-slide illustrated Letter, 7 Diagnostic Keys, and 60-Second Hardware Calm Switch modal.
 
@@ -117,7 +115,7 @@ Every persona (`kalyani`, `anondo`, and any future persona) is organized symmetr
      2. [`personas/kalyani/curriculum.md`](personas/kalyani/curriculum.md) / [`personas/anondo/curriculum.md`](personas/anondo/curriculum.md)
      3. [`personas/kalyani/content_curation.md`](personas/kalyani/content_curation.md) / [`personas/anondo/content_curation.md`](personas/anondo/content_curation.md)
    - Co-curating and MD5-tracking:
-     4. [`personas/kalyani/days/part1_days.md`](personas/kalyani/days/part1_days.md) & [`personas/kalyani/days/part2_days.md`](personas/kalyani/days/part2_days.md) (or [`personas/anondo/days/anondo_days.md`](personas/anondo/days/anondo_days.md))
+     4. [`personas/kalyani/days/part1_days.md`](personas/kalyani/days/part1_days.md) (or [`personas/anondo/days/anondo_days.md`](personas/anondo/days/anondo_days.md))
      5. [`personas/kalyani/client-side-gemini.md`](personas/kalyani/client-side-gemini.md) (or [`personas/anondo/client-side-gemini.md`](personas/anondo/client-side-gemini.md))
 2. **On-Device Web Speech API (`speechSynthesis`) is Forbidden:** Always use pre-generated **Gemini `Aoede` (`gemini-v4s-tts`)** `.mp3` files under `audio/<persona>/`.
 3. **NEVER Auto-Regenerate Voices Before Content Approval:**

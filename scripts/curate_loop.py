@@ -47,7 +47,7 @@ def resolve_persona_spec_paths(persona_id: str = DEFAULT_PERSONA_ID) -> dict[str
     pdir = APP_ROOT / "personas" / pid
     days_dir = pdir / "days"
     if pid == "kalyani":
-        days_files = [days_dir / "part1_days.md", days_dir / "part2_days.md"]
+        days_files = [days_dir / "part1_days.md"]
     else:
         days_files = sorted(days_dir.glob("*.md")) or [days_dir / f"{pid}_days.md"]
 
@@ -94,7 +94,6 @@ def collect_md5_fingerprints(persona_id: str = DEFAULT_PERSONA_ID) -> dict[str, 
             "curriculum_md5": md5_file(paths["curriculum"]),  # type: ignore[arg-type]
             "content_curation_md5": md5_file(paths["curation"]),  # type: ignore[arg-type]
             "part1_days_md5": md5_file(days_files[0]),
-            "part2_days_md5": md5_file(days_files[1]),
             "client_gemini_md5": md5_file(paths["client_gemini"]),  # type: ignore[arg-type]
         }
 
@@ -295,14 +294,8 @@ def run_agentic_improvement_loop(
     refined_days = list(day_map.values())
     if persist_markdown and total_refinements > 0 and days_list is None:
         if pid == "kalyani":
-            p1 = [d for d in refined_days if int(d["day"]) <= 21]
-            p2 = [d for d in refined_days if int(d["day"]) > 21]
             days_files[0].write_text(
-                dump_days_markdown("🌸 কল্যাণী — Part 1 Foundation Curriculum (Days 1–21 · Markdown Source of Truth)", p1),
-                encoding="utf-8",
-            )
-            days_files[1].write_text(
-                dump_days_markdown("🌸 কল্যাণী — Part 2 Extended Calendar Curriculum (Days 22–51 · Markdown Source of Truth)", p2),
+                dump_days_markdown("🌸 কল্যাণী — 21-Day Foundation Curriculum (Days 1–21 · Markdown Source of Truth)", refined_days),
                 encoding="utf-8",
             )
         else:

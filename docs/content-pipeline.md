@@ -25,7 +25,7 @@ This specification modularizes **🌸 কল্যাণী (Kalyani)** so the e
 └────────────┬─────────────┘
              ▼  (Explicit "Approved" signal)
 ┌──────────────────────────┐
-│ 4. App & Data Promotion  │  content/part1_days.py, part2_days.py + src/
+│ 4. App & Data Promotion  │  content/kalyani/part1_days.py + src/
 │    (python3 build_app.py)│  • Adaptive 2/3-col grid renders 2–6 games/day cleanly
 └────────────┬─────────────┘
              ▼
@@ -96,7 +96,7 @@ To ensure every game in **🌸 কল্যাণী** stays deeply engaging, ze
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │ 4. PROMOTE & INCREMENTAL VOICE BUILD (After Koushik's Approval)         │
-│    • Compile into `content/part1_days.py` & `part2_days.py`             │
+│    • Compile into `content/kalyani/part1_days.py`                       │
 │    • Run `python3 scripts/build_app.py` + `scripts/refresh_voices.py`   │
 │      (regenerates ONLY changed SHA-256 audio hashes) + `run_tests.py`   │
 └─────────────────────────────────────────────────────────────────────────┘

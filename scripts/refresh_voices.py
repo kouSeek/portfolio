@@ -35,7 +35,6 @@ from content import (  # noqa: E402
     ANONDO_QUOTES,
     ANONDO_SLIDES,
     DAYS_21,
-    DAYS_PART2_30,
     MORNING_QUOTES,
     SLIDES,
 )
@@ -172,7 +171,7 @@ def collect_expected_audio_items(persona_id: str = DEFAULT_PERSONA_ID) -> dict[s
             "part2": "",
         }
 
-    for d in DAYS_21 + DAYS_PART2_30:
+    for d in DAYS_21:
         day_num = int(d["day"])
         part_num = int(d.get("part", 1))
 
@@ -244,8 +243,6 @@ def matches_scope(rel_path: str, info: dict[str, str], scope: str) -> bool:
         return info["scope"] == scope
     if scope == "part1":
         return info["scope"] in ("days", "games") and info["part"] == "1"
-    if scope == "part2":
-        return info["scope"] in ("days", "games") and info["part"] == "2"
     return info["scope"] == scope
 
 
@@ -341,7 +338,7 @@ def main() -> int:
     parser.add_argument(
         "--scope",
         default="all",
-        choices=("all", "days-and-games", "days", "games", "part1", "part2", "slides", "quotes", "pillars"),
+        choices=("all", "days-and-games", "days", "games", "part1", "slides", "quotes", "pillars"),
         help="Target subset of voices to check or refresh.",
     )
     parser.add_argument("--workers", type=int, default=16, help="Parallel TTS worker count (default: 16).")

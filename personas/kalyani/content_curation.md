@@ -1,22 +1,22 @@
 # 🌸 কল্যাণী (Kalyani) — Agentic Content Curation & LLM Improvement Rubric (`content_curation.md`)
 
 This Markdown document governs the **Agentic LLM Evaluator-Optimizer Loop** (`scripts/curate_loop.py`). Instead of brittle hardcoded regexes or character counters, the **Critic Agent** and **Refiner Agent** read all **3 Canonical Portable Input Reference Files**—[`students/ma_kalyani/persona.md`](../students/ma_kalyani/persona.md) (or `students/<student_id>/persona.md` for any new student), [`curriculum.md`](curriculum.md), and this rubric (`content_curation.md`)—to evaluate, iteratively refine, and harmonize:
-1. The Markdown curriculum content (`content/days/part1_days.md` & `content/days/part2_days.md`), and
-2. The Client-Side Android Gemini Master Instruction (`docs/client-side-gemini.md`).
+1. The Markdown curriculum content (`personas/kalyani/days/part1_days.md`), and
+2. The Client-Side Android Gemini Master Instruction (`personas/kalyani/client-side-gemini.md`).
 
 ---
 
-## 1. Agentic Evaluator-Optimizer Workflow (6-File Portable MD5 Contract)
+## 1. Agentic Evaluator-Optimizer Workflow (5-File Portable MD5 Contract)
 
 ```text
 ┌────────────────────────────────────┐
-│  students/<student_id>/persona.md  │────┐
+│  personas/kalyani/persona.md       │────┐
 ├────────────────────────────────────┤    ▼
-│  content/curriculum.md             │───▶┌─────────────────────────────┐
+│  personas/kalyani/curriculum.md    │───▶┌─────────────────────────────┐
 ├────────────────────────────────────┤    │   Agentic LLM Orchestrator  │
-│  content/content_curation.md       │───▶│   (scripts/curate_loop.py)  │
+│  personas/kalyani/content_curation │───▶│   (scripts/curate_loop.py)  │
 └────────────────────────────────────┘    │                             │
-                                          │  1. 6-File MD5 Detection    │
+                                          │  1. 5-File MD5 Detection    │
                                           │  2. LLM Critic Evaluation   │
                                           │  3. LLM Refiner Rewrite     │
                                           │  4. Re-Evaluate Until Pass  │
@@ -25,9 +25,9 @@ This Markdown document governs the **Agentic LLM Evaluator-Optimizer Loop** (`sc
                  ┌───────────────────────────────────────┴───────────────────────┐
                  ▼                                                               ▼
 ┌─────────────────────────────────────────┐                     ┌─────────────────────────────────────────┐
-│  content/days/{part1,part2}_days.md     │                     │  docs/client-side-gemini.md             │
-│  Loaded by part1_days.py & part2_days.py│                     │  English rules, Bengali speech output,  │
-│  Rendered via Jinja2 -> index.html      │                     │  Persistent Memory & Psychotherapist AI │
+│  personas/kalyani/days/part1_days.md    │                     │  personas/kalyani/client-side-gemini.md │
+│  Loaded by content/kalyani/part1_days.py│                     │  English rules, Bengali speech output,  │
+│  Rendered via Jinja2 -> kalyani.html    │                     │  Persistent Memory & Psychotherapist AI │
 └─────────────────────────────────────────┘                     └─────────────────────────────────────────┘
 ```
 
@@ -35,12 +35,12 @@ This Markdown document governs the **Agentic LLM Evaluator-Optimizer Loop** (`sc
 
 ## 2. LLM Critic Evaluation Criteria (12 Holistic Quality Dimensions)
 
-When evaluating any day or batch of days from `part1_days.md` / `part2_days.md`, and when verifying `docs/client-side-gemini.md`, the LLM Critic scores these **12 Pedagogical & Clinical Dimensions (`1–10`, minimum passing bar `9/10`)**:
+When evaluating any day or batch of days from `part1_days.md`, and when verifying `client-side-gemini.md`, the LLM Critic scores these **12 Pedagogical & Clinical Dimensions (`1–10`, minimum passing bar `9/10`)**:
 
 1. **`cbt_effectiveness` — 1-in-2-Days Covert CBT Precision:**
-   - Covert CBT stories (`pillar: covert_cbt`) appear strictly on alternate days (Even Days `2, 4, ..., 50`), never on consecutive days, using warm third-person storytelling rather than preachy lecturing.
+   - Covert CBT stories (`pillar: covert_cbt`) appear strictly on alternate days (Even Days `2, 4, ..., 20`), never on consecutive days, using warm third-person storytelling rather than preachy lecturing.
 2. **`personal_connect` — Deep Reminiscence & Cathartic Psychotherapy:**
-   - Odd Days (`1, 3, ..., 51`) feature `pillar: personal_therapy`, gently guiding Ma to revisit golden Ranaghat/family memories and safely release buried grief, loneliness, or unspoken *abhiman* with warm closure.
+   - Odd Days (`1, 3, ..., 21`) feature `pillar: personal_therapy`, gently guiding Ma to revisit golden Ranaghat/family memories and safely release buried grief, loneliness, or unspoken *abhiman* with warm closure.
 3. **`relationship_warmth` — Family Attachment Healing:**
    - Reinforces unconditional warmth among Ma, Koushik, and Didi (`একই নরম মাটির মানুষ`), dissolving guilt and past misunderstandings.
 4. **`inspiration_and_pride` — Relatable Inspiring Figures:**
@@ -54,7 +54,7 @@ When evaluating any day or batch of days from `part1_days.md` / `part2_days.md`,
 8. **`ease_of_learning` — `60% / 30% / 10%` Language Balance:**
    - Maintains the **60% Day-to-Day Spoken English (`english`)**, **30% Fluent Hindi Gossip & Warm Chatting (`hindi`)**, and **10% Clear Bengali Self-Expression (`bengali_expr`)** balance across the curriculum, using effortless 1-breath phrases.
 9. **`zero_fear_and_shame` — 3-Pillar Gemini Live Tech Onboarding & Spaced Repetition:**
-   - Early onboarding (Days 1–3) + spaced repetition across all 51 days for: (a) Gemini Live voice therapy sessions, (b) Gemini phone control (`@YouTube Music`, calling people via `@Phone`, showing family/people photos from `@Google Photos`, alarms/utilities), and (c) **Gemini Live Video Camera (`📹`)** for random day-to-day visual questions.
+   - Early onboarding (Days 1–3) + spaced repetition across all 21 days for: (a) Gemini Live voice therapy sessions, (b) Gemini phone control (`@YouTube Music`, calling people via `@Phone`, showing family/people photos from `@Google Photos`, alarms/utilities), and (c) **Gemini Live Video Camera (`📹`)** for random day-to-day visual questions.
 10. **`urge_to_express_mind` — Authentic Voice & Agency:**
     - Invites Ma to share her own opinions, preferences, and feelings openly without passive hesitation.
 11. **`freedom_and_autonomy` — Zero Physio & Effortless Pacing:**

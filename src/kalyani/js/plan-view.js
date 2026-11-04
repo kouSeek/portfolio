@@ -7,11 +7,6 @@ function togglePrimaryCalendarGrid() {
   renderPlanView();
 }
 
-function toggleExtendedCalendarGrid() {
-  extCalOpen = !extCalOpen;
-  renderPlanView();
-}
-
 function selectDay(dayNum, autoPlayAudio) {
   if (!isDayUnlocked(dayNum)) {
     const frontier = getHighestUnlockedDay();
@@ -71,10 +66,7 @@ function toggleAgendaDone(dayNum, agIdx) {
 
   if (newlyDone) {
     if (isDayFullyDone(dayNum)) {
-      if (dayNum === 21) {
-        extCalOpen = true;
-        showCelebrationToast('🎉 অসাধারণ মা! ২১ দিনের সব খেলা শেষ—এবার নতুন ৩০ দিনের ক্যালেন্ডার খুলে গেছে!');
-      } else if (dayNum < ALL_DAYS.length) {
+      if (dayNum < ALL_DAYS.length) {
         showCelebrationToast('🎉 দারুণ মা! দিন ' + toBnDigits(dayNum) + ' শেষ হয়েছে—দিন ' + toBnDigits(dayNum + 1) + '-এর নতুন চমক খুলে গেল!');
       } else {
         showCelebrationToast('🎉 অসাধারণ মা! আজকের সব খেলা খুব সুন্দরভাবে শেষ হয়েছে!');
@@ -342,26 +334,6 @@ function renderPlanView() {
     } else {
       primaryCalEl.style.display = 'none';
       primaryCalEl.innerHTML = '';
-    }
-  }
-
-  const extCalWrap = document.getElementById('extendedPart2CalWrap');
-  if (extCalWrap) {
-    if (areFirst21DaysComplete()) {
-      extCalWrap.style.display = 'block';
-      const extBodyHtml = extCalOpen ? `
-        <div class="cal-grid-subtitle">মা, প্রথম ২১ দিনের সব খেলা শেষ করে তুমি এই নতুন ক্যালেন্ডারটা খুলেছো! নিজের আনন্দে এক-একটা দিন খেলো:</div>
-        <div id="extCalendarGrid" class="calendar-grid">${buildCalendarGridCellsHtml(DAYS_PART2_30, 'calCell')}</div>
-      ` : '';
-      extCalWrap.innerHTML = `
-        <button id="btnToggleExtCal" class="ext-cal-header-btn" onclick="toggleExtendedCalendarGrid()">
-          <span>🌿 নতুন ৩০ দিনের ক্যালেন্ডার (দিন ২২ – ৫১)</span>
-          <span>${extCalOpen ? '▴ গুটিয়ে রাখো' : '▾ খুলে দেখো'}</span>
-        </button>${extBodyHtml}
-      `;
-    } else {
-      extCalWrap.style.display = 'none';
-      extCalWrap.innerHTML = '';
     }
   }
 

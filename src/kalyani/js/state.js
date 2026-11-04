@@ -1,7 +1,7 @@
 /* ============================================================================
    MODULE 1: STATE, PERSISTENCE & SEQUENTIAL PROGRESSION ENGINE (src/js/state.js)
    ============================================================================ */
-const ALL_DAYS = DAYS_21.concat(DAYS_PART2_30);
+const ALL_DAYS = DAYS_21;
 
 const GAME_SHORT_LABELS = GAME_META.map(m => m.short_bn);
 const GAME_ACCENTS = GAME_META.map(m => m.accent);
@@ -17,7 +17,6 @@ let curDayNum = 1;
 let curGameIdx = 0;
 let showAllGamesInDay = false;
 let primaryCalOpen = false;
-let extCalOpen = true;
 let autoAdvance = true;
 let radioAutoPlay = true;
 let storyOnlyAudio = true;
@@ -148,14 +147,6 @@ function isDayUnlocked(dayNum) {
   if (dayNum <= 1) return true;
   for (let k = 1; k < dayNum; k++) {
     if (!isDayFullyDone(k)) return false;
-  }
-  return true;
-}
-
-function areFirst21DaysComplete() {
-  if (unlockAllDaysMode) return true;
-  for (let i = 0; i < DAYS_21.length; i++) {
-    if (!isDayFullyDone(DAYS_21[i].day)) return false;
   }
   return true;
 }
