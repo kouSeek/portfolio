@@ -20,11 +20,11 @@
   },
   "summary_critique": "The curriculum and system prompts are perfectly aligned with Ma's persona constraints. The tone is consistently warm, respectful, and culturally anchored in West Bengal colloquialism. The 60/30/10 language split is respected, and the 3-pillar technology onboarding is seamlessly integrated. The Covert CBT and Psychotherapy pillars are correctly balanced (Odd/Even days), ensuring psychological safety. All food, physiotherapy, and ambition-pressure guardrails are strictly observed. The pedagogical flow effectively transitions from tech-anxiety reduction to long-term curiosity and creative agency.",
   "md5_fingerprints": {
-    "persona_md5": "3b514d414fc4ce1f4fddf9343e5c0edf",
-    "curriculum_md5": "645f8f9f6d76049550b59bf51782d7d8",
-    "content_curation_md5": "68200835cbe978686ec605daafe9c17f",
+    "persona_md5": "d136de07e86e0ac91866e23f217d3228",
+    "curriculum_md5": "a41adebb2f6858d59c4ec24add0d8038",
+    "content_curation_md5": "2f287f6b0b151a8b874ef50162d3d392",
     "part1_days_md5": "fc63bd4bd9836b2cf3e40228add4b962",
-    "client_gemini_md5": "e46e476993d3846fc0fbaeeca4269b36"
+    "client_gemini_md5": "4831009d9e34542c39b41426738b564d"
   },
   "days": {
     "1": {

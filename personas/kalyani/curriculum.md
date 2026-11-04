@@ -62,8 +62,11 @@ Technology learning centers on **3 transformative capabilities of Android Gemini
 1. **Song Lyrics that Spark Curiosity & Meaning (`🎵` — Daily via `@YouTube Music`):**
    - Listening to poetic lyrics from Rabindra Sangeet, Hemanta, Sandhya, Manna Dey, Lata, Kishore, Shyamal Mitra, Pratima, Geeta Dutt, Manabendra, D.L. Roy, and Bhupen Hazarika, then unpacking the deeper philosophy and backstage story of the lyrics.
 
-2. **Relatable World GK & Inspiring Figures (`🌍` — Daily):**
-   - Fascinating world/nature science explained via kitchen/household analogies + inspiring biographies Ma deeply relates to (Maa Sarada, Rani Rashmoni at 60, Kadambini Ganguly, Subhasini Mistry, Acharya J.C. Bose, Nandalal Bose, Sister Nivedita, Sudha Murty, Savitribai Phule, Satyajit Ray, Sunita Williams).
+2. **Innocent Childlike Comedy, Sweet Gods (Zero Fights), Witty Kings & Cute Animals (`🌍` — Daily):**
+   - Instead of dry technical science or war epics (Ma dislikes fights, so **never** use Ramayana or Mahabharata), every day brings effortless smiles and wonder through:
+     - **Innocent Comedy & Legendary Kings:** Nadia's Maharaja Krishnachandra & Gopal Bhar (`মহারাজ কৃষ্ণচন্দ্র ও গোপাল ভাঁড়`), Birbal, Tenali Raman, and harmless household humour.
+     - **Sweet, Peaceful Stories of Gods:** Baby Gopal (`ননীচোরা বালগোপালের মাখন চুরি`), Shiva-Parvati & little Ganesha circling his parents (`বাবা-মা-ই তো বিশ্বব্রহ্মাণ্ড`), Puri's Lord Jagannath & Maa Lakshmi's rasagolla *manbhanjan*, Maa Annapurna in Kashi, and Maa Sarada's pet parrot *Gangaram* & Sri Ramakrishna's childlike love for jalebis.
+     - **Cute Animals & Inspiring Lives:** Baby elephants, sea otters holding paws while sleeping, forgetful squirrels planting forests, penguins gifting smooth pebbles, cows & calves' best friendships, and relatable inspiring figures (Maa Sarada, Rani Rashmoni, Subhasini Mistry, J.C. Bose, Nandalal Bose, Sister Nivedita, Sudha Murty, Satyajit Ray).
 
 3. **Covert CBT Therapy for Old Negative Habits (`📖` — Strictly 1 in 2 Days / Even Days Only = `50%`):**
    - Third-person Ericksonian stories dissolving old scarcity/anxiety habits: (a) First-press lemon juice vs. bitter peel (*লেবুর তিতো খোসা* — dropping exhausting toil for 2 rupees), (b) eating fresh fruit & wearing good sarees today, (c) guilt-free AC/fan/light comfort, (d) using 2–3 notebook pages generously without fear of wasting paper/paint, (e) decluttering old plastic bags & broken containers, and (f) dropping catastrophic worry.

@@ -363,9 +363,89 @@ async function requestMicAndNotificationPermission() {
    ============================================================================ */
 let activeMediaRecorder = null;
 let activeMicStream = null;
+let activeVideoStream = null;
 let activeSpeechRec = null;
 let activeVnAudioChunks = [];
 let activeVnTimerId = null;
+
+function attachLiveStreamToVideoElement() {
+  if (!vnLiveCamState.active || !activeVideoStream) return;
+  const vidEl = document.getElementById('vnLiveVideo_' + vnLiveCamState.dayNum + '_' + vnLiveCamState.agIdx);
+  if (vidEl && vidEl.srcObject !== activeVideoStream) {
+    vidEl.srcObject = activeVideoStream;
+    if (typeof vidEl.play === 'function') {
+      try { vidEl.play().catch(() => {}); } catch (e) {}
+    }
+  }
+}
+
+function captureFrameFromLiveVideo(dayNum, agIdx) {
+  if (!vnLiveCamState.active || vnLiveCamState.dayNum !== dayNum || vnLiveCamState.agIdx !== agIdx) {
+    return null;
+  }
+  try {
+    const vidEl = document.getElementById('vnLiveVideo_' + dayNum + '_' + agIdx);
+    if (vidEl && vidEl.videoWidth > 0 && vidEl.videoHeight > 0 && typeof document.createElement === 'function') {
+      const canvas = document.createElement('canvas');
+      canvas.width = vidEl.videoWidth;
+      canvas.height = vidEl.videoHeight;
+      const ctx = canvas.getContext && canvas.getContext('2d');
+      if (ctx && typeof canvas.toDataURL === 'function') {
+        ctx.drawImage(vidEl, 0, 0, canvas.width, canvas.height);
+        const dataUrl = String(canvas.toDataURL('image/jpeg', 0.82) || '');
+        const comma = dataUrl.indexOf(',');
+        if (comma >= 0) {
+          return { mime: 'image/jpeg', b64: dataUrl.slice(comma + 1) };
+        }
+      }
+    }
+  } catch (e) {}
+  return { mime: 'image/jpeg', b64: '' };
+}
+
+function stopCardLiveVideo() {
+  if (activeVideoStream) {
+    try { activeVideoStream.getTracks().forEach(t => t.stop()); } catch (e) {}
+    activeVideoStream = null;
+  }
+  vnLiveCamState = { active: false, dayNum: 0, agIdx: -1, facingMode: vnLiveCamState.facingMode || 'environment' };
+}
+
+async function toggleCardLiveVideo(dayNum, agIdx) {
+  if (vnLiveCamState.active && vnLiveCamState.dayNum === dayNum && vnLiveCamState.agIdx === agIdx) {
+    stopCardLiveVideo();
+    renderPlanView();
+    return;
+  }
+  stopCardLiveVideo();
+  vnLiveCamState = {
+    active: true,
+    dayNum: dayNum,
+    agIdx: agIdx,
+    facingMode: vnLiveCamState.facingMode || 'environment'
+  };
+  renderPlanView();
+
+  try {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        activeVideoStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: vnLiveCamState.facingMode } },
+          audio: false
+        });
+      } catch (e1) {
+        activeVideoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      }
+      attachLiveStreamToVideoElement();
+    }
+  } catch (err) {}
+}
+
+async function switchCardLiveCamera(dayNum, agIdx) {
+  vnLiveCamState.facingMode = (vnLiveCamState.facingMode === 'environment') ? 'user' : 'environment';
+  vnLiveCamState.active = false;
+  await toggleCardLiveVideo(dayNum, agIdx);
+}
 
 function pcm24kBase64ToWavUrl(b64Pcm) {
   try {
@@ -470,12 +550,11 @@ async function callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, audioMime, li
     return buildWarmFallbackReply(ag, history.length, liveTranscript);
   }
 
-  const memBlock = kalyaniMemoryNotes.length
-    ? ('\n\nREMEMBERED FACTS ABOUT MA FROM PREVIOUS CONVERSATIONS:\n- ' + kalyaniMemoryNotes.join('\n- '))
-    : '';
+  const memBlock = '\n\n' + buildMaWikiContextMarkdown()
+    + (kalyaniMemoryNotes.length ? ('\n\nRECENT EPISODIC NOTES:\n- ' + kalyaniMemoryNotes.join('\n- ')) : '');
   const turnGuidance = (history.length === 0 && ag.followup_prompt_bn)
     ? ('This is Turn 1 on this card. After warmly responding to Ma in 2–3 sentences, gently invite her into Turn 2 around this theme: "' + ag.followup_prompt_bn + '"')
-    : 'This is a follow-up turn. Respond warmly in 3–4 simple West Bengal Bengali sentences, praising her openness and ending with a soothing thought or gentle question.';
+    : 'This is a follow-up turn. Respond warmly in 3–4 simple West Bengal Bengali sentences, praising her openness, encouraging her to speak up her mind or ask for anything she needs without hesitation, and ending with a soothing thought.';
 
   const sysInstruction = (typeof KALYANI_SYSTEM_PROMPT === 'string' ? KALYANI_SYSTEM_PROMPT : '')
     + memBlock
@@ -486,7 +565,7 @@ async function callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, audioMime, li
     + '- Suggested Prompt Ma Was Responding To: ' + (ag.prompt_bn || '') + '\n'
     + '- Turn Guidance: ' + turnGuidance + '\n\n'
     + 'OUTPUT FORMAT RULE: Return strictly valid JSON with keys:\n'
-    + '{"heard_bn": "accurate Bengali transcript of what Ma just said in her audio message", "reply_bn": "your warm 3-4 sentence colloquial West Bengal Bengali reply to Ma (never rush, zero markdown symbols)", "memory_note": "short 1-line note of any new personal memory/preference Ma shared, or empty string"}';
+    + '{"heard_bn": "accurate Bengali transcript of what Ma just said in her audio message", "reply_bn": "your warm 3-4 sentence colloquial West Bengal Bengali reply to Ma (never rush, zero markdown symbols, zero war/Ramayana/Mahabharata)", "memory_note": "short 1-line Bengali note with [[wikilinks]] of any new personal memory, preference, or pattern Ma shared, or empty string", "wiki_page": "one of mind_and_mood | joy_gods_and_stories | food_and_preferences | ranaghat_and_memories | language_and_voice | comfort_and_wellbeing | agent_pattern_log", "boost_topic": "one of comedy | gods | animals | music | reminiscence | empty string"}';
 
   const contents = [];
   history.forEach(t => {
@@ -529,7 +608,10 @@ async function callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, audioMime, li
     const rawText = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || '';
     const parsed = JSON.parse(rawText);
     if (parsed && parsed.reply_bn) {
-      if (parsed.memory_note) addKalyaniMemoryNote(parsed.memory_note);
+      if (parsed.memory_note) {
+        addKalyaniMemoryNote(parsed.memory_note);
+        appendMaWikiEntry(parsed.wiki_page || 'agent_pattern_log', parsed.memory_note, parsed.boost_topic || '');
+      }
       return {
         heard_bn: parsed.heard_bn || liveTranscript || 'মায়ের ভয়েস মেসেজ',
         reply_bn: String(parsed.reply_bn).replace(/[*#`_]/g, '').trim(),
@@ -657,6 +739,11 @@ async function finishAndSendVoiceNote(dayNum, agIdx) {
   }
   cleanupActiveVoiceRecorder();
 
+  const cardKey = dayNum + '_' + agIdx;
+  const liveVideoObj = captureFrameFromLiveVideo(dayNum, agIdx);
+  const hadLiveVideo = !!(vnLiveCamState.active && vnLiveCamState.dayNum === dayNum && vnLiveCamState.agIdx === agIdx);
+  if (hadLiveVideo) stopCardLiveVideo();
+
   vnRecordingState = {
     active: false,
     sending: true,
@@ -668,12 +755,8 @@ async function finishAndSendVoiceNote(dayNum, agIdx) {
   };
   renderPlanView();
 
-  const cardKey = dayNum + '_' + agIdx;
-  const photoObj = vnPendingPhotos[cardKey] || null;
-  delete vnPendingPhotos[cardKey];
-
   const audioB64 = audioBlob ? await blobToBase64(audioBlob) : '';
-  const turnResult = await callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, recMime, transcriptSnap, photoObj);
+  const turnResult = await callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, recMime, transcriptSnap, liveVideoObj);
   const apiKey = getGeminiApiKey();
   const wavUrl = await synthesizeKalyaniAoedeAudio(turnResult.reply_bn, apiKey);
 
@@ -685,7 +768,7 @@ async function finishAndSendVoiceNote(dayNum, agIdx) {
   kalyaniThreads[cardKey].push({
     heard_bn: turnResult.heard_bn,
     reply_bn: turnResult.reply_bn,
-    has_photo: !!(photoObj && photoObj.b64)
+    has_live_video: hadLiveVideo
   });
   saveKalyaniThreads();
 
@@ -723,42 +806,170 @@ async function playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx) {
   playOrToggleAudio(btnId, audioKey, fallbackAudioUrl, '');
 }
 
-function triggerCardPhotoUpload(dayNum, agIdx) {
-  const inp = document.getElementById('vnPhotoInput_' + dayNum + '_' + agIdx);
-  if (inp && typeof inp.click === 'function') inp.click();
-}
-
-function handleCardPhotoSelected(dayNum, agIdx, inputEl) {
-  if (!inputEl || !inputEl.files || !inputEl.files[0] || typeof FileReader === 'undefined') return;
-  const file = inputEl.files[0];
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    const res = String(reader.result || '');
-    const comma = res.indexOf(',');
-    if (comma >= 0) {
-      vnPendingPhotos[dayNum + '_' + agIdx] = {
-        mime: file.type || 'image/jpeg',
-        b64: res.slice(comma + 1),
-        previewUrl: res
-      };
-      renderPlanView();
-    }
-  };
-  reader.readAsDataURL(file);
-}
-
-function toggleCardKeySetup(dayNum, agIdx) {
-  const key = dayNum + '_' + agIdx;
-  vnShowKeyInputForCard = (vnShowKeyInputForCard === key) ? null : key;
-  renderPlanView();
-}
-
-function saveCardGeminiKeyFromInput(dayNum, agIdx) {
-  const inp = document.getElementById('vnKeyInput_' + dayNum + '_' + agIdx);
-  if (inp && inp.value) {
-    saveGeminiApiKey(inp.value);
-    vnShowKeyInputForCard = null;
-    showCelebrationToast('🔑 কল্যাণীর ভয়েস মেসেজ এআই সংযোগ সফলভাবে চালু হয়েছে!');
-    renderPlanView();
+async function playDelightStoryAudio(dayNum) {
+  const btnId = 'btnDelightPlay_' + dayNum;
+  const audioKey = 'delight_' + dayNum;
+  if (activeAudioKey === audioKey && !audioEl.paused) {
+    audioEl.pause();
+    syncAllAudioButtonsUI(false);
+    return;
   }
+  const storyObj = (typeof getDelightStoryForDay === 'function') ? getDelightStoryForDay(dayNum) : null;
+  let wavUrl = vnAudioCache[audioKey] || '';
+  if (!wavUrl && storyObj && getGeminiApiKey()) {
+    wavUrl = await synthesizeKalyaniAoedeAudio(storyObj.title_bn + '। ' + storyObj.story_bn, getGeminiApiKey());
+    if (wavUrl) vnAudioCache[audioKey] = wavUrl;
+  }
+  const d = findDayObj(dayNum);
+  const fallbackUrl = wavUrl || (d && d.audio_url) || '';
+  playOrToggleAudio(btnId, audioKey, fallbackUrl, (d && d.audio_b64) || '');
+}
+
+const DYNAMIC_AGENT_FALLBACK_POOL = {
+  comedy: [
+    {
+      badge_bn: '😂 কল্যাণী এজেন্টের তৈরি নতুন হাসির গল্প',
+      title_bn: 'গোপাল ভাঁড়ের ‘মিষ্টি জলের কুঁজো’ ও মহারাজ কৃষ্ণচন্দ্রের হাসি',
+      story_bn: 'একবার গরমকালে মহারাজ কৃষ্ণচন্দ্র গোপাল ভাঁড়কে বললেন— “গোপাল, এমন এক পাত্রের জল খাওয়াও যা অমৃতের মতো মিষ্টি লাগে!” গোপাল ভাঁড় রাজামশাইকে দুপুর রোদে বাগানের চারপাশে হাঁটিয়ে নিয়ে এসে মাটির কুঁজোর ঠান্ডা জল দিল। রাজামশাই এক চুমুকে খেয়ে বললেন— “আহা গোপাল, কী মিষ্টি জল!” গোপাল হেসে হাত জোড় করে বলল— “মহারাজ, জাদুটা জলে নয়, ওই একটুখানি তেষ্টায়!” রাজামশাই হেসে লুটোপুটি খেলেন।',
+      encourage_bn: 'মা, গল্পটা শুনে মুখে একটু হাসি এল তো? তোমার মনে কোনো মজার কথা বা পুরনো হাসির ঘটনা মনে পড়লে বিনা দ্বিধায় আমায় ভয়েস মেসেজে বলো!'
+    },
+    {
+      badge_bn: '😂 কল্যাণী এজেন্টের তৈরি নতুন হাসির গল্প',
+      title_bn: 'তেনালি রামের ‘চোরকে বাগান জল দেওয়া’র মজার বুদ্ধি',
+      story_bn: 'একবার গরমকালে তেনালি রামের বাগানের কুয়ো থেকে জল তুলতে খুব আলসেমি লাগছিল। তিনি দেখতে পেলেন ঝোপের আড়ালে দুজন চোর লুকিয়ে আছে! তেনালি রাম ঘর থেকে চিৎকার করে স্ত্রীকে বললেন— “গিন্নী, দেশের বাজারে চোরের খুব ভয়, তাই আমাদের গয়নার বাক্সটা আমি কুয়োর জলের নিচে ফেলে দিলাম!” চোরেরা সেই লোভে সারারাত কুয়ো থেকে বালতি বালতি জল তুলে পুরো বাগান ভিজিয়ে দিল! সকালে তেনালি রাম বেরিয়ে হাসিমুখে বললেন— “ধন্যবাদ ভাইয়েরা, বাগানে জল দেওয়ার জন্য!”',
+      encourage_bn: 'মা, নির্মল হাসি মনকে এক নিমেষে হালকা করে দেয়। তোমার এখন কী করতে বা শুনতে ইচ্ছে করছে, নিজের মতো খুলে বলো!'
+    }
+  ],
+  gods: [
+    {
+      badge_bn: '🪷 কল্যাণী এজেন্টের তৈরি ভগবানের মিষ্টি লীলা',
+      title_bn: 'ননীচোরা বালগোপালের হামাগুড়ি ও মা যশোদার স্নেহের বাঁধন',
+      story_bn: 'বৃন্দাবনে ছোট্ট বালগোপাল একদিন মাখন খেয়ে সারা মুখে মেখে বাছুরের পেছনে লুকিয়ে ছিলেন। মা যশোদা এসে যেই বললেন— “কানাই, মাখন কে খেয়েছে রে?” অমনি ছোট্ট গোপাল পুটপুট করে বললেন— “মা, আমি তো মাখন খাইনি, ওই বাঁদরগুলো এসে আমার মুখে মাখন মাখিয়ে দিয়ে গেছে যাতে তুমি আমাকে বকো!” ছোট্ট গোপালের এই নিষ্পাপ কথা শুনে মা যশোদা রাগ ভুলে তাকে কোলে তুলে আদর করলেন।',
+      encourage_bn: 'মা, ভগবানের এই মিষ্টি ঘরোয়া লীলা শুনলে মনটা কী শান্ত হয়ে যায়! তোমার প্রিয় ঠাকুর বা মন্দিরের কোনো কথা মনে পড়লে আমায় শোনাও।'
+    },
+    {
+      badge_bn: '🪷 কল্যাণী এজেন্টের তৈরি ভগবানের মিষ্টি লীলা',
+      title_bn: 'দক্ষিণেশ্বরে ঠাকুর শ্রীরামকৃষ্ণের গরম জিলিপি ও মা সারদার হাসি',
+      story_bn: 'দক্ষিণেশ্বরে ঠাকুর শ্রীরামকৃষ্ণ ছিলেন ঠিক ছোট্ট শিশুর মতো সরল। একদিন এক ভক্ত গরম গরম জিলিপি এনেছেন দেখে ঠাকুর শিশুর মতো খুশি হয়ে বললেন— “ওগো, জিলিপিগুলো কী সুন্দর গোল গোল প্যাঁচানো! খেতে ভারী মিষ্টি!” আর জয়রামবাটীতে মা সারদার পোষা টিয়াপাখি গঙ্গারাম সকাল হলেই ডেকে উঠতো— “মা, হরে কৃষ্ণ বলো, চা খাও!” ভগবান তো এমন সহজ আনন্দ আর হাসির মধ্যেই থাকেন মা।',
+      encourage_bn: 'মা, তোমার মনের যেকোনো কথা বা আজ কী খেতে ইচ্ছে করছে, তা লজ্জা না করে নিজের ভাষায় আমায় বলো!'
+    }
+  ],
+  animals: [
+    {
+      badge_bn: '🐘 কল্যাণী এজেন্টের তৈরি আদুরে পশুপাখির গল্প',
+      title_bn: 'ছোট্ট হাতির ছানার শুঁড় নিয়ে খেলা ও মায়ের আঁচলের আড়াল',
+      story_bn: 'তুমি কি জানো মা, হাতির ছানা যখন একদম ছোট থাকে, তখন সে নিজের লম্বা শুঁড়টা দিয়ে কী করবে বুঝতেই পারে না! কখনো হাঁটতে গিয়ে নিজের শুঁড়েই পা দিয়ে হোঁচট খায়, আবার কখনো মানুষের ছোট্ট বাচ্চার মতো নিজের শুঁড়ের ডগাটা মুখে পুরে চুষতে থাকে! আর নদীতে জলের ছিটে দেখলেই মা হাতির পেটের নিচে গিয়ে লুকিয়ে উঁকি মারে।',
+      encourage_bn: 'মা, পশুপাখিদের এই নিষ্পাপ দুষ্টুমি দেখতে কী মিষ্টি লাগে! তোমার ছোটবেলার বা বাড়ির আশেপাশের কোনো পাখি বা বিড়ালছানার কথা মনে পড়ছে?'
+    },
+    {
+      badge_bn: '🦦 কল্যাণী এজেন্টের তৈরি আদুরে পশুপাখির গল্প',
+      title_bn: 'সমুদ্রের ভোঁদড় ছানাদের হাত ধরে ঘুমানো ও কাঠবিড়ালির বাগান',
+      story_bn: 'সমুদ্রের জলে যে ছোট্ট ভোঁদড় ছানারা থাকে, তারা রাতে জলের ওপর চিৎ হয়ে ভাসতে ভাসতে ঘুমায়। কিন্তু জলের স্রোতে যাতে প্রিয়জনের কাছ থেকে ভেসে দূরে চলে না যায়, তাই ঘুমের মধ্যেও দুজনে দুজনের ছোট্ট হাত দুটো শক্ত করে ধরে রাখে! আর গাছের কাঠবিড়ালিরা মাটির নিচে বাদাম লুকিয়ে রেখে ভুলে যায় বলেই সেখান থেকে শত শত নতুন ফলের গাছ জন্মায়।',
+      encourage_bn: 'মা, প্রকৃতির এই ছোট্ট প্রাণীগুলোর মতোই জীবন সহজ ও মিষ্টি। তোমার মনে যা আসছে বিনা দ্বিধায় বলো!'
+    }
+  ],
+  speak_mind: [
+    {
+      badge_bn: '💬 মায়ের মনের কথা ও তাৎক্ষণিক সাহায্য',
+      title_bn: 'মা, তোমার এখন যা ইচ্ছে করছে বা যা দরকার — বিনা দ্বিধায় বলো!',
+      story_bn: 'মা, তোমাকে কোনো নিয়ম মেনে চলতে হবে না বা কী বলবে ভেবে চিন্তা করতে হবে না। তোমার কি এখন একটু বিশ্রাম নিতে ইচ্ছে করছে? নাকি পছন্দের কোনো খাবার খেতে মন চাইছে? নাকি ঘরের কোনো ওষুধের পাতা বা জিনিস লাইভ ক্যামেরায় দেখিয়ে জানতে চাইছো? তোমার মনে যা-ই আসুক, একদম নিজের ঘরের মানুষের মতো আমায় ভয়েস মেসেজে বলো—আমি সবসময় তোমার পাশে আছি।',
+      encourage_bn: 'নিচের “💬 মন চাইলে কল্যাণীর সাথে একটু গল্প করো বা লাইভ ক্যামেরায় দেখাও” অংশটা খুলে ভয়েস মেসেজ রেকর্ড করো বা লাইভ ক্যামেরা অন করো মা!'
+    }
+  ]
+};
+
+let agentGeneratingState = false;
+
+async function generateDynamicAgentStory(dayNum, moodType) {
+  stopAllAudio();
+  const pool = DYNAMIC_AGENT_FALLBACK_POOL[moodType] || DYNAMIC_AGENT_FALLBACK_POOL.comedy;
+  const fallbackIdx = (dayNum + (kalyaniWikiVault.patternScores[moodType] || 0)) % pool.length;
+  let chosenCard = Object.assign({ moodType: moodType }, pool[fallbackIdx]);
+
+  const signalLabels = {
+    comedy: 'মা আজ কল্যাণী এজেন্টের কাছে নিষ্পাপ হাসির গল্প ([[গোপাল ভাঁড় ও রাজা কৃষ্ণচন্দ্র]]) শুনতে চেয়েছেন।',
+    gods: 'মা আজ ভগবানের মিষ্টি ও যুদ্ধহীন লীলা ([[ননীচোরা বালগোপাল]] / [[মা সারদা ও ঠাকুর]]) শুনতে পছন্দ করেছেন।',
+    animals: 'মা আজ [[আদুরে পশুপাখি]]-র মিষ্টি ও মজার গল্প শুনতে চেয়েছেন।',
+    speak_mind: 'মা আজ নিজের মনের কথা বলা বা তাৎক্ষণিক সাহায্যের ([[মন ও মেজাজের ধরণ]]) বোতামটি বেছে নিয়েছেন।'
+  };
+  recordMaBehaviorSignal('agent_flow', signalLabels[moodType] || signalLabels.comedy, moodType === 'speak_mind' ? 'reminiscence' : moodType);
+
+  const apiKey = getGeminiApiKey();
+  if (apiKey) {
+    agentGeneratingState = true;
+    renderPlanView();
+    try {
+      const promptMap = {
+        comedy: 'Create a fresh, hilarious, innocent Bengali comedy story for Ma (about Gopal Bhar & Maharaja Krishnachandra of Nadia, Birbal, Tenali Raman, or innocent household comedy—zero conflict or cruelty).',
+        gods: 'Create a fresh, sweet, affectionate Bengali story about Gods (Baby Gopal stealing butter, Shiva-Parvati & little Ganesha in Kailash, Puri Jagannath & Maa Lakshmi\'s rasagollas, Maa Annapurna, or Maa Sarada & Sri Ramakrishna—strictly ZERO wars, ZERO fights, NO Ramayana/Mahabharata battles).',
+        animals: 'Create a fresh, heartwarming, cute Bengali story about adorable animals or birds (baby elephants, sea otters holding paws, forgetful squirrels, calves & cows, talking parrots, or kittens).',
+        speak_mind: 'Create a warm, soothing, empowering Bengali message encouraging Ma to speak her mind openly, state her food/rest preferences without hesitation, or show anything on the Live Video Camera for immediate help.'
+      };
+      const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + encodeURIComponent(apiKey);
+      const resp = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          systemInstruction: {
+            parts: [{
+              text: (typeof KALYANI_SYSTEM_PROMPT === 'string' ? KALYANI_SYSTEM_PROMPT : '') + '\n\n' + buildMaWikiContextMarkdown()
+            }]
+          },
+          contents: [{
+            parts: [{
+              text: (promptMap[moodType] || promptMap.comedy) + '\nReturn strictly valid JSON with keys: {"badge_bn": "...", "title_bn": "...", "story_bn": "4-5 warm colloquial West Bengal Bengali sentences", "encourage_bn": "1 gentle sentence encouraging Ma to relax or share her mind", "wiki_note_bn": "1-line Bengali note with [[wikilinks]] for Ma\'s Wiki"}'
+            }]
+          }],
+          generationConfig: { temperature: 0.8, responseMimeType: 'application/json' }
+        })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        const raw = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || '';
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.title_bn && parsed.story_bn) {
+          chosenCard = {
+            moodType: moodType,
+            badge_bn: parsed.badge_bn || chosenCard.badge_bn,
+            title_bn: String(parsed.title_bn).replace(/[*#`_]/g, '').trim(),
+            story_bn: String(parsed.story_bn).replace(/[*#`_]/g, '').trim(),
+            encourage_bn: String(parsed.encourage_bn || chosenCard.encourage_bn).replace(/[*#`_]/g, '').trim()
+          };
+          if (parsed.wiki_note_bn) {
+            appendMaWikiEntry('joy_gods_and_stories', parsed.wiki_note_bn, moodType);
+          }
+        }
+      }
+    } catch (e) {}
+    agentGeneratingState = false;
+  }
+
+  if (!kalyaniWikiVault.dynamicCards) kalyaniWikiVault.dynamicCards = {};
+  kalyaniWikiVault.dynamicCards[String(dayNum)] = chosenCard;
+  saveKalyaniWikiVault();
+  renderPlanView();
+  if (typeof renderKoushikAdminPanel === 'function') renderKoushikAdminPanel();
+
+  await playDynamicAgentCardAudio(dayNum);
+}
+
+async function playDynamicAgentCardAudio(dayNum) {
+  const card = (kalyaniWikiVault.dynamicCards || {})[String(dayNum)];
+  if (!card) return;
+  const btnId = 'btnDynAgentPlay_' + dayNum;
+  const audioKey = 'dyn_agent_' + dayNum + '_' + (card.title_bn || '').slice(0, 12);
+  if (activeAudioKey === audioKey && !audioEl.paused) {
+    audioEl.pause();
+    syncAllAudioButtonsUI(false);
+    return;
+  }
+  let wavUrl = vnAudioCache[audioKey] || '';
+  if (!wavUrl && getGeminiApiKey()) {
+    wavUrl = await synthesizeKalyaniAoedeAudio(card.title_bn + '। ' + card.story_bn + ' ' + (card.encourage_bn || ''), getGeminiApiKey());
+    if (wavUrl) vnAudioCache[audioKey] = wavUrl;
+  }
+  const d = findDayObj(dayNum);
+  const fallbackUrl = wavUrl || (d && d.audio_url) || '';
+  playMorningChimeSound();
+  playOrToggleAudio(btnId, audioKey, fallbackUrl, (d && d.audio_b64) || '');
 }

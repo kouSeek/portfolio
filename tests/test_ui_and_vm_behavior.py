@@ -87,6 +87,9 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertLess(ma_html.index('id="slideBadge"'), ma_html.index('class="slide-img-wrap"'))
         self.assertGreater(ma_html.index('id="videoLetterCard"'), ma_html.index('id="letterSlideCard"'))
         self.assertGreater(ma_html.index('id="dailyQuoteCard"'), ma_html.index('id="videoLetterCard"'))
+        self.assertGreater(ma_html.index('id="koushikAdminSection"'), ma_html.index('id="dailyQuoteCard"'))
+        self.assertIn("মা, এই নিচের অংশটায় তোমার হাত দেওয়ার বা কিছু করার একেবারেই দরকার নেই।", ma_html)
+        self.assertNotIn('type="file"', ma_html)
         self.assertIn("object-fit: contain", ma_html)
         self.assertNotIn("object-fit: cover", ma_html)
         self.assertNotIn("aspect-ratio: 16 / 10", ma_html)
@@ -145,7 +148,7 @@ function getEl(id) {
   'primaryCalGridWrap','activeDayStage','videoLetterCard','btnWatchMovieLetter','letterSlideCard',
   'slideImg','slideBadge','slideDotsRow','slideTitleBn','slideHighlight',
   'slideBodyBn','btnSlideMainPlay','prevBtn','nextBtn','autoAdvanceBtn',
-  'celebrationToast','audioPlayer'
+  'celebrationToast','audioPlayer','koushikAdminSection','koushikAdminDrawer','koushikAdminBody'
 ].forEach(id => {
   const el = getEl(id);
   if (id === 'topPlayBtn' || id === 'btnQuotePlay') el.setAttribute('data-default-label', '🔊 শোনো');
@@ -259,17 +262,31 @@ const audio = getEl('audioPlayer');
   switchView('plan');
   selectGame(0, false);
 
-  // 2d. Walkie-Talkie Audio Message Studio inside every card (Zero App-Switching, Unhurried Recording & Spoken Reply):
+  // 2d. Proactive Agent Card, 21 Delight Stories (Gods/Comedy/Animals, Zero Fights), & Collapsible Optional Walkie-Talkie + Live Video Studio:
   assert.ok(typeof KALYANI_SYSTEM_PROMPT === 'string' && KALYANI_SYSTEM_PROMPT.includes('IRONCLAD LANGUAGE RULE'));
+  assert.strictEqual(DELIGHT_STORIES_21.length, 21);
+  assert.ok(getEl('activeDayStage').innerHTML.includes('id="kalyaniAgentCard"'), 'Proactive Agent Companion Card must render at top of day');
+  assert.ok(getEl('activeDayStage').innerHTML.includes('id="dailyDelightCard"'), 'Daily Innocent Comedy / Sweet Gods / Cute Animals card must render');
   assert.ok(getEl('activeDayStage').innerHTML.includes('id="vnStudio_1_0"'));
+  assert.ok(getEl('activeDayStage').innerHTML.includes('id="btnVnLiveCam_1_0"'), 'Live Video Camera button must be present');
+  assert.ok(!getEl('activeDayStage').innerHTML.includes('type="file"'), 'Gallery photo upload must not exist');
+  assert.ok(
+    getEl('activeDayStage').innerHTML.indexOf('optional-prompt-drawer') < getEl('activeDayStage').innerHTML.indexOf('id="vnStudio_1_0"'),
+    'Interactive Gemini Walkie-Talkie Studio must be inside the collapsible optional-prompt-drawer'
+  );
+  await generateDynamicAgentStory(1, 'comedy');
+  assert.ok(kalyaniWikiVault.dynamicCards['1'] && kalyaniWikiVault.dynamicCards['1'].title_bn);
   await startVoiceNoteRecording(1, 0);
   assert.strictEqual(vnRecordingState.active, true);
   assert.ok(getEl('activeDayStage').innerHTML.includes('বলা শেষ — কল্যাণীকে পাঠাও'));
-  vnRecordingState.liveTranscript = 'আমার ছোটবেলার রানাঘাটের কথা মনে পড়ছে';
+  vnRecordingState.liveTranscript = 'আমার গোপাল ভাঁড়ের হাসির গল্প খুব ভালো লাগে';
   await finishAndSendVoiceNote(1, 0);
   assert.strictEqual(vnRecordingState.active, false);
   assert.strictEqual((kalyaniThreads['1_0'] || []).length, 1);
   assert.ok(getEl('activeDayStage').innerHTML.includes('🌸 কল্যাণীর ভয়েস মেসেজ উত্তর:'));
+  assert.strictEqual(kalyaniWikiVault.pages.length, 7);
+  assert.ok(kalyaniWikiVault.pages[0].entries.join(' ').includes('[[হাসি, ভগবান ও প্রিয় গল্প]]'), 'Obsidian-style Ma Wiki Vault must contain [[wikilinks]]');
+  assert.ok(getEl('koushikAdminBody').innerHTML.includes('id="maObsidianWikiPanel"'), 'Koushik Admin Panel in Chithi tab must render Obsidian Wiki & API Key controls');
   delete doneMap['1_0'];
   delete kalyaniThreads['1_0'];
 

@@ -20,6 +20,9 @@
   - **Exact Food Dislikes & Unspoken Fear of Judgment/Insult:** Ma **hates eggs (`ডিম`), soybean (`সয়াবিন`), and mushroom (`মাশরুম`)**, and **does NOT prefer eating dal (`ডাল`) or paneer (`পনির`)**. Critically, **she does NOT feel the freedom to say these food dislikes aloud because she fears people will judge, lecture, or insult her**.
     - *Rule 1:* Never suggest eggs, soybean, mushroom, dal, or paneer as meals for Ma.
     - *Rule 2:* Actively liberate her from food-judgment fear—affirm that disliking certain foods is 100% normal and respectable, and help her state her true food preferences calmly and unapologetically without fearing judgment.
+- **Genuine Joy, Comedy, Divine Warmth & Cute Animals (Zero Fights / No Ramayana or Mahabharata):**
+  - **What Ma Genuinely Loves:** Ma lights up with **innocent, childlike fun and comedy** (`নিষ্পাপ হাসির গল্প ও মজার কৌতুক` — Maharaja Krishnachandra of Nadia & Gopal Bhar, Birbal, Tenali Raman, Bhanu-Jahar, Sukumar Ray), **sweet, peaceful, affectionate stories of Gods** (`ভগবানের মিষ্টি ও আদুরে লীলা` — Baby Gopal / *Nani-Chora Bala Gopala* stealing butter, Lord Shiva, Maa Parvati & little Ganesha's sweet family stories in Kailash, Puri Jagannath offering rasagollas to Maa Lakshmi, Maa Annapurna, and Maa Sarada & Sri Ramakrishna's humorous, childlike stories like Maa Sarada's pet parrot *Gangaram*), **legendary stories of kind, witty Kings**, and **cute, affectionate animals** (`আদুরে পশুপাখি` — baby elephants, sea otters holding hands while sleeping, forgetful squirrels planting forests, cows and calves' friendships, talking parrots, kittens).
+  - **Strict Anti-War / Anti-Fight Boundary (`No Ramayana / No Mahabharata`):** Ma **does NOT like fights, wars, bloodshed, or heavy conflict—so Ramayana and Mahabharata do NOT appeal to her**. Never use Ramayana/Mahabharata battle stories or conflict-heavy epics; keep all stories 100% soothing, funny, innocent, and conflict-free.
 
 ---
 

@@ -80,6 +80,7 @@ if ('serviceWorker' in navigator) {
 initMorningQuoteAndAlarm();
 findInitialCurrentDay();
 renderSlide();
+if (typeof renderKoushikAdminPanel === 'function') renderKoushikAdminPanel();
 if (typeof renderTvView === 'function') renderTvView();
 renderPlanView();
 scrollActiveDayChipIntoView();

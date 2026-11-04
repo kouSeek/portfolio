@@ -1034,9 +1034,357 @@
 }
 
 .vn-secondary-row {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
+  display: flex;
   gap: 8px;
+}
+
+.vn-livecam-btn {
+  width: 100%;
+}
+
+.vn-live-cam-stage {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border: 1.5px solid var(--accent-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vn-live-cam-badge {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.vn-live-video {
+  width: 100%;
+  max-height: 260px;
+  border-radius: var(--radius-sm);
+  background: #0F172A;
+  object-fit: contain;
+}
+
+.optional-reassure-banner {
+  padding: 10px 13px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  font-size: 0.98rem;
+  line-height: 1.58;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ============================================================================
+   SMART AGENT COMPANION CARD & DAILY EFFORTLESS DELIGHT CARD
+   ============================================================================ */
+.agent-companion-card {
+  margin-bottom: 12px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(145deg, #F0FDF4 0%, #FFFDF8 100%);
+  border: 2px solid var(--accent-border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.agent-companion-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.9rem;
+  line-height: 1.48;
+  font-weight: 800;
+}
+
+.agent-companion-title {
+  font-family: var(--font-serif);
+  font-size: 1.24rem;
+  line-height: 1.48;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.agent-companion-text {
+  font-size: 1.03rem;
+  line-height: 1.62;
+  color: var(--text-primary);
+}
+
+.agent-flow-pills {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.agent-flow-btn {
+  min-height: 48px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  border: 1.5px solid var(--accent-border);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.48;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.14s var(--ease-out), background 0.16s ease;
+}
+
+.agent-flow-btn:active {
+  transform: scale(0.98);
+}
+
+.agent-flow-btn.speak {
+  background: var(--gold-soft);
+  border-color: var(--gold-border);
+}
+
+.agent-dynamic-story-box {
+  margin-top: 6px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border: 1.5px solid var(--gold-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.agent-encourage-note {
+  margin-top: 8px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--gold-soft);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.delight-hero-card {
+  margin-bottom: 12px;
+  border-width: 2px;
+  border-color: var(--gold-border);
+  background: linear-gradient(180deg, #FFFBF0 0%, #FFFFFF 100%);
+}
+
+/* ============================================================================
+   KOUSHIK'S GUARDED ADMIN SETTINGS & OBSIDIAN-STYLE MA WIKI (Bottom of 💌 চিঠি)
+   ============================================================================ */
+.admin-guard-section {
+  margin: 24px 0 12px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #F8FAFC;
+  border: 2px dashed #CBD5E1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-guard-header {
+  font-size: 1.04rem;
+  line-height: 1.5;
+  font-weight: 800;
+  color: #334155;
+}
+
+.admin-guard-notice {
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: #FFF7ED;
+  border: 1.5px solid #FDBA74;
+  font-size: 1rem;
+  line-height: 1.58;
+  color: #7C2D12;
+}
+
+.admin-settings-drawer {
+  border-radius: 14px;
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  padding: 10px 14px;
+}
+
+.admin-settings-summary {
+  cursor: pointer;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #475569;
+  list-style: none;
+}
+
+.admin-settings-Summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-settings-body {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-block {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.admin-block-title {
+  font-size: 0.98rem;
+  line-height: 1.5;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.admin-status-line {
+  font-size: 0.93rem;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.admin-toggles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 8px;
+}
+
+.wiki-vault-block {
+  background: #FFFDF9;
+  border-color: var(--gold-border);
+}
+
+.wiki-pattern-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.wiki-score-pill {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--gold-soft);
+  border: 1px solid var(--gold-border);
+  color: var(--text-primary);
+  font-size: 0.86rem;
+}
+
+.wiki-tabs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wiki-tab-btn {
+  padding: 6px 11px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-strong);
+  background: #FFFFFF;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wiki-tab-btn.active {
+  background: var(--accent);
+  color: #FFFFFF;
+  border-color: var(--accent);
+}
+
+.wiki-count-badge {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.1);
+  font-size: 0.8rem;
+}
+
+.wiki-tab-btn.active .wiki-count-badge {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.wiki-active-page {
+  padding: 12px;
+  border-radius: 12px;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+}
+
+.wiki-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.wiki-page-title {
+  font-size: 1.04rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.wiki-tag-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.wiki-entries-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.wiki-entry-item {
+  font-size: 0.96rem;
+  line-height: 1.58;
+  color: var(--text-primary);
+}
+
+.wiki-link-pill {
+  padding: 1px 7px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.91rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .vn-recording-panel {

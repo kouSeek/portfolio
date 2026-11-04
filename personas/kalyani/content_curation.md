@@ -47,8 +47,8 @@ When evaluating any day or batch of days from `part1_days.md`, and when verifyin
    - Highlights relatable role models (Maa Sarada, Rani Rashmoni, Kadambini Ganguly, Subhasini Mistry, J.C. Bose, Sudha Murty, Nandalal Bose, Sister Nivedita, Satyajit Ray, Sunita Williams) that affirm age is never a barrier.
 5. **`charm_and_fun` — Song Lyrics Curiosity via `@YouTube Music`:**
    - Every day explores an evocative song lyric (`pillar: music`), plays it hands-free via YouTube Music, and unpacks the poetic meaning and composer backstory.
-6. **`curiosity_and_wonder` — Relatable Everyday World GK:**
-   - Explains world wonders and science using warm household/kitchen analogies (`pillar: gk_inspiring`).
+6. **`curiosity_and_wonder` — Innocent Comedy, Sweet Gods (No Fights/Ramayana/Mahabharata), Witty Kings & Cute Animals:**
+   - Delights Ma with innocent childlike comedy (Gopal Bhar & Maharaja Krishnachandra, Birbal), sweet conflict-free stories of Gods (Baby Gopal, Shiva-Parvati-Ganesha, Puri Jagannath, Maa Sarada's parrot Gangaram), and cute animals (baby elephants, sea otters holding paws, forgetful squirrels, calves)—strictly avoiding wars, fights, Ramayana, or Mahabharata (`pillar: gk_inspiring`).
 7. **`storytelling_depth` — Concrete Teaching Target per Game:**
    - Every single game (`4–6` per day) achieves a concrete skill, insight, or emotional shift—no empty filler cards—with a natural Turn-1 spoken prompt (`prompt_bn`) and Turn-2 deepening prompt (`followup_prompt_bn`).
 8. **`ease_of_learning` — `60% / 30% / 10%` Language Balance:**
