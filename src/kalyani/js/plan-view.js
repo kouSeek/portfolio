@@ -13,6 +13,7 @@ function selectDay(dayNum, autoPlayAudio) {
     showCelebrationToast('🔒 মা, আগে ‘দিন ' + toBnDigits(frontier) + '’-এর সবকটা খেলায় টিক (✅) দাও—তাহলেই নতুন দিনের চমক খুলে যাবে!');
     return false;
   }
+  if (typeof stopActiveVoiceAndVideoCapture === 'function') stopActiveVoiceAndVideoCapture();
   curDayNum = dayNum;
   curGameIdx = getNextOpenGameIdx(dayNum);
   primaryCalOpen = false;
@@ -20,17 +21,18 @@ function selectDay(dayNum, autoPlayAudio) {
   renderPlanView();
   scrollActiveDayChipIntoView();
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (autoPlayAudio) toggleDayOverviewAudio();
+  if (autoPlayAudio && autoVoicePlay) toggleDayOverviewAudio();
   return true;
 }
 
 function selectGame(gIdx, autoPlayAudio) {
+  if (typeof stopActiveVoiceAndVideoCapture === 'function') stopActiveVoiceAndVideoCapture();
   const d = findDayObj(curDayNum);
   const maxIdx = (d && d.agendas) ? d.agendas.length - 1 : 0;
   curGameIdx = Math.max(0, Math.min(maxIdx, gIdx));
   stopAllAudio();
   renderPlanView();
-  if (autoPlayAudio !== false) {
+  if (autoPlayAudio !== false && autoVoicePlay) {
     const btnEl = document.getElementById('btnAgPlay_' + curDayNum + '_' + curGameIdx);
     playAgendaByIdx(curDayNum, curGameIdx, btnEl);
   }
@@ -39,6 +41,14 @@ function selectGame(gIdx, autoPlayAudio) {
 function toggleShowAllGames() {
   showAllGamesInDay = !showAllGamesInDay;
   renderPlanView();
+}
+
+function toggleAutoVoicePlay() {
+  autoVoicePlay = !autoVoicePlay;
+  saveAutoVoicePlay();
+  if (!autoVoicePlay) stopAllAudio();
+  renderPlanView();
+  if (typeof renderKoushikAdminPanel === 'function') renderKoushikAdminPanel();
 }
 
 function toggleRadioMode() {
@@ -249,34 +259,26 @@ function toggleDelightLiked(dayNum) {
 }
 
 function buildProactiveAgentCardHtml(d) {
-  const topTheme = getTopMaInterestTheme();
-  const themeNames = {
-    comedy: 'নিষ্পাপ হাসির গল্প ও রাজা-মহারাজার মজার কথা',
-    gods: 'ভগবানের মিষ্টি লীলা (বালগোপাল, ভোলানাথ, জগন্নাথদেব ও মা সারদা)',
-    animals: 'আদুরে পশুপাখিদের মিষ্টি ও মজার কীর্তি',
-    music: 'পুরনো দিনের বাংলা গান ও সুরের মায়া',
-    reminiscence: 'রানাঘাটের শৈশব ও মনের হালকা কথা'
-  };
   const dynCard = (kalyaniWikiVault.dynamicCards || {})[String(d.day)] || null;
   const dynBtnId = 'btnDynAgentPlay_' + d.day;
+  const isOpen = !!(agentGeneratingState || dynCard);
 
   let dynCardHtml = '';
   if (agentGeneratingState) {
     dynCardHtml = `
-      <div class="vn-sending-panel" style="margin-top:12px;">
-        ✨ কল্যাণী এজেন্ট তোমার পছন্দ অনুযায়ী এক্ষুনি নতুন গল্প ও অডিও তৈরি করছে...
+      <div class="vn-sending-panel" style="margin-top:10px;">
+        ✨ নতুন গল্প তৈরি হচ্ছে...
       </div>
     `;
   } else if (dynCard) {
     dynCardHtml = `
       <div id="dynamicAgentStoryCard_${d.day}" class="agent-dynamic-story-box">
         <div class="agenda-cat">${dynCard.badge_bn}</div>
-        <div class="agenda-title" style="margin-top:6px;">${dynCard.title_bn}</div>
+        <div class="agenda-title" style="margin-top:4px;">${dynCard.title_bn}</div>
         <div class="agenda-detail">${dynCard.story_bn}</div>
-        <div class="agent-encourage-note">💡 ${dynCard.encourage_bn || ''}</div>
-        <div class="agenda-actions" style="margin-top:10px;">
-          <button id="${dynBtnId}" class="ag-btn listen" data-default-label="🔊 নতুন গল্পটা শোনো" onclick="playDynamicAgentCardAudio(${d.day})">
-            🔊 নতুন গল্পটা শোনো
+        <div class="agenda-actions" style="margin-top:8px;">
+          <button id="${dynBtnId}" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="playDynamicAgentCardAudio(${d.day})">
+            🔊 শোনো
           </button>
         </div>
       </div>
@@ -284,28 +286,26 @@ function buildProactiveAgentCardHtml(d) {
   }
 
   return `
-    <div id="kalyaniAgentCard" class="agent-companion-card">
-      <div class="agent-companion-badge">✨ কল্যাণী স্মার্ট এজেন্ট • মায়ের মন বুঝে নিজে থেকেই সাথে আছে</div>
-      <div class="agent-companion-title">মা, তোমাকে কিছুই খুঁজতে বা কী বলবে ভেবে চিন্তা করতে হবে না!</div>
-      <div class="agent-companion-text">
-        আমি তোমার পছন্দ থেকে জেনেছি যে তুমি <strong>${themeNames[topTheme] || themeNames.comedy}</strong> ভীষণ ভালোবাসো। আমি নিজেই তোমাকে এক-এক করে গল্প শোনাবো—আর তোমার যখনই নিজের মনের কোনো কথা বলতে বা কোনো সাহায্য চাইতে ইচ্ছে করবে, নিচের যেকোনো বোতামটা একবার ছোঁও:
+    <details id="kalyaniAgentCard" class="agent-companion-card minimal-section-drawer"${isOpen ? ' open' : ''}>
+      <summary class="minimal-drawer-summary">✨ নতুন গল্প ও মনের কথা (ঐচ্ছিক) ▾</summary>
+      <div class="minimal-drawer-body">
+        <div class="agent-flow-pills">
+          <button id="btnAgentFlowComedy_${d.day}" class="agent-flow-btn" onclick="generateDynamicAgentStory(${d.day}, 'comedy')">
+            😂 হাসির গল্প
+          </button>
+          <button id="btnAgentFlowGods_${d.day}" class="agent-flow-btn" onclick="generateDynamicAgentStory(${d.day}, 'gods')">
+            🪷 ঠাকুরের গল্প
+          </button>
+          <button id="btnAgentFlowAnimals_${d.day}" class="agent-flow-btn" onclick="generateDynamicAgentStory(${d.day}, 'animals')">
+            🐘 পশুপাখি
+          </button>
+          <button id="btnAgentFlowSpeak_${d.day}" class="agent-flow-btn speak" onclick="generateDynamicAgentStory(${d.day}, 'speak_mind')">
+            💬 মনের কথা
+          </button>
+        </div>
+        ${dynCardHtml}
       </div>
-      <div class="agent-flow-pills">
-        <button id="btnAgentFlowComedy_${d.day}" class="agent-flow-btn" onclick="generateDynamicAgentStory(${d.day}, 'comedy')">
-          😂 নতুন হাসির গল্প শোনাও
-        </button>
-        <button id="btnAgentFlowGods_${d.day}" class="agent-flow-btn" onclick="generateDynamicAgentStory(${d.day}, 'gods')">
-          🪷 ভগবানের মিষ্টি লীলা শোনাও
-        </button>
-        <button id="btnAgentFlowAnimals_${d.day}" class="agent-flow-btn" onclick="generateDynamicAgentStory(${d.day}, 'animals')">
-          🐘 আদুরে পশুপাখির গল্প শোনাও
-        </button>
-        <button id="btnAgentFlowSpeak_${d.day}" class="agent-flow-btn speak" onclick="generateDynamicAgentStory(${d.day}, 'speak_mind')">
-          💬 মনের কথা বলবো / সাহায্য চাই
-        </button>
-      </div>
-      ${dynCardHtml}
-    </div>
+    </details>
   `;
 }
 
@@ -316,25 +316,21 @@ function buildDailyDelightCardHtml(d) {
   const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(s.yt_query);
 
   return `
-    <article id="dailyDelightCard" class="agenda-card delight-hero-card" data-accent="amber">
-      <div class="agenda-card-header">
-        <div class="agenda-cat">${s.badge_bn}</div>
-      </div>
-      <div class="agenda-title">${s.title_bn}</div>
-      <div class="step-section">
-        <div class="agenda-step-heading">🌸 মা, একদম বিনা চেষ্টায় শুধু আরাম করে হাসো ও শোনো (কোনো কাজ নেই!):</div>
+    <details id="dailyDelightCard" class="agenda-card delight-hero-card minimal-section-drawer" data-accent="amber">
+      <summary class="minimal-drawer-summary">😄 আজকের ছোট গল্প: ${s.title_bn} (ঐচ্ছিক) ▾</summary>
+      <div class="minimal-drawer-body">
         <div class="agenda-detail">${s.story_bn}</div>
+        <div class="agenda-actions" style="margin-top:10px;">
+          <button id="${playBtnId}" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="playDelightStoryAudio(${d.day})">🔊 শোনো</button>
+          <button id="btnDelightLike_${d.day}" class="ag-btn check ${liked ? 'checked' : ''}" onclick="toggleDelightLiked(${d.day})">
+            ${liked ? '✅ ভালো লেগেছে' : '❤️ ভালো লাগলো'}
+          </button>
+          <a class="ag-btn" href="${ytUrl}" target="_blank" rel="noopener noreferrer" onclick="stopAllAudio()" style="text-decoration:none;">
+            ▶️ ইউটিউব
+          </a>
+        </div>
       </div>
-      <a class="yt-direct-btn" href="${ytUrl}" target="_blank" rel="noopener noreferrer" onclick="stopAllAudio()">
-        ▶️ ইউটিউবে এই মজার গল্প/ভিডিওটা দেখো
-      </a>
-      <div class="agenda-actions">
-        <button id="${playBtnId}" class="ag-btn listen" data-default-label="🔊 গল্পটা শোনো" onclick="playDelightStoryAudio(${d.day})">🔊 গল্পটা শোনো</button>
-        <button id="btnDelightLike_${d.day}" class="ag-btn check ${liked ? 'checked' : ''}" onclick="toggleDelightLiked(${d.day})">
-          ${liked ? '✅ খুব ভালো লেগেছে' : '❤️ খুব ভালো লাগলো'}
-        </button>
-      </div>
-    </article>
+    </details>
   `;
 }
 
@@ -366,7 +362,7 @@ function toggleAgendaDone(dayNum, agIdx) {
         stopAllAudio();
         renderPlanView();
         scrollActiveDayChipIntoView();
-        toggleDayOverviewAudio();
+        if (autoVoicePlay) toggleDayOverviewAudio();
         return;
       }
     } else {
@@ -375,8 +371,10 @@ function toggleAgendaDone(dayNum, agIdx) {
         curGameIdx = getNextOpenGameIdx(dayNum);
         stopAllAudio();
         renderPlanView();
-        const nextBtnEl = document.getElementById('btnAgPlay_' + dayNum + '_' + curGameIdx);
-        playAgendaByIdx(dayNum, curGameIdx, nextBtnEl);
+        if (autoVoicePlay) {
+          const nextBtnEl = document.getElementById('btnAgPlay_' + dayNum + '_' + curGameIdx);
+          playAgendaByIdx(dayNum, curGameIdx, nextBtnEl);
+        }
         return;
       }
     }
@@ -405,71 +403,74 @@ function buildWalkieTalkieStudioHtml(d, ag, idx) {
   const threadHtml = turns.map((t, tIdx) => `
     <div class="vn-turn-block">
       <div class="vn-user-bubble">
-        <div class="vn-bubble-eyebrow">🗣️ মায়ের অডিও মেসেজ ${t.has_live_video ? '📹' : ''}:</div>
+        <div class="vn-bubble-eyebrow">🗣️ মা যা পাঠিয়েছো ${t.has_live_video ? '📹' : '🎙️'}:</div>
         <div class="vn-bubble-text">“${t.heard_bn}”</div>
       </div>
       <div class="vn-ai-bubble">
-        <div class="vn-bubble-eyebrow">🌸 কল্যাণীর ভয়েস মেসেজ উত্তর:</div>
+        <div class="vn-gemini-badge">✨ জেমিনি (কল্যাণীর ভয়েস মেসেজ উত্তর):</div>
         <div class="vn-bubble-text">${t.reply_bn}</div>
-        <button id="btnVnReplyPlay_${d.day}_${idx}_${tIdx}" class="ag-btn listen vn-reply-play-btn" data-default-label="🔊 কল্যাণীর উত্তর শোনো" onclick="playVoiceNoteReplyAudio(${d.day}, ${idx}, ${tIdx})">
-          🔊 কল্যাণীর উত্তর শোনো
+        <button id="btnVnReplyPlay_${d.day}_${idx}_${tIdx}" class="ag-btn listen vn-reply-play-btn" data-default-label="🔊 জেমিনির উত্তর শোনো" onclick="playVoiceNoteReplyAudio(${d.day}, ${idx}, ${tIdx})">
+          🔊 জেমিনির উত্তর শোনো
         </button>
       </div>
     </div>
   `).join('');
 
+  const errHtml = vnRecordingState.errorMsg ? `<div class="vn-error-msg">${vnRecordingState.errorMsg}</div>` : '';
+
   const liveCamPanelHtml = isCamHere ? `
     <div id="vnLiveCamWrap_${d.day}_${idx}" class="vn-live-cam-stage">
-      <div class="vn-live-cam-badge">📹 লাইভ ভিডিও ক্যামেরা চালু আছে — জিনিসটা ক্যামেরার সামনে ধরে ভয়েস মেসেজ পাঠাও!</div>
+      <div class="vn-live-cam-badge">📹 ভিডিও ক্যামেরা চালু</div>
       <video id="vnLiveVideo_${d.day}_${idx}" class="vn-live-video" autoplay playsinline muted></video>
-      <div class="vn-secondary-row" style="margin-top:8px;">
-        <button class="ag-btn" onclick="switchCardLiveCamera(${d.day}, ${idx})">🔄 ক্যামেরা ঘোরাও</button>
-        <button class="ag-btn" onclick="toggleCardLiveVideo(${d.day}, ${idx})">⏹️ ক্যামেরা বন্ধ করো</button>
+      <div class="vn-secondary-row" style="margin-top:6px;">
+        <button id="btnVnSwitchCam_${d.day}_${idx}" class="ag-btn" onclick="switchCardLiveCamera(${d.day}, ${idx})">🔄 ক্যামেরা ঘোরাও</button>
+        <button id="btnVnStopCam_${d.day}_${idx}" class="ag-btn" onclick="toggleCardLiveVideo(${d.day}, ${idx})">⏹️ ক্যামেরা বন্ধ</button>
       </div>
     </div>
   ` : '';
 
   let controlsHtml = '';
-  if (isRecHere) {
+  if (isSendingHere) {
+    controlsHtml = `
+      <div class="vn-sending-panel">
+        <div class="vn-rec-status">✨ জেমিনি তোমার কথা শুনে উত্তর তৈরি করছে...</div>
+        <div id="vnListenProgress_${d.day}_${idx}" class="vn-listen-progressbar sending" role="progressbar" aria-label="জেমিনি উত্তর তৈরি করছে">
+          <div class="vn-listen-bar-fill"></div>
+        </div>
+      </div>
+    `;
+  } else if (isRecHere || isCamHere) {
+    const pct = Math.min(100, Math.max(12, (vnRecordingState.seconds % 20) * 5 + 15));
     controlsHtml = `
       <div class="vn-recording-panel">
         <div class="vn-rec-status">
-          🔴 মা, তোমার ভয়েস মেসেজ রেকর্ড হচ্ছে... (<span id="vnTimer_${d.day}_${idx}">${formatAudioSecondsBn(vnRecordingState.seconds)}</span>)
+          🟢 জেমিনি এখন মন দিয়ে তোমার কথা শুনছে... (<span id="vnTimer_${d.day}_${idx}">${formatAudioSecondsBn(vnRecordingState.seconds)}</span>)
         </div>
-        <div class="vn-rec-hint">
-          ধীরেসুস্থে যতক্ষণ খুশি থেমে থেমে বলো — কেউ মাঝখানে কথা বলবে না! বলা শেষ হলে নিচের সবুজ বোতামটা ছোঁও:
+        <div id="vnListenProgress_${d.day}_${idx}" class="vn-listen-progressbar listening" role="progressbar" aria-label="জেমিনি এখন শুনছে">
+          <div id="vnListenFill_${d.day}_${idx}" class="vn-listen-bar-fill" style="width:${pct}%"></div>
         </div>
         <div id="vnLivePreview_${d.day}_${idx}" class="vn-live-preview">
-          ${vnRecordingState.liveTranscript ? ('🗣️ “' + vnRecordingState.liveTranscript + '”') : '🎙️ মায়ের গলার আওয়াজ শোনা হচ্ছে...'}
+          ${vnRecordingState.liveTranscript ? ('🗣️ “' + vnRecordingState.liveTranscript + '”') : '🎙️ মা, নিজের মতো ধীরেসুস্থে বলো...'}
         </div>
         <div class="vn-rec-actions">
           <button id="btnVnSend_${d.day}_${idx}" class="vn-send-btn" onclick="finishAndSendVoiceNote(${d.day}, ${idx})">
             ✅ বলা শেষ — কল্যাণীকে পাঠাও ▶️
           </button>
           <button id="btnVnCancel_${d.day}_${idx}" class="ag-btn" onclick="cancelVoiceNoteRecording()">
-            ❌ বাতিল করো
+            ❌ বাতিল
           </button>
         </div>
       </div>
     `;
-  } else if (isSendingHere) {
-    controlsHtml = `
-      <div class="vn-sending-panel">
-        ⏳ কল্যাণী মনোযোগ দিয়ে তোমার ভয়েস মেসেজ শুনছে এবং অডিও উত্তর তৈরি করছে...
-      </div>
-    `;
   } else {
-    const recBtnLabel = turns.length > 0
-      ? '🎙️ পরের ভয়েস মেসেজ রেকর্ড করো (উত্তর দাও)'
-      : '🎙️ এখানে ছুঁয়ে ভয়েস মেসেজ রেকর্ড করো (অ্যাপ পাল্টাতে হবে না)';
     controlsHtml = `
       <div class="vn-idle-controls">
-        <button id="btnVnRecord_${d.day}_${idx}" class="vn-record-btn" onclick="startVoiceNoteRecording(${d.day}, ${idx})">
-          ${recBtnLabel}
-        </button>
         <div class="vn-secondary-row">
-          <button id="btnVnLiveCam_${d.day}_${idx}" class="ag-btn vn-livecam-btn ${isCamHere ? 'check checked' : ''}" onclick="toggleCardLiveVideo(${d.day}, ${idx})">
-            ${isCamHere ? '📹 লাইভ ভিডিও চালু আছে' : '📹 লাইভ ভিডিও ক্যামেরা অন করো'}
+          <button id="btnVnRecord_${d.day}_${idx}" class="vn-record-btn" style="flex:1;" onclick="startVoiceNoteRecording(${d.day}, ${idx}, false)">
+            🎙️ ভয়েস পাঠাও
+          </button>
+          <button id="btnVnLiveCam_${d.day}_${idx}" class="ag-btn vn-livecam-btn" style="flex:1;" onclick="toggleCardLiveVideo(${d.day}, ${idx})">
+            📹 ভিডিও পাঠাও
           </button>
         </div>
       </div>
@@ -478,9 +479,8 @@ function buildWalkieTalkieStudioHtml(d, ag, idx) {
 
   return `
     <div id="vnStudio_${d.day}_${idx}" class="walkie-talkie-studio">
-      <div class="vn-studio-header">
-        <span>🎙️ কল্যাণীর সাথে ভয়েস মেসেজে বা লাইভ ভিডিও ক্যামেরায় কথা বলো:</span>
-      </div>
+      <div class="vn-studio-header">কল্যাণীকে ভয়েস মেসেজ বা ভিডিও তুলে পাঠাও:</div>
+      ${errHtml}
       ${threadHtml}
       ${liveCamPanelHtml}
       ${controlsHtml}
@@ -524,7 +524,7 @@ function buildAgendaCardHtml(d, ag, idx) {
   const ytMusicGuideHtml = isSongGame ? `
       <div class="agenda-prompt-box yt-music-box">
         <div class="agenda-prompt-label">🎵 ইউটিউবে সরাসরি গানটা শোনো বা ভয়েস মেসেজে কল্যাণীকে বলো!</div>
-        <div class="agenda-detail" style="font-size:1.01rem;">মা, উপরের কমলা বোতামটায় ছুঁলেই সরাসরি ইউটিউবে গানটা বেজে উঠবে! আর গানটা শোনা হয়ে গেলে নিচে ভয়েস মেসেজ রেকর্ড করে কল্যাণীর সাথে গানের কথা আর মনের ভাবনা নিয়ে গল্প করো।</div>
+        <div class="agenda-detail" style="font-size:1.01rem;">মা, উপরের কমলা বোতামটায় ছুঁলেই সরাসরি ইউটিউবে গানটা বেজে উঠবে!</div>
       </div>` : '';
 
   const followupLabel = isSongGame
@@ -538,8 +538,8 @@ function buildAgendaCardHtml(d, ag, idx) {
       </div>` : '';
 
   const promptLabel = isSongGame
-    ? '🎙️ এই গানটা নিয়ে ভয়েস মেসেজে কী বলবে তার ক্লু:'
-    : '🎙️ ভয়েস মেসেজে কল্যাণীকে কী বলবে তার ক্লু (নিজের মতো ধীরেসুস্থে বলো):';
+    ? '🎙️ গানের ক্লু:'
+    : '🎙️ কী বলবে তার ক্লু:';
 
   const ytDirectBtnHtml = isSongGame ? `
       <a class="yt-direct-btn" href="${extractSongSearchUrl(ag)}" target="_blank" rel="noopener noreferrer" onclick="stopAllAudio()">
@@ -552,29 +552,36 @@ function buildAgendaCardHtml(d, ag, idx) {
         <div class="agenda-cat">${ag.category}</div>
       </div>
       <div class="agenda-title">${ag.title_bn}</div>
-      <div class="step-section">
-        <div class="agenda-step-heading">${stepHeading}</div>
-        <div class="agenda-detail">${ag.detail_bn}</div>
-      </div>${ytDirectBtnHtml}
+      ${ytDirectBtnHtml}
       <div class="agenda-actions">
-        <button id="${btnId}" class="ag-btn listen" data-default-label="🔊 গল্পটা শোনো" onclick="playAgendaByIdx(${d.day}, ${idx}, this)">🔊 গল্পটা শোনো</button>
-        <button class="ag-btn check ${isDone ? 'checked' : ''}" onclick="toggleAgendaDone(${d.day}, ${idx})">
-          ${isDone ? '✅ ভালো লেগেছে' : '❤️ ভালো লাগলো'}
+        <button id="${btnId}" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="playAgendaByIdx(${d.day}, ${idx}, this)">🔊 শোনো</button>
+        <button id="btnAgDone_${d.day}_${idx}" class="ag-btn check ${isDone ? 'checked' : ''}" onclick="toggleAgendaDone(${d.day}, ${idx})">
+          ${isDone ? '✅ হয়ে গেছে' : '⬜ হয়ে গেছে'}
         </button>
       </div>
+
+      <details class="game-sub-drawer">
+        <summary class="game-sub-summary">📖 গল্পটা পড়ো (ঐচ্ছিক) ▾</summary>
+        <div class="step-section">
+          <div class="agenda-step-heading">${stepHeading}</div>
+          <div class="agenda-detail">${ag.detail_bn}</div>
+        </div>
+      </details>
+
       <details class="optional-prompt-drawer"${keepDrawerOpen ? ' open' : ''}>
-        <summary class="optional-prompt-summary">💬 মন চাইলে কল্যাণীর সাথে একটু গল্প করো বা লাইভ ক্যামেরায় দেখাও (না করলে একটুও অসুবিধা নেই!) ▾</summary>
+        <summary class="optional-prompt-summary">🎙️ কথা বলো বা ভিডিও (ঐচ্ছিক) ▾</summary>
         <div class="optional-prompt-body">
-          <div class="optional-reassure-banner">
-            🌸 মা, এই খেলার অংশটা একদম ঐচ্ছিক (Optional)—তোমার যদি কথা বলতে বা খেলতে ইচ্ছে না করে, তবে শুধু গল্প শুনেই ছেড়ে দাও, একটুও অসুবিধা নেই! আর যদি মন চায়, নিচে ভয়েস মেসেজ রেকর্ড করো বা লাইভ ভিডিও ক্যামেরা অন করো:
-          </div>
           ${buildWalkieTalkieStudioHtml(d, ag, idx)}
-          <div class="agenda-prompt-box">
-            <div class="agenda-prompt-label">${promptLabel}</div>
-            <div class="agenda-prompt-speech">“${ag.prompt_bn}”</div>
-            <div class="agenda-prompt-howto">💡 (নিজের মতো সহজ বাংলায় থেমে থেমে বললেই হবে!)</div>
-          </div>${ytMusicGuideHtml}${followupHtml}
-          <button class="ag-btn full-prompt-audio-btn" onclick="playAgendaByIdx(${d.day}, ${idx}, null, true)">🔊 ক্লু-সহ পুরো কথা শোনো</button>
+          <details class="game-sub-drawer" style="margin-top:8px;">
+            <summary class="game-sub-summary">💡 কী বলবে তার ক্লু (ঐচ্ছিক) ▾</summary>
+            <div class="optional-prompt-body">
+              <div class="agenda-prompt-box">
+                <div class="agenda-prompt-label">${promptLabel}</div>
+                <div class="agenda-prompt-speech">“${ag.prompt_bn}”</div>
+              </div>${ytMusicGuideHtml}${followupHtml}
+              <button class="ag-btn full-prompt-audio-btn" onclick="playAgendaByIdx(${d.day}, ${idx}, null, true)">🔊 ক্লু শোনো</button>
+            </div>
+          </details>
         </div>
       </details>
     </article>
@@ -607,7 +614,7 @@ function renderPlanView() {
 
   const calBtn = document.getElementById('btnToggleCalGrid');
   if (calBtn) {
-    calBtn.innerHTML = primaryCalOpen ? '🗓️ বন্ধ করো' : '🗓️ ক্যালেন্ডার';
+    calBtn.innerHTML = primaryCalOpen ? '🗓️ বন্ধ' : '🗓️ ক্যালেন্ডার';
   }
 
   const primaryCalEl = document.getElementById('primaryCalGridWrap');
@@ -615,7 +622,7 @@ function renderPlanView() {
     if (primaryCalOpen) {
       primaryCalEl.style.display = 'block';
       primaryCalEl.innerHTML = `
-        <div class="cal-grid-subtitle">মা, এক-একটা দিনের সব খেলায় টিক (✅) দিলে পরের দিনটা আপনিই খুলে যাবে:</div>
+        <div class="cal-grid-subtitle">মা, যেকোনো দিন বেছে নাও:</div>
         <div id="primaryCalendarGrid" class="calendar-grid">${buildCalendarGridCellsHtml(DAYS_21, 'p1CalCell')}</div>
       `;
     } else {
@@ -669,13 +676,13 @@ function renderPlanView() {
         <div class="day-hero-badge">দিন ${toBnDigits(d.day)} • ${d.phase}</div>
       </div>
       <div class="day-hero-title">${d.title_bn}</div>
-      <div class="day-hero-summary">${d.summary_bn}</div>
-      <button id="btnDayMainPlay" class="big-voice-btn" data-default-label="🔊 আজকের কথাগুলো শোনো" onclick="toggleDayOverviewAudio()">
-        🔊 আজকের কথাগুলো শোনো
+      <details class="game-sub-drawer" style="margin-bottom:10px;">
+        <summary class="game-sub-summary">🌸 আজকের কথা পড়ো (ঐচ্ছিক) ▾</summary>
+        <div class="day-hero-summary" style="margin-top:8px;">${d.summary_bn}</div>
+      </details>
+      <button id="btnDayMainPlay" class="big-voice-btn" data-default-label="🔊 আজকের কথা শোনো" onclick="toggleDayOverviewAudio()">
+        🔊 আজকের কথা শোনো
       </button>
-      <div class="radio-mode-banner">
-        <div class="radio-mode-text">🌸 <strong>মা, আজ কোনো নিয়ম বা কথা বলার চাপ নেই:</strong> শুধু আরাম করে হাসির গল্প, ভগবানের মিষ্টি লীলা আর গান শোনো — খেলা করতে না ইচ্ছে করলে একটুও করতে হবে না!</div>
-      </div>
       <div class="day-prev-next-row">
         <button id="prevDayBtn" class="ag-btn" style="flex:1;" ${atFirstDay ? 'disabled' : ''} onclick="selectDay(${d.day - 1}, true)">⬅️ আগের দিন</button>
         <button id="nextDayBtn" class="${nextBtnCls}" style="flex:1;" ${atLastDay ? 'disabled' : ''} onclick="selectDay(${d.day + 1}, true)">${nextBtnLabel}</button>
@@ -687,9 +694,9 @@ function renderPlanView() {
 
     <div class="game-nav-card">
       <div class="game-nav-header">
-        <span class="game-nav-title">🎯 আজকের গল্প ও গান (যেকোনোটায় ছুঁয়ে শোনো — খেলা ঐচ্ছিক):</span>
+        <span class="game-nav-title">🎯 আজকের খেলা:</span>
         <button id="toggleAllGamesBtn" class="view-mode-toggle" onclick="toggleShowAllGames()">
-          ${showAllGamesInDay ? '🎯 ১টি করে দেখো' : '📜 সবগুলো একসাথে'}
+          ${showAllGamesInDay ? '🎯 ১টি করে' : '📜 সবগুলো'}
         </button>
       </div>
       <div class="game-grid-6" data-count="${d.agendas.length}">${tilesHtml}</div>

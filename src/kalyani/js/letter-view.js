@@ -55,7 +55,7 @@ function goToSlide(idx, autoPlay) {
   curSlideIdx = Math.max(0, Math.min(SLIDES.length - 1, idx));
   stopAllAudio();
   renderSlide();
-  if (autoPlay) toggleSlideAudio();
+  if (autoPlay && autoVoicePlay) toggleSlideAudio();
 }
 
 function prevSlide() {
@@ -151,14 +151,6 @@ function copyKalyaniSystemPrompt() {
   showCelebrationToast('📋 অ্যান্ড্রয়েড জেমিনি মাস্টার প্রম্পট কপি হয়েছে!');
 }
 
-function clearKalyaniThreadsAndMemory() {
-  kalyaniThreads = {};
-  saveKalyaniThreads();
-  renderPlanView();
-  renderKoushikAdminPanel();
-  showCelebrationToast('🧹 ভয়েস মেসেজ চ্যাট ইতিহাস পরিষ্কার করা হয়েছে।');
-}
-
 function renderKoushikAdminPanel() {
   const host = document.getElementById('koushikAdminBody');
   if (!host) return;
@@ -187,36 +179,39 @@ function renderKoushikAdminPanel() {
 
   host.innerHTML = `
     <div class="admin-block">
-      <div class="admin-block-title">🔑 ১. গুগল জেমিনি এআই চাবি (API Key — কৌশিকের কনফিগারেশন)</div>
+      <div class="admin-block-title">🔑 ১. গুগল জেমিনি এআই চাবি (API Key)</div>
       <div class="admin-status-line">
-        স্ট্যাটাস: <strong>${hasKey ? '✅ এআই চাবি সংযুক্ত আছে (ভয়েস উত্তর ও স্মার্ট এজেন্ট সক্রিয়)' : '⚠️ এআই চাবি এখনো দেওয়া হয়নি (অফলাইন ফলব্যাক সক্রিয়)'}</strong>
+        স্ট্যাটাস: <strong>${hasKey ? '✅ এআই চাবি সংযুক্ত' : '⚠️ অফলাইন ফলব্যাক সক্রিয়'}</strong>
       </div>
       <div class="vn-key-row">
         <input id="adminGeminiKeyInput" type="password" class="vn-key-input" placeholder="AIza..." value="${getGeminiApiKey()}" />
-        <button id="btnSaveAdminKey" class="ag-btn check checked" onclick="saveAdminGeminiKey()">💾 সেভ করো</button>
-        <button id="btnClearAdminKey" class="ag-btn" onclick="clearAdminGeminiKey()">🗑️ মুছে ফেলো</button>
+        <button id="btnSaveAdminKey" class="ag-btn check checked" onclick="saveAdminGeminiKey()">💾 সেভ</button>
+        <button id="btnClearAdminKey" class="ag-btn" onclick="clearAdminGeminiKey()">🗑️ মুছো</button>
       </div>
     </div>
 
     <div class="admin-block">
-      <div class="admin-block-title">🎛️ ২. অ্যাপের আচরণ ও মোড কন্ট্রোল (App Behavior Controls)</div>
+      <div class="admin-block-title">🎛️ ২. অডিও ও মোড সেটিংস</div>
       <div class="admin-toggles-grid">
+        <button id="btnAdminAutoVoice" class="ag-btn ${autoVoicePlay ? 'check checked' : ''}" onclick="toggleAutoVoicePlay()">
+          ${autoVoicePlay ? '🔊 অটো ভয়েস প্লে: চালু ✅' : '🔇 অটো ভয়েস প্লে: বন্ধ'}
+        </button>
         <button id="btnAdminRadioMode" class="ag-btn ${radioAutoPlay ? 'check checked' : ''}" onclick="toggleRadioMode()">
-          ${radioAutoPlay ? '📻 রেডিও অটো-প্লে (পরপর গল্প): চালু ✅' : '⏸️ রেডিও অটো-প্লে: বন্ধ'}
+          ${radioAutoPlay ? '📻 রেডিও মোড: চালু ✅' : '⏸️ রেডিও মোড: বন্ধ'}
         </button>
         <button id="btnAdminStoryOnly" class="ag-btn ${storyOnlyAudio ? 'check checked' : ''}" onclick="toggleStoryOnlyAudio()">
-          ${storyOnlyAudio ? '✂️ শুধু গল্পটুকু শোনানো (হোমওয়ার্ক ছাড়া): চালু ✅' : '🔊 পুরো অডিও: চালু'}
+          ${storyOnlyAudio ? '✂️ শুধু গল্প: চালু ✅' : '🔊 পুরো অডিও: চালু'}
         </button>
         <button id="btnAdminUnlockAll" class="ag-btn ${unlockAllDaysMode ? 'check checked' : ''}" onclick="toggleUnlockAllDaysMode()">
-          ${unlockAllDaysMode ? '🔓 সব ২১ দিন খোলা রাখা: চালু ✅' : '🔒 ক্রমানুসারে দিন খোলা: চালু'}
+          ${unlockAllDaysMode ? '🔓 সব দিন খোলা: চালু ✅' : '🔒 ক্রমানুসারে: চালু'}
         </button>
       </div>
     </div>
 
     <div id="maObsidianWikiPanel" class="admin-block wiki-vault-block">
-      <div class="admin-block-title">🧠 ৩. মায়ের জীবন্ত স্মৃতি-উইকি (Obsidian-Style LLM Wiki & Pattern Graph)</div>
+      <div class="admin-block-title">🧠 ৩. মায়ের জীবন্ত স্মৃতি-উইকি (Obsidian LLM Wiki)</div>
       <div class="wiki-pattern-bar">
-        <span>📊 এজেন্ট প্যাটার্ন স্কোর:</span>
+        <span>📊 পছন্দ স্কোর:</span>
         <span class="wiki-score-pill">😂 হাসি: ${toBnDigits(sc.comedy || 5)}</span>
         <span class="wiki-score-pill">🪷 ভগবান: ${toBnDigits(sc.gods || 5)}</span>
         <span class="wiki-score-pill">🐘 পশুপাখি: ${toBnDigits(sc.animals || 5)}</span>
@@ -231,19 +226,17 @@ function renderKoushikAdminPanel() {
         </div>
         <ul class="wiki-entries-list">${activeEntriesHtml}</ul>
         <div class="vn-key-row" style="margin-top:10px;">
-          <input id="adminNewWikiEntryInput" type="text" class="vn-key-input" placeholder="মায়ের সম্পর্কে নতুন নোট বা [[উইকিলিঙ্ক]] যোগ করো..." />
-          <button id="btnAddAdminWikiNote" class="ag-btn check checked" onclick="addAdminWikiNoteFromInput()">+ যোগ করো</button>
+          <input id="adminNewWikiEntryInput" type="text" class="vn-key-input" placeholder="নতুন নোট বা [[উইকিলিঙ্ক]]..." />
+          <button id="btnAddAdminWikiNote" class="ag-btn check checked" onclick="addAdminWikiNoteFromInput()">+ যোগ</button>
         </div>
       </div>
     </div>
 
     <div class="admin-block">
-      <div class="admin-block-title">📋 ৪. জেমিনি মাস্টার প্রম্পট, উইকি এক্সপোর্ট ও সিস্টেম টুলস</div>
+      <div class="admin-block-title">📋 ৪. এক্সপোর্ট টুলস</div>
       <div class="admin-toggles-grid">
-        <button id="btnCopyMaWikiMarkdown" class="ag-btn" onclick="copyMaWikiMarkdown()">📥 মায়ের উইকি (Markdown) কপি করো</button>
-        <button id="btnCopySystemPrompt" class="ag-btn" onclick="copyKalyaniSystemPrompt()">📋 জেমিনি মাস্টার প্রম্পট কপি করো</button>
-        <button id="btnAdminNotifPerm" class="ag-btn" onclick="requestMicAndNotificationPermission()">🔔 সকালের নোটিফিকেশন টেস্ট</button>
-        <button id="btnAdminClearThreads" class="ag-btn" onclick="clearKalyaniThreadsAndMemory()">🧹 ভয়েস মেসেজ ইতিহাস পরিষ্কার</button>
+        <button id="btnCopyMaWikiMarkdown" class="ag-btn" onclick="copyMaWikiMarkdown()">📥 উইকি কপি</button>
+        <button id="btnCopySystemPrompt" class="ag-btn" onclick="copyKalyaniSystemPrompt()">📋 প্রম্পট কপি</button>
       </div>
     </div>
   `;

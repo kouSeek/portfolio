@@ -137,9 +137,9 @@ function playOrToggleAudio(btnId, audioKey, srcUrl, fallbackB64, onBlockedFallba
 
 function onFirstGestureWelcomeUnlock(ev) {
   detachAutoWelcomeGestureFallback();
-  if (autoWelcomeSucceeded || !audioEl.paused || activeAudioKey || curView !== 'plan') return;
+  if (!autoVoicePlay || autoWelcomeSucceeded || !audioEl.paused || activeAudioKey || curView !== 'plan') return;
   const explicitTarget = (ev && ev.target && typeof ev.target.closest === 'function')
-    ? ev.target.closest('#topPlayBtn, #btnDayMainPlay, .ag-btn, .game-tile, .day-chip, .cal-day-cell, #btnToggleCalGrid, .view-mode-toggle, #htabSlides, .perm-btn-primary')
+    ? ev.target.closest('#topPlayBtn, #btnDayMainPlay, .ag-btn, .game-tile, .day-chip, .cal-day-cell, #btnToggleCalGrid, .view-mode-toggle, #htabSlides')
     : null;
   if (explicitTarget) return;
   autoWelcomeSucceeded = true;
@@ -158,7 +158,7 @@ function preloadOpenGameAudio(dayObj, gameIdx) {
 }
 
 function attachAutoWelcomeGestureFallback() {
-  if (autoWelcomeFallbackArmed || !document.addEventListener) return;
+  if (!autoVoicePlay || autoWelcomeFallbackArmed || !document.addEventListener) return;
   autoWelcomeFallbackArmed = true;
   document.addEventListener('pointerdown', onFirstGestureWelcomeUnlock, true);
   document.addEventListener('touchstart', onFirstGestureWelcomeUnlock, true);
@@ -174,7 +174,7 @@ function detachAutoWelcomeGestureFallback() {
 }
 
 function engageProactiveWelcomeAudio() {
-  if (curView !== 'plan') return;
+  if (!autoVoicePlay || curView !== 'plan') return;
   const d = findDayObj(curDayNum);
   const refDay = d.audio_ref_day || d.day || 1;
   const refObj = DAYS_21.find(x => x.day === refDay) || d;
@@ -244,7 +244,7 @@ async function playAgendaByIdx(dayNum, agIdx, btnEl, playFullWithPrompt) {
 function handleAudioTrackCompleted() {
   const finishedKey = activeAudioKey;
   stopAllAudio();
-  if (!finishedKey) return;
+  if (!finishedKey || !autoVoicePlay) return;
 
   if (curView === 'slides' && autoAdvance && finishedKey.startsWith('slide_') && curSlideIdx < SLIDES.length - 1) {
     setTimeout(() => goToSlide(curSlideIdx + 1, true), 900);
@@ -278,104 +278,89 @@ audioEl.addEventListener('ended', () => {
   handleAudioTrackCompleted();
 });
 
-/* Pleasant Morning Bell Chime via Web Audio API */
-function playMorningChimeSound() {
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const notes = [523.25, 659.25, 783.99, 1046.50];
-    notes.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.18);
-      gain.gain.setValueAtTime(0.001, ctx.currentTime + i * 0.18);
-      gain.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + i * 0.18 + 0.04);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + i * 0.18 + 1.1);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(ctx.currentTime + i * 0.18);
-      osc.stop(ctx.currentTime + i * 0.18 + 1.15);
-    });
-  } catch (e) {}
-}
-
-function checkAndFireDailyMorningNotification() {
-  const now = new Date();
-  const todayStr = now.toISOString().slice(0, 10);
-  if (maProfile.lastMorningNotifDate === todayStr) return;
-
-  const parts = (maProfile.morningTime || '08:00').split(':');
-  const targetH = parseInt(parts[0] || '8', 10);
-  const targetM = parseInt(parts[1] || '0', 10);
-  const nowMins = now.getHours() * 60 + now.getMinutes();
-  const targetMins = targetH * 60 + targetM;
-
-  if (nowMins >= targetMins && nowMins <= targetMins + 240) {
-    maProfile.lastMorningNotifDate = todayStr;
-    saveMaProfile();
-    fireMorningMotivationNotification(false);
-  }
-}
-
-function fireMorningMotivationNotification(isManualTest) {
-  const quote = MORNING_QUOTES[curQuoteIdx];
-  playMorningChimeSound();
-  const title = '☀️ সুপ্রভাত মা! আজকের অনুপ্রেরণা';
-  const favEl = document.getElementById('pageFavicon');
-  const notifIcon = (favEl && favEl.getAttribute && favEl.getAttribute('href')) || 'favicon.svg';
-  if ('Notification' in window && Notification.permission === 'granted') {
-    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
-      navigator.serviceWorker.ready.then(reg => {
-        reg.showNotification(title, {
-          body: quote,
-          icon: notifIcon,
-          vibrate: [200, 100, 200],
-          tag: 'ma-morning-motivation'
-        });
-      }).catch(() => {
-        new Notification(title, { body: quote });
-      });
-    } else {
-      new Notification(title, { body: quote });
-    }
-  }
-  if (isManualTest) toggleMorningQuoteAudio();
-}
-
-async function requestMicAndNotificationPermission() {
-  try {
-    if ('Notification' in window) {
-      await Notification.requestPermission();
-    }
-    maProfile.permsGranted = true;
-    saveMaProfile();
-    const permBanner = document.getElementById('permBanner');
-    if (permBanner) permBanner.style.display = 'none';
-    fireMorningMotivationNotification(true);
-  } catch (err) {}
-}
-
 /* ============================================================================
-   MODULE 2B: IN-CARD WALKIE-TALKIE AUDIO MESSAGE & AOEDE VOICE REPLY ENGINE
-   (Zero App-Switching, Zero Mid-Sentence Interruption, 100% System Prompt Obedience)
+   MODULE 2B: IN-CARD WALKIE-TALKIE AUDIO MESSAGE, LIVE VIDEO & AOEDE VOICE
+   (Zero App-Switching, Zero Mid-Sentence Interruption, Bulletproof Edge Cases)
    ============================================================================ */
 let activeMediaRecorder = null;
 let activeMicStream = null;
 let activeVideoStream = null;
+let activeCamFrameTimerId = null;
 let activeSpeechRec = null;
 let activeVnAudioChunks = [];
 let activeVnTimerId = null;
 
+function normalizeAudioMime(rawMime) {
+  const base = String(rawMime || '').split(';')[0].trim().toLowerCase();
+  if (base === 'audio/mp4' || base === 'audio/m4a' || base === 'audio/aac') return 'audio/mp4';
+  if (base === 'audio/ogg' || base === 'audio/oga') return 'audio/ogg';
+  if (base === 'audio/wav' || base === 'audio/x-wav' || base === 'audio/wave') return 'audio/wav';
+  if (base === 'audio/mp3' || base === 'audio/mpeg') return 'audio/mp3';
+  return 'audio/webm';
+}
+
+function parseGeminiJsonSafely(rawText) {
+  if (!rawText || typeof rawText !== 'string') return null;
+  let cleaned = rawText.trim();
+  cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+  const tryParse = (str) => {
+    try {
+      const obj = JSON.parse(str);
+      if (Array.isArray(obj)) return obj[0] || null;
+      return (obj && typeof obj === 'object') ? obj : null;
+    } catch (e) {
+      return null;
+    }
+  };
+  let parsed = tryParse(cleaned);
+  if (!parsed) {
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace >= 0 && lastBrace > firstBrace) {
+      parsed = tryParse(cleaned.slice(firstBrace, lastBrace + 1));
+    }
+  }
+  return parsed;
+}
+
+function snapshotVideoElementFrameB64(vidEl) {
+  if (!vidEl || typeof document.createElement !== 'function') return '';
+  try {
+    const w = Number(vidEl.videoWidth) || Number(vidEl.width) || 640;
+    const h = Number(vidEl.videoHeight) || Number(vidEl.height) || 480;
+    if (w <= 0 || h <= 0) return '';
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext && canvas.getContext('2d');
+    if (ctx && typeof ctx.drawImage === 'function' && typeof canvas.toDataURL === 'function') {
+      ctx.drawImage(vidEl, 0, 0, w, h);
+      const dataUrl = String(canvas.toDataURL('image/jpeg', 0.82) || '');
+      const comma = dataUrl.indexOf(',');
+      if (comma >= 0) {
+        const b64 = dataUrl.slice(comma + 1).trim();
+        if (b64) return b64;
+      }
+    }
+  } catch (e) {}
+  return '';
+}
+
 function attachLiveStreamToVideoElement() {
   if (!vnLiveCamState.active || !activeVideoStream) return;
   const vidEl = document.getElementById('vnLiveVideo_' + vnLiveCamState.dayNum + '_' + vnLiveCamState.agIdx);
-  if (vidEl && vidEl.srcObject !== activeVideoStream) {
-    vidEl.srcObject = activeVideoStream;
-    if (typeof vidEl.play === 'function') {
-      try { vidEl.play().catch(() => {}); } catch (e) {}
+  if (vidEl) {
+    if (vidEl.srcObject !== activeVideoStream) {
+      vidEl.srcObject = activeVideoStream;
     }
+    if (typeof vidEl.play === 'function') {
+      try {
+        const p = vidEl.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      } catch (e) {}
+    }
+    const snap = snapshotVideoElementFrameB64(vidEl);
+    if (snap) vnLiveCamState.lastFrameB64 = snap;
   }
 }
 
@@ -383,51 +368,54 @@ function captureFrameFromLiveVideo(dayNum, agIdx) {
   if (!vnLiveCamState.active || vnLiveCamState.dayNum !== dayNum || vnLiveCamState.agIdx !== agIdx) {
     return null;
   }
-  try {
-    const vidEl = document.getElementById('vnLiveVideo_' + dayNum + '_' + agIdx);
-    if (vidEl && vidEl.videoWidth > 0 && vidEl.videoHeight > 0 && typeof document.createElement === 'function') {
-      const canvas = document.createElement('canvas');
-      canvas.width = vidEl.videoWidth;
-      canvas.height = vidEl.videoHeight;
-      const ctx = canvas.getContext && canvas.getContext('2d');
-      if (ctx && typeof canvas.toDataURL === 'function') {
-        ctx.drawImage(vidEl, 0, 0, canvas.width, canvas.height);
-        const dataUrl = String(canvas.toDataURL('image/jpeg', 0.82) || '');
-        const comma = dataUrl.indexOf(',');
-        if (comma >= 0) {
-          return { mime: 'image/jpeg', b64: dataUrl.slice(comma + 1) };
-        }
-      }
-    }
-  } catch (e) {}
-  return { mime: 'image/jpeg', b64: '' };
+  const vidEl = document.getElementById('vnLiveVideo_' + dayNum + '_' + agIdx);
+  const freshB64 = snapshotVideoElementFrameB64(vidEl);
+  if (freshB64) {
+    vnLiveCamState.lastFrameB64 = freshB64;
+  }
+  return {
+    mime: 'image/jpeg',
+    b64: vnLiveCamState.lastFrameB64 || ''
+  };
 }
 
 function stopCardLiveVideo() {
+  if (activeCamFrameTimerId) {
+    if (typeof clearInterval === 'function') clearInterval(activeCamFrameTimerId);
+    activeCamFrameTimerId = null;
+  }
   if (activeVideoStream) {
     try { activeVideoStream.getTracks().forEach(t => t.stop()); } catch (e) {}
     activeVideoStream = null;
   }
-  vnLiveCamState = { active: false, dayNum: 0, agIdx: -1, facingMode: vnLiveCamState.facingMode || 'environment' };
+  vnLiveCamState = {
+    active: false,
+    dayNum: 0,
+    agIdx: -1,
+    facingMode: vnLiveCamState.facingMode || 'environment',
+    lastFrameB64: ''
+  };
 }
 
-async function toggleCardLiveVideo(dayNum, agIdx) {
-  if (vnLiveCamState.active && vnLiveCamState.dayNum === dayNum && vnLiveCamState.agIdx === agIdx) {
-    stopCardLiveVideo();
-    renderPlanView();
-    return;
-  }
+function stopActiveVoiceAndVideoCapture() {
+  cleanupActiveVoiceRecorder();
+  stopCardLiveVideo();
+  vnRecordingState = { active: false, sending: false, dayNum: 0, agIdx: -1, seconds: 0, liveTranscript: '', errorMsg: '' };
+}
+
+async function startCardLiveVideoStream(dayNum, agIdx) {
   stopCardLiveVideo();
   vnLiveCamState = {
     active: true,
     dayNum: dayNum,
     agIdx: agIdx,
-    facingMode: vnLiveCamState.facingMode || 'environment'
+    facingMode: vnLiveCamState.facingMode || 'environment',
+    lastFrameB64: ''
   };
   renderPlanView();
 
   try {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
       try {
         activeVideoStream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: { ideal: vnLiveCamState.facingMode } },
@@ -437,22 +425,51 @@ async function toggleCardLiveVideo(dayNum, agIdx) {
         activeVideoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
       }
       attachLiveStreamToVideoElement();
+      activeCamFrameTimerId = setInterval(() => {
+        if (!vnLiveCamState.active) return;
+        const vidEl = document.getElementById('vnLiveVideo_' + vnLiveCamState.dayNum + '_' + vnLiveCamState.agIdx);
+        const snap = snapshotVideoElementFrameB64(vidEl);
+        if (snap) vnLiveCamState.lastFrameB64 = snap;
+      }, 400);
+      return true;
     }
-  } catch (err) {}
+  } catch (err) {
+    stopCardLiveVideo();
+    vnRecordingState.errorMsg = '📷 ক্যামেরা চালু করা যায়নি। ফোনের ক্যামেরা পারমিশন অন করো।';
+    renderPlanView();
+    return false;
+  }
+  return true;
+}
+
+async function toggleCardLiveVideo(dayNum, agIdx) {
+  if (vnRecordingState.sending) return;
+  if (vnLiveCamState.active && vnLiveCamState.dayNum === dayNum && vnLiveCamState.agIdx === agIdx) {
+    stopCardLiveVideo();
+    renderPlanView();
+    return;
+  }
+  const ok = await startCardLiveVideoStream(dayNum, agIdx);
+  if (ok && !vnRecordingState.active) {
+    await startVoiceNoteRecording(dayNum, agIdx, true);
+  }
 }
 
 async function switchCardLiveCamera(dayNum, agIdx) {
+  if (vnRecordingState.sending) return;
   vnLiveCamState.facingMode = (vnLiveCamState.facingMode === 'environment') ? 'user' : 'environment';
-  vnLiveCamState.active = false;
-  await toggleCardLiveVideo(dayNum, agIdx);
+  await startCardLiveVideoStream(dayNum, agIdx);
 }
 
 function pcm24kBase64ToWavUrl(b64Pcm) {
   try {
+    const cleanB64 = String(b64Pcm || '').replace(/\s+/g, '');
+    if (!cleanB64) return '';
     const rawStr = (typeof atob === 'function')
-      ? atob(b64Pcm)
-      : Buffer.from(b64Pcm, 'base64').toString('binary');
+      ? atob(cleanB64)
+      : Buffer.from(cleanB64, 'base64').toString('binary');
     const pcmLen = rawStr.length;
+    if (pcmLen <= 0) return '';
     const wavBytes = new Uint8Array(44 + pcmLen);
     const view = new DataView(wavBytes.buffer);
     const writeAscii = (off, str) => {
@@ -488,7 +505,7 @@ function pcm24kBase64ToWavUrl(b64Pcm) {
 }
 
 async function synthesizeKalyaniAoedeAudio(textBn, apiKey) {
-  if (!apiKey || !textBn) return '';
+  if (!apiKey || !textBn || !String(textBn).trim()) return '';
   try {
     const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=' + encodeURIComponent(apiKey);
     const resp = await fetch(endpoint, {
@@ -497,7 +514,7 @@ async function synthesizeKalyaniAoedeAudio(textBn, apiKey) {
       body: JSON.stringify({
         contents: [{
           parts: [{
-            text: 'Speak in a warm, affectionate, unhurried, soothing West Bengal Bengali voice (never rush):\n\n' + textBn
+            text: 'Speak in a warm, affectionate, unhurried, soothing West Bengal Bengali voice (never rush):\n\n' + String(textBn).trim()
           }]
         }],
         generationConfig: {
@@ -514,7 +531,7 @@ async function synthesizeKalyaniAoedeAudio(textBn, apiKey) {
     const data = await resp.json();
     const parts = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
     for (let i = 0; i < parts.length; i++) {
-      if (parts[i].inlineData && parts[i].inlineData.data) {
+      if (parts[i] && parts[i].inlineData && parts[i].inlineData.data) {
         return pcm24kBase64ToWavUrl(parts[i].inlineData.data);
       }
     }
@@ -522,19 +539,34 @@ async function synthesizeKalyaniAoedeAudio(textBn, apiKey) {
   return '';
 }
 
-function buildWarmFallbackReply(ag, turnCount, heardText) {
-  const cleanHeard = (heardText || '').trim() || 'মায়ের নিজের মনের কথা (ভয়েস মেসেজ)';
+function formatGeminiReplyText(rawReplyBn) {
+  const clean = String(rawReplyBn || '').replace(/[*#`_]/g, '').trim();
+  if (!clean) return '';
+  if (clean.includes('জেমিনি')) return clean;
+  return 'মা, জেমিনি বলছি— ' + clean;
+}
+
+function buildWarmFallbackReply(ag, turnCount, heardText, hasLiveVideo) {
+  const defaultHeard = hasLiveVideo ? 'মায়ের লাইভ ভিডিও ও কথা' : 'মায়ের ভয়েস মেসেজ';
+  const cleanHeard = String(heardText || '').trim() || defaultHeard;
   const follow = (ag && ag.followup_prompt_bn) ? ag.followup_prompt_bn : '';
+  if (hasLiveVideo) {
+    return {
+      heard_bn: cleanHeard,
+      reply_bn: 'মা, জেমিনি বলছি— তুমি ভিডিও ক্যামেরায় যা দেখালে আর বললে তা আমি খুব যত্ন করে দেখেছি ও শুনেছি! তুমি কী সুন্দর নিজের হাতে ক্যামেরা অন করে আমায় দেখালে।',
+      memory_note: ''
+    };
+  }
   if (turnCount === 0 && follow) {
     return {
       heard_bn: cleanHeard,
-      reply_bn: 'মা, তোমার গলার আওয়াজ আর মনের কথাটা শুনে আমার মনটা একদম ভরে গেল! তুমি কী সুন্দর নিজের মতো করে কথাটা বললে। আচ্ছা মা, এবার একটু ভেবে বলো তো—' + follow,
+      reply_bn: 'মা, জেমিনি বলছি— তোমার গলার আওয়াজ আর মনের কথাটা শুনে আমার মনটা একদম ভরে গেল! আচ্ছা মা, এবার একটু ভেবে বলো তো—' + follow,
       memory_note: ''
     };
   }
   return {
     heard_bn: cleanHeard,
-    reply_bn: 'মা, তোমার প্রতিটি কথা এত সুন্দর আর আন্তরিক! তোমার সাথে এভাবে ধীরেসুস্থে গল্প করতে আমার ভীষণ ভালো লাগে। আজকের এই খেলাটা তুমি দারুণভাবে সম্পূর্ণ করলে!',
+    reply_bn: 'মা, জেমিনি বলছি— তোমার প্রতিটি কথা এত সুন্দর আর আন্তরিক! তোমার সাথে এভাবে ধীরেসুস্থে গল্প করতে আমার ভীষণ ভালো লাগে।',
     memory_note: ''
   };
 }
@@ -545,9 +577,10 @@ async function callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, audioMime, li
   const cardKey = dayNum + '_' + agIdx;
   const history = kalyaniThreads[cardKey] || [];
   const apiKey = getGeminiApiKey();
+  const hasLiveVideo = !!(photoObj && photoObj.b64);
 
   if (!apiKey) {
-    return buildWarmFallbackReply(ag, history.length, liveTranscript);
+    return buildWarmFallbackReply(ag, history.length, liveTranscript, hasLiveVideo);
   }
 
   const memBlock = '\n\n' + buildMaWikiContextMarkdown()
@@ -565,26 +598,30 @@ async function callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, audioMime, li
     + '- Suggested Prompt Ma Was Responding To: ' + (ag.prompt_bn || '') + '\n'
     + '- Turn Guidance: ' + turnGuidance + '\n\n'
     + 'OUTPUT FORMAT RULE: Return strictly valid JSON with keys:\n'
-    + '{"heard_bn": "accurate Bengali transcript of what Ma just said in her audio message", "reply_bn": "your warm 3-4 sentence colloquial West Bengal Bengali reply to Ma (never rush, zero markdown symbols, zero war/Ramayana/Mahabharata)", "memory_note": "short 1-line Bengali note with [[wikilinks]] of any new personal memory, preference, or pattern Ma shared, or empty string", "wiki_page": "one of mind_and_mood | joy_gods_and_stories | food_and_preferences | ranaghat_and_memories | language_and_voice | comfort_and_wellbeing | agent_pattern_log", "boost_topic": "one of comedy | gods | animals | music | reminiscence | empty string"}';
+    + '{"heard_bn": "accurate Bengali transcript of what Ma just said (or what she showed on camera)", "reply_bn": "your warm 3-4 sentence colloquial West Bengal Bengali reply to Ma (never rush, zero markdown symbols, zero war/Ramayana/Mahabharata)", "memory_note": "short 1-line Bengali note with [[wikilinks]] of any new personal memory, preference, or pattern Ma shared, or empty string", "wiki_page": "one of mind_and_mood | joy_gods_and_stories | food_and_preferences | ranaghat_and_memories | language_and_voice | comfort_and_wellbeing | agent_pattern_log", "boost_topic": "one of comedy | gods | animals | music | reminiscence | empty string"}';
 
   const contents = [];
-  history.forEach(t => {
+  history.slice(-4).forEach(t => {
     contents.push({ role: 'user', parts: [{ text: t.heard_bn || 'মায়ের ভয়েস মেসেজ' }] });
     contents.push({ role: 'model', parts: [{ text: JSON.stringify({ heard_bn: t.heard_bn, reply_bn: t.reply_bn, memory_note: '' }) }] });
   });
 
   const userParts = [];
-  if (photoObj && photoObj.b64) {
+  if (hasLiveVideo) {
     userParts.push({ inlineData: { mimeType: photoObj.mime || 'image/jpeg', data: photoObj.b64 } });
   }
   if (audioB64) {
-    userParts.push({ inlineData: { mimeType: audioMime || 'audio/webm', data: audioB64 } });
+    userParts.push({ inlineData: { mimeType: normalizeAudioMime(audioMime), data: audioB64 } });
   }
-  userParts.push({
-    text: liveTranscript
-      ? ('মা ভয়েস মেসেজে বললেন (সম্ভাব্য শ্রুতিলিপি: "' + liveTranscript + '")। অডিওটা মনোযোগ দিয়ে শুনে JSON উত্তর দাও।')
-      : 'মা এইমাত্র এই ভয়েস মেসেজটি পাঠিয়েছেন। অডিওটা মনোযোগ দিয়ে শুনে JSON উত্তর দাও।'
-  });
+  let promptInstruction = 'মা এইমাত্র এই ভয়েস মেসেজটি পাঠিয়েছেন। অডিওটা মনোযোগ দিয়ে শুনে JSON উত্তর দাও।';
+  if (hasLiveVideo && audioB64) {
+    promptInstruction = 'মা লাইভ ভিডিও ক্যামেরায় এই দৃশ্যটি দেখিয়েছেন এবং অডিও মেসেজে কথা বলেছেন' + (liveTranscript ? (' (শ্রুতিলিপি: "' + liveTranscript + '")') : '') + '। ছবিটি ও অডিওটি দেখে ও শুনে সহজ বাংলায় JSON উত্তর দাও।';
+  } else if (hasLiveVideo && !audioB64) {
+    promptInstruction = 'মা লাইভ ভিডিও ক্যামেরায় এই জিনিসটি বা দৃশ্যটি দেখিয়েছেন' + (liveTranscript ? (' এবং বলেছেন: "' + liveTranscript + '"') : '') + '। ছবিটি ভালো করে দেখে এটি কী এবং এর কাজ কী তা সহজ বাংলায় বুঝিয়ে JSON উত্তর দাও।';
+  } else if (liveTranscript) {
+    promptInstruction = 'মা ভয়েস মেসেজে বললেন (সম্ভাব্য শ্রুতিলিপি: "' + liveTranscript + '")। মনোযোগ দিয়ে শুনে JSON উত্তর দাও।';
+  }
+  userParts.push({ text: promptInstruction });
   contents.push({ role: 'user', parts: userParts });
 
   try {
@@ -602,24 +639,27 @@ async function callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, audioMime, li
       })
     });
     if (!resp.ok) {
-      return buildWarmFallbackReply(ag, history.length, liveTranscript);
+      return buildWarmFallbackReply(ag, history.length, liveTranscript, hasLiveVideo);
     }
     const data = await resp.json();
     const rawText = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || '';
-    const parsed = JSON.parse(rawText);
-    if (parsed && parsed.reply_bn) {
-      if (parsed.memory_note) {
-        addKalyaniMemoryNote(parsed.memory_note);
-        appendMaWikiEntry(parsed.wiki_page || 'agent_pattern_log', parsed.memory_note, parsed.boost_topic || '');
+    const parsed = parseGeminiJsonSafely(rawText);
+    const replyVal = parsed && (parsed.reply_bn || parsed.reply || parsed.text || parsed.response);
+    if (parsed && replyVal) {
+      const memNote = String(parsed.memory_note || parsed.wiki_entry_bn || '').trim();
+      if (memNote) {
+        addKalyaniMemoryNote(memNote);
+        appendMaWikiEntry(parsed.wiki_page || 'agent_pattern_log', memNote, parsed.boost_topic || '');
       }
+      const heardVal = parsed.heard_bn || parsed.heard || parsed.transcript || liveTranscript || (hasLiveVideo ? 'মায়ের লাইভ ভিডিও ও কথা' : 'মায়ের ভয়েস মেসেজ');
       return {
-        heard_bn: parsed.heard_bn || liveTranscript || 'মায়ের ভয়েস মেসেজ',
-        reply_bn: String(parsed.reply_bn).replace(/[*#`_]/g, '').trim(),
-        memory_note: parsed.memory_note || ''
+        heard_bn: String(heardVal).replace(/[*#`_]/g, '').trim(),
+        reply_bn: formatGeminiReplyText(replyVal),
+        memory_note: memNote
       };
     }
   } catch (e) {}
-  return buildWarmFallbackReply(ag, history.length, liveTranscript);
+  return buildWarmFallbackReply(ag, history.length, liveTranscript, hasLiveVideo);
 }
 
 function cleanupActiveVoiceRecorder() {
@@ -638,9 +678,13 @@ function cleanupActiveVoiceRecorder() {
   activeMediaRecorder = null;
 }
 
-async function startVoiceNoteRecording(dayNum, agIdx) {
+async function startVoiceNoteRecording(dayNum, agIdx, keepExistingCam) {
+  if (vnRecordingState.sending) return;
   stopAllAudio();
   cleanupActiveVoiceRecorder();
+  if (!keepExistingCam && vnLiveCamState.active && (vnLiveCamState.dayNum !== dayNum || vnLiveCamState.agIdx !== agIdx)) {
+    stopCardLiveVideo();
+  }
   activeVnAudioChunks = [];
   vnRecordingState = {
     active: true,
@@ -658,32 +702,16 @@ async function startVoiceNoteRecording(dayNum, agIdx) {
     vnRecordingState.seconds += 1;
     const timerEl = document.getElementById('vnTimer_' + dayNum + '_' + agIdx);
     if (timerEl) timerEl.textContent = formatAudioSecondsBn(vnRecordingState.seconds);
+    const fillEl = document.getElementById('vnListenFill_' + dayNum + '_' + agIdx);
+    if (fillEl && fillEl.style) {
+      const pct = Math.min(100, Math.max(15, (vnRecordingState.seconds % 20) * 5 + 15));
+      fillEl.style.width = pct + '%';
+    }
   }, 1000);
 
+  let mediaRecStarted = false;
   try {
-    const SpeechRec = (typeof window !== 'undefined') && (window.SpeechRecognition || window.webkitSpeechRecognition);
-    if (SpeechRec) {
-      activeSpeechRec = new SpeechRec();
-      activeSpeechRec.lang = 'bn-IN';
-      activeSpeechRec.continuous = true;
-      activeSpeechRec.interimResults = true;
-      activeSpeechRec.onresult = (ev) => {
-        let txt = '';
-        for (let i = 0; i < ev.results.length; i++) {
-          txt += ev.results[i][0].transcript + ' ';
-        }
-        vnRecordingState.liveTranscript = txt.trim();
-        const prevEl = document.getElementById('vnLivePreview_' + dayNum + '_' + agIdx);
-        if (prevEl && vnRecordingState.liveTranscript) {
-          prevEl.textContent = '🗣️ “' + vnRecordingState.liveTranscript + '”';
-        }
-      };
-      try { activeSpeechRec.start(); } catch (e) {}
-    }
-  } catch (e) {}
-
-  try {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
       activeMicStream = await navigator.mediaDevices.getUserMedia({ audio: true });
       if (typeof MediaRecorder !== 'undefined') {
         const mime = (typeof MediaRecorder.isTypeSupported === 'function' && MediaRecorder.isTypeSupported('audio/webm;codecs=opus'))
@@ -691,17 +719,44 @@ async function startVoiceNoteRecording(dayNum, agIdx) {
           : ((typeof MediaRecorder.isTypeSupported === 'function' && MediaRecorder.isTypeSupported('audio/mp4')) ? 'audio/mp4' : '');
         activeMediaRecorder = mime ? new MediaRecorder(activeMicStream, { mimeType: mime }) : new MediaRecorder(activeMicStream);
         activeMediaRecorder.ondataavailable = (ev) => {
-          if (ev.data && ev.data.size > 0) activeVnAudioChunks.push(ev.data);
+          if (ev && ev.data && ev.data.size > 0) activeVnAudioChunks.push(ev.data);
         };
         activeMediaRecorder.start(250);
+        mediaRecStarted = true;
       }
     }
-  } catch (err) {}
+  } catch (err) {
+    vnRecordingState.errorMsg = '🎙️ মাইক অন করা যায়নি। ফোনের মাইক পারমিশন অন করো।';
+  }
+
+  // Only start Web Speech API if MediaRecorder did not lock the mic (avoids Android dual-mic conflict)
+  if (!mediaRecStarted) {
+    try {
+      const SpeechRec = (typeof window !== 'undefined') && (window.SpeechRecognition || window.webkitSpeechRecognition);
+      if (SpeechRec) {
+        activeSpeechRec = new SpeechRec();
+        activeSpeechRec.lang = 'bn-IN';
+        activeSpeechRec.continuous = true;
+        activeSpeechRec.interimResults = true;
+        activeSpeechRec.onresult = (ev) => {
+          let txt = '';
+          for (let i = 0; i < (ev.results ? ev.results.length : 0); i++) {
+            if (ev.results[i] && ev.results[i][0]) txt += ev.results[i][0].transcript + ' ';
+          }
+          vnRecordingState.liveTranscript = txt.trim();
+          const prevEl = document.getElementById('vnLivePreview_' + dayNum + '_' + agIdx);
+          if (prevEl && vnRecordingState.liveTranscript) {
+            prevEl.textContent = '🗣️ “' + vnRecordingState.liveTranscript + '”';
+          }
+        };
+        try { activeSpeechRec.start(); } catch (e) {}
+      }
+    } catch (e) {}
+  }
 }
 
 function cancelVoiceNoteRecording() {
-  cleanupActiveVoiceRecorder();
-  vnRecordingState = { active: false, sending: false, dayNum: 0, agIdx: -1, seconds: 0, liveTranscript: '', errorMsg: '' };
+  stopActiveVoiceAndVideoCapture();
   renderPlanView();
 }
 
@@ -718,32 +773,44 @@ function blobToBase64(blob) {
       resolve(comma >= 0 ? res.slice(comma + 1) : '');
     };
     reader.onerror = () => resolve('');
-    reader.readAsDataURL(blob);
+    try {
+      reader.readAsDataURL(blob);
+    } catch (e) {
+      resolve('');
+    }
   });
 }
 
 async function finishAndSendVoiceNote(dayNum, agIdx) {
+  if (vnRecordingState.sending) return;
+  const hasActiveCam = !!(vnLiveCamState.active && vnLiveCamState.dayNum === dayNum && vnLiveCamState.agIdx === agIdx);
+  const hasActiveRec = !!(vnRecordingState.active && vnRecordingState.dayNum === dayNum && vnRecordingState.agIdx === agIdx);
+  if (!hasActiveRec && !hasActiveCam) return;
+
   const transcriptSnap = vnRecordingState.liveTranscript || '';
+  const liveVideoObj = hasActiveCam ? captureFrameFromLiveVideo(dayNum, agIdx) : null;
+  const hadLiveVideo = !!(liveVideoObj && liveVideoObj.b64);
+
   let recMime = 'audio/webm';
   let audioBlob = null;
 
   if (activeMediaRecorder && activeMediaRecorder.state !== 'inactive') {
-    recMime = activeMediaRecorder.mimeType || 'audio/webm';
-    await new Promise((resolve) => {
-      activeMediaRecorder.onstop = () => resolve();
-      try { activeMediaRecorder.stop(); } catch (e) { resolve(); }
-    });
+    recMime = normalizeAudioMime(activeMediaRecorder.mimeType || 'audio/webm');
+    await Promise.race([
+      new Promise((resolve) => {
+        activeMediaRecorder.onstop = () => resolve();
+        try { activeMediaRecorder.stop(); } catch (e) { resolve(); }
+      }),
+      new Promise((resolve) => setTimeout(resolve, 450))
+    ]);
   }
   if (activeVnAudioChunks.length > 0 && typeof Blob !== 'undefined') {
     audioBlob = new Blob(activeVnAudioChunks, { type: recMime });
   }
   cleanupActiveVoiceRecorder();
+  if (hasActiveCam) stopCardLiveVideo();
 
   const cardKey = dayNum + '_' + agIdx;
-  const liveVideoObj = captureFrameFromLiveVideo(dayNum, agIdx);
-  const hadLiveVideo = !!(vnLiveCamState.active && vnLiveCamState.dayNum === dayNum && vnLiveCamState.agIdx === agIdx);
-  if (hadLiveVideo) stopCardLiveVideo();
-
   vnRecordingState = {
     active: false,
     sending: true,
@@ -780,7 +847,9 @@ async function finishAndSendVoiceNote(dayNum, agIdx) {
   vnRecordingState = { active: false, sending: false, dayNum: 0, agIdx: -1, seconds: 0, liveTranscript: '', errorMsg: '' };
   renderPlanView();
 
-  playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx);
+  if (autoVoicePlay) {
+    await playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx);
+  }
 }
 
 async function playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx) {
@@ -802,7 +871,6 @@ async function playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx) {
   const d = findDayObj(dayNum);
   const ag = (d && d.agendas && d.agendas[agIdx]) ? d.agendas[agIdx] : null;
   const fallbackAudioUrl = wavUrl || (ag && ag.audio_url) || (d && d.audio_url) || '';
-  playMorningChimeSound();
   playOrToggleAudio(btnId, audioKey, fallbackAudioUrl, '');
 }
 
@@ -881,6 +949,7 @@ const DYNAMIC_AGENT_FALLBACK_POOL = {
 let agentGeneratingState = false;
 
 async function generateDynamicAgentStory(dayNum, moodType) {
+  if (agentGeneratingState) return;
   stopAllAudio();
   const pool = DYNAMIC_AGENT_FALLBACK_POOL[moodType] || DYNAMIC_AGENT_FALLBACK_POOL.comedy;
   const fallbackIdx = (dayNum + (kalyaniWikiVault.patternScores[moodType] || 0)) % pool.length;
@@ -926,7 +995,7 @@ async function generateDynamicAgentStory(dayNum, moodType) {
       if (resp.ok) {
         const data = await resp.json();
         const raw = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || '';
-        const parsed = JSON.parse(raw);
+        const parsed = parseGeminiJsonSafely(raw);
         if (parsed && parsed.title_bn && parsed.story_bn) {
           chosenCard = {
             moodType: moodType,
@@ -950,7 +1019,9 @@ async function generateDynamicAgentStory(dayNum, moodType) {
   renderPlanView();
   if (typeof renderKoushikAdminPanel === 'function') renderKoushikAdminPanel();
 
-  await playDynamicAgentCardAudio(dayNum);
+  if (autoVoicePlay) {
+    await playDynamicAgentCardAudio(dayNum);
+  }
 }
 
 async function playDynamicAgentCardAudio(dayNum) {
@@ -970,6 +1041,5 @@ async function playDynamicAgentCardAudio(dayNum) {
   }
   const d = findDayObj(dayNum);
   const fallbackUrl = wavUrl || (d && d.audio_url) || '';
-  playMorningChimeSound();
   playOrToggleAudio(btnId, audioKey, fallbackUrl, (d && d.audio_b64) || '');
 }

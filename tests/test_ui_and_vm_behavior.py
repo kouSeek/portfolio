@@ -90,6 +90,10 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertGreater(ma_html.index('id="koushikAdminSection"'), ma_html.index('id="dailyQuoteCard"'))
         self.assertIn("মা, এই নিচের অংশটায় তোমার হাত দেওয়ার বা কিছু করার একেবারেই দরকার নেই।", ma_html)
         self.assertNotIn('type="file"', ma_html)
+        self.assertNotIn("requestMicAndNotificationPermission", ma_html)
+        self.assertNotIn("clearKalyaniThreadsAndMemory", ma_html)
+        self.assertNotIn("btnAdminNotifPerm", ma_html)
+        self.assertNotIn("btnAdminClearThreads", ma_html)
         self.assertIn("object-fit: contain", ma_html)
         self.assertNotIn("object-fit: cover", ma_html)
         self.assertNotIn("aspect-ratio: 16 / 10", ma_html)
@@ -268,7 +272,13 @@ const audio = getEl('audioPlayer');
   assert.ok(getEl('activeDayStage').innerHTML.includes('id="kalyaniAgentCard"'), 'Proactive Agent Companion Card must render at top of day');
   assert.ok(getEl('activeDayStage').innerHTML.includes('id="dailyDelightCard"'), 'Daily Innocent Comedy / Sweet Gods / Cute Animals card must render');
   assert.ok(getEl('activeDayStage').innerHTML.includes('id="vnStudio_1_0"'));
+  assert.ok(getEl('activeDayStage').innerHTML.includes('কল্যাণীকে ভয়েস মেসেজ বা ভিডিও তুলে পাঠাও:'), 'Studio header must match requested text');
+  assert.ok(getEl('activeDayStage').innerHTML.includes('🎙️ ভয়েস পাঠাও'), 'Send Voice button must be present');
+  assert.ok(getEl('activeDayStage').innerHTML.includes('📹 ভিডিও পাঠাও'), 'Send Video button must be present');
   assert.ok(getEl('activeDayStage').innerHTML.includes('id="btnVnLiveCam_1_0"'), 'Live Video Camera button must be present');
+  assert.ok(getEl('activeDayStage').innerHTML.includes('id="btnAgDone_1_0"'), 'Mark as Done button must be present');
+  assert.ok(getEl('activeDayStage').innerHTML.includes('⬜ হয়ে গেছে'), 'Mark as Done button label must be present');
+  assert.ok(getEl('activeDayStage').innerHTML.includes('game-sub-drawer'), 'Game subsections must be collapsible');
   assert.ok(!getEl('activeDayStage').innerHTML.includes('type="file"'), 'Gallery photo upload must not exist');
   assert.ok(
     getEl('activeDayStage').innerHTML.indexOf('optional-prompt-drawer') < getEl('activeDayStage').innerHTML.indexOf('id="vnStudio_1_0"'),
@@ -278,15 +288,19 @@ const audio = getEl('audioPlayer');
   assert.ok(kalyaniWikiVault.dynamicCards['1'] && kalyaniWikiVault.dynamicCards['1'].title_bn);
   await startVoiceNoteRecording(1, 0);
   assert.strictEqual(vnRecordingState.active, true);
+  assert.ok(getEl('activeDayStage').innerHTML.includes('id="vnListenProgress_1_0"'), 'Listening progressbar must be shown while Gemini listens');
+  assert.ok(getEl('activeDayStage').innerHTML.includes('🟢 জেমিনি এখন মন দিয়ে তোমার কথা শুনছে...'));
   assert.ok(getEl('activeDayStage').innerHTML.includes('বলা শেষ — কল্যাণীকে পাঠাও'));
   vnRecordingState.liveTranscript = 'আমার গোপাল ভাঁড়ের হাসির গল্প খুব ভালো লাগে';
   await finishAndSendVoiceNote(1, 0);
   assert.strictEqual(vnRecordingState.active, false);
   assert.strictEqual((kalyaniThreads['1_0'] || []).length, 1);
-  assert.ok(getEl('activeDayStage').innerHTML.includes('🌸 কল্যাণীর ভয়েস মেসেজ উত্তর:'));
+  assert.ok(getEl('activeDayStage').innerHTML.includes('✨ জেমিনি (কল্যাণীর ভয়েস মেসেজ উত্তর):'));
+  assert.ok(kalyaniThreads['1_0'][0].reply_bn.includes('মা, জেমিনি বলছি—'), 'Reply must clearly identify that it came from Gemini');
   assert.strictEqual(kalyaniWikiVault.pages.length, 7);
   assert.ok(kalyaniWikiVault.pages[0].entries.join(' ').includes('[[হাসি, ভগবান ও প্রিয় গল্প]]'), 'Obsidian-style Ma Wiki Vault must contain [[wikilinks]]');
   assert.ok(getEl('koushikAdminBody').innerHTML.includes('id="maObsidianWikiPanel"'), 'Koushik Admin Panel in Chithi tab must render Obsidian Wiki & API Key controls');
+  assert.ok(getEl('koushikAdminBody').innerHTML.includes('id="btnAdminAutoVoice"'), 'Admin Panel must include Auto Voice Play toggle');
   delete doneMap['1_0'];
   delete kalyaniThreads['1_0'];
 
@@ -457,6 +471,394 @@ assert.ok(els['pillarsContainer'].innerHTML.includes('Guilt Amnesty'), 'pillarsC
             check=False,
         )
         self.assertEqual(proc.returncode, 0, f"koushik.html VM test failed: {proc.stderr}")
+
+    def test_kalyani_gemini_live_video_and_audio_weird_edge_cases(self) -> None:
+        html = (APP_ROOT / "kalyani.html").read_text(encoding="utf-8")
+        m = re.search(r"<script>([\s\S]*)</script>", html)
+        self.assertIsNotNone(m, "Compiled kalyani.html must contain inline <script>")
+
+        vm_harness = r"""
+const vm = require('vm');
+const assert = require('assert');
+const fs = require('fs');
+const code = fs.readFileSync(0, 'utf8');
+
+const els = {};
+const audioListeners = {};
+const docListeners = {};
+const testEnv = {
+  lastPlayedSrc: '',
+  playCallCount: 0,
+  fetchRequests: [],
+  nextFetchHandler: null,
+  mockMediaRecorderShouldHangOnStop: false,
+  mockGetUserMediaShouldReject: false,
+  mockVideoWidth: 0, // Weird edge case: videoWidth === 0 before first frame metadata!
+  stoppedTracksCount: 0
+};
+
+function makeEl(id) {
+  return {
+    id,
+    innerHTML: '',
+    textContent: '',
+    value: '',
+    width: 640,
+    height: 480,
+    videoWidth: testEnv.mockVideoWidth,
+    videoHeight: testEnv.mockVideoWidth ? 480 : 0,
+    srcObject: null,
+    style: { cssText: '', width: '' },
+    classList: {
+      _set: new Set(),
+      add(c) { this._set.add(c); },
+      remove(c) { this._set.delete(c); },
+      toggle(c, f) {
+        if (f === undefined) {
+          if (this._set.has(c)) this._set.delete(c);
+          else this._set.add(c);
+        } else if (f) this._set.add(c);
+        else this._set.delete(c);
+      },
+      contains(c) { return this._set.has(c); }
+    },
+    setAttribute() {},
+    appendChild() {},
+    getBoundingClientRect() { return { top: 0 }; },
+    scrollIntoView() {},
+    focus() {},
+    play() {
+      testEnv.playCallCount += 1;
+      testEnv.lastPlayedSrc = this.src || '';
+      return Promise.resolve();
+    },
+    pause() {},
+    load() {},
+    addEventListener(ev, fn) { audioListeners[ev] = fn; },
+    getContext() {
+      return {
+        drawImage() {}
+      };
+    },
+    toDataURL(mime) {
+      return 'data:' + (mime || 'image/jpeg') + ';base64,ZmFrZV9qcGVnX2ZyYW1l';
+    }
+  };
+}
+
+class MockFileReader {
+  readAsDataURL(blob) {
+    this.result = 'data:' + (blob.type || 'audio/webm') + ';base64,ZmFrZV9hdWRpb19ieXRlcw==';
+    if (this.onloadend) this.onloadend();
+  }
+}
+
+class MockMediaRecorder {
+  constructor(stream, opts) {
+    this.stream = stream;
+    this.mimeType = (opts && opts.mimeType) || 'audio/webm;codecs=opus';
+    this.state = 'inactive';
+    this.ondataavailable = null;
+    this.onstop = null;
+  }
+  static isTypeSupported(t) { return true; }
+  start() {
+    this.state = 'recording';
+    if (this.ondataavailable) {
+      this.ondataavailable({ data: { size: 128, type: this.mimeType } });
+    }
+  }
+  stop() {
+    this.state = 'inactive';
+    if (!testEnv.mockMediaRecorderShouldHangOnStop && this.onstop) {
+      this.onstop();
+    }
+  }
+}
+
+const store = {
+  ma_kalyani_gemini_key_v1: 'AIzaSyFakeTestKeyForUnitTests12345'
+};
+
+const ctx = {
+  assert,
+  process,
+  Buffer,
+  els,
+  testEnv,
+  console,
+  Date,
+  Math,
+  JSON,
+  Promise,
+  Array,
+  Object,
+  String,
+  Number,
+  Boolean,
+  RegExp,
+  Error,
+  Uint8Array,
+  DataView,
+  Blob: class {
+    constructor(parts, opts) {
+      this.parts = parts;
+      this.size = 128;
+      this.type = (opts && opts.type) || '';
+    }
+  },
+  FileReader: MockFileReader,
+  MediaRecorder: MockMediaRecorder,
+  URL: {
+    createObjectURL() { return 'blob:mock-wav-url'; },
+    revokeObjectURL() {}
+  },
+  atob: (b64) => Buffer.from(b64, 'base64').toString('binary'),
+  btoa: (bin) => Buffer.from(bin, 'binary').toString('base64'),
+  setTimeout: (fn, ms) => {
+    // Immediately invoke short race timers during tests when needed
+    if (ms === 450 && testEnv.mockMediaRecorderShouldHangOnStop) {
+      fn();
+    }
+    return 1;
+  },
+  clearTimeout: () => {},
+  setInterval: () => 1,
+  clearInterval: () => {},
+  alert: () => {},
+  confirm: () => true,
+  fetch: async (url, opts) => {
+    testEnv.fetchRequests.push({ url, opts });
+    if (testEnv.nextFetchHandler) {
+      return await testEnv.nextFetchHandler(url, opts);
+    }
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({})
+    };
+  },
+  window: {
+    scrollTo() {},
+    addEventListener() {},
+    speechSynthesis: { cancel() {}, getVoices() { return []; }, speak() {} }
+  },
+  navigator: {
+    mediaDevices: {
+      getUserMedia: async (constraints) => {
+        if (testEnv.mockGetUserMediaShouldReject) {
+          throw new Error('NotAllowedError: Permission denied');
+        }
+        return {
+          getTracks() {
+            return [
+              { stop() { testEnv.stoppedTracksCount += 1; } },
+              { stop() { testEnv.stoppedTracksCount += 1; } }
+            ];
+          }
+        };
+      }
+    }
+  },
+  localStorage: {
+    getItem(k) { return Object.prototype.hasOwnProperty.call(store, k) ? store[k] : null; },
+    setItem(k, v) { store[k] = String(v); },
+    removeItem(k) { delete store[k]; }
+  },
+  document: {
+    body: makeEl('body'),
+    getElementById(id) {
+      if (!els[id]) els[id] = makeEl(id);
+      return els[id];
+    },
+    querySelector() { return makeEl('qs'); },
+    querySelectorAll() { return []; },
+    createElement(tag) { return makeEl(tag); },
+    addEventListener(ev, fn) { docListeners[ev] = fn; },
+    removeEventListener() {}
+  }
+};
+ctx.window.document = ctx.document;
+ctx.window.navigator = ctx.navigator;
+ctx.window.MediaRecorder = MockMediaRecorder;
+
+const edgeCaseTestSuite = code + `
+;(async function() {
+  // 1. Edge cases for normalizeAudioMime (critical fix for HTTP 400 audio/webm;codecs=opus)
+  assert.strictEqual(normalizeAudioMime('audio/webm;codecs=opus'), 'audio/webm');
+  assert.strictEqual(normalizeAudioMime('audio/mp4;codecs=mp4a.40.2'), 'audio/mp4');
+  assert.strictEqual(normalizeAudioMime('AUDIO/OGG; codecs=opus'), 'audio/ogg');
+  assert.strictEqual(normalizeAudioMime(''), 'audio/webm');
+  assert.strictEqual(normalizeAudioMime(null), 'audio/webm');
+  assert.strictEqual(normalizeAudioMime('video/webm;codecs=vp8'), 'audio/webm');
+
+  // 2. Edge cases for parseGeminiJsonSafely (markdown fences, prose wrapping, array wrapping, malformed)
+  const p1 = parseGeminiJsonSafely('\`\`\`json\\n{"transcriptBn":"হ্যালো","replyBn":"মা, আমি শুনছি"}\\n\`\`\`');
+  assert.strictEqual(p1.transcriptBn, 'হ্যালো');
+  assert.strictEqual(p1.replyBn, 'মা, আমি শুনছি');
+
+  const p2 = parseGeminiJsonSafely('Here is the JSON response:\\n{"transcriptBn":"গল্প","replyBn":"দারুণ গল্প!"}\\nHope that helps!');
+  assert.strictEqual(p2.transcriptBn, 'গল্প');
+  assert.strictEqual(p2.replyBn, 'দারুণ গল্প!');
+
+  const p3 = parseGeminiJsonSafely('[{"transcript":"নমস্কার","reply":"নমস্কার মা"}]');
+  assert.strictEqual(p3.transcript, 'নমস্কার');
+  assert.strictEqual(p3.reply, 'নমস্কার মা');
+
+  assert.strictEqual(parseGeminiJsonSafely('plain text non-json reply'), null);
+  assert.strictEqual(parseGeminiJsonSafely('{broken json'), null);
+  assert.strictEqual(parseGeminiJsonSafely(''), null);
+
+  // 3. Edge cases for formatGeminiReplyText (clear Gemini attribution without double prefixing)
+  assert.ok(formatGeminiReplyText('তোমার কথা শুনে খুব ভালো লাগলো!').startsWith('মা, জেমিনি বলছি—'));
+  const alreadyPrefixed = 'মা, জেমিনি বলছি— তুমি কেমন আছো?';
+  assert.strictEqual(formatGeminiReplyText(alreadyPrefixed), alreadyPrefixed);
+
+  // 4. Edge cases for pcm24kBase64ToWavUrl (whitespace/newlines in base64, empty string)
+  assert.strictEqual(pcm24kBase64ToWavUrl(''), '');
+  const wavUrl = pcm24kBase64ToWavUrl('AAAA\\n  AAAA\\tAAAA');
+  assert.ok(wavUrl.startsWith('data:audio/wav;base64,UklGR'), 'Must produce valid RIFF WAV base64 data URI');
+
+  // 5. Auto Voice Play ON/OFF setting & Mark as Done button behavior
+  assert.strictEqual(autoVoicePlay, true, 'autoVoicePlay defaults to true');
+  toggleAutoVoicePlay();
+  assert.strictEqual(autoVoicePlay, false, 'toggleAutoVoicePlay switches autoVoicePlay to false');
+  assert.strictEqual(localStorage.getItem('ma_kalyani_auto_voice_v1'), 'false');
+
+  const countBeforeDisabledNav = testEnv.playCallCount;
+  selectGame(1);
+  selectDay(2);
+  switchView('letter');
+  switchView('pillars');
+  switchView('plan');
+  handleAudioTrackCompleted('day_main_2');
+  assert.strictEqual(testEnv.playCallCount, countBeforeDisabledNav, 'When autoVoicePlay is OFF, navigation and track completion must NOT auto-play audio');
+
+  // Mark as Done button toggles done state & updates green card/tile class
+  assert.strictEqual(Boolean(doneMap['2_0']), false);
+  toggleAgendaDone(2, 0);
+  assert.strictEqual(Boolean(doneMap['2_0']), true, 'toggleAgendaDone must mark game 2_0 as done');
+  assert.ok(els['activeDayStage'].innerHTML.includes('done-tile'), 'Active day stage must show done-tile green class when game 2_0 is done');
+  selectGame(0);
+  assert.ok(els['activeDayStage'].innerHTML.includes('✅ হয়ে গেছে'), 'Active game card must show ✅ হয়ে গেছে when done');
+
+  // Re-enable autoVoicePlay
+  toggleAutoVoicePlay();
+  assert.strictEqual(autoVoicePlay, true);
+
+  // 6. Live Video + Voice unified one-tap flow (with videoWidth === 0 fallback & audio/webm;codecs=opus strip)
+  selectDay(1);
+  selectGame(0);
+  testEnv.fetchRequests = [];
+  testEnv.nextFetchHandler = async (url, opts) => {
+    const body = JSON.parse(opts.body);
+    if (body.generationConfig && body.generationConfig.responseModalities && body.generationConfig.responseModalities[0] === 'AUDIO') {
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          candidates: [{
+            content: { parts: [{ inlineData: { data: 'AAAAAAAA' } }] }
+          }]
+        })
+      };
+    }
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({
+        candidates: [{
+          content: {
+            parts: [{
+              text: JSON.stringify({
+                heard_bn: 'এই দেখো আমার ঘরের ফুলদানি',
+                reply_bn: 'মা, তোমার ফুলদানিটা কী সুন্দর দেখাচ্ছে!',
+                memory_note: 'মা ঘরের ফুলদানি দেখাতে ভালোবাসেন',
+                wiki_page: 'joy_gods_and_stories',
+                boost_topic: 'comedy'
+              })
+            }]
+          }
+        }]
+      })
+    };
+  };
+
+  await toggleCardLiveVideo(1, 0);
+  assert.strictEqual(vnLiveCamState.active, true, 'toggleCardLiveVideo must activate live camera');
+  assert.strictEqual(vnRecordingState.active, true, 'toggleCardLiveVideo must also start voice recording in one tap');
+  assert.ok(els['activeDayStage'].innerHTML.includes('vnListenProgress_1_0'), 'Recording state must display Gemini listening progressbar');
+  assert.ok(els['activeDayStage'].innerHTML.includes('জেমিনি এখন মন দিয়ে তোমার কথা শুনছে'), 'Progressbar must tell Ma Gemini is listening now');
+
+  await finishAndSendVoiceNote(1, 0);
+  assert.strictEqual(testEnv.fetchRequests.length, 2, 'Must call Gemini multimodal flash + Gemini TTS');
+  const multimodalBody = JSON.parse(testEnv.fetchRequests[0].opts.body);
+  const sentParts = multimodalBody.contents[0].parts;
+  const imagePart = sentParts.find(p => p.inlineData && p.inlineData.mimeType === 'image/jpeg');
+  const audioPart = sentParts.find(p => p.inlineData && p.inlineData.mimeType.startsWith('audio/'));
+  assert.ok(imagePart && imagePart.inlineData.data.length > 5, 'Must include captured live video JPEG frame even when videoWidth === 0');
+  assert.ok(audioPart, 'Must include recorded audio inlineData');
+  assert.strictEqual(audioPart.inlineData.mimeType, 'audio/webm', 'Must strip ;codecs=opus from audio mimeType');
+
+  const threads = kalyaniThreads['1_0'] || [];
+  assert.strictEqual(threads.length, 1, 'Must save conversation turn in thread');
+  assert.ok(threads[0].reply_bn.startsWith('মা, জেমিনি বলছি—'), 'Saved reply must clearly identify Gemini');
+  assert.strictEqual(threads[0].has_live_video, true, 'Saved turn must flag has_live_video = true');
+  assert.ok(els['activeDayStage'].innerHTML.includes('জেমিনি (কল্যাণীর ভয়েস মেসেজ উত্তর)'), 'Rendered reply card must show Gemini response badge');
+  assert.ok(kalyaniMemoryNotes.some(f => f.includes('ফুলদানি')), 'Must learn new fact into Kalyani Memory & Ma Wiki');
+
+  // 7. Weird Edge Case: Live Video sent with 0 seconds of audio (vnRecordingState.active = false, vnLiveCamState.active = true)
+  testEnv.fetchRequests = [];
+  vnLiveCamState = { active: true, dayNum: 1, agIdx: 0, facingMode: 'environment', lastFrameB64: 'ZmFrZV9jYWNoZWRfZnJhbWU=' };
+  vnRecordingState = { active: false, sending: false, dayNum: 1, agIdx: 0, seconds: 0, liveTranscript: '', errorMsg: '' };
+  await finishAndSendVoiceNote(1, 0);
+  assert.strictEqual(testEnv.fetchRequests.length, 2, 'Live video with 0s audio must still send frame to Gemini');
+  assert.strictEqual((kalyaniThreads['1_0'] || []).length, 2, 'Second turn must be appended');
+
+  // 8. Weird Edge Case: Double-click re-entrancy guard when vnRecordingState.sending === true
+  testEnv.fetchRequests = [];
+  vnRecordingState.sending = true;
+  await finishAndSendVoiceNote(1, 0);
+  assert.strictEqual(testEnv.fetchRequests.length, 0, 'Must ignore duplicate finishAndSendVoiceNote calls while sending === true');
+  vnRecordingState.sending = false;
+
+  // 9. Weird Edge Case: Switching games/days while camera & mic are active must stop hardware tracks
+  const tracksBefore = testEnv.stoppedTracksCount;
+  await toggleCardLiveVideo(1, 0);
+  assert.strictEqual(vnLiveCamState.active, true);
+  selectGame(1);
+  assert.strictEqual(vnLiveCamState.active, false, 'Switching game must deactivate live camera');
+  assert.strictEqual(vnRecordingState.active, false, 'Switching game must deactivate voice recording');
+  assert.ok(testEnv.stoppedTracksCount > tracksBefore, 'Switching game must stop active camera/mic MediaStream tracks');
+
+  // 10. Weird Edge Case: Camera permission denied (NotAllowedError)
+  testEnv.mockGetUserMediaShouldReject = true;
+  await toggleCardLiveVideo(1, 1);
+  assert.strictEqual(vnLiveCamState.active, false, 'Permission denial must keep live camera inactive');
+  assert.ok(vnRecordingState.errorMsg.includes('ক্যামেরা চালু করা যায়নি'), 'Permission denial must show helpful Bengali message');
+  testEnv.mockGetUserMediaShouldReject = false;
+
+  // 11. Weird Edge Case: MediaRecorder.stop() hangs and never fires onstop (450ms race timeout recovery)
+  testEnv.mockMediaRecorderShouldHangOnStop = true;
+  await startVoiceNoteRecording(1, 1);
+  await finishAndSendVoiceNote(1, 1);
+  assert.strictEqual(vnRecordingState.sending, false, 'Must recover cleanly via timeout race even if MediaRecorder.onstop hangs');
+  testEnv.mockMediaRecorderShouldHangOnStop = false;
+})().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
+`;
+vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
+"""
+        proc = subprocess.run(
+            [str(NODE_BIN), "-e", vm_harness],
+            input=m.group(1),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(proc.returncode, 0, f"Kalyani weird edge-cases VM test failed: {proc.stderr}")
 
 
 if __name__ == "__main__":

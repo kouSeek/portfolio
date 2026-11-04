@@ -18,6 +18,17 @@ let curGameIdx = 0;
 let showAllGamesInDay = false;
 let primaryCalOpen = false;
 let autoAdvance = true;
+let autoVoicePlay = true;
+try {
+  const savedAutoVoice = localStorage.getItem('ma_kalyani_auto_voice_v1');
+  if (savedAutoVoice === 'false') autoVoicePlay = false;
+  else if (savedAutoVoice === 'true') autoVoicePlay = true;
+} catch (e) {}
+
+function saveAutoVoicePlay() {
+  try { localStorage.setItem('ma_kalyani_auto_voice_v1', autoVoicePlay ? 'true' : 'false'); } catch (e) {}
+}
+
 let radioAutoPlay = true;
 let storyOnlyAudio = true;
 let unlockAllDaysMode = true;
@@ -241,7 +252,8 @@ let vnLiveCamState = {
   active: false,
   dayNum: 0,
   agIdx: -1,
-  facingMode: 'environment'
+  facingMode: 'environment',
+  lastFrameB64: ''
 };
 let vnRecordingState = {
   active: false,

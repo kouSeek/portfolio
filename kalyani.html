@@ -1876,6 +1876,101 @@ button:focus-visible {
   border: 1.5px solid var(--border-strong);
   font-size: 0.96rem;
 }
+
+.minimal-section-drawer {
+  padding: 12px 15px;
+  margin-bottom: 10px;
+}
+
+.minimal-drawer-summary {
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1.52;
+  font-weight: 800;
+  color: var(--text-primary);
+  list-style: none;
+}
+
+.minimal-drawer-summary::-webkit-details-marker {
+  display: none;
+}
+
+.minimal-drawer-body {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.game-sub-drawer {
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-strong);
+  background: var(--bg-subtle);
+  padding: 8px 12px;
+}
+
+.game-sub-summary {
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1.52;
+  font-weight: 700;
+  color: var(--text-secondary);
+  list-style: none;
+}
+
+.game-sub-summary::-webkit-details-marker {
+  display: none;
+}
+
+.vn-error-msg {
+  padding: 8px 11px;
+  border-radius: var(--radius-sm);
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #991B1B;
+  font-size: 0.94rem;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+.vn-gemini-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  font-weight: 800;
+}
+
+.vn-listen-progressbar {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: #E2E8F0;
+  overflow: hidden;
+  position: relative;
+}
+
+.vn-listen-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent) 0%, #10B981 50%, var(--gold) 100%);
+  transition: width 0.35s ease;
+}
+
+.vn-listen-progressbar.sending .vn-listen-bar-fill {
+  width: 68%;
+  animation: vnPulseBar 1.1s infinite ease-in-out;
+}
+
+@keyframes vnPulseBar {
+  0%, 100% { opacity: 0.55; transform: scaleX(0.92); }
+  50% { opacity: 1; transform: scaleX(1); }
+}
 </style>
 </head>
 <body>
@@ -1905,11 +2000,6 @@ button:focus-visible {
 </header>
 
 <main class="app-shell">
-
-  <div id="permBanner" class="perm-banner" style="display:none;">
-    <div class="perm-banner-title">🎙️ মা, রোজ সকালের সুপ্রভাত বার্তা ও মাইক চালু করতে এখানে একবার ছোঁও:</div>
-    <button class="perm-btn-primary" onclick="requestMicAndNotificationPermission()">✅ চালু করো</button>
-  </div>
 
   <!-- VIEW 1: TODAY'S GAMES (🎓 আজকের খেলা — Sequential Lock + Calendar Grid) -->
   <section id="viewPlan" class="view-sec active">
@@ -2024,6 +2114,17 @@ let curGameIdx = 0;
 let showAllGamesInDay = false;
 let primaryCalOpen = false;
 let autoAdvance = true;
+let autoVoicePlay = true;
+try {
+  const savedAutoVoice = localStorage.getItem('ma_kalyani_auto_voice_v1');
+  if (savedAutoVoice === 'false') autoVoicePlay = false;
+  else if (savedAutoVoice === 'true') autoVoicePlay = true;
+} catch (e) {}
+
+function saveAutoVoicePlay() {
+  try { localStorage.setItem('ma_kalyani_auto_voice_v1', autoVoicePlay ? 'true' : 'false'); } catch (e) {}
+}
+
 let radioAutoPlay = true;
 let storyOnlyAudio = true;
 let unlockAllDaysMode = true;
@@ -2247,7 +2348,8 @@ let vnLiveCamState = {
   active: false,
   dayNum: 0,
   agIdx: -1,
-  facingMode: 'environment'
+  facingMode: 'environment',
+  lastFrameB64: ''
 };
 let vnRecordingState = {
   active: false,
@@ -2521,9 +2623,9 @@ function playOrToggleAudio(btnId, audioKey, srcUrl, fallbackB64, onBlockedFallba
 
 function onFirstGestureWelcomeUnlock(ev) {
   detachAutoWelcomeGestureFallback();
-  if (autoWelcomeSucceeded || !audioEl.paused || activeAudioKey || curView !== 'plan') return;
+  if (!autoVoicePlay || autoWelcomeSucceeded || !audioEl.paused || activeAudioKey || curView !== 'plan') return;
   const explicitTarget = (ev && ev.target && typeof ev.target.closest === 'function')
-    ? ev.target.closest('#topPlayBtn, #btnDayMainPlay, .ag-btn, .game-tile, .day-chip, .cal-day-cell, #btnToggleCalGrid, .view-mode-toggle, #htabSlides, .perm-btn-primary')
+    ? ev.target.closest('#topPlayBtn, #btnDayMainPlay, .ag-btn, .game-tile, .day-chip, .cal-day-cell, #btnToggleCalGrid, .view-mode-toggle, #htabSlides')
     : null;
   if (explicitTarget) return;
   autoWelcomeSucceeded = true;
@@ -2542,7 +2644,7 @@ function preloadOpenGameAudio(dayObj, gameIdx) {
 }
 
 function attachAutoWelcomeGestureFallback() {
-  if (autoWelcomeFallbackArmed || !document.addEventListener) return;
+  if (!autoVoicePlay || autoWelcomeFallbackArmed || !document.addEventListener) return;
   autoWelcomeFallbackArmed = true;
   document.addEventListener('pointerdown', onFirstGestureWelcomeUnlock, true);
   document.addEventListener('touchstart', onFirstGestureWelcomeUnlock, true);
@@ -2558,7 +2660,7 @@ function detachAutoWelcomeGestureFallback() {
 }
 
 function engageProactiveWelcomeAudio() {
-  if (curView !== 'plan') return;
+  if (!autoVoicePlay || curView !== 'plan') return;
   const d = findDayObj(curDayNum);
   const refDay = d.audio_ref_day || d.day || 1;
   const refObj = DAYS_21.find(x => x.day === refDay) || d;
@@ -2628,7 +2730,7 @@ async function playAgendaByIdx(dayNum, agIdx, btnEl, playFullWithPrompt) {
 function handleAudioTrackCompleted() {
   const finishedKey = activeAudioKey;
   stopAllAudio();
-  if (!finishedKey) return;
+  if (!finishedKey || !autoVoicePlay) return;
 
   if (curView === 'slides' && autoAdvance && finishedKey.startsWith('slide_') && curSlideIdx < SLIDES.length - 1) {
     setTimeout(() => goToSlide(curSlideIdx + 1, true), 900);
@@ -2662,104 +2764,89 @@ audioEl.addEventListener('ended', () => {
   handleAudioTrackCompleted();
 });
 
-/* Pleasant Morning Bell Chime via Web Audio API */
-function playMorningChimeSound() {
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const notes = [523.25, 659.25, 783.99, 1046.50];
-    notes.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.18);
-      gain.gain.setValueAtTime(0.001, ctx.currentTime + i * 0.18);
-      gain.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + i * 0.18 + 0.04);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + i * 0.18 + 1.1);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(ctx.currentTime + i * 0.18);
-      osc.stop(ctx.currentTime + i * 0.18 + 1.15);
-    });
-  } catch (e) {}
-}
-
-function checkAndFireDailyMorningNotification() {
-  const now = new Date();
-  const todayStr = now.toISOString().slice(0, 10);
-  if (maProfile.lastMorningNotifDate === todayStr) return;
-
-  const parts = (maProfile.morningTime || '08:00').split(':');
-  const targetH = parseInt(parts[0] || '8', 10);
-  const targetM = parseInt(parts[1] || '0', 10);
-  const nowMins = now.getHours() * 60 + now.getMinutes();
-  const targetMins = targetH * 60 + targetM;
-
-  if (nowMins >= targetMins && nowMins <= targetMins + 240) {
-    maProfile.lastMorningNotifDate = todayStr;
-    saveMaProfile();
-    fireMorningMotivationNotification(false);
-  }
-}
-
-function fireMorningMotivationNotification(isManualTest) {
-  const quote = MORNING_QUOTES[curQuoteIdx];
-  playMorningChimeSound();
-  const title = '☀️ সুপ্রভাত মা! আজকের অনুপ্রেরণা';
-  const favEl = document.getElementById('pageFavicon');
-  const notifIcon = (favEl && favEl.getAttribute && favEl.getAttribute('href')) || 'favicon.svg';
-  if ('Notification' in window && Notification.permission === 'granted') {
-    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
-      navigator.serviceWorker.ready.then(reg => {
-        reg.showNotification(title, {
-          body: quote,
-          icon: notifIcon,
-          vibrate: [200, 100, 200],
-          tag: 'ma-morning-motivation'
-        });
-      }).catch(() => {
-        new Notification(title, { body: quote });
-      });
-    } else {
-      new Notification(title, { body: quote });
-    }
-  }
-  if (isManualTest) toggleMorningQuoteAudio();
-}
-
-async function requestMicAndNotificationPermission() {
-  try {
-    if ('Notification' in window) {
-      await Notification.requestPermission();
-    }
-    maProfile.permsGranted = true;
-    saveMaProfile();
-    const permBanner = document.getElementById('permBanner');
-    if (permBanner) permBanner.style.display = 'none';
-    fireMorningMotivationNotification(true);
-  } catch (err) {}
-}
-
 /* ============================================================================
-   MODULE 2B: IN-CARD WALKIE-TALKIE AUDIO MESSAGE & AOEDE VOICE REPLY ENGINE
-   (Zero App-Switching, Zero Mid-Sentence Interruption, 100% System Prompt Obedience)
+   MODULE 2B: IN-CARD WALKIE-TALKIE AUDIO MESSAGE, LIVE VIDEO & AOEDE VOICE
+   (Zero App-Switching, Zero Mid-Sentence Interruption, Bulletproof Edge Cases)
    ============================================================================ */
 let activeMediaRecorder = null;
 let activeMicStream = null;
 let activeVideoStream = null;
+let activeCamFrameTimerId = null;
 let activeSpeechRec = null;
 let activeVnAudioChunks = [];
 let activeVnTimerId = null;
 
+function normalizeAudioMime(rawMime) {
+  const base = String(rawMime || '').split(';')[0].trim().toLowerCase();
+  if (base === 'audio/mp4' || base === 'audio/m4a' || base === 'audio/aac') return 'audio/mp4';
+  if (base === 'audio/ogg' || base === 'audio/oga') return 'audio/ogg';
+  if (base === 'audio/wav' || base === 'audio/x-wav' || base === 'audio/wave') return 'audio/wav';
+  if (base === 'audio/mp3' || base === 'audio/mpeg') return 'audio/mp3';
+  return 'audio/webm';
+}
+
+function parseGeminiJsonSafely(rawText) {
+  if (!rawText || typeof rawText !== 'string') return null;
+  let cleaned = rawText.trim();
+  cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+  const tryParse = (str) => {
+    try {
+      const obj = JSON.parse(str);
+      if (Array.isArray(obj)) return obj[0] || null;
+      return (obj && typeof obj === 'object') ? obj : null;
+    } catch (e) {
+      return null;
+    }
+  };
+  let parsed = tryParse(cleaned);
+  if (!parsed) {
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace >= 0 && lastBrace > firstBrace) {
+      parsed = tryParse(cleaned.slice(firstBrace, lastBrace + 1));
+    }
+  }
+  return parsed;
+}
+
+function snapshotVideoElementFrameB64(vidEl) {
+  if (!vidEl || typeof document.createElement !== 'function') return '';
+  try {
+    const w = Number(vidEl.videoWidth) || Number(vidEl.width) || 640;
+    const h = Number(vidEl.videoHeight) || Number(vidEl.height) || 480;
+    if (w <= 0 || h <= 0) return '';
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext && canvas.getContext('2d');
+    if (ctx && typeof ctx.drawImage === 'function' && typeof canvas.toDataURL === 'function') {
+      ctx.drawImage(vidEl, 0, 0, w, h);
+      const dataUrl = String(canvas.toDataURL('image/jpeg', 0.82) || '');
+      const comma = dataUrl.indexOf(',');
+      if (comma >= 0) {
+        const b64 = dataUrl.slice(comma + 1).trim();
+        if (b64) return b64;
+      }
+    }
+  } catch (e) {}
+  return '';
+}
+
 function attachLiveStreamToVideoElement() {
   if (!vnLiveCamState.active || !activeVideoStream) return;
   const vidEl = document.getElementById('vnLiveVideo_' + vnLiveCamState.dayNum + '_' + vnLiveCamState.agIdx);
-  if (vidEl && vidEl.srcObject !== activeVideoStream) {
-    vidEl.srcObject = activeVideoStream;
-    if (typeof vidEl.play === 'function') {
-      try { vidEl.play().catch(() => {}); } catch (e) {}
+  if (vidEl) {
+    if (vidEl.srcObject !== activeVideoStream) {
+      vidEl.srcObject = activeVideoStream;
     }
+    if (typeof vidEl.play === 'function') {
+      try {
+        const p = vidEl.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      } catch (e) {}
+    }
+    const snap = snapshotVideoElementFrameB64(vidEl);
+    if (snap) vnLiveCamState.lastFrameB64 = snap;
   }
 }
 
@@ -2767,51 +2854,54 @@ function captureFrameFromLiveVideo(dayNum, agIdx) {
   if (!vnLiveCamState.active || vnLiveCamState.dayNum !== dayNum || vnLiveCamState.agIdx !== agIdx) {
     return null;
   }
-  try {
-    const vidEl = document.getElementById('vnLiveVideo_' + dayNum + '_' + agIdx);
-    if (vidEl && vidEl.videoWidth > 0 && vidEl.videoHeight > 0 && typeof document.createElement === 'function') {
-      const canvas = document.createElement('canvas');
-      canvas.width = vidEl.videoWidth;
-      canvas.height = vidEl.videoHeight;
-      const ctx = canvas.getContext && canvas.getContext('2d');
-      if (ctx && typeof canvas.toDataURL === 'function') {
-        ctx.drawImage(vidEl, 0, 0, canvas.width, canvas.height);
-        const dataUrl = String(canvas.toDataURL('image/jpeg', 0.82) || '');
-        const comma = dataUrl.indexOf(',');
-        if (comma >= 0) {
-          return { mime: 'image/jpeg', b64: dataUrl.slice(comma + 1) };
-        }
-      }
-    }
-  } catch (e) {}
-  return { mime: 'image/jpeg', b64: '' };
+  const vidEl = document.getElementById('vnLiveVideo_' + dayNum + '_' + agIdx);
+  const freshB64 = snapshotVideoElementFrameB64(vidEl);
+  if (freshB64) {
+    vnLiveCamState.lastFrameB64 = freshB64;
+  }
+  return {
+    mime: 'image/jpeg',
+    b64: vnLiveCamState.lastFrameB64 || ''
+  };
 }
 
 function stopCardLiveVideo() {
+  if (activeCamFrameTimerId) {
+    if (typeof clearInterval === 'function') clearInterval(activeCamFrameTimerId);
+    activeCamFrameTimerId = null;
+  }
   if (activeVideoStream) {
     try { activeVideoStream.getTracks().forEach(t => t.stop()); } catch (e) {}
     activeVideoStream = null;
   }
-  vnLiveCamState = { active: false, dayNum: 0, agIdx: -1, facingMode: vnLiveCamState.facingMode || 'environment' };
+  vnLiveCamState = {
+    active: false,
+    dayNum: 0,
+    agIdx: -1,
+    facingMode: vnLiveCamState.facingMode || 'environment',
+    lastFrameB64: ''
+  };
 }
 
-async function toggleCardLiveVideo(dayNum, agIdx) {
-  if (vnLiveCamState.active && vnLiveCamState.dayNum === dayNum && vnLiveCamState.agIdx === agIdx) {
-    stopCardLiveVideo();
-    renderPlanView();
-    return;
-  }
+function stopActiveVoiceAndVideoCapture() {
+  cleanupActiveVoiceRecorder();
+  stopCardLiveVideo();
+  vnRecordingState = { active: false, sending: false, dayNum: 0, agIdx: -1, seconds: 0, liveTranscript: '', errorMsg: '' };
+}
+
+async function startCardLiveVideoStream(dayNum, agIdx) {
   stopCardLiveVideo();
   vnLiveCamState = {
     active: true,
     dayNum: dayNum,
     agIdx: agIdx,
-    facingMode: vnLiveCamState.facingMode || 'environment'
+    facingMode: vnLiveCamState.facingMode || 'environment',
+    lastFrameB64: ''
   };
   renderPlanView();
 
   try {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
       try {
         activeVideoStream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: { ideal: vnLiveCamState.facingMode } },
@@ -2821,22 +2911,51 @@ async function toggleCardLiveVideo(dayNum, agIdx) {
         activeVideoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
       }
       attachLiveStreamToVideoElement();
+      activeCamFrameTimerId = setInterval(() => {
+        if (!vnLiveCamState.active) return;
+        const vidEl = document.getElementById('vnLiveVideo_' + vnLiveCamState.dayNum + '_' + vnLiveCamState.agIdx);
+        const snap = snapshotVideoElementFrameB64(vidEl);
+        if (snap) vnLiveCamState.lastFrameB64 = snap;
+      }, 400);
+      return true;
     }
-  } catch (err) {}
+  } catch (err) {
+    stopCardLiveVideo();
+    vnRecordingState.errorMsg = '📷 ক্যামেরা চালু করা যায়নি। ফোনের ক্যামেরা পারমিশন অন করো।';
+    renderPlanView();
+    return false;
+  }
+  return true;
+}
+
+async function toggleCardLiveVideo(dayNum, agIdx) {
+  if (vnRecordingState.sending) return;
+  if (vnLiveCamState.active && vnLiveCamState.dayNum === dayNum && vnLiveCamState.agIdx === agIdx) {
+    stopCardLiveVideo();
+    renderPlanView();
+    return;
+  }
+  const ok = await startCardLiveVideoStream(dayNum, agIdx);
+  if (ok && !vnRecordingState.active) {
+    await startVoiceNoteRecording(dayNum, agIdx, true);
+  }
 }
 
 async function switchCardLiveCamera(dayNum, agIdx) {
+  if (vnRecordingState.sending) return;
   vnLiveCamState.facingMode = (vnLiveCamState.facingMode === 'environment') ? 'user' : 'environment';
-  vnLiveCamState.active = false;
-  await toggleCardLiveVideo(dayNum, agIdx);
+  await startCardLiveVideoStream(dayNum, agIdx);
 }
 
 function pcm24kBase64ToWavUrl(b64Pcm) {
   try {
+    const cleanB64 = String(b64Pcm || '').replace(/\s+/g, '');
+    if (!cleanB64) return '';
     const rawStr = (typeof atob === 'function')
-      ? atob(b64Pcm)
-      : Buffer.from(b64Pcm, 'base64').toString('binary');
+      ? atob(cleanB64)
+      : Buffer.from(cleanB64, 'base64').toString('binary');
     const pcmLen = rawStr.length;
+    if (pcmLen <= 0) return '';
     const wavBytes = new Uint8Array(44 + pcmLen);
     const view = new DataView(wavBytes.buffer);
     const writeAscii = (off, str) => {
@@ -2872,7 +2991,7 @@ function pcm24kBase64ToWavUrl(b64Pcm) {
 }
 
 async function synthesizeKalyaniAoedeAudio(textBn, apiKey) {
-  if (!apiKey || !textBn) return '';
+  if (!apiKey || !textBn || !String(textBn).trim()) return '';
   try {
     const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=' + encodeURIComponent(apiKey);
     const resp = await fetch(endpoint, {
@@ -2881,7 +3000,7 @@ async function synthesizeKalyaniAoedeAudio(textBn, apiKey) {
       body: JSON.stringify({
         contents: [{
           parts: [{
-            text: 'Speak in a warm, affectionate, unhurried, soothing West Bengal Bengali voice (never rush):\n\n' + textBn
+            text: 'Speak in a warm, affectionate, unhurried, soothing West Bengal Bengali voice (never rush):\n\n' + String(textBn).trim()
           }]
         }],
         generationConfig: {
@@ -2898,7 +3017,7 @@ async function synthesizeKalyaniAoedeAudio(textBn, apiKey) {
     const data = await resp.json();
     const parts = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
     for (let i = 0; i < parts.length; i++) {
-      if (parts[i].inlineData && parts[i].inlineData.data) {
+      if (parts[i] && parts[i].inlineData && parts[i].inlineData.data) {
         return pcm24kBase64ToWavUrl(parts[i].inlineData.data);
       }
     }
@@ -2906,19 +3025,34 @@ async function synthesizeKalyaniAoedeAudio(textBn, apiKey) {
   return '';
 }
 
-function buildWarmFallbackReply(ag, turnCount, heardText) {
-  const cleanHeard = (heardText || '').trim() || 'মায়ের নিজের মনের কথা (ভয়েস মেসেজ)';
+function formatGeminiReplyText(rawReplyBn) {
+  const clean = String(rawReplyBn || '').replace(/[*#`_]/g, '').trim();
+  if (!clean) return '';
+  if (clean.includes('জেমিনি')) return clean;
+  return 'মা, জেমিনি বলছি— ' + clean;
+}
+
+function buildWarmFallbackReply(ag, turnCount, heardText, hasLiveVideo) {
+  const defaultHeard = hasLiveVideo ? 'মায়ের লাইভ ভিডিও ও কথা' : 'মায়ের ভয়েস মেসেজ';
+  const cleanHeard = String(heardText || '').trim() || defaultHeard;
   const follow = (ag && ag.followup_prompt_bn) ? ag.followup_prompt_bn : '';
+  if (hasLiveVideo) {
+    return {
+      heard_bn: cleanHeard,
+      reply_bn: 'মা, জেমিনি বলছি— তুমি ভিডিও ক্যামেরায় যা দেখালে আর বললে তা আমি খুব যত্ন করে দেখেছি ও শুনেছি! তুমি কী সুন্দর নিজের হাতে ক্যামেরা অন করে আমায় দেখালে।',
+      memory_note: ''
+    };
+  }
   if (turnCount === 0 && follow) {
     return {
       heard_bn: cleanHeard,
-      reply_bn: 'মা, তোমার গলার আওয়াজ আর মনের কথাটা শুনে আমার মনটা একদম ভরে গেল! তুমি কী সুন্দর নিজের মতো করে কথাটা বললে। আচ্ছা মা, এবার একটু ভেবে বলো তো—' + follow,
+      reply_bn: 'মা, জেমিনি বলছি— তোমার গলার আওয়াজ আর মনের কথাটা শুনে আমার মনটা একদম ভরে গেল! আচ্ছা মা, এবার একটু ভেবে বলো তো—' + follow,
       memory_note: ''
     };
   }
   return {
     heard_bn: cleanHeard,
-    reply_bn: 'মা, তোমার প্রতিটি কথা এত সুন্দর আর আন্তরিক! তোমার সাথে এভাবে ধীরেসুস্থে গল্প করতে আমার ভীষণ ভালো লাগে। আজকের এই খেলাটা তুমি দারুণভাবে সম্পূর্ণ করলে!',
+    reply_bn: 'মা, জেমিনি বলছি— তোমার প্রতিটি কথা এত সুন্দর আর আন্তরিক! তোমার সাথে এভাবে ধীরেসুস্থে গল্প করতে আমার ভীষণ ভালো লাগে।',
     memory_note: ''
   };
 }
@@ -2929,9 +3063,10 @@ async function callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, audioMime, li
   const cardKey = dayNum + '_' + agIdx;
   const history = kalyaniThreads[cardKey] || [];
   const apiKey = getGeminiApiKey();
+  const hasLiveVideo = !!(photoObj && photoObj.b64);
 
   if (!apiKey) {
-    return buildWarmFallbackReply(ag, history.length, liveTranscript);
+    return buildWarmFallbackReply(ag, history.length, liveTranscript, hasLiveVideo);
   }
 
   const memBlock = '\n\n' + buildMaWikiContextMarkdown()
@@ -2949,26 +3084,30 @@ async function callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, audioMime, li
     + '- Suggested Prompt Ma Was Responding To: ' + (ag.prompt_bn || '') + '\n'
     + '- Turn Guidance: ' + turnGuidance + '\n\n'
     + 'OUTPUT FORMAT RULE: Return strictly valid JSON with keys:\n'
-    + '{"heard_bn": "accurate Bengali transcript of what Ma just said in her audio message", "reply_bn": "your warm 3-4 sentence colloquial West Bengal Bengali reply to Ma (never rush, zero markdown symbols, zero war/Ramayana/Mahabharata)", "memory_note": "short 1-line Bengali note with [[wikilinks]] of any new personal memory, preference, or pattern Ma shared, or empty string", "wiki_page": "one of mind_and_mood | joy_gods_and_stories | food_and_preferences | ranaghat_and_memories | language_and_voice | comfort_and_wellbeing | agent_pattern_log", "boost_topic": "one of comedy | gods | animals | music | reminiscence | empty string"}';
+    + '{"heard_bn": "accurate Bengali transcript of what Ma just said (or what she showed on camera)", "reply_bn": "your warm 3-4 sentence colloquial West Bengal Bengali reply to Ma (never rush, zero markdown symbols, zero war/Ramayana/Mahabharata)", "memory_note": "short 1-line Bengali note with [[wikilinks]] of any new personal memory, preference, or pattern Ma shared, or empty string", "wiki_page": "one of mind_and_mood | joy_gods_and_stories | food_and_preferences | ranaghat_and_memories | language_and_voice | comfort_and_wellbeing | agent_pattern_log", "boost_topic": "one of comedy | gods | animals | music | reminiscence | empty string"}';
 
   const contents = [];
-  history.forEach(t => {
+  history.slice(-4).forEach(t => {
     contents.push({ role: 'user', parts: [{ text: t.heard_bn || 'মায়ের ভয়েস মেসেজ' }] });
     contents.push({ role: 'model', parts: [{ text: JSON.stringify({ heard_bn: t.heard_bn, reply_bn: t.reply_bn, memory_note: '' }) }] });
   });
 
   const userParts = [];
-  if (photoObj && photoObj.b64) {
+  if (hasLiveVideo) {
     userParts.push({ inlineData: { mimeType: photoObj.mime || 'image/jpeg', data: photoObj.b64 } });
   }
   if (audioB64) {
-    userParts.push({ inlineData: { mimeType: audioMime || 'audio/webm', data: audioB64 } });
+    userParts.push({ inlineData: { mimeType: normalizeAudioMime(audioMime), data: audioB64 } });
   }
-  userParts.push({
-    text: liveTranscript
-      ? ('মা ভয়েস মেসেজে বললেন (সম্ভাব্য শ্রুতিলিপি: "' + liveTranscript + '")। অডিওটা মনোযোগ দিয়ে শুনে JSON উত্তর দাও।')
-      : 'মা এইমাত্র এই ভয়েস মেসেজটি পাঠিয়েছেন। অডিওটা মনোযোগ দিয়ে শুনে JSON উত্তর দাও।'
-  });
+  let promptInstruction = 'মা এইমাত্র এই ভয়েস মেসেজটি পাঠিয়েছেন। অডিওটা মনোযোগ দিয়ে শুনে JSON উত্তর দাও।';
+  if (hasLiveVideo && audioB64) {
+    promptInstruction = 'মা লাইভ ভিডিও ক্যামেরায় এই দৃশ্যটি দেখিয়েছেন এবং অডিও মেসেজে কথা বলেছেন' + (liveTranscript ? (' (শ্রুতিলিপি: "' + liveTranscript + '")') : '') + '। ছবিটি ও অডিওটি দেখে ও শুনে সহজ বাংলায় JSON উত্তর দাও।';
+  } else if (hasLiveVideo && !audioB64) {
+    promptInstruction = 'মা লাইভ ভিডিও ক্যামেরায় এই জিনিসটি বা দৃশ্যটি দেখিয়েছেন' + (liveTranscript ? (' এবং বলেছেন: "' + liveTranscript + '"') : '') + '। ছবিটি ভালো করে দেখে এটি কী এবং এর কাজ কী তা সহজ বাংলায় বুঝিয়ে JSON উত্তর দাও।';
+  } else if (liveTranscript) {
+    promptInstruction = 'মা ভয়েস মেসেজে বললেন (সম্ভাব্য শ্রুতিলিপি: "' + liveTranscript + '")। মনোযোগ দিয়ে শুনে JSON উত্তর দাও।';
+  }
+  userParts.push({ text: promptInstruction });
   contents.push({ role: 'user', parts: userParts });
 
   try {
@@ -2986,24 +3125,27 @@ async function callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, audioMime, li
       })
     });
     if (!resp.ok) {
-      return buildWarmFallbackReply(ag, history.length, liveTranscript);
+      return buildWarmFallbackReply(ag, history.length, liveTranscript, hasLiveVideo);
     }
     const data = await resp.json();
     const rawText = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || '';
-    const parsed = JSON.parse(rawText);
-    if (parsed && parsed.reply_bn) {
-      if (parsed.memory_note) {
-        addKalyaniMemoryNote(parsed.memory_note);
-        appendMaWikiEntry(parsed.wiki_page || 'agent_pattern_log', parsed.memory_note, parsed.boost_topic || '');
+    const parsed = parseGeminiJsonSafely(rawText);
+    const replyVal = parsed && (parsed.reply_bn || parsed.reply || parsed.text || parsed.response);
+    if (parsed && replyVal) {
+      const memNote = String(parsed.memory_note || parsed.wiki_entry_bn || '').trim();
+      if (memNote) {
+        addKalyaniMemoryNote(memNote);
+        appendMaWikiEntry(parsed.wiki_page || 'agent_pattern_log', memNote, parsed.boost_topic || '');
       }
+      const heardVal = parsed.heard_bn || parsed.heard || parsed.transcript || liveTranscript || (hasLiveVideo ? 'মায়ের লাইভ ভিডিও ও কথা' : 'মায়ের ভয়েস মেসেজ');
       return {
-        heard_bn: parsed.heard_bn || liveTranscript || 'মায়ের ভয়েস মেসেজ',
-        reply_bn: String(parsed.reply_bn).replace(/[*#`_]/g, '').trim(),
-        memory_note: parsed.memory_note || ''
+        heard_bn: String(heardVal).replace(/[*#`_]/g, '').trim(),
+        reply_bn: formatGeminiReplyText(replyVal),
+        memory_note: memNote
       };
     }
   } catch (e) {}
-  return buildWarmFallbackReply(ag, history.length, liveTranscript);
+  return buildWarmFallbackReply(ag, history.length, liveTranscript, hasLiveVideo);
 }
 
 function cleanupActiveVoiceRecorder() {
@@ -3022,9 +3164,13 @@ function cleanupActiveVoiceRecorder() {
   activeMediaRecorder = null;
 }
 
-async function startVoiceNoteRecording(dayNum, agIdx) {
+async function startVoiceNoteRecording(dayNum, agIdx, keepExistingCam) {
+  if (vnRecordingState.sending) return;
   stopAllAudio();
   cleanupActiveVoiceRecorder();
+  if (!keepExistingCam && vnLiveCamState.active && (vnLiveCamState.dayNum !== dayNum || vnLiveCamState.agIdx !== agIdx)) {
+    stopCardLiveVideo();
+  }
   activeVnAudioChunks = [];
   vnRecordingState = {
     active: true,
@@ -3042,32 +3188,16 @@ async function startVoiceNoteRecording(dayNum, agIdx) {
     vnRecordingState.seconds += 1;
     const timerEl = document.getElementById('vnTimer_' + dayNum + '_' + agIdx);
     if (timerEl) timerEl.textContent = formatAudioSecondsBn(vnRecordingState.seconds);
+    const fillEl = document.getElementById('vnListenFill_' + dayNum + '_' + agIdx);
+    if (fillEl && fillEl.style) {
+      const pct = Math.min(100, Math.max(15, (vnRecordingState.seconds % 20) * 5 + 15));
+      fillEl.style.width = pct + '%';
+    }
   }, 1000);
 
+  let mediaRecStarted = false;
   try {
-    const SpeechRec = (typeof window !== 'undefined') && (window.SpeechRecognition || window.webkitSpeechRecognition);
-    if (SpeechRec) {
-      activeSpeechRec = new SpeechRec();
-      activeSpeechRec.lang = 'bn-IN';
-      activeSpeechRec.continuous = true;
-      activeSpeechRec.interimResults = true;
-      activeSpeechRec.onresult = (ev) => {
-        let txt = '';
-        for (let i = 0; i < ev.results.length; i++) {
-          txt += ev.results[i][0].transcript + ' ';
-        }
-        vnRecordingState.liveTranscript = txt.trim();
-        const prevEl = document.getElementById('vnLivePreview_' + dayNum + '_' + agIdx);
-        if (prevEl && vnRecordingState.liveTranscript) {
-          prevEl.textContent = '🗣️ “' + vnRecordingState.liveTranscript + '”';
-        }
-      };
-      try { activeSpeechRec.start(); } catch (e) {}
-    }
-  } catch (e) {}
-
-  try {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
       activeMicStream = await navigator.mediaDevices.getUserMedia({ audio: true });
       if (typeof MediaRecorder !== 'undefined') {
         const mime = (typeof MediaRecorder.isTypeSupported === 'function' && MediaRecorder.isTypeSupported('audio/webm;codecs=opus'))
@@ -3075,17 +3205,44 @@ async function startVoiceNoteRecording(dayNum, agIdx) {
           : ((typeof MediaRecorder.isTypeSupported === 'function' && MediaRecorder.isTypeSupported('audio/mp4')) ? 'audio/mp4' : '');
         activeMediaRecorder = mime ? new MediaRecorder(activeMicStream, { mimeType: mime }) : new MediaRecorder(activeMicStream);
         activeMediaRecorder.ondataavailable = (ev) => {
-          if (ev.data && ev.data.size > 0) activeVnAudioChunks.push(ev.data);
+          if (ev && ev.data && ev.data.size > 0) activeVnAudioChunks.push(ev.data);
         };
         activeMediaRecorder.start(250);
+        mediaRecStarted = true;
       }
     }
-  } catch (err) {}
+  } catch (err) {
+    vnRecordingState.errorMsg = '🎙️ মাইক অন করা যায়নি। ফোনের মাইক পারমিশন অন করো।';
+  }
+
+  // Only start Web Speech API if MediaRecorder did not lock the mic (avoids Android dual-mic conflict)
+  if (!mediaRecStarted) {
+    try {
+      const SpeechRec = (typeof window !== 'undefined') && (window.SpeechRecognition || window.webkitSpeechRecognition);
+      if (SpeechRec) {
+        activeSpeechRec = new SpeechRec();
+        activeSpeechRec.lang = 'bn-IN';
+        activeSpeechRec.continuous = true;
+        activeSpeechRec.interimResults = true;
+        activeSpeechRec.onresult = (ev) => {
+          let txt = '';
+          for (let i = 0; i < (ev.results ? ev.results.length : 0); i++) {
+            if (ev.results[i] && ev.results[i][0]) txt += ev.results[i][0].transcript + ' ';
+          }
+          vnRecordingState.liveTranscript = txt.trim();
+          const prevEl = document.getElementById('vnLivePreview_' + dayNum + '_' + agIdx);
+          if (prevEl && vnRecordingState.liveTranscript) {
+            prevEl.textContent = '🗣️ “' + vnRecordingState.liveTranscript + '”';
+          }
+        };
+        try { activeSpeechRec.start(); } catch (e) {}
+      }
+    } catch (e) {}
+  }
 }
 
 function cancelVoiceNoteRecording() {
-  cleanupActiveVoiceRecorder();
-  vnRecordingState = { active: false, sending: false, dayNum: 0, agIdx: -1, seconds: 0, liveTranscript: '', errorMsg: '' };
+  stopActiveVoiceAndVideoCapture();
   renderPlanView();
 }
 
@@ -3102,32 +3259,44 @@ function blobToBase64(blob) {
       resolve(comma >= 0 ? res.slice(comma + 1) : '');
     };
     reader.onerror = () => resolve('');
-    reader.readAsDataURL(blob);
+    try {
+      reader.readAsDataURL(blob);
+    } catch (e) {
+      resolve('');
+    }
   });
 }
 
 async function finishAndSendVoiceNote(dayNum, agIdx) {
+  if (vnRecordingState.sending) return;
+  const hasActiveCam = !!(vnLiveCamState.active && vnLiveCamState.dayNum === dayNum && vnLiveCamState.agIdx === agIdx);
+  const hasActiveRec = !!(vnRecordingState.active && vnRecordingState.dayNum === dayNum && vnRecordingState.agIdx === agIdx);
+  if (!hasActiveRec && !hasActiveCam) return;
+
   const transcriptSnap = vnRecordingState.liveTranscript || '';
+  const liveVideoObj = hasActiveCam ? captureFrameFromLiveVideo(dayNum, agIdx) : null;
+  const hadLiveVideo = !!(liveVideoObj && liveVideoObj.b64);
+
   let recMime = 'audio/webm';
   let audioBlob = null;
 
   if (activeMediaRecorder && activeMediaRecorder.state !== 'inactive') {
-    recMime = activeMediaRecorder.mimeType || 'audio/webm';
-    await new Promise((resolve) => {
-      activeMediaRecorder.onstop = () => resolve();
-      try { activeMediaRecorder.stop(); } catch (e) { resolve(); }
-    });
+    recMime = normalizeAudioMime(activeMediaRecorder.mimeType || 'audio/webm');
+    await Promise.race([
+      new Promise((resolve) => {
+        activeMediaRecorder.onstop = () => resolve();
+        try { activeMediaRecorder.stop(); } catch (e) { resolve(); }
+      }),
+      new Promise((resolve) => setTimeout(resolve, 450))
+    ]);
   }
   if (activeVnAudioChunks.length > 0 && typeof Blob !== 'undefined') {
     audioBlob = new Blob(activeVnAudioChunks, { type: recMime });
   }
   cleanupActiveVoiceRecorder();
+  if (hasActiveCam) stopCardLiveVideo();
 
   const cardKey = dayNum + '_' + agIdx;
-  const liveVideoObj = captureFrameFromLiveVideo(dayNum, agIdx);
-  const hadLiveVideo = !!(vnLiveCamState.active && vnLiveCamState.dayNum === dayNum && vnLiveCamState.agIdx === agIdx);
-  if (hadLiveVideo) stopCardLiveVideo();
-
   vnRecordingState = {
     active: false,
     sending: true,
@@ -3164,7 +3333,9 @@ async function finishAndSendVoiceNote(dayNum, agIdx) {
   vnRecordingState = { active: false, sending: false, dayNum: 0, agIdx: -1, seconds: 0, liveTranscript: '', errorMsg: '' };
   renderPlanView();
 
-  playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx);
+  if (autoVoicePlay) {
+    await playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx);
+  }
 }
 
 async function playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx) {
@@ -3186,7 +3357,6 @@ async function playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx) {
   const d = findDayObj(dayNum);
   const ag = (d && d.agendas && d.agendas[agIdx]) ? d.agendas[agIdx] : null;
   const fallbackAudioUrl = wavUrl || (ag && ag.audio_url) || (d && d.audio_url) || '';
-  playMorningChimeSound();
   playOrToggleAudio(btnId, audioKey, fallbackAudioUrl, '');
 }
 
@@ -3265,6 +3435,7 @@ const DYNAMIC_AGENT_FALLBACK_POOL = {
 let agentGeneratingState = false;
 
 async function generateDynamicAgentStory(dayNum, moodType) {
+  if (agentGeneratingState) return;
   stopAllAudio();
   const pool = DYNAMIC_AGENT_FALLBACK_POOL[moodType] || DYNAMIC_AGENT_FALLBACK_POOL.comedy;
   const fallbackIdx = (dayNum + (kalyaniWikiVault.patternScores[moodType] || 0)) % pool.length;
@@ -3310,7 +3481,7 @@ async function generateDynamicAgentStory(dayNum, moodType) {
       if (resp.ok) {
         const data = await resp.json();
         const raw = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || '';
-        const parsed = JSON.parse(raw);
+        const parsed = parseGeminiJsonSafely(raw);
         if (parsed && parsed.title_bn && parsed.story_bn) {
           chosenCard = {
             moodType: moodType,
@@ -3334,7 +3505,9 @@ async function generateDynamicAgentStory(dayNum, moodType) {
   renderPlanView();
   if (typeof renderKoushikAdminPanel === 'function') renderKoushikAdminPanel();
 
-  await playDynamicAgentCardAudio(dayNum);
+  if (autoVoicePlay) {
+    await playDynamicAgentCardAudio(dayNum);
+  }
 }
 
 async function playDynamicAgentCardAudio(dayNum) {
@@ -3354,7 +3527,6 @@ async function playDynamicAgentCardAudio(dayNum) {
   }
   const d = findDayObj(dayNum);
   const fallbackUrl = wavUrl || (d && d.audio_url) || '';
-  playMorningChimeSound();
   playOrToggleAudio(btnId, audioKey, fallbackUrl, (d && d.audio_b64) || '');
 }
 
@@ -3373,6 +3545,7 @@ function selectDay(dayNum, autoPlayAudio) {
     showCelebrationToast('🔒 মা, আগে ‘দিন ' + toBnDigits(frontier) + '’-এর সবকটা খেলায় টিক (✅) দাও—তাহলেই নতুন দিনের চমক খুলে যাবে!');
     return false;
   }
+  if (typeof stopActiveVoiceAndVideoCapture === 'function') stopActiveVoiceAndVideoCapture();
   curDayNum = dayNum;
   curGameIdx = getNextOpenGameIdx(dayNum);
   primaryCalOpen = false;
@@ -3380,17 +3553,18 @@ function selectDay(dayNum, autoPlayAudio) {
   renderPlanView();
   scrollActiveDayChipIntoView();
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (autoPlayAudio) toggleDayOverviewAudio();
+  if (autoPlayAudio && autoVoicePlay) toggleDayOverviewAudio();
   return true;
 }
 
 function selectGame(gIdx, autoPlayAudio) {
+  if (typeof stopActiveVoiceAndVideoCapture === 'function') stopActiveVoiceAndVideoCapture();
   const d = findDayObj(curDayNum);
   const maxIdx = (d && d.agendas) ? d.agendas.length - 1 : 0;
   curGameIdx = Math.max(0, Math.min(maxIdx, gIdx));
   stopAllAudio();
   renderPlanView();
-  if (autoPlayAudio !== false) {
+  if (autoPlayAudio !== false && autoVoicePlay) {
     const btnEl = document.getElementById('btnAgPlay_' + curDayNum + '_' + curGameIdx);
     playAgendaByIdx(curDayNum, curGameIdx, btnEl);
   }
@@ -3399,6 +3573,14 @@ function selectGame(gIdx, autoPlayAudio) {
 function toggleShowAllGames() {
   showAllGamesInDay = !showAllGamesInDay;
   renderPlanView();
+}
+
+function toggleAutoVoicePlay() {
+  autoVoicePlay = !autoVoicePlay;
+  saveAutoVoicePlay();
+  if (!autoVoicePlay) stopAllAudio();
+  renderPlanView();
+  if (typeof renderKoushikAdminPanel === 'function') renderKoushikAdminPanel();
 }
 
 function toggleRadioMode() {
@@ -3609,34 +3791,26 @@ function toggleDelightLiked(dayNum) {
 }
 
 function buildProactiveAgentCardHtml(d) {
-  const topTheme = getTopMaInterestTheme();
-  const themeNames = {
-    comedy: 'নিষ্পাপ হাসির গল্প ও রাজা-মহারাজার মজার কথা',
-    gods: 'ভগবানের মিষ্টি লীলা (বালগোপাল, ভোলানাথ, জগন্নাথদেব ও মা সারদা)',
-    animals: 'আদুরে পশুপাখিদের মিষ্টি ও মজার কীর্তি',
-    music: 'পুরনো দিনের বাংলা গান ও সুরের মায়া',
-    reminiscence: 'রানাঘাটের শৈশব ও মনের হালকা কথা'
-  };
   const dynCard = (kalyaniWikiVault.dynamicCards || {})[String(d.day)] || null;
   const dynBtnId = 'btnDynAgentPlay_' + d.day;
+  const isOpen = !!(agentGeneratingState || dynCard);
 
   let dynCardHtml = '';
   if (agentGeneratingState) {
     dynCardHtml = `
-      <div class="vn-sending-panel" style="margin-top:12px;">
-        ✨ কল্যাণী এজেন্ট তোমার পছন্দ অনুযায়ী এক্ষুনি নতুন গল্প ও অডিও তৈরি করছে...
+      <div class="vn-sending-panel" style="margin-top:10px;">
+        ✨ নতুন গল্প তৈরি হচ্ছে...
       </div>
     `;
   } else if (dynCard) {
     dynCardHtml = `
       <div id="dynamicAgentStoryCard_${d.day}" class="agent-dynamic-story-box">
         <div class="agenda-cat">${dynCard.badge_bn}</div>
-        <div class="agenda-title" style="margin-top:6px;">${dynCard.title_bn}</div>
+        <div class="agenda-title" style="margin-top:4px;">${dynCard.title_bn}</div>
         <div class="agenda-detail">${dynCard.story_bn}</div>
-        <div class="agent-encourage-note">💡 ${dynCard.encourage_bn || ''}</div>
-        <div class="agenda-actions" style="margin-top:10px;">
-          <button id="${dynBtnId}" class="ag-btn listen" data-default-label="🔊 নতুন গল্পটা শোনো" onclick="playDynamicAgentCardAudio(${d.day})">
-            🔊 নতুন গল্পটা শোনো
+        <div class="agenda-actions" style="margin-top:8px;">
+          <button id="${dynBtnId}" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="playDynamicAgentCardAudio(${d.day})">
+            🔊 শোনো
           </button>
         </div>
       </div>
@@ -3644,28 +3818,26 @@ function buildProactiveAgentCardHtml(d) {
   }
 
   return `
-    <div id="kalyaniAgentCard" class="agent-companion-card">
-      <div class="agent-companion-badge">✨ কল্যাণী স্মার্ট এজেন্ট • মায়ের মন বুঝে নিজে থেকেই সাথে আছে</div>
-      <div class="agent-companion-title">মা, তোমাকে কিছুই খুঁজতে বা কী বলবে ভেবে চিন্তা করতে হবে না!</div>
-      <div class="agent-companion-text">
-        আমি তোমার পছন্দ থেকে জেনেছি যে তুমি <strong>${themeNames[topTheme] || themeNames.comedy}</strong> ভীষণ ভালোবাসো। আমি নিজেই তোমাকে এক-এক করে গল্প শোনাবো—আর তোমার যখনই নিজের মনের কোনো কথা বলতে বা কোনো সাহায্য চাইতে ইচ্ছে করবে, নিচের যেকোনো বোতামটা একবার ছোঁও:
+    <details id="kalyaniAgentCard" class="agent-companion-card minimal-section-drawer"${isOpen ? ' open' : ''}>
+      <summary class="minimal-drawer-summary">✨ নতুন গল্প ও মনের কথা (ঐচ্ছিক) ▾</summary>
+      <div class="minimal-drawer-body">
+        <div class="agent-flow-pills">
+          <button id="btnAgentFlowComedy_${d.day}" class="agent-flow-btn" onclick="generateDynamicAgentStory(${d.day}, 'comedy')">
+            😂 হাসির গল্প
+          </button>
+          <button id="btnAgentFlowGods_${d.day}" class="agent-flow-btn" onclick="generateDynamicAgentStory(${d.day}, 'gods')">
+            🪷 ঠাকুরের গল্প
+          </button>
+          <button id="btnAgentFlowAnimals_${d.day}" class="agent-flow-btn" onclick="generateDynamicAgentStory(${d.day}, 'animals')">
+            🐘 পশুপাখি
+          </button>
+          <button id="btnAgentFlowSpeak_${d.day}" class="agent-flow-btn speak" onclick="generateDynamicAgentStory(${d.day}, 'speak_mind')">
+            💬 মনের কথা
+          </button>
+        </div>
+        ${dynCardHtml}
       </div>
-      <div class="agent-flow-pills">
-        <button id="btnAgentFlowComedy_${d.day}" class="agent-flow-btn" onclick="generateDynamicAgentStory(${d.day}, 'comedy')">
-          😂 নতুন হাসির গল্প শোনাও
-        </button>
-        <button id="btnAgentFlowGods_${d.day}" class="agent-flow-btn" onclick="generateDynamicAgentStory(${d.day}, 'gods')">
-          🪷 ভগবানের মিষ্টি লীলা শোনাও
-        </button>
-        <button id="btnAgentFlowAnimals_${d.day}" class="agent-flow-btn" onclick="generateDynamicAgentStory(${d.day}, 'animals')">
-          🐘 আদুরে পশুপাখির গল্প শোনাও
-        </button>
-        <button id="btnAgentFlowSpeak_${d.day}" class="agent-flow-btn speak" onclick="generateDynamicAgentStory(${d.day}, 'speak_mind')">
-          💬 মনের কথা বলবো / সাহায্য চাই
-        </button>
-      </div>
-      ${dynCardHtml}
-    </div>
+    </details>
   `;
 }
 
@@ -3676,25 +3848,21 @@ function buildDailyDelightCardHtml(d) {
   const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(s.yt_query);
 
   return `
-    <article id="dailyDelightCard" class="agenda-card delight-hero-card" data-accent="amber">
-      <div class="agenda-card-header">
-        <div class="agenda-cat">${s.badge_bn}</div>
-      </div>
-      <div class="agenda-title">${s.title_bn}</div>
-      <div class="step-section">
-        <div class="agenda-step-heading">🌸 মা, একদম বিনা চেষ্টায় শুধু আরাম করে হাসো ও শোনো (কোনো কাজ নেই!):</div>
+    <details id="dailyDelightCard" class="agenda-card delight-hero-card minimal-section-drawer" data-accent="amber">
+      <summary class="minimal-drawer-summary">😄 আজকের ছোট গল্প: ${s.title_bn} (ঐচ্ছিক) ▾</summary>
+      <div class="minimal-drawer-body">
         <div class="agenda-detail">${s.story_bn}</div>
+        <div class="agenda-actions" style="margin-top:10px;">
+          <button id="${playBtnId}" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="playDelightStoryAudio(${d.day})">🔊 শোনো</button>
+          <button id="btnDelightLike_${d.day}" class="ag-btn check ${liked ? 'checked' : ''}" onclick="toggleDelightLiked(${d.day})">
+            ${liked ? '✅ ভালো লেগেছে' : '❤️ ভালো লাগলো'}
+          </button>
+          <a class="ag-btn" href="${ytUrl}" target="_blank" rel="noopener noreferrer" onclick="stopAllAudio()" style="text-decoration:none;">
+            ▶️ ইউটিউব
+          </a>
+        </div>
       </div>
-      <a class="yt-direct-btn" href="${ytUrl}" target="_blank" rel="noopener noreferrer" onclick="stopAllAudio()">
-        ▶️ ইউটিউবে এই মজার গল্প/ভিডিওটা দেখো
-      </a>
-      <div class="agenda-actions">
-        <button id="${playBtnId}" class="ag-btn listen" data-default-label="🔊 গল্পটা শোনো" onclick="playDelightStoryAudio(${d.day})">🔊 গল্পটা শোনো</button>
-        <button id="btnDelightLike_${d.day}" class="ag-btn check ${liked ? 'checked' : ''}" onclick="toggleDelightLiked(${d.day})">
-          ${liked ? '✅ খুব ভালো লেগেছে' : '❤️ খুব ভালো লাগলো'}
-        </button>
-      </div>
-    </article>
+    </details>
   `;
 }
 
@@ -3726,7 +3894,7 @@ function toggleAgendaDone(dayNum, agIdx) {
         stopAllAudio();
         renderPlanView();
         scrollActiveDayChipIntoView();
-        toggleDayOverviewAudio();
+        if (autoVoicePlay) toggleDayOverviewAudio();
         return;
       }
     } else {
@@ -3735,8 +3903,10 @@ function toggleAgendaDone(dayNum, agIdx) {
         curGameIdx = getNextOpenGameIdx(dayNum);
         stopAllAudio();
         renderPlanView();
-        const nextBtnEl = document.getElementById('btnAgPlay_' + dayNum + '_' + curGameIdx);
-        playAgendaByIdx(dayNum, curGameIdx, nextBtnEl);
+        if (autoVoicePlay) {
+          const nextBtnEl = document.getElementById('btnAgPlay_' + dayNum + '_' + curGameIdx);
+          playAgendaByIdx(dayNum, curGameIdx, nextBtnEl);
+        }
         return;
       }
     }
@@ -3765,71 +3935,74 @@ function buildWalkieTalkieStudioHtml(d, ag, idx) {
   const threadHtml = turns.map((t, tIdx) => `
     <div class="vn-turn-block">
       <div class="vn-user-bubble">
-        <div class="vn-bubble-eyebrow">🗣️ মায়ের অডিও মেসেজ ${t.has_live_video ? '📹' : ''}:</div>
+        <div class="vn-bubble-eyebrow">🗣️ মা যা পাঠিয়েছো ${t.has_live_video ? '📹' : '🎙️'}:</div>
         <div class="vn-bubble-text">“${t.heard_bn}”</div>
       </div>
       <div class="vn-ai-bubble">
-        <div class="vn-bubble-eyebrow">🌸 কল্যাণীর ভয়েস মেসেজ উত্তর:</div>
+        <div class="vn-gemini-badge">✨ জেমিনি (কল্যাণীর ভয়েস মেসেজ উত্তর):</div>
         <div class="vn-bubble-text">${t.reply_bn}</div>
-        <button id="btnVnReplyPlay_${d.day}_${idx}_${tIdx}" class="ag-btn listen vn-reply-play-btn" data-default-label="🔊 কল্যাণীর উত্তর শোনো" onclick="playVoiceNoteReplyAudio(${d.day}, ${idx}, ${tIdx})">
-          🔊 কল্যাণীর উত্তর শোনো
+        <button id="btnVnReplyPlay_${d.day}_${idx}_${tIdx}" class="ag-btn listen vn-reply-play-btn" data-default-label="🔊 জেমিনির উত্তর শোনো" onclick="playVoiceNoteReplyAudio(${d.day}, ${idx}, ${tIdx})">
+          🔊 জেমিনির উত্তর শোনো
         </button>
       </div>
     </div>
   `).join('');
 
+  const errHtml = vnRecordingState.errorMsg ? `<div class="vn-error-msg">${vnRecordingState.errorMsg}</div>` : '';
+
   const liveCamPanelHtml = isCamHere ? `
     <div id="vnLiveCamWrap_${d.day}_${idx}" class="vn-live-cam-stage">
-      <div class="vn-live-cam-badge">📹 লাইভ ভিডিও ক্যামেরা চালু আছে — জিনিসটা ক্যামেরার সামনে ধরে ভয়েস মেসেজ পাঠাও!</div>
+      <div class="vn-live-cam-badge">📹 ভিডিও ক্যামেরা চালু</div>
       <video id="vnLiveVideo_${d.day}_${idx}" class="vn-live-video" autoplay playsinline muted></video>
-      <div class="vn-secondary-row" style="margin-top:8px;">
-        <button class="ag-btn" onclick="switchCardLiveCamera(${d.day}, ${idx})">🔄 ক্যামেরা ঘোরাও</button>
-        <button class="ag-btn" onclick="toggleCardLiveVideo(${d.day}, ${idx})">⏹️ ক্যামেরা বন্ধ করো</button>
+      <div class="vn-secondary-row" style="margin-top:6px;">
+        <button id="btnVnSwitchCam_${d.day}_${idx}" class="ag-btn" onclick="switchCardLiveCamera(${d.day}, ${idx})">🔄 ক্যামেরা ঘোরাও</button>
+        <button id="btnVnStopCam_${d.day}_${idx}" class="ag-btn" onclick="toggleCardLiveVideo(${d.day}, ${idx})">⏹️ ক্যামেরা বন্ধ</button>
       </div>
     </div>
   ` : '';
 
   let controlsHtml = '';
-  if (isRecHere) {
+  if (isSendingHere) {
+    controlsHtml = `
+      <div class="vn-sending-panel">
+        <div class="vn-rec-status">✨ জেমিনি তোমার কথা শুনে উত্তর তৈরি করছে...</div>
+        <div id="vnListenProgress_${d.day}_${idx}" class="vn-listen-progressbar sending" role="progressbar" aria-label="জেমিনি উত্তর তৈরি করছে">
+          <div class="vn-listen-bar-fill"></div>
+        </div>
+      </div>
+    `;
+  } else if (isRecHere || isCamHere) {
+    const pct = Math.min(100, Math.max(12, (vnRecordingState.seconds % 20) * 5 + 15));
     controlsHtml = `
       <div class="vn-recording-panel">
         <div class="vn-rec-status">
-          🔴 মা, তোমার ভয়েস মেসেজ রেকর্ড হচ্ছে... (<span id="vnTimer_${d.day}_${idx}">${formatAudioSecondsBn(vnRecordingState.seconds)}</span>)
+          🟢 জেমিনি এখন মন দিয়ে তোমার কথা শুনছে... (<span id="vnTimer_${d.day}_${idx}">${formatAudioSecondsBn(vnRecordingState.seconds)}</span>)
         </div>
-        <div class="vn-rec-hint">
-          ধীরেসুস্থে যতক্ষণ খুশি থেমে থেমে বলো — কেউ মাঝখানে কথা বলবে না! বলা শেষ হলে নিচের সবুজ বোতামটা ছোঁও:
+        <div id="vnListenProgress_${d.day}_${idx}" class="vn-listen-progressbar listening" role="progressbar" aria-label="জেমিনি এখন শুনছে">
+          <div id="vnListenFill_${d.day}_${idx}" class="vn-listen-bar-fill" style="width:${pct}%"></div>
         </div>
         <div id="vnLivePreview_${d.day}_${idx}" class="vn-live-preview">
-          ${vnRecordingState.liveTranscript ? ('🗣️ “' + vnRecordingState.liveTranscript + '”') : '🎙️ মায়ের গলার আওয়াজ শোনা হচ্ছে...'}
+          ${vnRecordingState.liveTranscript ? ('🗣️ “' + vnRecordingState.liveTranscript + '”') : '🎙️ মা, নিজের মতো ধীরেসুস্থে বলো...'}
         </div>
         <div class="vn-rec-actions">
           <button id="btnVnSend_${d.day}_${idx}" class="vn-send-btn" onclick="finishAndSendVoiceNote(${d.day}, ${idx})">
             ✅ বলা শেষ — কল্যাণীকে পাঠাও ▶️
           </button>
           <button id="btnVnCancel_${d.day}_${idx}" class="ag-btn" onclick="cancelVoiceNoteRecording()">
-            ❌ বাতিল করো
+            ❌ বাতিল
           </button>
         </div>
       </div>
     `;
-  } else if (isSendingHere) {
-    controlsHtml = `
-      <div class="vn-sending-panel">
-        ⏳ কল্যাণী মনোযোগ দিয়ে তোমার ভয়েস মেসেজ শুনছে এবং অডিও উত্তর তৈরি করছে...
-      </div>
-    `;
   } else {
-    const recBtnLabel = turns.length > 0
-      ? '🎙️ পরের ভয়েস মেসেজ রেকর্ড করো (উত্তর দাও)'
-      : '🎙️ এখানে ছুঁয়ে ভয়েস মেসেজ রেকর্ড করো (অ্যাপ পাল্টাতে হবে না)';
     controlsHtml = `
       <div class="vn-idle-controls">
-        <button id="btnVnRecord_${d.day}_${idx}" class="vn-record-btn" onclick="startVoiceNoteRecording(${d.day}, ${idx})">
-          ${recBtnLabel}
-        </button>
         <div class="vn-secondary-row">
-          <button id="btnVnLiveCam_${d.day}_${idx}" class="ag-btn vn-livecam-btn ${isCamHere ? 'check checked' : ''}" onclick="toggleCardLiveVideo(${d.day}, ${idx})">
-            ${isCamHere ? '📹 লাইভ ভিডিও চালু আছে' : '📹 লাইভ ভিডিও ক্যামেরা অন করো'}
+          <button id="btnVnRecord_${d.day}_${idx}" class="vn-record-btn" style="flex:1;" onclick="startVoiceNoteRecording(${d.day}, ${idx}, false)">
+            🎙️ ভয়েস পাঠাও
+          </button>
+          <button id="btnVnLiveCam_${d.day}_${idx}" class="ag-btn vn-livecam-btn" style="flex:1;" onclick="toggleCardLiveVideo(${d.day}, ${idx})">
+            📹 ভিডিও পাঠাও
           </button>
         </div>
       </div>
@@ -3838,9 +4011,8 @@ function buildWalkieTalkieStudioHtml(d, ag, idx) {
 
   return `
     <div id="vnStudio_${d.day}_${idx}" class="walkie-talkie-studio">
-      <div class="vn-studio-header">
-        <span>🎙️ কল্যাণীর সাথে ভয়েস মেসেজে বা লাইভ ভিডিও ক্যামেরায় কথা বলো:</span>
-      </div>
+      <div class="vn-studio-header">কল্যাণীকে ভয়েস মেসেজ বা ভিডিও তুলে পাঠাও:</div>
+      ${errHtml}
       ${threadHtml}
       ${liveCamPanelHtml}
       ${controlsHtml}
@@ -3884,7 +4056,7 @@ function buildAgendaCardHtml(d, ag, idx) {
   const ytMusicGuideHtml = isSongGame ? `
       <div class="agenda-prompt-box yt-music-box">
         <div class="agenda-prompt-label">🎵 ইউটিউবে সরাসরি গানটা শোনো বা ভয়েস মেসেজে কল্যাণীকে বলো!</div>
-        <div class="agenda-detail" style="font-size:1.01rem;">মা, উপরের কমলা বোতামটায় ছুঁলেই সরাসরি ইউটিউবে গানটা বেজে উঠবে! আর গানটা শোনা হয়ে গেলে নিচে ভয়েস মেসেজ রেকর্ড করে কল্যাণীর সাথে গানের কথা আর মনের ভাবনা নিয়ে গল্প করো।</div>
+        <div class="agenda-detail" style="font-size:1.01rem;">মা, উপরের কমলা বোতামটায় ছুঁলেই সরাসরি ইউটিউবে গানটা বেজে উঠবে!</div>
       </div>` : '';
 
   const followupLabel = isSongGame
@@ -3898,8 +4070,8 @@ function buildAgendaCardHtml(d, ag, idx) {
       </div>` : '';
 
   const promptLabel = isSongGame
-    ? '🎙️ এই গানটা নিয়ে ভয়েস মেসেজে কী বলবে তার ক্লু:'
-    : '🎙️ ভয়েস মেসেজে কল্যাণীকে কী বলবে তার ক্লু (নিজের মতো ধীরেসুস্থে বলো):';
+    ? '🎙️ গানের ক্লু:'
+    : '🎙️ কী বলবে তার ক্লু:';
 
   const ytDirectBtnHtml = isSongGame ? `
       <a class="yt-direct-btn" href="${extractSongSearchUrl(ag)}" target="_blank" rel="noopener noreferrer" onclick="stopAllAudio()">
@@ -3912,29 +4084,36 @@ function buildAgendaCardHtml(d, ag, idx) {
         <div class="agenda-cat">${ag.category}</div>
       </div>
       <div class="agenda-title">${ag.title_bn}</div>
-      <div class="step-section">
-        <div class="agenda-step-heading">${stepHeading}</div>
-        <div class="agenda-detail">${ag.detail_bn}</div>
-      </div>${ytDirectBtnHtml}
+      ${ytDirectBtnHtml}
       <div class="agenda-actions">
-        <button id="${btnId}" class="ag-btn listen" data-default-label="🔊 গল্পটা শোনো" onclick="playAgendaByIdx(${d.day}, ${idx}, this)">🔊 গল্পটা শোনো</button>
-        <button class="ag-btn check ${isDone ? 'checked' : ''}" onclick="toggleAgendaDone(${d.day}, ${idx})">
-          ${isDone ? '✅ ভালো লেগেছে' : '❤️ ভালো লাগলো'}
+        <button id="${btnId}" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="playAgendaByIdx(${d.day}, ${idx}, this)">🔊 শোনো</button>
+        <button id="btnAgDone_${d.day}_${idx}" class="ag-btn check ${isDone ? 'checked' : ''}" onclick="toggleAgendaDone(${d.day}, ${idx})">
+          ${isDone ? '✅ হয়ে গেছে' : '⬜ হয়ে গেছে'}
         </button>
       </div>
+
+      <details class="game-sub-drawer">
+        <summary class="game-sub-summary">📖 গল্পটা পড়ো (ঐচ্ছিক) ▾</summary>
+        <div class="step-section">
+          <div class="agenda-step-heading">${stepHeading}</div>
+          <div class="agenda-detail">${ag.detail_bn}</div>
+        </div>
+      </details>
+
       <details class="optional-prompt-drawer"${keepDrawerOpen ? ' open' : ''}>
-        <summary class="optional-prompt-summary">💬 মন চাইলে কল্যাণীর সাথে একটু গল্প করো বা লাইভ ক্যামেরায় দেখাও (না করলে একটুও অসুবিধা নেই!) ▾</summary>
+        <summary class="optional-prompt-summary">🎙️ কথা বলো বা ভিডিও (ঐচ্ছিক) ▾</summary>
         <div class="optional-prompt-body">
-          <div class="optional-reassure-banner">
-            🌸 মা, এই খেলার অংশটা একদম ঐচ্ছিক (Optional)—তোমার যদি কথা বলতে বা খেলতে ইচ্ছে না করে, তবে শুধু গল্প শুনেই ছেড়ে দাও, একটুও অসুবিধা নেই! আর যদি মন চায়, নিচে ভয়েস মেসেজ রেকর্ড করো বা লাইভ ভিডিও ক্যামেরা অন করো:
-          </div>
           ${buildWalkieTalkieStudioHtml(d, ag, idx)}
-          <div class="agenda-prompt-box">
-            <div class="agenda-prompt-label">${promptLabel}</div>
-            <div class="agenda-prompt-speech">“${ag.prompt_bn}”</div>
-            <div class="agenda-prompt-howto">💡 (নিজের মতো সহজ বাংলায় থেমে থেমে বললেই হবে!)</div>
-          </div>${ytMusicGuideHtml}${followupHtml}
-          <button class="ag-btn full-prompt-audio-btn" onclick="playAgendaByIdx(${d.day}, ${idx}, null, true)">🔊 ক্লু-সহ পুরো কথা শোনো</button>
+          <details class="game-sub-drawer" style="margin-top:8px;">
+            <summary class="game-sub-summary">💡 কী বলবে তার ক্লু (ঐচ্ছিক) ▾</summary>
+            <div class="optional-prompt-body">
+              <div class="agenda-prompt-box">
+                <div class="agenda-prompt-label">${promptLabel}</div>
+                <div class="agenda-prompt-speech">“${ag.prompt_bn}”</div>
+              </div>${ytMusicGuideHtml}${followupHtml}
+              <button class="ag-btn full-prompt-audio-btn" onclick="playAgendaByIdx(${d.day}, ${idx}, null, true)">🔊 ক্লু শোনো</button>
+            </div>
+          </details>
         </div>
       </details>
     </article>
@@ -3967,7 +4146,7 @@ function renderPlanView() {
 
   const calBtn = document.getElementById('btnToggleCalGrid');
   if (calBtn) {
-    calBtn.innerHTML = primaryCalOpen ? '🗓️ বন্ধ করো' : '🗓️ ক্যালেন্ডার';
+    calBtn.innerHTML = primaryCalOpen ? '🗓️ বন্ধ' : '🗓️ ক্যালেন্ডার';
   }
 
   const primaryCalEl = document.getElementById('primaryCalGridWrap');
@@ -3975,7 +4154,7 @@ function renderPlanView() {
     if (primaryCalOpen) {
       primaryCalEl.style.display = 'block';
       primaryCalEl.innerHTML = `
-        <div class="cal-grid-subtitle">মা, এক-একটা দিনের সব খেলায় টিক (✅) দিলে পরের দিনটা আপনিই খুলে যাবে:</div>
+        <div class="cal-grid-subtitle">মা, যেকোনো দিন বেছে নাও:</div>
         <div id="primaryCalendarGrid" class="calendar-grid">${buildCalendarGridCellsHtml(DAYS_21, 'p1CalCell')}</div>
       `;
     } else {
@@ -4029,13 +4208,13 @@ function renderPlanView() {
         <div class="day-hero-badge">দিন ${toBnDigits(d.day)} • ${d.phase}</div>
       </div>
       <div class="day-hero-title">${d.title_bn}</div>
-      <div class="day-hero-summary">${d.summary_bn}</div>
-      <button id="btnDayMainPlay" class="big-voice-btn" data-default-label="🔊 আজকের কথাগুলো শোনো" onclick="toggleDayOverviewAudio()">
-        🔊 আজকের কথাগুলো শোনো
+      <details class="game-sub-drawer" style="margin-bottom:10px;">
+        <summary class="game-sub-summary">🌸 আজকের কথা পড়ো (ঐচ্ছিক) ▾</summary>
+        <div class="day-hero-summary" style="margin-top:8px;">${d.summary_bn}</div>
+      </details>
+      <button id="btnDayMainPlay" class="big-voice-btn" data-default-label="🔊 আজকের কথা শোনো" onclick="toggleDayOverviewAudio()">
+        🔊 আজকের কথা শোনো
       </button>
-      <div class="radio-mode-banner">
-        <div class="radio-mode-text">🌸 <strong>মা, আজ কোনো নিয়ম বা কথা বলার চাপ নেই:</strong> শুধু আরাম করে হাসির গল্প, ভগবানের মিষ্টি লীলা আর গান শোনো — খেলা করতে না ইচ্ছে করলে একটুও করতে হবে না!</div>
-      </div>
       <div class="day-prev-next-row">
         <button id="prevDayBtn" class="ag-btn" style="flex:1;" ${atFirstDay ? 'disabled' : ''} onclick="selectDay(${d.day - 1}, true)">⬅️ আগের দিন</button>
         <button id="nextDayBtn" class="${nextBtnCls}" style="flex:1;" ${atLastDay ? 'disabled' : ''} onclick="selectDay(${d.day + 1}, true)">${nextBtnLabel}</button>
@@ -4047,9 +4226,9 @@ function renderPlanView() {
 
     <div class="game-nav-card">
       <div class="game-nav-header">
-        <span class="game-nav-title">🎯 আজকের গল্প ও গান (যেকোনোটায় ছুঁয়ে শোনো — খেলা ঐচ্ছিক):</span>
+        <span class="game-nav-title">🎯 আজকের খেলা:</span>
         <button id="toggleAllGamesBtn" class="view-mode-toggle" onclick="toggleShowAllGames()">
-          ${showAllGamesInDay ? '🎯 ১টি করে দেখো' : '📜 সবগুলো একসাথে'}
+          ${showAllGamesInDay ? '🎯 ১টি করে' : '📜 সবগুলো'}
         </button>
       </div>
       <div class="game-grid-6" data-count="${d.agendas.length}">${tilesHtml}</div>
@@ -4227,7 +4406,7 @@ function goToSlide(idx, autoPlay) {
   curSlideIdx = Math.max(0, Math.min(SLIDES.length - 1, idx));
   stopAllAudio();
   renderSlide();
-  if (autoPlay) toggleSlideAudio();
+  if (autoPlay && autoVoicePlay) toggleSlideAudio();
 }
 
 function prevSlide() {
@@ -4323,14 +4502,6 @@ function copyKalyaniSystemPrompt() {
   showCelebrationToast('📋 অ্যান্ড্রয়েড জেমিনি মাস্টার প্রম্পট কপি হয়েছে!');
 }
 
-function clearKalyaniThreadsAndMemory() {
-  kalyaniThreads = {};
-  saveKalyaniThreads();
-  renderPlanView();
-  renderKoushikAdminPanel();
-  showCelebrationToast('🧹 ভয়েস মেসেজ চ্যাট ইতিহাস পরিষ্কার করা হয়েছে।');
-}
-
 function renderKoushikAdminPanel() {
   const host = document.getElementById('koushikAdminBody');
   if (!host) return;
@@ -4359,36 +4530,39 @@ function renderKoushikAdminPanel() {
 
   host.innerHTML = `
     <div class="admin-block">
-      <div class="admin-block-title">🔑 ১. গুগল জেমিনি এআই চাবি (API Key — কৌশিকের কনফিগারেশন)</div>
+      <div class="admin-block-title">🔑 ১. গুগল জেমিনি এআই চাবি (API Key)</div>
       <div class="admin-status-line">
-        স্ট্যাটাস: <strong>${hasKey ? '✅ এআই চাবি সংযুক্ত আছে (ভয়েস উত্তর ও স্মার্ট এজেন্ট সক্রিয়)' : '⚠️ এআই চাবি এখনো দেওয়া হয়নি (অফলাইন ফলব্যাক সক্রিয়)'}</strong>
+        স্ট্যাটাস: <strong>${hasKey ? '✅ এআই চাবি সংযুক্ত' : '⚠️ অফলাইন ফলব্যাক সক্রিয়'}</strong>
       </div>
       <div class="vn-key-row">
         <input id="adminGeminiKeyInput" type="password" class="vn-key-input" placeholder="AIza..." value="${getGeminiApiKey()}" />
-        <button id="btnSaveAdminKey" class="ag-btn check checked" onclick="saveAdminGeminiKey()">💾 সেভ করো</button>
-        <button id="btnClearAdminKey" class="ag-btn" onclick="clearAdminGeminiKey()">🗑️ মুছে ফেলো</button>
+        <button id="btnSaveAdminKey" class="ag-btn check checked" onclick="saveAdminGeminiKey()">💾 সেভ</button>
+        <button id="btnClearAdminKey" class="ag-btn" onclick="clearAdminGeminiKey()">🗑️ মুছো</button>
       </div>
     </div>
 
     <div class="admin-block">
-      <div class="admin-block-title">🎛️ ২. অ্যাপের আচরণ ও মোড কন্ট্রোল (App Behavior Controls)</div>
+      <div class="admin-block-title">🎛️ ২. অডিও ও মোড সেটিংস</div>
       <div class="admin-toggles-grid">
+        <button id="btnAdminAutoVoice" class="ag-btn ${autoVoicePlay ? 'check checked' : ''}" onclick="toggleAutoVoicePlay()">
+          ${autoVoicePlay ? '🔊 অটো ভয়েস প্লে: চালু ✅' : '🔇 অটো ভয়েস প্লে: বন্ধ'}
+        </button>
         <button id="btnAdminRadioMode" class="ag-btn ${radioAutoPlay ? 'check checked' : ''}" onclick="toggleRadioMode()">
-          ${radioAutoPlay ? '📻 রেডিও অটো-প্লে (পরপর গল্প): চালু ✅' : '⏸️ রেডিও অটো-প্লে: বন্ধ'}
+          ${radioAutoPlay ? '📻 রেডিও মোড: চালু ✅' : '⏸️ রেডিও মোড: বন্ধ'}
         </button>
         <button id="btnAdminStoryOnly" class="ag-btn ${storyOnlyAudio ? 'check checked' : ''}" onclick="toggleStoryOnlyAudio()">
-          ${storyOnlyAudio ? '✂️ শুধু গল্পটুকু শোনানো (হোমওয়ার্ক ছাড়া): চালু ✅' : '🔊 পুরো অডিও: চালু'}
+          ${storyOnlyAudio ? '✂️ শুধু গল্প: চালু ✅' : '🔊 পুরো অডিও: চালু'}
         </button>
         <button id="btnAdminUnlockAll" class="ag-btn ${unlockAllDaysMode ? 'check checked' : ''}" onclick="toggleUnlockAllDaysMode()">
-          ${unlockAllDaysMode ? '🔓 সব ২১ দিন খোলা রাখা: চালু ✅' : '🔒 ক্রমানুসারে দিন খোলা: চালু'}
+          ${unlockAllDaysMode ? '🔓 সব দিন খোলা: চালু ✅' : '🔒 ক্রমানুসারে: চালু'}
         </button>
       </div>
     </div>
 
     <div id="maObsidianWikiPanel" class="admin-block wiki-vault-block">
-      <div class="admin-block-title">🧠 ৩. মায়ের জীবন্ত স্মৃতি-উইকি (Obsidian-Style LLM Wiki & Pattern Graph)</div>
+      <div class="admin-block-title">🧠 ৩. মায়ের জীবন্ত স্মৃতি-উইকি (Obsidian LLM Wiki)</div>
       <div class="wiki-pattern-bar">
-        <span>📊 এজেন্ট প্যাটার্ন স্কোর:</span>
+        <span>📊 পছন্দ স্কোর:</span>
         <span class="wiki-score-pill">😂 হাসি: ${toBnDigits(sc.comedy || 5)}</span>
         <span class="wiki-score-pill">🪷 ভগবান: ${toBnDigits(sc.gods || 5)}</span>
         <span class="wiki-score-pill">🐘 পশুপাখি: ${toBnDigits(sc.animals || 5)}</span>
@@ -4403,19 +4577,17 @@ function renderKoushikAdminPanel() {
         </div>
         <ul class="wiki-entries-list">${activeEntriesHtml}</ul>
         <div class="vn-key-row" style="margin-top:10px;">
-          <input id="adminNewWikiEntryInput" type="text" class="vn-key-input" placeholder="মায়ের সম্পর্কে নতুন নোট বা [[উইকিলিঙ্ক]] যোগ করো..." />
-          <button id="btnAddAdminWikiNote" class="ag-btn check checked" onclick="addAdminWikiNoteFromInput()">+ যোগ করো</button>
+          <input id="adminNewWikiEntryInput" type="text" class="vn-key-input" placeholder="নতুন নোট বা [[উইকিলিঙ্ক]]..." />
+          <button id="btnAddAdminWikiNote" class="ag-btn check checked" onclick="addAdminWikiNoteFromInput()">+ যোগ</button>
         </div>
       </div>
     </div>
 
     <div class="admin-block">
-      <div class="admin-block-title">📋 ৪. জেমিনি মাস্টার প্রম্পট, উইকি এক্সপোর্ট ও সিস্টেম টুলস</div>
+      <div class="admin-block-title">📋 ৪. এক্সপোর্ট টুলস</div>
       <div class="admin-toggles-grid">
-        <button id="btnCopyMaWikiMarkdown" class="ag-btn" onclick="copyMaWikiMarkdown()">📥 মায়ের উইকি (Markdown) কপি করো</button>
-        <button id="btnCopySystemPrompt" class="ag-btn" onclick="copyKalyaniSystemPrompt()">📋 জেমিনি মাস্টার প্রম্পট কপি করো</button>
-        <button id="btnAdminNotifPerm" class="ag-btn" onclick="requestMicAndNotificationPermission()">🔔 সকালের নোটিফিকেশন টেস্ট</button>
-        <button id="btnAdminClearThreads" class="ag-btn" onclick="clearKalyaniThreadsAndMemory()">🧹 ভয়েস মেসেজ ইতিহাস পরিষ্কার</button>
+        <button id="btnCopyMaWikiMarkdown" class="ag-btn" onclick="copyMaWikiMarkdown()">📥 উইকি কপি</button>
+        <button id="btnCopySystemPrompt" class="ag-btn" onclick="copyKalyaniSystemPrompt()">📋 প্রম্পট কপি</button>
       </div>
     </div>
   `;
@@ -4449,6 +4621,7 @@ function renderKoushikAdminPanel() {
 function switchView(mode) {
   curView = mode;
   stopAllAudio();
+  if (typeof stopActiveVoiceAndVideoCapture === 'function') stopActiveVoiceAndVideoCapture();
   document.getElementById('viewPlan').className = 'view-sec' + (mode === 'plan' ? ' active' : '');
   document.getElementById('viewSlides').className = 'view-sec' + (mode === 'slides' ? ' active' : '');
   const tvSec = document.getElementById('viewTv');
@@ -4460,28 +4633,20 @@ function switchView(mode) {
 
   if (mode === 'plan') {
     renderPlanView();
-    toggleDayOverviewAudio();
+    if (autoVoicePlay) toggleDayOverviewAudio();
   } else if (mode === 'slides') {
     pickNewRandomQuote(false);
     renderSlide();
-    toggleSlideAudio();
+    if (autoVoicePlay) toggleSlideAudio();
   } else if (mode === 'tv' && typeof renderTvView === 'function') {
     renderTvView();
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function initMorningQuoteAndAlarm() {
+function initMorningQuote() {
   const qEl = document.getElementById('dailyQuoteText');
   if (qEl) qEl.textContent = MORNING_QUOTES[curQuoteIdx];
-
-  const permBanner = document.getElementById('permBanner');
-  if (permBanner) {
-    permBanner.style.display = 'none';
-  }
-
-  checkAndFireDailyMorningNotification();
-  setInterval(checkAndFireDailyMorningNotification, 45000);
 }
 
 if ('serviceWorker' in navigator) {
@@ -4522,7 +4687,7 @@ if ('serviceWorker' in navigator) {
   if (typeof setTimeout === 'function') setTimeout(apply, 90);
 })();
 
-initMorningQuoteAndAlarm();
+initMorningQuote();
 findInitialCurrentDay();
 renderSlide();
 if (typeof renderKoushikAdminPanel === 'function') renderKoushikAdminPanel();

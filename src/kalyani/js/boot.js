@@ -4,6 +4,7 @@
 function switchView(mode) {
   curView = mode;
   stopAllAudio();
+  if (typeof stopActiveVoiceAndVideoCapture === 'function') stopActiveVoiceAndVideoCapture();
   document.getElementById('viewPlan').className = 'view-sec' + (mode === 'plan' ? ' active' : '');
   document.getElementById('viewSlides').className = 'view-sec' + (mode === 'slides' ? ' active' : '');
   const tvSec = document.getElementById('viewTv');
@@ -15,28 +16,20 @@ function switchView(mode) {
 
   if (mode === 'plan') {
     renderPlanView();
-    toggleDayOverviewAudio();
+    if (autoVoicePlay) toggleDayOverviewAudio();
   } else if (mode === 'slides') {
     pickNewRandomQuote(false);
     renderSlide();
-    toggleSlideAudio();
+    if (autoVoicePlay) toggleSlideAudio();
   } else if (mode === 'tv' && typeof renderTvView === 'function') {
     renderTvView();
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function initMorningQuoteAndAlarm() {
+function initMorningQuote() {
   const qEl = document.getElementById('dailyQuoteText');
   if (qEl) qEl.textContent = MORNING_QUOTES[curQuoteIdx];
-
-  const permBanner = document.getElementById('permBanner');
-  if (permBanner) {
-    permBanner.style.display = 'none';
-  }
-
-  checkAndFireDailyMorningNotification();
-  setInterval(checkAndFireDailyMorningNotification, 45000);
 }
 
 if ('serviceWorker' in navigator) {
@@ -77,7 +70,7 @@ if ('serviceWorker' in navigator) {
   if (typeof setTimeout === 'function') setTimeout(apply, 90);
 })();
 
-initMorningQuoteAndAlarm();
+initMorningQuote();
 findInitialCurrentDay();
 renderSlide();
 if (typeof renderKoushikAdminPanel === 'function') renderKoushikAdminPanel();
