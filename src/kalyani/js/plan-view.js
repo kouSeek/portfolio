@@ -116,6 +116,109 @@ function buildCalendarGridCellsHtml(daysArray, idPrefix) {
   }).join('');
 }
 
+function buildWalkieTalkieStudioHtml(d, ag, idx) {
+  const cardKey = d.day + '_' + idx;
+  const turns = kalyaniThreads[cardKey] || [];
+  const isRecHere = vnRecordingState.active && vnRecordingState.dayNum === d.day && vnRecordingState.agIdx === idx;
+  const isSendingHere = vnRecordingState.sending && vnRecordingState.dayNum === d.day && vnRecordingState.agIdx === idx;
+  const pendingPhoto = vnPendingPhotos[cardKey] || null;
+  const hasApiKey = !!getGeminiApiKey();
+  const showKeyBox = (vnShowKeyInputForCard === cardKey);
+
+  const threadHtml = turns.map((t, tIdx) => `
+    <div class="vn-turn-block">
+      <div class="vn-user-bubble">
+        <div class="vn-bubble-eyebrow">🗣️ মায়ের অডিও মেসেজ ${t.has_photo ? '📷' : ''}:</div>
+        <div class="vn-bubble-text">“${t.heard_bn}”</div>
+      </div>
+      <div class="vn-ai-bubble">
+        <div class="vn-bubble-eyebrow">🌸 কল্যাণীর ভয়েস মেসেজ উত্তর:</div>
+        <div class="vn-bubble-text">${t.reply_bn}</div>
+        <button id="btnVnReplyPlay_${d.day}_${idx}_${tIdx}" class="ag-btn listen vn-reply-play-btn" data-default-label="🔊 কল্যাণীর উত্তর শোনো" onclick="playVoiceNoteReplyAudio(${d.day}, ${idx}, ${tIdx})">
+          🔊 কল্যাণীর উত্তর শোনো
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+  const photoPreviewHtml = pendingPhoto ? `
+    <div class="vn-photo-badge">📷 ছবি যুক্ত হয়েছে — ভয়েস মেসেজের সাথে কল্যাণী ছবিটাও দেখবে!</div>
+  ` : '';
+
+  const keyBoxHtml = showKeyBox ? `
+    <div class="vn-key-setup-box">
+      <div class="vn-key-label">🔑 গুগল জেমিনি এআই চাবি (API Key — একবার দিলেই ফোনে সেভ থাকবে):</div>
+      <div class="vn-key-row">
+        <input id="vnKeyInput_${d.day}_${idx}" type="password" class="vn-key-input" placeholder="AIza..." value="${getGeminiApiKey()}" />
+        <button class="ag-btn check checked" onclick="saveCardGeminiKeyFromInput(${d.day}, ${idx})">সেভ করো</button>
+      </div>
+    </div>
+  ` : '';
+
+  let controlsHtml = '';
+  if (isRecHere) {
+    controlsHtml = `
+      <div class="vn-recording-panel">
+        <div class="vn-rec-status">
+          🔴 মা, তোমার ভয়েস মেসেজ রেকর্ড হচ্ছে... (<span id="vnTimer_${d.day}_${idx}">${formatAudioSecondsBn(vnRecordingState.seconds)}</span>)
+        </div>
+        <div class="vn-rec-hint">
+          ধীরেসুস্থে যতক্ষণ খুশি থেমে থেমে বলো — কেউ মাঝখানে কথা বলবে না! বলা শেষ হলে নিচের সবুজ বোতামটা ছোঁও:
+        </div>
+        <div id="vnLivePreview_${d.day}_${idx}" class="vn-live-preview">
+          ${vnRecordingState.liveTranscript ? ('🗣️ “' + vnRecordingState.liveTranscript + '”') : '🎙️ মায়ের গলার আওয়াজ শোনা হচ্ছে...'}
+        </div>
+        <div class="vn-rec-actions">
+          <button id="btnVnSend_${d.day}_${idx}" class="vn-send-btn" onclick="finishAndSendVoiceNote(${d.day}, ${idx})">
+            ✅ বলা শেষ — কল্যাণীকে পাঠাও ▶️
+          </button>
+          <button id="btnVnCancel_${d.day}_${idx}" class="ag-btn" onclick="cancelVoiceNoteRecording()">
+            ❌ বাতিল করো
+          </button>
+        </div>
+      </div>
+    `;
+  } else if (isSendingHere) {
+    controlsHtml = `
+      <div class="vn-sending-panel">
+        ⏳ কল্যাণী মনোযোগ দিয়ে তোমার ভয়েস মেসেজ শুনছে এবং অডিও উত্তর তৈরি করছে...
+      </div>
+    `;
+  } else {
+    const recBtnLabel = turns.length > 0
+      ? '🎙️ পরের ভয়েস মেসেজ রেকর্ড করো (উত্তর দাও)'
+      : '🎙️ এখানে ছুঁয়ে ভয়েস মেসেজ রেকর্ড করো (অ্যাপ পাল্টাতে হবে না)';
+    controlsHtml = `
+      <div class="vn-idle-controls">
+        <button id="btnVnRecord_${d.day}_${idx}" class="vn-record-btn" onclick="startVoiceNoteRecording(${d.day}, ${idx})">
+          ${recBtnLabel}
+        </button>
+        <div class="vn-secondary-row">
+          <input id="vnPhotoInput_${d.day}_${idx}" type="file" accept="image/*" capture="environment" style="display:none;" onchange="handleCardPhotoSelected(${d.day}, ${idx}, this)" />
+          <button class="ag-btn vn-photo-btn" onclick="triggerCardPhotoUpload(${d.day}, ${idx})">
+            📷 ছবি তুলে দেখাও
+          </button>
+          <button class="ag-btn vn-key-btn" onclick="toggleCardKeySetup(${d.day}, ${idx})">
+            ${hasApiKey ? '🔑 এআই যুক্ত ✅' : '🔑 এআই চাবি'}
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div id="vnStudio_${d.day}_${idx}" class="walkie-talkie-studio">
+      <div class="vn-studio-header">
+        <span>🎙️ কল্যাণীর সাথে ভয়েস মেসেজে কথা বলো (অন্য অ্যাপে যেতে হবে না):</span>
+      </div>
+      ${threadHtml}
+      ${photoPreviewHtml}
+      ${controlsHtml}
+      ${keyBoxHtml}
+    </div>
+  `;
+}
+
 function buildAgendaCardHtml(d, ag, idx) {
   const isDone = !!doneMap[d.day + '_' + idx];
   const btnId = `btnAgPlay_${d.day}_${idx}`;
@@ -144,8 +247,8 @@ function buildAgendaCardHtml(d, ag, idx) {
 
   const ytMusicGuideHtml = isSongGame ? `
       <div class="agenda-prompt-box yt-music-box">
-        <div class="agenda-prompt-label">🎵 ফোনের জেমিনি নিজে থেকেই ইউটিউব মিউজিকে (YouTube Music) গান বাজাতে পারে!</div>
-        <div class="agenda-detail" style="font-size:1.01rem;">মা, ফোনের জেমিনির ইউটিউব মিউজিকের সাথে সরাসরি যোগ আছে। যেকোনো গান শুনতে ইচ্ছে করলেই শুধু মাইক 🎙️ ছুঁয়ে মুখে বলবে:<br><strong>“জেমিনি, ইউটিউব মিউজিকে ‘[গানের নাম বা যেকোনো লাইন]’ গানটা চালিয়ে দাও।”</strong><br>গানের পুরো নাম মনে না থাকলেও চলবে—গানের যেকোনো একটা লাইন বলে এইটুকু বললেই ও নিজে থেকে ইউটিউব মিউজিক খুলে গানটা বাজিয়ে দেবে!</div>
+        <div class="agenda-prompt-label">🎵 ইউটিউবে সরাসরি গানটা শোনো বা ভয়েস মেসেজে কল্যাণীকে বলো!</div>
+        <div class="agenda-detail" style="font-size:1.01rem;">মা, উপরের কমলা বোতামটায় ছুঁলেই সরাসরি ইউটিউবে গানটা বেজে উঠবে! আর গানটা শোনা হয়ে গেলে নিচে ভয়েস মেসেজ রেকর্ড করে কল্যাণীর সাথে গানের কথা আর মনের ভাবনা নিয়ে গল্প করো।</div>
       </div>` : '';
 
   const followupLabel = isSongGame
@@ -159,8 +262,8 @@ function buildAgendaCardHtml(d, ag, idx) {
       </div>` : '';
 
   const promptLabel = isSongGame
-    ? '🎙️ ইউটিউব মিউজিকে আজকের গানটা চালাতে ফোনে জেমিনি (Gemini) খুলে মাইক ছুঁয়ে বলো:'
-    : '🎙️ এবার ফোনে জেমিনি (Gemini) খুলে মাইক ছুঁয়ে মুখে বলো:';
+    ? '🎙️ এই গানটা নিয়ে ভয়েস মেসেজে কী বলবে তার ক্লু:'
+    : '🎙️ ভয়েস মেসেজে কল্যাণীকে কী বলবে তার ক্লু (নিজের মতো ধীরেসুস্থে বলো):';
 
   const ytDirectBtnHtml = isSongGame ? `
       <a class="yt-direct-btn" href="${extractSongSearchUrl(ag)}" target="_blank" rel="noopener noreferrer" onclick="stopAllAudio()">
@@ -177,6 +280,12 @@ function buildAgendaCardHtml(d, ag, idx) {
         <div class="agenda-step-heading">${stepHeading}</div>
         <div class="agenda-detail">${ag.detail_bn}</div>
       </div>${ytDirectBtnHtml}
+      <div class="agenda-prompt-box">
+        <div class="agenda-prompt-label">${promptLabel}</div>
+        <div class="agenda-prompt-speech">“${ag.prompt_bn}”</div>
+        <div class="agenda-prompt-howto">💡 (নিজের মতো সহজ বাংলায় থেমে থেমে বললেই হবে—নিচের সবুজ বোতামটা ছুঁয়ে রেকর্ড করো!)</div>
+      </div>
+      ${buildWalkieTalkieStudioHtml(d, ag, idx)}
       <div class="agenda-actions">
         <button id="${btnId}" class="ag-btn listen" data-default-label="🔊 গল্পটা শোনো" onclick="playAgendaByIdx(${d.day}, ${idx}, this)">🔊 গল্পটা শোনো</button>
         <button class="ag-btn check ${isDone ? 'checked' : ''}" onclick="toggleAgendaDone(${d.day}, ${idx})">
@@ -184,13 +293,8 @@ function buildAgendaCardHtml(d, ag, idx) {
         </button>
       </div>
       <details class="optional-prompt-drawer">
-        <summary class="optional-prompt-summary">💬 ইচ্ছে হলে জেমিনির সাথে কথা বলার ক্লু দেখো (বাধ্যতামূলক নয়) ▾</summary>
-        <div class="optional-prompt-body">${ytMusicGuideHtml}
-          <div class="agenda-prompt-box">
-            <div class="agenda-prompt-label">${promptLabel}</div>
-            <div class="agenda-prompt-speech">“${ag.prompt_bn}”</div>
-            <div class="agenda-prompt-howto">💡 (নিজের মতো সহজ বাংলায় বললেই হবে, ভুল হওয়ার কোনো ভয় নেই—বলো আর শোনো ও কী করে!)</div>
-          </div>${followupHtml}
+        <summary class="optional-prompt-summary">💬 দ্বিতীয় কথার ক্লু ও পুরো অডিও দেখো ▾</summary>
+        <div class="optional-prompt-body">${ytMusicGuideHtml}${followupHtml}
           <button class="ag-btn full-prompt-audio-btn" onclick="playAgendaByIdx(${d.day}, ${idx}, null, true)">🔊 ক্লু-সহ পুরো কথা শোনো</button>
         </div>
       </details>

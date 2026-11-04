@@ -356,3 +356,409 @@ async function requestMicAndNotificationPermission() {
     fireMorningMotivationNotification(true);
   } catch (err) {}
 }
+
+/* ============================================================================
+   MODULE 2B: IN-CARD WALKIE-TALKIE AUDIO MESSAGE & AOEDE VOICE REPLY ENGINE
+   (Zero App-Switching, Zero Mid-Sentence Interruption, 100% System Prompt Obedience)
+   ============================================================================ */
+let activeMediaRecorder = null;
+let activeMicStream = null;
+let activeSpeechRec = null;
+let activeVnAudioChunks = [];
+let activeVnTimerId = null;
+
+function pcm24kBase64ToWavUrl(b64Pcm) {
+  try {
+    const rawStr = (typeof atob === 'function')
+      ? atob(b64Pcm)
+      : Buffer.from(b64Pcm, 'base64').toString('binary');
+    const pcmLen = rawStr.length;
+    const wavBytes = new Uint8Array(44 + pcmLen);
+    const view = new DataView(wavBytes.buffer);
+    const writeAscii = (off, str) => {
+      for (let i = 0; i < str.length; i++) wavBytes[off + i] = str.charCodeAt(i);
+    };
+    writeAscii(0, 'RIFF');
+    view.setUint32(4, 36 + pcmLen, true);
+    writeAscii(8, 'WAVE');
+    writeAscii(12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
+    view.setUint32(24, 24000, true);
+    view.setUint32(28, 48000, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
+    writeAscii(36, 'data');
+    view.setUint32(40, pcmLen, true);
+    for (let i = 0; i < pcmLen; i++) {
+      wavBytes[44 + i] = rawStr.charCodeAt(i);
+    }
+    let bin = '';
+    for (let i = 0; i < wavBytes.length; i++) {
+      bin += String.fromCharCode(wavBytes[i]);
+    }
+    const wavB64 = (typeof btoa === 'function')
+      ? btoa(bin)
+      : Buffer.from(bin, 'binary').toString('base64');
+    return 'data:audio/wav;base64,' + wavB64;
+  } catch (e) {
+    return '';
+  }
+}
+
+async function synthesizeKalyaniAoedeAudio(textBn, apiKey) {
+  if (!apiKey || !textBn) return '';
+  try {
+    const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=' + encodeURIComponent(apiKey);
+    const resp = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: 'Speak in a warm, affectionate, unhurried, soothing West Bengal Bengali voice (never rush):\n\n' + textBn
+          }]
+        }],
+        generationConfig: {
+          responseModalities: ['AUDIO'],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: { voiceName: 'Aoede' }
+            }
+          }
+        }
+      })
+    });
+    if (!resp.ok) return '';
+    const data = await resp.json();
+    const parts = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
+    for (let i = 0; i < parts.length; i++) {
+      if (parts[i].inlineData && parts[i].inlineData.data) {
+        return pcm24kBase64ToWavUrl(parts[i].inlineData.data);
+      }
+    }
+  } catch (e) {}
+  return '';
+}
+
+function buildWarmFallbackReply(ag, turnCount, heardText) {
+  const cleanHeard = (heardText || '').trim() || 'মায়ের নিজের মনের কথা (ভয়েস মেসেজ)';
+  const follow = (ag && ag.followup_prompt_bn) ? ag.followup_prompt_bn : '';
+  if (turnCount === 0 && follow) {
+    return {
+      heard_bn: cleanHeard,
+      reply_bn: 'মা, তোমার গলার আওয়াজ আর মনের কথাটা শুনে আমার মনটা একদম ভরে গেল! তুমি কী সুন্দর নিজের মতো করে কথাটা বললে। আচ্ছা মা, এবার একটু ভেবে বলো তো—' + follow,
+      memory_note: ''
+    };
+  }
+  return {
+    heard_bn: cleanHeard,
+    reply_bn: 'মা, তোমার প্রতিটি কথা এত সুন্দর আর আন্তরিক! তোমার সাথে এভাবে ধীরেসুস্থে গল্প করতে আমার ভীষণ ভালো লাগে। আজকের এই খেলাটা তুমি দারুণভাবে সম্পূর্ণ করলে!',
+    memory_note: ''
+  };
+}
+
+async function callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, audioMime, liveTranscript, photoObj) {
+  const d = findDayObj(dayNum);
+  const ag = (d && d.agendas && d.agendas[agIdx]) ? d.agendas[agIdx] : {};
+  const cardKey = dayNum + '_' + agIdx;
+  const history = kalyaniThreads[cardKey] || [];
+  const apiKey = getGeminiApiKey();
+
+  if (!apiKey) {
+    return buildWarmFallbackReply(ag, history.length, liveTranscript);
+  }
+
+  const memBlock = kalyaniMemoryNotes.length
+    ? ('\n\nREMEMBERED FACTS ABOUT MA FROM PREVIOUS CONVERSATIONS:\n- ' + kalyaniMemoryNotes.join('\n- '))
+    : '';
+  const turnGuidance = (history.length === 0 && ag.followup_prompt_bn)
+    ? ('This is Turn 1 on this card. After warmly responding to Ma in 2–3 sentences, gently invite her into Turn 2 around this theme: "' + ag.followup_prompt_bn + '"')
+    : 'This is a follow-up turn. Respond warmly in 3–4 simple West Bengal Bengali sentences, praising her openness and ending with a soothing thought or gentle question.';
+
+  const sysInstruction = (typeof KALYANI_SYSTEM_PROMPT === 'string' ? KALYANI_SYSTEM_PROMPT : '')
+    + memBlock
+    + '\n\nACTIVE KALYANI APP CARD CONTEXT (Day ' + dayNum + ', Game ' + (agIdx + 1) + '):\n'
+    + '- Category: ' + (ag.category || '') + '\n'
+    + '- Title: ' + (ag.title_bn || '') + '\n'
+    + '- Story/Context: ' + (ag.detail_bn || '') + '\n'
+    + '- Suggested Prompt Ma Was Responding To: ' + (ag.prompt_bn || '') + '\n'
+    + '- Turn Guidance: ' + turnGuidance + '\n\n'
+    + 'OUTPUT FORMAT RULE: Return strictly valid JSON with keys:\n'
+    + '{"heard_bn": "accurate Bengali transcript of what Ma just said in her audio message", "reply_bn": "your warm 3-4 sentence colloquial West Bengal Bengali reply to Ma (never rush, zero markdown symbols)", "memory_note": "short 1-line note of any new personal memory/preference Ma shared, or empty string"}';
+
+  const contents = [];
+  history.forEach(t => {
+    contents.push({ role: 'user', parts: [{ text: t.heard_bn || 'মায়ের ভয়েস মেসেজ' }] });
+    contents.push({ role: 'model', parts: [{ text: JSON.stringify({ heard_bn: t.heard_bn, reply_bn: t.reply_bn, memory_note: '' }) }] });
+  });
+
+  const userParts = [];
+  if (photoObj && photoObj.b64) {
+    userParts.push({ inlineData: { mimeType: photoObj.mime || 'image/jpeg', data: photoObj.b64 } });
+  }
+  if (audioB64) {
+    userParts.push({ inlineData: { mimeType: audioMime || 'audio/webm', data: audioB64 } });
+  }
+  userParts.push({
+    text: liveTranscript
+      ? ('মা ভয়েস মেসেজে বললেন (সম্ভাব্য শ্রুতিলিপি: "' + liveTranscript + '")। অডিওটা মনোযোগ দিয়ে শুনে JSON উত্তর দাও।')
+      : 'মা এইমাত্র এই ভয়েস মেসেজটি পাঠিয়েছেন। অডিওটা মনোযোগ দিয়ে শুনে JSON উত্তর দাও।'
+  });
+  contents.push({ role: 'user', parts: userParts });
+
+  try {
+    const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + encodeURIComponent(apiKey);
+    const resp = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: sysInstruction }] },
+        contents: contents,
+        generationConfig: {
+          temperature: 0.7,
+          responseMimeType: 'application/json'
+        }
+      })
+    });
+    if (!resp.ok) {
+      return buildWarmFallbackReply(ag, history.length, liveTranscript);
+    }
+    const data = await resp.json();
+    const rawText = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || '';
+    const parsed = JSON.parse(rawText);
+    if (parsed && parsed.reply_bn) {
+      if (parsed.memory_note) addKalyaniMemoryNote(parsed.memory_note);
+      return {
+        heard_bn: parsed.heard_bn || liveTranscript || 'মায়ের ভয়েস মেসেজ',
+        reply_bn: String(parsed.reply_bn).replace(/[*#`_]/g, '').trim(),
+        memory_note: parsed.memory_note || ''
+      };
+    }
+  } catch (e) {}
+  return buildWarmFallbackReply(ag, history.length, liveTranscript);
+}
+
+function cleanupActiveVoiceRecorder() {
+  if (activeVnTimerId) {
+    if (typeof clearInterval === 'function') clearInterval(activeVnTimerId);
+    activeVnTimerId = null;
+  }
+  if (activeSpeechRec) {
+    try { activeSpeechRec.stop(); } catch (e) {}
+    activeSpeechRec = null;
+  }
+  if (activeMicStream) {
+    try { activeMicStream.getTracks().forEach(t => t.stop()); } catch (e) {}
+    activeMicStream = null;
+  }
+  activeMediaRecorder = null;
+}
+
+async function startVoiceNoteRecording(dayNum, agIdx) {
+  stopAllAudio();
+  cleanupActiveVoiceRecorder();
+  activeVnAudioChunks = [];
+  vnRecordingState = {
+    active: true,
+    sending: false,
+    dayNum: dayNum,
+    agIdx: agIdx,
+    seconds: 0,
+    liveTranscript: '',
+    errorMsg: ''
+  };
+  renderPlanView();
+
+  activeVnTimerId = setInterval(() => {
+    if (!vnRecordingState.active) return;
+    vnRecordingState.seconds += 1;
+    const timerEl = document.getElementById('vnTimer_' + dayNum + '_' + agIdx);
+    if (timerEl) timerEl.textContent = formatAudioSecondsBn(vnRecordingState.seconds);
+  }, 1000);
+
+  try {
+    const SpeechRec = (typeof window !== 'undefined') && (window.SpeechRecognition || window.webkitSpeechRecognition);
+    if (SpeechRec) {
+      activeSpeechRec = new SpeechRec();
+      activeSpeechRec.lang = 'bn-IN';
+      activeSpeechRec.continuous = true;
+      activeSpeechRec.interimResults = true;
+      activeSpeechRec.onresult = (ev) => {
+        let txt = '';
+        for (let i = 0; i < ev.results.length; i++) {
+          txt += ev.results[i][0].transcript + ' ';
+        }
+        vnRecordingState.liveTranscript = txt.trim();
+        const prevEl = document.getElementById('vnLivePreview_' + dayNum + '_' + agIdx);
+        if (prevEl && vnRecordingState.liveTranscript) {
+          prevEl.textContent = '🗣️ “' + vnRecordingState.liveTranscript + '”';
+        }
+      };
+      try { activeSpeechRec.start(); } catch (e) {}
+    }
+  } catch (e) {}
+
+  try {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      activeMicStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (typeof MediaRecorder !== 'undefined') {
+        const mime = (typeof MediaRecorder.isTypeSupported === 'function' && MediaRecorder.isTypeSupported('audio/webm;codecs=opus'))
+          ? 'audio/webm;codecs=opus'
+          : ((typeof MediaRecorder.isTypeSupported === 'function' && MediaRecorder.isTypeSupported('audio/mp4')) ? 'audio/mp4' : '');
+        activeMediaRecorder = mime ? new MediaRecorder(activeMicStream, { mimeType: mime }) : new MediaRecorder(activeMicStream);
+        activeMediaRecorder.ondataavailable = (ev) => {
+          if (ev.data && ev.data.size > 0) activeVnAudioChunks.push(ev.data);
+        };
+        activeMediaRecorder.start(250);
+      }
+    }
+  } catch (err) {}
+}
+
+function cancelVoiceNoteRecording() {
+  cleanupActiveVoiceRecorder();
+  vnRecordingState = { active: false, sending: false, dayNum: 0, agIdx: -1, seconds: 0, liveTranscript: '', errorMsg: '' };
+  renderPlanView();
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve) => {
+    if (!blob || typeof FileReader === 'undefined') {
+      resolve('');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const res = String(reader.result || '');
+      const comma = res.indexOf(',');
+      resolve(comma >= 0 ? res.slice(comma + 1) : '');
+    };
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function finishAndSendVoiceNote(dayNum, agIdx) {
+  const transcriptSnap = vnRecordingState.liveTranscript || '';
+  let recMime = 'audio/webm';
+  let audioBlob = null;
+
+  if (activeMediaRecorder && activeMediaRecorder.state !== 'inactive') {
+    recMime = activeMediaRecorder.mimeType || 'audio/webm';
+    await new Promise((resolve) => {
+      activeMediaRecorder.onstop = () => resolve();
+      try { activeMediaRecorder.stop(); } catch (e) { resolve(); }
+    });
+  }
+  if (activeVnAudioChunks.length > 0 && typeof Blob !== 'undefined') {
+    audioBlob = new Blob(activeVnAudioChunks, { type: recMime });
+  }
+  cleanupActiveVoiceRecorder();
+
+  vnRecordingState = {
+    active: false,
+    sending: true,
+    dayNum: dayNum,
+    agIdx: agIdx,
+    seconds: 0,
+    liveTranscript: transcriptSnap,
+    errorMsg: ''
+  };
+  renderPlanView();
+
+  const cardKey = dayNum + '_' + agIdx;
+  const photoObj = vnPendingPhotos[cardKey] || null;
+  delete vnPendingPhotos[cardKey];
+
+  const audioB64 = audioBlob ? await blobToBase64(audioBlob) : '';
+  const turnResult = await callKalyaniGeminiAudioTurn(dayNum, agIdx, audioB64, recMime, transcriptSnap, photoObj);
+  const apiKey = getGeminiApiKey();
+  const wavUrl = await synthesizeKalyaniAoedeAudio(turnResult.reply_bn, apiKey);
+
+  if (!kalyaniThreads[cardKey]) kalyaniThreads[cardKey] = [];
+  const turnIdx = kalyaniThreads[cardKey].length;
+  const turnCacheKey = cardKey + '_' + turnIdx;
+  if (wavUrl) vnAudioCache[turnCacheKey] = wavUrl;
+
+  kalyaniThreads[cardKey].push({
+    heard_bn: turnResult.heard_bn,
+    reply_bn: turnResult.reply_bn,
+    has_photo: !!(photoObj && photoObj.b64)
+  });
+  saveKalyaniThreads();
+
+  if (!doneMap[cardKey]) {
+    doneMap[cardKey] = true;
+    saveDoneMap();
+  }
+
+  vnRecordingState = { active: false, sending: false, dayNum: 0, agIdx: -1, seconds: 0, liveTranscript: '', errorMsg: '' };
+  renderPlanView();
+
+  playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx);
+}
+
+async function playVoiceNoteReplyAudio(dayNum, agIdx, turnIdx) {
+  const cardKey = dayNum + '_' + agIdx;
+  const turns = kalyaniThreads[cardKey] || [];
+  const turn = turns[turnIdx];
+  if (!turn) return;
+
+  const turnCacheKey = cardKey + '_' + turnIdx;
+  const btnId = 'btnVnReplyPlay_' + dayNum + '_' + agIdx + '_' + turnIdx;
+  const audioKey = 'vn_reply_' + turnCacheKey;
+
+  let wavUrl = vnAudioCache[turnCacheKey] || '';
+  if (!wavUrl && getGeminiApiKey()) {
+    wavUrl = await synthesizeKalyaniAoedeAudio(turn.reply_bn, getGeminiApiKey());
+    if (wavUrl) vnAudioCache[turnCacheKey] = wavUrl;
+  }
+
+  const d = findDayObj(dayNum);
+  const ag = (d && d.agendas && d.agendas[agIdx]) ? d.agendas[agIdx] : null;
+  const fallbackAudioUrl = wavUrl || (ag && ag.audio_url) || (d && d.audio_url) || '';
+  playMorningChimeSound();
+  playOrToggleAudio(btnId, audioKey, fallbackAudioUrl, '');
+}
+
+function triggerCardPhotoUpload(dayNum, agIdx) {
+  const inp = document.getElementById('vnPhotoInput_' + dayNum + '_' + agIdx);
+  if (inp && typeof inp.click === 'function') inp.click();
+}
+
+function handleCardPhotoSelected(dayNum, agIdx, inputEl) {
+  if (!inputEl || !inputEl.files || !inputEl.files[0] || typeof FileReader === 'undefined') return;
+  const file = inputEl.files[0];
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    const res = String(reader.result || '');
+    const comma = res.indexOf(',');
+    if (comma >= 0) {
+      vnPendingPhotos[dayNum + '_' + agIdx] = {
+        mime: file.type || 'image/jpeg',
+        b64: res.slice(comma + 1),
+        previewUrl: res
+      };
+      renderPlanView();
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function toggleCardKeySetup(dayNum, agIdx) {
+  const key = dayNum + '_' + agIdx;
+  vnShowKeyInputForCard = (vnShowKeyInputForCard === key) ? null : key;
+  renderPlanView();
+}
+
+function saveCardGeminiKeyFromInput(dayNum, agIdx) {
+  const inp = document.getElementById('vnKeyInput_' + dayNum + '_' + agIdx);
+  if (inp && inp.value) {
+    saveGeminiApiKey(inp.value);
+    vnShowKeyInputForCard = null;
+    showCelebrationToast('🔑 কল্যাণীর ভয়েস মেসেজ এআই সংযোগ সফলভাবে চালু হয়েছে!');
+    renderPlanView();
+  }
+}

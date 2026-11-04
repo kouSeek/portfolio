@@ -28,16 +28,8 @@ sys.path.insert(0, str(APP_ROOT))
 sys.path.insert(0, str(APP_ROOT / "scripts"))
 
 from content import (  # noqa: E402
-    ANONDO_DAYS_21,
-    ANONDO_PILLARS,
-    ANONDO_QUOTES,
-    ANONDO_SLIDES,
-    DAYS_21,
-    DAYS_PART2_30,
-    GAME_META,
-    LETTER_VIDEO_URL,
-    MORNING_QUOTES,
-    SLIDES,
+    ANONDO_DAYS_21, ANONDO_PILLARS, ANONDO_QUOTES, ANONDO_SLIDES,
+    DAYS_21, DAYS_PART2_30, GAME_META, LETTER_VIDEO_URL, MORNING_QUOTES, SLIDES,
 )
 from curate_loop import run_quality_gate  # noqa: E402
 from refresh_voices import get_stale_or_missing_files, load_manifest  # noqa: E402
@@ -105,6 +97,8 @@ def build_kalyani(env: jinja2.Environment) -> None:
 
     url_prefix = GH_RAW_AUDIO_BASE + "kalyani/"
     img_dir = APP_ROOT / "assets" / "kalyani" / "slides"
+    sys_md = (APP_ROOT / "personas" / "kalyani" / "client-side-gemini.md").read_text(encoding="utf-8")
+    sys_prompt = sys_md.split("```text", 1)[-1].rsplit("```", 1)[0].strip()
     slides_payload = [
         {**s, "img_b64": b64_uri(img_dir / f"slide_{int(s['id'])}.jpg", "image/jpeg"), "audio_url": f"{url_prefix}slides/slide_{int(s['id'])}.mp3", "audio_b64": ""}
         for s in SLIDES
@@ -112,6 +106,7 @@ def build_kalyani(env: jinja2.Environment) -> None:
     quotes_audio = [{"url": f"{url_prefix}quotes/quote_{i}.mp3", "b64": ""} for i in range(len(MORNING_QUOTES))]
     data_js = "\n".join([
         f"const LETTER_VIDEO_URL = {json.dumps(LETTER_VIDEO_URL, ensure_ascii=False)};",
+        f"const KALYANI_SYSTEM_PROMPT = {json.dumps(sys_prompt, ensure_ascii=False)};",
         f"const SLIDES = {json.dumps(slides_payload, ensure_ascii=False)};",
         f"const MORNING_QUOTES = {json.dumps(MORNING_QUOTES, ensure_ascii=False)};",
         f"const GAME_META = {json.dumps(GAME_META, ensure_ascii=False)};",

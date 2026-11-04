@@ -961,3 +961,211 @@
   line-height: 1.5;
   font-weight: 700;
 }
+
+/* ============================================================================
+   IN-CARD WALKIE-TALKIE AUDIO MESSAGE STUDIO (Zero App-Switching)
+   ============================================================================ */
+.walkie-talkie-studio {
+  padding: 14px 15px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #F6FCF9 0%, #FFFFFF 100%);
+  border: 2px solid var(--accent-border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.vn-studio-header {
+  font-size: 1rem;
+  line-height: 1.52;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.vn-turn-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.vn-user-bubble {
+  padding: 10px 13px;
+  border-radius: var(--radius-md);
+  background: var(--gold-soft);
+  border: 1px solid var(--gold-border);
+}
+
+.vn-ai-bubble {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border: 1.5px solid var(--accent-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vn-bubble-eyebrow {
+  font-size: 0.9rem;
+  line-height: 1.48;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.vn-bubble-text {
+  font-size: 1.08rem;
+  line-height: 1.64;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.vn-reply-play-btn {
+  width: 100%;
+}
+
+.vn-idle-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vn-record-btn {
+  width: 100%;
+  min-height: 54px;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-size: 1.08rem;
+  line-height: 1.52;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(14, 131, 88, 0.25);
+  transition: transform 0.14s var(--ease-out);
+}
+
+.vn-record-btn:active {
+  transform: scale(0.985);
+}
+
+.vn-secondary-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 8px;
+}
+
+.vn-recording-panel {
+  padding: 13px 14px;
+  border-radius: var(--radius-md);
+  background: #FFF5F2;
+  border: 2px solid var(--accent-active);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.vn-rec-status {
+  font-size: 1.05rem;
+  line-height: 1.52;
+  font-weight: 800;
+  color: var(--accent-active);
+}
+
+.vn-rec-hint {
+  font-size: 0.96rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.vn-live-preview {
+  padding: 8px 11px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+.vn-rec-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vn-send-btn {
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-size: 1.08rem;
+  line-height: 1.52;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(14, 131, 88, 0.28);
+}
+
+.vn-sending-panel {
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--gold-soft);
+  border: 1.5px solid var(--gold-border);
+  font-size: 1.02rem;
+  line-height: 1.58;
+  font-weight: 700;
+  color: var(--gold);
+  text-align: center;
+}
+
+.vn-photo-badge {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  font-size: 0.94rem;
+  line-height: 1.5;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.vn-key-setup-box {
+  padding: 11px 12px;
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-strong);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.vn-key-label {
+  font-size: 0.9rem;
+  line-height: 1.48;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.vn-key-row {
+  display: flex;
+  gap: 8px;
+}
+
+.vn-key-input {
+  flex: 1;
+  min-height: 42px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-strong);
+  font-size: 0.96rem;
+}

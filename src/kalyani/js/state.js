@@ -53,6 +53,72 @@ function saveDoneMap() {
   try { localStorage.setItem('ma_21day_done_v2', JSON.stringify(doneMap)); } catch (e) {}
 }
 
+let kalyaniThreads = {};
+try {
+  const parsedThreads = JSON.parse(localStorage.getItem('ma_kalyani_threads_v1') || '{}');
+  if (parsedThreads && typeof parsedThreads === 'object') kalyaniThreads = parsedThreads;
+} catch (e) {
+  kalyaniThreads = {};
+}
+
+function saveKalyaniThreads() {
+  try { localStorage.setItem('ma_kalyani_threads_v1', JSON.stringify(kalyaniThreads)); } catch (e) {}
+}
+
+let kalyaniMemoryNotes = [];
+try {
+  const parsedMem = JSON.parse(localStorage.getItem('ma_kalyani_memory_v1') || '[]');
+  if (Array.isArray(parsedMem)) kalyaniMemoryNotes = parsedMem;
+} catch (e) {
+  kalyaniMemoryNotes = [];
+}
+
+function addKalyaniMemoryNote(note) {
+  if (!note || typeof note !== 'string') return;
+  const trimmed = note.trim();
+  if (!trimmed || kalyaniMemoryNotes.includes(trimmed)) return;
+  kalyaniMemoryNotes.push(trimmed);
+  if (kalyaniMemoryNotes.length > 60) kalyaniMemoryNotes = kalyaniMemoryNotes.slice(-60);
+  try { localStorage.setItem('ma_kalyani_memory_v1', JSON.stringify(kalyaniMemoryNotes)); } catch (e) {}
+}
+
+const vnAudioCache = {};
+let vnPendingPhotos = {};
+let vnShowKeyInputForCard = null;
+let vnRecordingState = {
+  active: false,
+  sending: false,
+  dayNum: 0,
+  agIdx: -1,
+  seconds: 0,
+  liveTranscript: '',
+  errorMsg: ''
+};
+
+function getGeminiApiKey() {
+  try { return (localStorage.getItem('ma_kalyani_gemini_key_v1') || '').trim(); } catch (e) { return ''; }
+}
+
+function saveGeminiApiKey(rawKey) {
+  const clean = String(rawKey || '').trim();
+  try {
+    if (clean) localStorage.setItem('ma_kalyani_gemini_key_v1', clean);
+  } catch (e) {}
+  return clean;
+}
+
+function hydrateGeminiKeyFromUrl() {
+  try {
+    if (typeof window === 'undefined' || !window.location) return;
+    const href = String(window.location.href || '');
+    const m = href.match(/[?#&](?:key|gemini_key)=([A-Za-z0-9_-]{20,})/);
+    if (m && m[1]) {
+      saveGeminiApiKey(m[1]);
+    }
+  } catch (e) {}
+}
+hydrateGeminiKeyFromUrl();
+
 function showCelebrationToast(msg) {
   const toastEl = document.getElementById('celebrationToast');
   if (!toastEl) return;

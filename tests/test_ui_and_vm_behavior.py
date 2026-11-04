@@ -257,6 +257,20 @@ const audio = getEl('audioPlayer');
   switchView('plan');
   selectGame(0, false);
 
+  // 2d. Walkie-Talkie Audio Message Studio inside every card (Zero App-Switching, Unhurried Recording & Spoken Reply):
+  assert.ok(typeof KALYANI_SYSTEM_PROMPT === 'string' && KALYANI_SYSTEM_PROMPT.includes('IRONCLAD LANGUAGE RULE'));
+  assert.ok(getEl('activeDayStage').innerHTML.includes('id="vnStudio_1_0"'));
+  await startVoiceNoteRecording(1, 0);
+  assert.strictEqual(vnRecordingState.active, true);
+  assert.ok(getEl('activeDayStage').innerHTML.includes('বলা শেষ — কল্যাণীকে পাঠাও'));
+  vnRecordingState.liveTranscript = 'আমার ছোটবেলার রানাঘাটের কথা মনে পড়ছে';
+  await finishAndSendVoiceNote(1, 0);
+  assert.strictEqual(vnRecordingState.active, false);
+  assert.strictEqual((kalyaniThreads['1_0'] || []).length, 1);
+  assert.ok(getEl('activeDayStage').innerHTML.includes('🌸 কল্যাণীর ভয়েস মেসেজ উত্তর:'));
+  delete doneMap['1_0'];
+  delete kalyaniThreads['1_0'];
+
   // 3. Sequential Day Locking (when unlockAllDaysMode = false): Day 2..51 are locked until Day 1 is finished
   unlockAllDaysMode = false;
   renderPlanView();
