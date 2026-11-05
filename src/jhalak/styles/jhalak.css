@@ -1,0 +1,575 @@
+/* ============================================================================
+   ✨ ঝলক (JHALAK) — FULL-SCREEN DOPAMINE-HITCHING REELS & BIOSCOPE FOR MA
+   Aesthetic: Warm Santiniketan Terracotta, Deep Cocoa Velvet & Shiuli Gold
+   Typography: Noto Serif Bengali + Noto Sans Bengali (line-height >= 1.52)
+   ============================================================================ */
+:root {
+  --jh-bg-deep: #18120E;
+  --jh-bg-card: #231A14;
+  --jh-bg-warm: #2D2018;
+  --jh-surface-cream: #FFFDF9;
+  --jh-surface-soft: #FBF4E8;
+  --jh-ink-dark: #1F1610;
+  --jh-ink-muted: #5C4938;
+  --jh-cream-text: #FDF8F0;
+  --jh-cream-sub: #E6D5C3;
+  --jh-gold: #F59E0B;
+  --jh-gold-soft: #FEF3C7;
+  --jh-terra: #D9532F;
+  --jh-emerald: #0E8358;
+  --jh-rose: #E11D48;
+  --jh-border-gold: rgba(245, 158, 11, 0.34);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--jh-bg-deep);
+  color: var(--jh-cream-text);
+  font-family: 'Noto Sans Bengali', sans-serif;
+  line-height: 1.55;
+  user-select: none;
+}
+
+/* TOP FLOATING BAR: BRAND + HEADPHONE AUTO-FLOW + MOOD CHANNELS */
+.jh-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  background: linear-gradient(180deg, rgba(24, 18, 14, 0.94) 0%, rgba(24, 18, 14, 0.76) 72%, rgba(24, 18, 14, 0) 100%);
+  padding: 10px 14px 14px;
+  pointer-events: none;
+}
+
+.jh-topbar-row1 {
+  max-width: 680px;
+  margin: 0 auto 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.jh-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Noto Serif Bengali', Georgia, serif;
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: #FFFBEB;
+  text-decoration: none;
+  background: rgba(45, 32, 24, 0.85);
+  border: 1px solid var(--jh-border-gold);
+  padding: 5px 13px;
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.jh-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.jh-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1.5px solid var(--jh-border-gold);
+  background: rgba(45, 32, 24, 0.9);
+  color: #FFFBEB;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.14s ease, background 0.14s ease;
+}
+
+.jh-pill-btn:active {
+  transform: scale(0.95);
+}
+
+.jh-pill-btn.active-flow {
+  background: var(--jh-emerald);
+  border-color: #34D399;
+  color: #FFFFFF;
+}
+
+/* MOOD VIBE CHANNEL STRIP */
+.jh-channel-strip {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+  pointer-events: auto;
+}
+.jh-channel-strip::-webkit-scrollbar { display: none; }
+
+.jh-chan-chip {
+  flex: 0 0 auto;
+  border: 1.5px solid rgba(255, 248, 235, 0.2);
+  background: rgba(35, 26, 20, 0.86);
+  color: var(--jh-cream-sub);
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 6px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.jh-chan-chip.active {
+  background: #F59E0B;
+  color: #1F1610;
+  border-color: #FDE68A;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+}
+
+/* FULL-SCREEN VERTICAL SCROLL-SNAP REELS STREAM */
+.jh-reels-viewport {
+  width: 100%;
+  height: 100dvh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+}
+.jh-reels-viewport::-webkit-scrollbar { display: none; }
+
+.jh-reel-slide {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 96px 14px 22px;
+  overflow: hidden;
+}
+
+/* WARM THEMED BACKDROPS PER REEL VIBE */
+.jh-reel-slide[data-vibe="laugh_gods"] {
+  background: radial-gradient(circle at 20% 15%, #3B2416 0%, #1C130D 75%);
+}
+.jh-reel-slide[data-vibe="cbt_calm"] {
+  background: radial-gradient(circle at 80% 18%, #163026 0%, #121B17 75%);
+}
+.jh-reel-slide[data-vibe="curiosity_song"] {
+  background: radial-gradient(circle at 50% 15%, #332211 0%, #17120E 75%);
+}
+
+/* MAIN REEL CARD STAGE */
+.jh-card-stage {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  height: 100%;
+  max-height: 760px;
+  background: var(--jh-surface-cream);
+  color: var(--jh-ink-dark);
+  border-radius: 26px;
+  border: 2px solid #EBD9C0;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.48);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 18px 74px 18px 20px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.jh-card-stage::-webkit-scrollbar { display: none; }
+
+@media (max-width: 480px) {
+  .jh-reel-slide {
+    padding: 92px 8px 14px;
+  }
+  .jh-card-stage {
+    padding: 15px 66px 15px 15px;
+    border-radius: 22px;
+  }
+}
+
+/* CARD HEADER: BADGE + COUNTER */
+.jh-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.jh-vibe-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFF1E6;
+  color: #B93815;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid #FCD9BD;
+}
+
+.jh-card-num {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--jh-ink-muted);
+}
+
+/* BEAT 1: THE DOPAMINE HOOK (TITLE + WARM STORY) */
+.jh-hook-title {
+  font-family: 'Noto Serif Bengali', Georgia, serif;
+  font-size: clamp(1.22rem, 3.6vw, 1.48rem);
+  font-weight: 800;
+  color: #1F1610;
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+
+.jh-hook-story {
+  font-size: clamp(1.01rem, 2.8vw, 1.11rem);
+  color: #2B2118;
+  line-height: 1.62;
+  background: #FBF6EE;
+  border-left: 4px solid var(--jh-terra);
+  padding: 11px 13px;
+  border-radius: 12px;
+  margin-bottom: 11px;
+}
+
+/* BEAT 2: THE HITCHED COVERT CBT / CURIOSITY / SPOKEN SPARK RIBBON */
+.jh-hitch-ribbon {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+  border: 1.5px solid #F59E0B;
+  border-radius: 14px;
+  padding: 10px 13px;
+  margin-bottom: 11px;
+}
+
+.jh-hitch-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #B45309;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.jh-hitch-text {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #451A03;
+  line-height: 1.52;
+}
+
+/* BEAT 3: 1-TAP CURIOSITY FLIP / SCRATCH CARD (ZERO-EFFORT DOPAMINE REWARD) */
+.jh-curiosity-box {
+  background: #F0FDF4;
+  border: 1.5px dashed #16A34A;
+  border-radius: 15px;
+  padding: 11px 13px;
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.2s ease, border-style 0.2s ease;
+}
+
+.jh-curiosity-box:hover {
+  transform: translateY(-1px);
+}
+
+.jh-curiosity-box.revealed {
+  background: #ECFDF5;
+  border-style: solid;
+  border-color: #059669;
+}
+
+.jh-curiosity-q {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #065F46;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.jh-curiosity-tap-hint {
+  flex: 0 0 auto;
+  background: #0E8358;
+  color: #FFFFFF;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.jh-curiosity-a {
+  display: none;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(16, 185, 129, 0.28);
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: #064E3B;
+  line-height: 1.54;
+}
+
+.jh-curiosity-box.revealed .jh-curiosity-a {
+  display: block;
+}
+
+/* AUDIO PROGRESS BAR AT BOTTOM OF CARD */
+.jh-audio-strip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #EFE4D4;
+}
+
+.jh-main-listen-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: var(--jh-emerald);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.98rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(14, 131, 88, 0.25);
+}
+
+.jh-main-listen-btn.playing {
+  background: #D9532F;
+}
+
+.jh-next-inline-btn {
+  background: #FFF1E6;
+  color: #B93815;
+  border: 1.5px solid #FCD9BD;
+  border-radius: 12px;
+  padding: 10px 13px;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.94rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* RIGHT-SIDE TIKTOK/REELS FLOATING ACTION RAIL */
+.jh-right-rail {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 25;
+}
+
+.jh-rail-btn {
+  width: 52px;
+  min-height: 54px;
+  border-radius: 16px;
+  border: 1.5px solid #EBD9C0;
+  background: #FFFBF4;
+  color: #2B2118;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 5px 3px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(31, 22, 16, 0.1);
+  font-family: 'Noto Sans Bengali', sans-serif;
+  text-decoration: none;
+  transition: transform 0.14s ease, background 0.14s ease;
+}
+
+.jh-rail-btn:active {
+  transform: scale(0.92);
+}
+
+.jh-rail-btn .ic {
+  font-size: 1.24rem;
+  line-height: 1;
+}
+
+.jh-rail-btn .lbl {
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.jh-rail-btn.liked {
+  background: #FFE4E6;
+  border-color: #FDA4AF;
+  color: #BE123C;
+}
+
+/* FLOATING LOTUS / SPARKLE BURST ANIMATION */
+.jh-particle-burst {
+  position: fixed;
+  pointer-events: none;
+  z-index: 120;
+  font-size: 1.8rem;
+  animation: jhFloatUp 1.1s ease-out forwards;
+}
+
+@keyframes jhFloatUp {
+  0% { opacity: 1; transform: translateY(0) scale(0.8); }
+  100% { opacity: 0; transform: translateY(-95px) scale(1.35); }
+}
+
+/* SLIDE-UP DRAWERS (WALKIE-TALKIE VOICE/VIDEO & KOUSHIK LETTER + TV) */
+.jh-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 10, 7, 0.72);
+  z-index: 90;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.jh-drawer-backdrop.open {
+  display: flex;
+}
+
+.jh-drawer-sheet {
+  width: 100%;
+  max-width: 640px;
+  max-height: 86dvh;
+  background: var(--jh-surface-cream);
+  color: var(--jh-ink-dark);
+  border-radius: 26px 26px 0 0;
+  border-top: 3px solid var(--jh-gold);
+  padding: 18px 18px 26px;
+  overflow-y: auto;
+  box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.45);
+}
+
+.jh-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #EBD9C0;
+}
+
+.jh-drawer-title {
+  font-family: 'Noto Serif Bengali', Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.jh-drawer-close {
+  border: 1.5px solid #EBD9C0;
+  background: #FFF1E6;
+  color: #B93815;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 6px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.jh-wt-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.jh-wt-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 13px 16px;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #FFFFFF;
+  background: var(--jh-emerald);
+}
+
+.jh-wt-btn.video {
+  background: #B93815;
+}
+
+.jh-wt-reply-box {
+  background: #FFFBEB;
+  border: 1.5px solid #F59E0B;
+  border-radius: 14px;
+  padding: 13px;
+  margin-top: 12px;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.jh-slide-img {
+  width: 100%;
+  height: auto;
+  max-height: 340px;
+  object-fit: contain;
+  border-radius: 14px;
+  background: #18120E;
+  margin-bottom: 10px;
+}
+
+.jh-tv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.jh-tv-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #FBF4E8;
+  border: 1.5px solid #EBD9C0;
+  border-radius: 14px;
+  padding: 11px 13px;
+  color: var(--jh-ink-dark);
+  text-decoration: none;
+  font-weight: 700;
+}

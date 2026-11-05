@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#18120E" />
+  <meta name="description" content="ঝলক (Jhalak) — মায়ের জন্য স্বতঃস্ফূর্ত আনন্দের বায়োস্কোপ, হাসির গল্প, ভগবানের লীলা, মনের আরাম ও কৌতূহলের রিলস।" />
+  <title>ঝলক — মায়ের আনন্দের বায়োস্কোপ ও রিলস ✨</title>
+  <link id="pageFavicon" data-emoji="✨" data-png-b64="{{ favicon_uri }}" data-https-png="https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion/assets/icons/favicon-kalyani.png?v=4" data-https-ico="https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion/assets/icons/favicon-kalyani.ico?v=4" rel="icon" type="image/png" sizes="64x64" href="{{ favicon_uri }}" />
+  <link rel="apple-touch-icon" sizes="64x64" href="{{ favicon_uri }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+{{ css_bundle | safe }}
+  </style>
+</head>
+<body>
+
+  <!-- TOP FLOATING BAR: BRAND + HEADPHONE AUTO-FLOW + MOOD CHANNELS -->
+  <header class="jh-topbar" role="banner">
+    <div class="jh-topbar-row1">
+      <h1 class="jh-brand">✨ ঝলক • বায়োস্কোপ</h1>
+      <div class="jh-top-actions">
+        <button id="btnJhAutoFlow" class="jh-pill-btn active-flow" onclick="toggleJhAutoFlow()">
+          🎧 অটো-রিলস: চালু
+        </button>
+        <button id="btnJhShuffle" class="jh-pill-btn" onclick="shuffleJhalakFeed(event)">
+          🎲 নতুন চমক
+        </button>
+        <a id="linkToClassicKalyani" class="jh-pill-btn" href="kalyani.html">
+          🌸 কল্যাণী
+        </a>
+      </div>
+    </div>
+
+    <nav class="jh-channel-strip" aria-label="আনন্দের বিভাগ">
+      <button id="chanAll" class="jh-chan-chip active" data-chan="all" onclick="filterJhalakChannel('all')">
+        ✨ জাদুর ঝুলি (সব মিলিয়ে)
+      </button>
+      <button id="chanLaughGods" class="jh-chan-chip" data-chan="laugh_gods" onclick="filterJhalakChannel('laugh_gods')">
+        😂 হাসি, ঠাকুর ও পশুপাখি
+      </button>
+      <button id="chanCbtCalm" class="jh-chan-chip" data-chan="cbt_calm" onclick="filterJhalakChannel('cbt_calm')">
+        🦋 মনের আরাম ও গল্প
+      </button>
+      <button id="chanCuriositySong" class="jh-chan-chip" data-chan="curiosity_song" onclick="filterJhalakChannel('curiosity_song')">
+        🔍 অবাক কৌতূহল ও গান
+      </button>
+      <button id="chanLetterTv" class="jh-chan-chip" onclick="openJhalakLetterDrawer()">
+        💌 কৌশিকের চিঠি ও টিভি
+      </button>
+    </nav>
+  </header>
+
+  <!-- FULL-SCREEN VERTICAL SCROLL-SNAP REELS STREAM -->
+  <main id="jhReelsViewport" class="jh-reels-viewport" aria-label="আনন্দের রিলস স্ট্রিম"></main>
+
+  <!-- SLIDE-UP DRAWER 1: 1-TAP WALKIE-TALKIE WITH KALYANI (GEMINI) -->
+  <div id="jhVoiceDrawer" class="jh-drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="jhVoiceDrawerTitle">
+    <div class="jh-drawer-sheet">
+      <div class="jh-drawer-head">
+        <h2 id="jhVoiceDrawerTitle" class="jh-drawer-title">🎤 কল্যাণীর সাথে মনের আড্ডা</h2>
+        <button id="btnCloseVoiceDrawer" class="jh-drawer-close" onclick="closeJhalakVoiceDrawer()">✕ বন্ধ করো</button>
+      </div>
+      <p style="font-size:0.96rem;color:#5C4938;margin-bottom:8px;">
+        মা, এই ঝলকটি নিয়ে তোমার মনে যা আসছে বা যেকোনো গল্প নিচের বোতাম ছুঁয়ে কল্যাণীর কাছে শোনো:
+      </p>
+      <div id="jhVoiceCardTitle" style="font-weight:700;color:#B93815;margin-bottom:10px;"></div>
+      <div class="jh-wt-actions">
+        <button id="btnJhAskKalyani" class="jh-wt-btn" onclick="sendQuickGreetingToKalyani()">
+          ✨ এই গল্পটা নিয়ে কল্যাণীর মিষ্টি কথা শোনো
+        </button>
+        <a id="btnOpenFullKalyaniVoice" class="jh-wt-btn video" href="kalyani.html" style="text-align:center;text-decoration:none;">
+          🎙️ ভয়েস ও ভিডিও মেসেজ পাঠাও
+        </a>
+      </div>
+      <div id="jhWtReplyBox" class="jh-wt-reply-box">
+        🌸 উপরের সবুজ বোতামটি ছুঁলেই কল্যাণী তোমাকে এই গল্পটা নিয়ে আরও মজার কথা শোনাবে মা!
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE-UP DRAWER 2: KOUSHIK'S 8-SLIDE LETTER + FULL HD MOVIE + 1-TAP TV -->
+  <div id="jhLetterDrawer" class="jh-drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="jhLetterDrawerTitle">
+    <div class="jh-drawer-sheet">
+      <div class="jh-drawer-head">
+        <h2 id="jhLetterDrawerTitle" class="jh-drawer-title">💌 মায়ের জন্য কৌশিকের খোলা চিঠি ও টিভি</h2>
+        <button id="btnCloseLetterDrawer" class="jh-drawer-close" onclick="closeJhalakLetterDrawer()">✕ বন্ধ করো</button>
+      </div>
+      <div>
+        <img id="jhLetterImg" class="jh-slide-img" src="" alt="মা ও পরিবারের ছবি" />
+        <h3 id="jhLetterTitle" style="font-family:'Noto Serif Bengali',serif;font-size:1.15rem;margin-bottom:6px;"></h3>
+        <p id="jhLetterBody" style="font-size:0.98rem;line-height:1.6;margin-bottom:12px;"></p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+          <button id="btnJhLetterPrev" class="jh-next-inline-btn" onclick="stepJhalakLetterSlide(-1)">⬅️ আগের পাতা</button>
+          <button id="btnJhLetterPlay" class="jh-main-listen-btn" onclick="playJhalakLetterAudio()">🔊 এই পাতাটা শোনো</button>
+          <button id="btnJhLetterNext" class="jh-next-inline-btn" onclick="stepJhalakLetterSlide(1)">পরের পাতা ➡️</button>
+        </div>
+        <a id="btnJhWatchMovie" class="jh-wt-btn video" href="{{ letter_video_url }}" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;text-decoration:none;margin-bottom:14px;">
+          🎬 পুরো ভিডিও চিঠিটি দেখো ▶️
+        </a>
+        <div class="jh-tv-grid">
+          <a class="jh-tv-card" href="https://www.youtube.com/results?search_query=Gopal+Bhar+Bengali+full+episodes" target="_blank" rel="noopener noreferrer">😂 গোপাল ভাঁড়ের হাসির কার্টুন</a>
+          <a class="jh-tv-card" href="https://www.youtube.com/results?search_query=Hemanta+Mukherjee+Sandhya+Mukherjee+Best+Bengali+Songs" target="_blank" rel="noopener noreferrer">🎵 হেমন্ত ও সন্ধ্যা মুখোপাধ্যায়ের গান</a>
+          <a class="jh-tv-card" href="https://www.youtube.com/results?search_query=Uttam+Suchitra+Bengali+full+movies" target="_blank" rel="noopener noreferrer">🎬 উত্তম-সুচিত্রার সেরা বাংলা ছবি</a>
+          <a class="jh-tv-card" href="https://www.youtube.com/results?search_query=Maa+Sarada+Sri+Ramakrishna+Bengali+stories" target="_blank" rel="noopener noreferrer">🪷 মা সারদা ও ঠাকুরের অমৃতকথা</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="jhAudioPlayer" preload="auto"></audio>
+
+  <script>
+{{ data_js | safe }}
+{{ js_bundle | safe }}
+  </script>
+</body>
+</html>

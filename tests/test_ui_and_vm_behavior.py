@@ -924,6 +924,75 @@ vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
         )
         self.assertEqual(proc.returncode, 0, f"Kalyani weird edge-cases VM test failed: {proc.stderr}")
 
+    def test_jhalak_dopamine_reels_app_and_vm_interactions(self) -> None:
+        """Verify jhalak.html (✨ ঝলক — Dopamine-Hitching Reels & Bioscope) compiles and runs cleanly in Node VM."""
+        jh_path = APP_ROOT / "jhalak.html"
+        self.assertTrue(jh_path.is_file(), "jhalak.html must exist")
+        jh_html = jh_path.read_text(encoding="utf-8")
+        self.assertIn("ঝলক — মায়ের আনন্দের বায়োস্কোপ ও রিলস ✨</title>", jh_html)
+        self.assertIn("scroll-snap-type: y mandatory", jh_html)
+        self.assertIn('id="btnJhAutoFlow"', jh_html)
+        self.assertIn('href="kalyani.html"', jh_html)
+
+        m = re.search(r"<script>([\s\S]*?)</script>", jh_html)
+        self.assertIsNotNone(m, "Missing <script> block in jhalak.html")
+
+        vm_harness = r"""
+const fs = require('fs'), vm = require('vm'), assert = require('assert');
+const code = fs.readFileSync(0, 'utf8');
+const els = {};
+function el(id) {
+  if (!els[id]) {
+    els[id] = {
+      id, className: '', innerHTML: '', textContent: '', style: {}, src: '',
+      classList: {
+        add(c) { if (!els[id].className.includes(c)) els[id].className = (els[id].className + ' ' + c).trim(); },
+        remove(c) { els[id].className = els[id].className.replace(c, '').trim(); },
+        toggle(c, b) { if (b) this.add(c); else this.remove(c); },
+        contains(c) { return els[id].className.includes(c); }
+      },
+      querySelector: () => ({ textContent: '' }),
+      scrollIntoView() {}
+    };
+  }
+  return els[id];
+}
+const ctx = {
+  window: { innerWidth: 390, innerHeight: 844, addEventListener() {} },
+  document: {
+    body: { appendChild() {}, removeChild() {} },
+    getElementById: el,
+    querySelectorAll: () => [],
+    createElement: () => ({ style: {}, className: '', textContent: '' })
+  },
+  localStorage: { getItem: () => null, setItem: () => {} },
+  setTimeout, clearTimeout, console, assert, el
+};
+const suite = code + `
+;(function() {
+  assert.strictEqual(ALL_JHALAK_REELS.length, 134, 'Must assemble 8 pure delight reels + 126 curriculum reels = 134 reels');
+  assert.ok(ALL_JHALAK_REELS[0].hitch_bn.length > 15, 'Every reel must have a Covert CBT / Curiosity hitch');
+  assert.ok(ALL_JHALAK_REELS[0].curiosity_q_bn.length > 10, 'Every reel must have a 1-tap curiosity flip question');
+  renderJhalakReelStream();
+  assert.ok(el('jhReelsViewport').innerHTML.includes('jh-reel-slide'), 'Must render full-screen reel slides');
+  filterJhalakChannel('cbt_calm');
+  assert.ok(jhFilteredReels.length >= 21 && jhFilteredReels.every(r => r.vibe === 'cbt_calm'));
+  filterJhalakChannel('all');
+  toggleJhalakCuriosityBox(0);
+  assert.strictEqual(jhRevealedMap[jhFilteredReels[0].id], true, '1-tap curiosity flip must toggle revealed state');
+})();
+`;
+vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});
+"""
+        proc = subprocess.run(
+            [str(NODE_BIN), "-e", vm_harness],
+            input=m.group(1),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(proc.returncode, 0, f"Jhalak VM test failed: {proc.stderr}")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

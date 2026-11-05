@@ -50,14 +50,10 @@ KALYANI_JS = (
     SRC_DIR / "kalyani" / "js" / "letter-view.js",
     SRC_DIR / "kalyani" / "js" / "boot.js",
 )
-ANONDO_CSS = (
-    SRC_DIR / "anondo" / "styles" / "tokens.css",
-    SRC_DIR / "anondo" / "styles" / "components.css",
-)
-ANONDO_JS = (
-    SRC_DIR / "anondo" / "js" / "audio.js",
-    SRC_DIR / "anondo" / "js" / "views.js",
-)
+ANONDO_CSS = (SRC_DIR / "anondo" / "styles" / "tokens.css", SRC_DIR / "anondo" / "styles" / "components.css")
+ANONDO_JS = (SRC_DIR / "anondo" / "js" / "audio.js", SRC_DIR / "anondo" / "js" / "views.js")
+JHALAK_CSS = (SRC_DIR / "jhalak" / "styles" / "jhalak.css",)
+JHALAK_JS = (SRC_DIR / "jhalak" / "js" / "feed-engine.js", SRC_DIR / "jhalak" / "js" / "player-ui.js")
 
 
 def b64_uri(path: Path, mime: str) -> str:
@@ -114,16 +110,19 @@ def build_kalyani(env: jinja2.Environment) -> None:
         f"const QUOTES_AUDIO = {json.dumps(quotes_audio, ensure_ascii=False)};",
         "const DAY1_AG_MAP = {};",
     ])
-    html = env.get_template("kalyani.html.j2").render(
-        css_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in KALYANI_CSS),
-        data_js=data_js,
-        js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in KALYANI_JS),
-        letter_video_url=LETTER_VIDEO_URL,
-        favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / "favicon-kalyani.png", "image/png"),
-    )
-    out = APP_ROOT / "kalyani.html"
-    out.write_text(html, encoding="utf-8")
-    print(f"Built {out.name} via Jinja2 ({out.stat().st_size:,} bytes)")
+    for fname, tpl, css_list, js_list in (
+        ("kalyani.html", "kalyani.html.j2", KALYANI_CSS, KALYANI_JS),
+        ("jhalak.html", "jhalak.html.j2", JHALAK_CSS, JHALAK_JS),
+    ):
+        out = APP_ROOT / fname
+        out.write_text(env.get_template(tpl).render(
+            css_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in css_list),
+            data_js=data_js,
+            js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in js_list),
+            letter_video_url=LETTER_VIDEO_URL,
+            favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / "favicon-kalyani.png", "image/png"),
+        ), encoding="utf-8")
+        print(f"Built {out.name} via Jinja2 ({out.stat().st_size:,} bytes)")
 
 
 def build_anondo(env: jinja2.Environment) -> None:
