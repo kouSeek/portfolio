@@ -1000,7 +1000,7 @@ const ctx = {
     createElement: () => ({ style: {}, className: '', textContent: '' })
   },
   localStorage: { getItem: () => null, setItem: () => {} },
-  setTimeout, clearTimeout, console, assert, el
+  setTimeout, clearTimeout, setInterval, clearInterval, console, assert, el
 };
 const suite = code + `
 ;(function() {
@@ -1100,6 +1100,37 @@ const suite = code + `
   assert.strictEqual(ALL_JHALAK_REELS.filter(r => r.vibe === 'tv').every(r => getReelLikeCount(r.id) >= 2), true, 'adjustCategoryLikeCounts must add likes to category');
   resetCategoryLikeCounts('tv');
   assert.strictEqual(ALL_JHALAK_REELS.filter(r => r.vibe === 'tv').every(r => getReelLikeCount(r.id) === 0), true, 'resetCategoryLikeCounts must clear likes in category');
+
+  // 9. KORTEX-inspired real-time word-by-word read-aloud highlighting across reel pages and Chithi letter slides
+  renderJhalakReelStream();
+  assert.ok(el('jhReelsViewport').innerHTML.includes('class="jh-tts-word"'), 'Reel page must wrap spoken words in .jh-tts-word spans');
+  assert.ok(jhCurrentWordTimings.length > 20, 'Each reel page must build weighted word timing spans');
+  assert.ok(jhCurrentTotalWeight > 2000, 'Total word weight must be positive');
+
+  const midIdx = syncJhWordHighlightToTime(5.0, 20.0);
+  assert.ok(midIdx > 0 && midIdx < jhCurrentWordTimings.length, 'syncJhWordHighlightToTime must resolve active word index');
+  assert.strictEqual(jhActiveWordIdx, midIdx);
+  assert.ok(el('jhWord_' + midIdx).classList.contains('jh-word-active'), 'Active word span must receive jh-word-active class');
+  assert.ok(el('jhWord_0').classList.contains('jh-word-spoken'), 'Earlier word span must receive jh-word-spoken class');
+
+  // Reaching the end of the audio (curiosity answer) auto-reveals the curiosity box and highlights its answer words
+  const endIdx = syncJhWordHighlightToTime(19.95, 20.0);
+  assert.strictEqual(endIdx, jhCurrentWordTimings.length - 1, 'Near end of duration must highlight final word');
+  assert.ok(el('jhCurBox_' + jhCurrentIdx).classList.contains('revealed'), 'Reaching curiosity answer words must auto-reveal the curiosity box');
+
+  stopJhAudio();
+  assert.strictEqual(jhActiveWordIdx, -1, 'stopJhAudio must clear active word index');
+  assert.ok(!el('jhWord_' + endIdx).classList.contains('jh-word-active'), 'stopJhAudio must clear jh-word-active class');
+
+  // Chithi 8-slide Letter drawer also wraps words and highlights them during letter audio playback
+  openJhalakLetterDrawer();
+  assert.ok(el('jhLetterTitle').innerHTML.includes('id="jhLetterWord_0"'), 'Letter slide title must wrap words in jhLetterWord spans');
+  assert.ok(el('jhLetterBody').innerHTML.includes('class="jh-tts-word"'), 'Letter slide body must wrap words in .jh-tts-word spans');
+  playJhalakLetterAudio();
+  const letterMidIdx = syncJhWordHighlightToTime(4.0, 16.0);
+  assert.ok(letterMidIdx > 0, 'Letter audio playback must highlight active letter word');
+  assert.ok(el('jhLetterWord_' + letterMidIdx).classList.contains('jh-word-active'), 'Active letter word must have jh-word-active class');
+  stopJhAudio();
 })();
 `;
 vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});

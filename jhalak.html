@@ -432,6 +432,46 @@ html, body {
   margin-bottom: 0;
 }
 
+/* WORD-BY-WORD READ-ALOUD HIGHLIGHTING (KORTEX-INSPIRED CADENCE TRACKER) */
+.jh-tts-word {
+  display: inline;
+  border-radius: 5px;
+  padding: 1px 2px;
+  margin: 0 -1px;
+  transition: background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.jh-tts-word.jh-word-spoken {
+  color: #6B3410;
+  background-color: rgba(245, 158, 11, 0.12);
+}
+
+.jh-tts-word.jh-word-active {
+  background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 100%);
+  color: #18120E !important;
+  font-weight: 800;
+  border-radius: 6px;
+  padding: 1px 4px;
+  margin: 0 -2px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.42), 0 0 0 2px rgba(245, 158, 11, 0.55);
+}
+
+.jh-hook-title.jh-block-active {
+  background: rgba(254, 243, 199, 0.65);
+  border-radius: 10px;
+  padding: 4px 8px;
+  margin-left: -8px;
+  margin-right: -8px;
+}
+
+.jh-content-section.jh-block-active,
+.jh-curiosity-box.jh-block-active {
+  box-shadow: 0 0 0 2.5px #F59E0B, 0 6px 18px rgba(245, 158, 11, 0.18);
+  transition: box-shadow 0.18s ease;
+}
+
 /* 1-TAP CURIOSITY FLIP CARD */
 .jh-curiosity-box {
   background: #F0FDF4;
@@ -2100,6 +2140,15 @@ let jhDoneMap = {};
 let jhAdminFilterCat = 'gods';
 let jhAdminSelectedItemId = '';
 let jhOutgoingCardHtml = '';
+let jhCurrentWordTimings = [];
+let jhCurrentTotalWeight = 0;
+let jhLetterWordTimings = [];
+let jhLetterTotalWeight = 0;
+let jhAudioMode = 'reel';
+let jhActiveWordIdx = -1;
+let jhWordHighlightTimer = null;
+let jhAudioStartedAtMs = 0;
+let jhActiveCutSec = 0;
 let jhTouchStartX = 0;
 let jhTouchStartY = 0;
 let jhMouseDownX = null;
@@ -2192,6 +2241,214 @@ function getJhAudioEl() {
   return document.getElementById('jhAudioPlayer');
 }
 
+/* ============================================================================
+   KORTEX-INSPIRED WORD-BY-WORD READ-ALOUD HIGHLIGHTING ENGINE
+   ============================================================================ */
+function isSpokenWordToken(token) {
+  if (!token) return false;
+  const cleaned = String(token)
+    .replace(/[\u{10000}-\u{10FFFF}\u2600-\u27BF\uFE0F]/gu, '')
+    .replace(/[•*#_`~↗"'“”‘’()\[\]{}]/g, '');
+  return /[\u0980-\u09FF\u0900-\u097FA-Za-z0-9]/.test(cleaned);
+}
+
+function wrapTextWithJhTtsWords(text, state, opts) {
+  const raw = String(text || '');
+  if (!raw) return '';
+  const parts = raw.split(/(\s+)/);
+  let lastSpokenPartIdx = -1;
+  for (let i = 0; i < parts.length; i++) {
+    if (isSpokenWordToken(parts[i])) {
+      lastSpokenPartIdx = i;
+    }
+  }
+  const prefix = (state && state.prefix) || 'jhWord';
+  const blockId = (opts && opts.blockId) || '';
+  const inCuriosityA = Boolean(opts && opts.inCuriosityA);
+  const addHeadingPause = Boolean(opts && opts.addHeadingPause);
+
+  return parts.map((part, pIdx) => {
+    if (!isSpokenWordToken(part)) return part;
+
+    const cleanWord = part
+      .replace(/[\u{10000}-\u{10FFFF}\u2600-\u27BF\uFE0F]/gu, '')
+      .replace(/[।.!?;:?!—–\-,،•*#_`~↗"'“”‘’()\[\]{}]/g, '');
+    const charCount = Math.max(1, cleanWord.length);
+    let weight = Math.max(130, charCount * 44 + 95);
+
+    if (/[।.!?;:?!—–-]["'”’)\]]*$/.test(part)) {
+      weight += 260;
+    } else if (/[,،]["'”’)\]]*$/.test(part)) {
+      weight += 130;
+    }
+    if (addHeadingPause && pIdx === lastSpokenPartIdx) {
+      weight += 240;
+    }
+
+    const wIdx = state.words.length;
+    const startWeight = state.totalWeight;
+    const endWeight = startWeight + weight;
+    state.totalWeight = endWeight;
+    state.words.push({
+      idx: wIdx,
+      word: part,
+      weight: weight,
+      startWeight: startWeight,
+      endWeight: endWeight,
+      blockId: blockId,
+      inCuriosityA: inCuriosityA
+    });
+
+    const curAttr = inCuriosityA ? ' data-curiosity-a="1"' : '';
+    return `<span id="${prefix}_${wIdx}" class="jh-tts-word" data-widx="${wIdx}"${curAttr}>${part}</span>`;
+  }).join('');
+}
+
+function stopJhWordHighlightLoop() {
+  if (jhWordHighlightTimer) {
+    clearInterval(jhWordHighlightTimer);
+    jhWordHighlightTimer = null;
+  }
+}
+
+function clearJhWordHighlight() {
+  stopJhWordHighlightLoop();
+  const words = jhAudioMode === 'letter' ? jhLetterWordTimings : jhCurrentWordTimings;
+  const prefix = jhAudioMode === 'letter' ? 'jhLetterWord' : 'jhWord';
+  const clearedBlocks = new Set();
+
+  for (let i = 0; i < words.length; i++) {
+    const el = document.getElementById(prefix + '_' + i);
+    if (el && el.classList) {
+      el.classList.remove('jh-word-active');
+      el.classList.remove('jh-word-spoken');
+    }
+    const bId = words[i] && words[i].blockId;
+    if (bId && !clearedBlocks.has(bId)) {
+      clearedBlocks.add(bId);
+      const bEl = document.getElementById(bId);
+      if (bEl && bEl.classList) bEl.classList.remove('jh-block-active');
+    }
+  }
+  jhActiveWordIdx = -1;
+}
+
+function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
+  const isLetter = jhAudioMode === 'letter';
+  const words = isLetter ? jhLetterWordTimings : jhCurrentWordTimings;
+  const totalWeight = isLetter ? jhLetterTotalWeight : jhCurrentTotalWeight;
+  const prefix = isLetter ? 'jhLetterWord' : 'jhWord';
+
+  if (!words || !words.length || totalWeight <= 0) return -1;
+
+  const estDurSec = Math.max(1.5, totalWeight / 1000);
+  let effDur = (Number.isFinite(durationSec) && durationSec > 0.5) ? durationSec : estDurSec;
+  if (!isLetter && jhActiveCutSec > 2 && effDur > jhActiveCutSec) {
+    effDur = jhActiveCutSec;
+  }
+
+  const curSec = (Number.isFinite(currentTimeSec) && currentTimeSec >= 0)
+    ? currentTimeSec
+    : Math.max(0, (Date.now() - jhAudioStartedAtMs) / 1000);
+
+  const leadPad = effDur > 1.2 ? 0.06 : 0;
+  const spanDur = Math.max(0.4, effDur - (effDur > 1.2 ? 0.22 : 0));
+  const progress = Math.max(0, Math.min(0.9999, (curSec - leadPad) / spanDur));
+  const targetWeight = progress * totalWeight;
+
+  let lo = 0;
+  let hi = words.length - 1;
+  let foundIdx = 0;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    const w = words[mid];
+    if (targetWeight < w.startWeight) {
+      hi = mid - 1;
+    } else if (targetWeight >= w.endWeight) {
+      foundIdx = mid;
+      lo = mid + 1;
+    } else {
+      foundIdx = mid;
+      break;
+    }
+  }
+
+  if (foundIdx === jhActiveWordIdx) return foundIdx;
+
+  const prevIdx = jhActiveWordIdx;
+  if (prevIdx >= 0 && foundIdx === prevIdx + 1) {
+    const prevEl = document.getElementById(prefix + '_' + prevIdx);
+    if (prevEl && prevEl.classList) {
+      prevEl.classList.remove('jh-word-active');
+      prevEl.classList.add('jh-word-spoken');
+    }
+    const nextEl = document.getElementById(prefix + '_' + foundIdx);
+    if (nextEl && nextEl.classList) {
+      nextEl.classList.remove('jh-word-spoken');
+      nextEl.classList.add('jh-word-active');
+    }
+  } else {
+    for (let i = 0; i < words.length; i++) {
+      const el = document.getElementById(prefix + '_' + i);
+      if (el && el.classList) {
+        el.classList.toggle('jh-word-active', i === foundIdx);
+        el.classList.toggle('jh-word-spoken', i < foundIdx);
+      }
+    }
+  }
+
+  const prevWord = prevIdx >= 0 ? words[prevIdx] : null;
+  const curWord = words[foundIdx];
+  if (prevWord && prevWord.blockId && (!curWord || prevWord.blockId !== curWord.blockId)) {
+    const prevBlock = document.getElementById(prevWord.blockId);
+    if (prevBlock && prevBlock.classList) prevBlock.classList.remove('jh-block-active');
+  }
+  if (curWord && curWord.blockId) {
+    const curBlock = document.getElementById(curWord.blockId);
+    if (curBlock && curBlock.classList) curBlock.classList.add('jh-block-active');
+  }
+
+  if (!isLetter && curWord && curWord.inCuriosityA) {
+    const card = jhFilteredReels[jhCurrentIdx];
+    if (card && !jhRevealedMap[card.id]) {
+      jhRevealedMap[card.id] = true;
+      const box = document.getElementById('jhCurBox_' + jhCurrentIdx);
+      if (box && box.classList) {
+        box.classList.add('revealed');
+        const hint = box.querySelector ? box.querySelector('.jh-curiosity-tap-hint') : null;
+        if (hint) hint.textContent = '✨ খোলা হয়েছে';
+      }
+    }
+  }
+
+  const activeEl = document.getElementById(prefix + '_' + foundIdx);
+  if (activeEl && typeof activeEl.scrollIntoView === 'function') {
+    try {
+      activeEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    } catch (e) {}
+  }
+
+  jhActiveWordIdx = foundIdx;
+  return foundIdx;
+}
+
+function startJhWordHighlightLoop(cutSec) {
+  stopJhWordHighlightLoop();
+  jhActiveCutSec = Number(cutSec) || 0;
+  jhAudioStartedAtMs = Date.now();
+  syncJhWordHighlightToTime(0, 0);
+  jhWordHighlightTimer = setInterval(() => {
+    if (!jhAudioPlaying) {
+      stopJhWordHighlightLoop();
+      return;
+    }
+    const aud = getJhAudioEl();
+    const cur = aud && Number.isFinite(aud.currentTime) ? aud.currentTime : undefined;
+    const dur = aud && Number.isFinite(aud.duration) && aud.duration > 0 ? aud.duration : 0;
+    syncJhWordHighlightToTime(cur, dur);
+  }, 55);
+}
+
 function stopJhAudio() {
   if (jhAutoAdvanceTimer) {
     clearTimeout(jhAutoAdvanceTimer);
@@ -2202,6 +2459,7 @@ function stopJhAudio() {
     try { aud.pause(); } catch (e) {}
   }
   jhAudioPlaying = false;
+  clearJhWordHighlight();
   updateActiveCardPlayBtns();
 }
 
@@ -2368,7 +2626,11 @@ function captureOutgoingCardSnapshot() {
   if (!vp || !vp.innerHTML) return;
   const m = vp.innerHTML.match(/<div class="jh-card-stage">[\s\S]*<\/article>/);
   if (m) {
-    jhOutgoingCardHtml = m[0].replace(/<\/article>\s*$/, '');
+    jhOutgoingCardHtml = m[0]
+      .replace(/<\/article>\s*$/, '')
+      .replace(/\sid="jh(?:Word|TitleBlock|SecBlock|CurBox|DoneBtn|StickyLikeBtn|StickyLikeCount)_[^"]*"/g, '')
+      .replace(/\sid="jh(?:StickyLikeBtn|StickyLikeCount)"/g, '')
+      .replace(/\b(?:jh-word-active|jh-word-spoken|jh-block-active)\b/g, '');
   }
 }
 
@@ -2412,7 +2674,7 @@ function stepJhalakReel(delta, autoPlayAfter) {
   const vp = document.getElementById('jhReelsViewport');
   if (vp) vp.scrollTop = 0;
   if (autoPlayAfter) {
-    setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 240);
+    jhAutoAdvanceTimer = setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 240);
   }
 }
 
@@ -2451,7 +2713,7 @@ function markCurrentJhalakReelDone(ev) {
   const vp = document.getElementById('jhReelsViewport');
   if (vp) vp.scrollTop = 0;
   if (jhAutoPlayVoices && jhFilteredReels.length > 0) {
-    setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 260);
+    jhAutoAdvanceTimer = setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 260);
   }
 }
 
@@ -2812,10 +3074,17 @@ function toggleJhalakCuriosityBox(idx, ev) {
 }
 
 function updateActiveCardPlayBtns() {
+  const isReelPlaying = jhAudioPlaying && jhAudioMode === 'reel';
   const headerBtn = document.getElementById('btnJhHeaderListen');
   if (headerBtn) {
-    headerBtn.classList.toggle('playing', jhAudioPlaying);
-    headerBtn.textContent = jhAudioPlaying ? '⏹️ থামাও' : '🔊 শোনো';
+    headerBtn.classList.toggle('playing', isReelPlaying);
+    headerBtn.textContent = isReelPlaying ? '⏹️ থামাও' : '🔊 শোনো';
+  }
+  const isLetterPlaying = jhAudioPlaying && jhAudioMode === 'letter';
+  const letterBtn = document.getElementById('btnJhLetterPlay');
+  if (letterBtn) {
+    letterBtn.classList.toggle('playing', isLetterPlaying);
+    letterBtn.textContent = isLetterPlaying ? '⏹️ থামাও' : '🔊 শোনো';
   }
 }
 
@@ -2826,7 +3095,7 @@ function playReelAudioAtIndex(idx) {
   const aud = getJhAudioEl();
   if (!aud) return;
 
-  if (jhAudioPlaying && jhCurrentIdx === targetIdx) {
+  if (jhAudioPlaying && jhAudioMode === 'reel' && jhCurrentIdx === targetIdx) {
     stopJhAudio();
     return;
   }
@@ -2835,10 +3104,13 @@ function playReelAudioAtIndex(idx) {
   jhCurrentIdx = targetIdx;
   if (!card.audio_url) return;
 
+  jhAudioMode = 'reel';
   aud.src = card.audio_url;
   const cutSec = Number(card.story_end) || 0;
 
   aud.ontimeupdate = function () {
+    const dur = Number.isFinite(aud.duration) && aud.duration > 0 ? aud.duration : 0;
+    syncJhWordHighlightToTime(aud.currentTime, dur);
     if (cutSec > 2 && aud.currentTime >= cutSec) {
       aud.pause();
       handleReelAudioEnded(targetIdx);
@@ -2850,10 +3122,12 @@ function playReelAudioAtIndex(idx) {
 
   jhAudioPlaying = true;
   updateActiveCardPlayBtns();
+  startJhWordHighlightLoop(cutSec);
   const playPromise = typeof aud.play === 'function' ? aud.play() : null;
   if (playPromise && typeof playPromise.catch === 'function') {
     playPromise.catch(() => {
       jhAudioPlaying = false;
+      clearJhWordHighlight();
       updateActiveCardPlayBtns();
     });
   }
@@ -2861,6 +3135,7 @@ function playReelAudioAtIndex(idx) {
 
 function handleReelAudioEnded(idx) {
   jhAudioPlaying = false;
+  clearJhWordHighlight();
   updateActiveCardPlayBtns();
   if (jhAutoFlow && idx === jhCurrentIdx && jhFilteredReels.length > 1) {
     jhAutoAdvanceTimer = setTimeout(() => {
@@ -2869,12 +3144,15 @@ function handleReelAudioEnded(idx) {
   }
 }
 
-/* RENDER ACTIVE LONG-FORM SCROLLABLE PAGE (SLIDE ANIMATION + DONE BUTTON) */
+/* RENDER ACTIVE LONG-FORM SCROLLABLE PAGE (SLIDE ANIMATION + WORD HIGHLIGHTING + DONE BUTTON) */
 function renderJhalakReelStream() {
   const vp = document.getElementById('jhReelsViewport');
   if (!vp) return;
 
   if (!jhFilteredReels.length) {
+    jhCurrentWordTimings = [];
+    jhCurrentTotalWeight = 0;
+    jhActiveWordIdx = -1;
     vp.innerHTML = `
       <article class="jh-reel-slide jh-slide-anim-next">
         <div class="jh-card-stage" style="text-align:center;padding:36px 22px;">
@@ -2904,6 +3182,13 @@ function renderJhalakReelStream() {
     ? `<a class="jh-yt-link" href="${ytUrl}" target="_blank" rel="noopener noreferrer">▶️ ইউটিউবে দেখো: ${card.yt_label_bn || card.title_bn} ↗</a>`
     : '';
 
+  const ttsState = { words: [], totalWeight: 0, prefix: 'jhWord' };
+  const titleBlockId = 'jhTitleBlock_' + idx;
+  const wrappedTitleHtml = wrapTextWithJhTtsWords(card.title_bn, ttsState, {
+    blockId: titleBlockId,
+    addHeadingPause: true
+  });
+
   const sectionsList = Array.isArray(card.sections) && card.sections.length
     ? card.sections
     : [
@@ -2911,20 +3196,46 @@ function renderJhalakReelStream() {
         { heading_bn: card.hitch_label_bn || '🦋 মনের কথা', body_bn: card.hitch_bn || '', tone: 'hitch' }
       ];
 
-  const sectionsHtml = sectionsList.map(sec => {
+  const sectionsHtml = sectionsList.map((sec, secIdx) => {
+    const secBlockId = `jhSecBlock_${idx}_${secIdx}`;
+    const wrappedHeadingHtml = wrapTextWithJhTtsWords(sec.heading_bn, ttsState, {
+      blockId: secBlockId,
+      addHeadingPause: true
+    });
     const paragraphs = String(sec.body_bn || '')
       .split(/\n+/)
       .filter(Boolean)
-      .map(p => `<p class="jh-sec-para">${p}</p>`)
+      .map(p => {
+        const wrappedP = wrapTextWithJhTtsWords(p, ttsState, {
+          blockId: secBlockId,
+          addHeadingPause: false
+        });
+        return `<p class="jh-sec-para">${wrappedP}</p>`;
+      })
       .join('');
     const toneClass = sec.tone === 'hitch' ? 'jh-sec-hitch' : (sec.tone === 'extra' ? 'jh-sec-extra' : 'jh-sec-story');
     return `
-      <section class="jh-content-section ${toneClass}">
-        <h3 class="jh-sec-heading">${sec.heading_bn}</h3>
+      <section id="${secBlockId}" class="jh-content-section ${toneClass}">
+        <h3 class="jh-sec-heading">${wrappedHeadingHtml}</h3>
         <div class="jh-sec-body">${paragraphs}</div>
       </section>
     `;
   }).join('');
+
+  const curBlockId = `jhCurBox_${idx}`;
+  const wrappedCurQHtml = wrapTextWithJhTtsWords(card.curiosity_q_bn, ttsState, {
+    blockId: curBlockId,
+    addHeadingPause: true
+  });
+  const wrappedCurAHtml = wrapTextWithJhTtsWords(card.curiosity_a_bn, ttsState, {
+    blockId: curBlockId,
+    inCuriosityA: true,
+    addHeadingPause: false
+  });
+
+  jhCurrentWordTimings = ttsState.words;
+  jhCurrentTotalWeight = ttsState.totalWeight;
+  jhActiveWordIdx = -1;
 
   const animClass = jhLastSlideDir === 'prev' ? 'jh-slide-anim-prev' : 'jh-slide-anim-next';
   const ghostDirClass = jhLastSlideDir === 'prev' ? 'out-right' : 'out-left';
@@ -2946,16 +3257,16 @@ function renderJhalakReelStream() {
           <span class="jh-vibe-badge">${card.badge_bn}</span>
         </div>
 
-        <h2 class="jh-hook-title">${card.title_bn}</h2>
+        <h2 id="${titleBlockId}" class="jh-hook-title">${wrappedTitleHtml}</h2>
 
         ${sectionsHtml}
 
-        <div id="jhCurBox_${idx}" class="jh-curiosity-box ${isRev ? 'revealed' : ''}" onclick="toggleJhalakCuriosityBox(${idx}, event)">
+        <div id="${curBlockId}" class="jh-curiosity-box ${isRev ? 'revealed' : ''}" onclick="toggleJhalakCuriosityBox(${idx}, event)">
           <div class="jh-curiosity-q">
-            <span>${card.curiosity_q_bn}</span>
+            <span>${wrappedCurQHtml}</span>
             <span class="jh-curiosity-tap-hint">${isRev ? '✨ খোলা হয়েছে' : '👆 ছুঁয়ে দেখো'}</span>
           </div>
-          <div class="jh-curiosity-a">${card.curiosity_a_bn}</div>
+          <div class="jh-curiosity-a">${wrappedCurAHtml}</div>
         </div>
 
         ${ytHtml}
@@ -2998,11 +3309,37 @@ function renderJhalakLetterSlide() {
   const titleEl = document.getElementById('jhLetterTitle');
   const bodyEl = document.getElementById('jhLetterBody');
   if (imgEl) imgEl.src = s.img_b64 || '';
-  if (titleEl) titleEl.textContent = s.title_bn;
-  if (bodyEl) bodyEl.textContent = s.text_bn;
+
+  const letterState = { words: [], totalWeight: 0, prefix: 'jhLetterWord' };
+  const wrappedTitle = wrapTextWithJhTtsWords(s.title_bn, letterState, {
+    blockId: 'jhLetterTitle',
+    addHeadingPause: true
+  });
+  const wrappedHighlight = s.highlight_bn
+    ? wrapTextWithJhTtsWords(s.highlight_bn, letterState, {
+        blockId: 'jhLetterBody',
+        addHeadingPause: true
+      })
+    : '';
+  const wrappedBody = wrapTextWithJhTtsWords(s.text_bn, letterState, {
+    blockId: 'jhLetterBody',
+    addHeadingPause: false
+  });
+
+  jhLetterWordTimings = letterState.words;
+  jhLetterTotalWeight = letterState.totalWeight;
+  jhActiveWordIdx = -1;
+
+  if (titleEl) titleEl.innerHTML = wrappedTitle;
+  if (bodyEl) {
+    bodyEl.innerHTML = (wrappedHighlight
+      ? `<strong style="display:block;color:#7C2D12;margin-bottom:6px;">${wrappedHighlight}</strong>`
+      : '') + `<span>${wrappedBody}</span>`;
+  }
 }
 
 function stepJhalakLetterSlide(delta) {
+  stopJhAudio();
   jhSlideLetterIdx = (jhSlideLetterIdx + delta + SLIDES.length) % SLIDES.length;
   renderJhalakLetterSlide();
 }
@@ -3011,9 +3348,37 @@ function playJhalakLetterAudio() {
   const s = SLIDES[jhSlideLetterIdx] || SLIDES[0];
   const aud = getJhAudioEl();
   if (!aud || !s || !s.audio_url) return;
+
+  if (jhAudioPlaying && jhAudioMode === 'letter') {
+    stopJhAudio();
+    return;
+  }
+
   stopJhAudio();
+  jhAudioMode = 'letter';
   aud.src = s.audio_url;
-  aud.play().catch(() => {});
+
+  aud.ontimeupdate = function () {
+    const dur = Number.isFinite(aud.duration) && aud.duration > 0 ? aud.duration : 0;
+    syncJhWordHighlightToTime(aud.currentTime, dur);
+  };
+  aud.onended = function () {
+    jhAudioPlaying = false;
+    clearJhWordHighlight();
+    updateActiveCardPlayBtns();
+  };
+
+  jhAudioPlaying = true;
+  updateActiveCardPlayBtns();
+  startJhWordHighlightLoop(0);
+  const playPromise = typeof aud.play === 'function' ? aud.play() : null;
+  if (playPromise && typeof playPromise.catch === 'function') {
+    playPromise.catch(() => {
+      jhAudioPlaying = false;
+      clearJhWordHighlight();
+      updateActiveCardPlayBtns();
+    });
+  }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
