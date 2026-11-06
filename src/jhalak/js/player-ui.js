@@ -35,6 +35,9 @@ let jhAudioStartedAtMs = 0;
 let jhActiveCutSec = 0;
 let jhTouchStartX = 0;
 let jhTouchStartY = 0;
+let jhTouchStartScrollTop = 0;
+let jhTouchStartAtTop = true;
+let jhTouchStartAtBottom = true;
 let jhMouseDownX = null;
 let jhMouseDownY = null;
 let jhWheelLock = false;
@@ -1280,8 +1283,11 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   window.addEventListener('keydown', ev => {
-    if (ev.key === 'ArrowLeft') stepJhalakReel(-1, jhAutoPlayVoices);
-    else if (ev.key === 'ArrowRight') stepJhalakReel(1, jhAutoPlayVoices);
+    if (ev.key === 'ArrowDown' || ev.key === 'PageDown' || ev.key === 'ArrowRight') {
+      stepJhalakReel(1, jhAutoPlayVoices);
+    } else if (ev.key === 'ArrowUp' || ev.key === 'PageUp' || ev.key === 'ArrowLeft') {
+      stepJhalakReel(-1, jhAutoPlayVoices);
+    }
   });
 
   const vp = document.getElementById('jhReelsViewport');
@@ -1290,14 +1296,32 @@ window.addEventListener('DOMContentLoaded', () => {
       if (ev.touches && ev.touches[0]) {
         jhTouchStartX = ev.touches[0].clientX;
         jhTouchStartY = ev.touches[0].clientY;
+        const curScroll = vp.scrollTop || 0;
+        const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
+        jhTouchStartScrollTop = curScroll;
+        jhTouchStartAtTop = maxScroll <= 24 || curScroll <= 28;
+        jhTouchStartAtBottom = maxScroll <= 24 || curScroll >= maxScroll - 36;
       }
     }, { passive: true });
     vp.addEventListener('touchend', ev => {
       if (ev.changedTouches && ev.changedTouches[0]) {
         const dx = ev.changedTouches[0].clientX - jhTouchStartX;
         const dy = ev.changedTouches[0].clientY - jhTouchStartY;
-        if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.4) {
-          stepJhalakReel(dx < 0 ? 1 : -1, jhAutoPlayVoices);
+        const curScroll = vp.scrollTop || 0;
+        const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
+        const nowAtTop = maxScroll <= 24 || curScroll <= 18;
+        const nowAtBottom = maxScroll <= 24 || curScroll >= maxScroll - 24;
+
+        if (Math.abs(dy) > 42 && Math.abs(dy) > Math.abs(dx) * 1.15) {
+          if (dy < 0) {
+            if (jhTouchStartAtBottom || (nowAtBottom && Math.abs(dy) > 85)) {
+              stepJhalakReel(1, jhAutoPlayVoices);
+            }
+          } else {
+            if (jhTouchStartAtTop || (nowAtTop && Math.abs(dy) > 85)) {
+              stepJhalakReel(-1, jhAutoPlayVoices);
+            }
+          }
         }
       }
     }, { passive: true });
@@ -1311,16 +1335,26 @@ window.addEventListener('DOMContentLoaded', () => {
       const dy = ev.clientY - jhMouseDownY;
       jhMouseDownX = null;
       jhMouseDownY = null;
-      if (Math.abs(dx) > 75 && Math.abs(dx) > Math.abs(dy) * 1.6) {
-        stepJhalakReel(dx < 0 ? 1 : -1, jhAutoPlayVoices);
+      if (Math.abs(dy) > 55 && Math.abs(dy) > Math.abs(dx) * 1.2) {
+        stepJhalakReel(dy < 0 ? 1 : -1, jhAutoPlayVoices);
       }
     });
     vp.addEventListener('wheel', ev => {
       if (jhWheelLock) return;
-      if (Math.abs(ev.deltaX) > 48 && Math.abs(ev.deltaX) > Math.abs(ev.deltaY) * 1.5) {
-        jhWheelLock = true;
-        stepJhalakReel(ev.deltaX > 0 ? 1 : -1, jhAutoPlayVoices);
-        setTimeout(() => { jhWheelLock = false; }, 480);
+      const curScroll = vp.scrollTop || 0;
+      const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
+      if (ev.deltaY > 36 && Math.abs(ev.deltaY) >= Math.abs(ev.deltaX)) {
+        if (maxScroll <= 24 || curScroll >= maxScroll - 20) {
+          jhWheelLock = true;
+          stepJhalakReel(1, jhAutoPlayVoices);
+          setTimeout(() => { jhWheelLock = false; }, 520);
+        }
+      } else if (ev.deltaY < -36 && Math.abs(ev.deltaY) >= Math.abs(ev.deltaX)) {
+        if (maxScroll <= 24 || curScroll <= 16) {
+          jhWheelLock = true;
+          stepJhalakReel(-1, jhAutoPlayVoices);
+          setTimeout(() => { jhWheelLock = false; }, 520);
+        }
       }
     }, { passive: true });
   }

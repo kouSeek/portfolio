@@ -278,9 +278,9 @@ html, body {
   backface-visibility: hidden;
 }
 
-/* Opposite-direction edge-to-edge sideways slide animations:
-   - Next (swipe left): current slides 0% -> -100% (left), next slides +100% -> 0%
-   - Prev (swipe right): current slides 0% -> +100% (right), prev slides -100% -> 0% */
+/* Opposite-direction edge-to-edge vertical Reels slide animations:
+   - Next (swipe up): current slides 0% -> -100% (up), next slides +100% -> 0% (from bottom)
+   - Prev (swipe down): current slides 0% -> +100% (down), prev slides -100% -> 0% (from top) */
 .jh-slide-anim-next {
   animation: jhProSidewaysInNext 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -303,32 +303,34 @@ html, body {
   backface-visibility: hidden;
 }
 
-.jh-outgoing-ghost.out-left {
+.jh-outgoing-ghost.out-left,
+.jh-outgoing-ghost.out-up {
   animation: jhProSidewaysOutLeft 0.36s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.jh-outgoing-ghost.out-right {
+.jh-outgoing-ghost.out-right,
+.jh-outgoing-ghost.out-down {
   animation: jhProSidewaysOutRight 0.36s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes jhProSidewaysInNext {
-  0% { transform: translate3d(100%, 0, 0); }
+  0% { transform: translate3d(0, 100%, 0); }
   100% { transform: translate3d(0, 0, 0); }
 }
 
 @keyframes jhProSidewaysOutLeft {
   0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-100%, 0, 0); }
+  100% { transform: translate3d(0, -100%, 0); }
 }
 
 @keyframes jhProSidewaysInPrev {
-  0% { transform: translate3d(-100%, 0, 0); }
+  0% { transform: translate3d(0, -100%, 0); }
   100% { transform: translate3d(0, 0, 0); }
 }
 
 @keyframes jhProSidewaysOutRight {
   0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(100%, 0, 0); }
+  100% { transform: translate3d(0, 100%, 0); }
 }
 
 /* ============================================================================
