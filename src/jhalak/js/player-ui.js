@@ -21,7 +21,9 @@ let jhSlideLetterIdx = 0;
 let jhRevealedMap = {};
 let jhLikesMap = {};
 let jhDoneMap = {};
-let jhAdminFilterCat = 'all';
+let jhAdminFilterCat = 'gods';
+let jhAdminSelectedItemId = '';
+let jhOutgoingCardHtml = '';
 let jhTouchStartX = 0;
 let jhTouchStartY = 0;
 let jhMouseDownX = null;
@@ -238,8 +240,8 @@ function renderJhCategoryStatsUI() {
       : '';
     return `
       <div class="jh-stat-chip">
-        <span>${cat.label_bn}</span>
-        <span><strong>${jhBnNum(activeCount)}/${jhBnNum(totalCount)}টি পাতা</strong> (✅ ${jhBnNum(doneCount)}) ${likeBadge}</span>
+        <div class="jh-stat-chip-top">${cat.label_bn}</div>
+        <div class="jh-stat-chip-sub"><strong>${jhBnNum(activeCount)}/${jhBnNum(totalCount)}টি পাতা</strong> · ✅ ${jhBnNum(doneCount)} ${likeBadge}</div>
       </div>
     `;
   }).join('');
@@ -287,10 +289,20 @@ function filterJhalakChannel(channelId, ev) {
   renderJhalakReelStream();
 }
 
-/* RANDOMIZED PAGE TRANSITION WITH LEFT/RIGHT SLIDE ANIMATION */
+/* RANDOMIZED PAGE TRANSITION WITH PROFESSIONAL SIDEWAYS ANIMATION */
+function captureOutgoingCardSnapshot() {
+  const vp = document.getElementById('jhReelsViewport');
+  if (!vp || !vp.innerHTML) return;
+  const m = vp.innerHTML.match(/<div class="jh-card-stage">[\s\S]*<\/article>/);
+  if (m) {
+    jhOutgoingCardHtml = m[0].replace(/<\/article>\s*$/, '');
+  }
+}
+
 function stepJhalakReel(delta, autoPlayAfter) {
   if (!jhFilteredReels.length) return;
   stopJhAudio();
+  captureOutgoingCardSnapshot();
 
   if (delta < 0) {
     jhLastSlideDir = 'prev';
@@ -345,6 +357,7 @@ function markCurrentJhalakReelDone(ev) {
   }
 
   stopJhAudio();
+  captureOutgoingCardSnapshot();
   rebuildJhFilteredPool();
   jhLastSlideDir = 'next';
 
@@ -406,10 +419,61 @@ function updateStickyLikeBtnUI() {
   }
 }
 
-/* ADMIN SETTINGS: ADJUST DONE & LIKES COUNTS PER ITEM OR BULK */
+/* ADMIN SETTINGS: CATEGORY-LEVEL SELECTABLE DONE & LIKES CONTROLS (NO HUGE LIST) */
 function setAdminCategoryFilter(catId) {
-  jhAdminFilterCat = catId || 'all';
+  jhAdminFilterCat = catId || 'gods';
+  const catItems = ALL_JHALAK_REELS.filter(r =>
+    jhAdminFilterCat === 'all' || r.vibe === jhAdminFilterCat
+  );
+  jhAdminSelectedItemId = catItems.length ? catItems[0].id : '';
   renderJhAdminItemsList();
+}
+
+function selectAdminItem(cardId) {
+  jhAdminSelectedItemId = cardId || '';
+  renderJhAdminItemsList();
+}
+
+function setCategoryDoneState(catId, doneVal) {
+  const clean = Math.max(0, Number(doneVal) || 0);
+  ALL_JHALAK_REELS.forEach(r => {
+    if (catId === 'all' || r.vibe === catId) {
+      if (clean === 0) delete jhDoneMap[r.id];
+      else jhDoneMap[r.id] = clean;
+    }
+  });
+  saveJhDoneAndLikes();
+  rebuildJhFilteredPool();
+  if (jhCurrentIdx >= jhFilteredReels.length) {
+    jhCurrentIdx = Math.max(0, jhFilteredReels.length - 1);
+  }
+  renderJhCategoryDropdownUI();
+  renderJhCategoryStatsUI();
+  renderJhalakReelStream();
+}
+
+function adjustCategoryLikeCounts(catId, delta) {
+  ALL_JHALAK_REELS.forEach(r => {
+    if (catId === 'all' || r.vibe === catId) {
+      const nextVal = Math.max(0, getReelLikeCount(r.id) + delta);
+      if (nextVal === 0) delete jhLikesMap[r.id];
+      else jhLikesMap[r.id] = nextVal;
+    }
+  });
+  saveJhDoneAndLikes();
+  updateStickyLikeBtnUI();
+  renderJhCategoryStatsUI();
+}
+
+function resetCategoryLikeCounts(catId) {
+  ALL_JHALAK_REELS.forEach(r => {
+    if (catId === 'all' || r.vibe === catId) {
+      delete jhLikesMap[r.id];
+    }
+  });
+  saveJhDoneAndLikes();
+  updateStickyLikeBtnUI();
+  renderJhCategoryStatsUI();
 }
 
 function adjustReelDoneCount(cardId, delta) {
@@ -481,36 +545,110 @@ function renderJhAdminItemsList() {
   const listEl = document.getElementById('jhAdminItemsList');
   if (!listEl) return;
 
+  const contentCats = JHALAK_CATEGORIES.filter(c => c.id !== 'all');
+  if (!jhAdminFilterCat || !JHALAK_CATEGORIES.some(c => c.id === jhAdminFilterCat)) {
+    jhAdminFilterCat = 'gods';
+  }
+
+  const catOptionsHtml = JHALAK_CATEGORIES.map(c => {
+    let total = 0;
+    let done = 0;
+    let likes = 0;
+    ALL_JHALAK_REELS.forEach(r => {
+      if (c.id === 'all' || r.vibe === c.id) {
+        total += 1;
+        if (isReelDone(r.id)) done += 1;
+        likes += getReelLikeCount(r.id);
+      }
+    });
+    const selAttr = c.id === jhAdminFilterCat ? 'selected' : '';
+    return `<option value="${c.id}" ${selAttr}>${c.label_bn} — ডান: ${jhBnNum(done)}/${jhBnNum(total)} · ❤️ ${jhBnNum(likes)}</option>`;
+  }).join('');
+
   const items = ALL_JHALAK_REELS.filter(r =>
     jhAdminFilterCat === 'all' || r.vibe === jhAdminFilterCat
   );
 
-  listEl.innerHTML = items.map(r => {
+  if (!jhAdminSelectedItemId || !items.some(r => r.id === jhAdminSelectedItemId)) {
+    jhAdminSelectedItemId = items.length ? items[0].id : '';
+  }
+
+  let catTotal = items.length;
+  let catDone = 0;
+  let catLikes = 0;
+  items.forEach(r => {
+    if (isReelDone(r.id)) catDone += 1;
+    catLikes += getReelLikeCount(r.id);
+  });
+
+  const activeCatObj = JHALAK_CATEGORIES.find(c => c.id === jhAdminFilterCat) || contentCats[0];
+  const selectedItem = items.find(r => r.id === jhAdminSelectedItemId) || items[0];
+
+  const itemOptionsHtml = items.map((r, idx) => {
     const dCount = getReelDoneCount(r.id);
     const lCount = getReelLikeCount(r.id);
+    const selAttr = selectedItem && r.id === selectedItem.id ? 'selected' : '';
+    const statusTag = dCount > 0 ? '✅' : '📖';
+    return `<option value="${r.id}" ${selAttr}>${jhBnNum(idx + 1)}. ${statusTag} ${r.title_bn} (ডান:${jhBnNum(dCount)} · ❤️${jhBnNum(lCount)})</option>`;
+  }).join('');
+
+  const selectedRowHtml = selectedItem ? (() => {
+    const dCount = getReelDoneCount(selectedItem.id);
+    const lCount = getReelLikeCount(selectedItem.id);
     return `
       <div class="jh-admin-row ${dCount > 0 ? 'is-done' : ''}">
         <div class="jh-admin-row-title">
-          <span class="jh-admin-badge">${r.badge_bn}</span>
-          <span>${r.title_bn}</span>
+          <span class="jh-admin-badge">${selectedItem.badge_bn}</span>
+          <span>${selectedItem.title_bn}</span>
         </div>
         <div class="jh-admin-row-controls">
           <div class="jh-admin-stepper">
             <span>✅ ডান:</span>
-            <button type="button" class="jh-step-mini" onclick="adjustReelDoneCount('${r.id}', -1)">−</button>
-            <strong id="adminDoneVal_${r.id}">${jhBnNum(dCount)}</strong>
-            <button type="button" class="jh-step-mini" onclick="adjustReelDoneCount('${r.id}', 1)">+</button>
+            <button type="button" class="jh-step-mini" onclick="adjustReelDoneCount('${selectedItem.id}', -1)">−</button>
+            <strong id="adminDoneVal_${selectedItem.id}">${jhBnNum(dCount)}</strong>
+            <button type="button" class="jh-step-mini" onclick="adjustReelDoneCount('${selectedItem.id}', 1)">+</button>
           </div>
           <div class="jh-admin-stepper">
             <span>❤️ লাইক:</span>
-            <button type="button" class="jh-step-mini" onclick="adjustReelLikeCount('${r.id}', -1)">−</button>
-            <strong id="adminLikeVal_${r.id}">${jhBnNum(lCount)}</strong>
-            <button type="button" class="jh-step-mini" onclick="adjustReelLikeCount('${r.id}', 1)">+</button>
+            <button type="button" class="jh-step-mini" onclick="adjustReelLikeCount('${selectedItem.id}', -1)">−</button>
+            <strong id="adminLikeVal_${selectedItem.id}">${jhBnNum(lCount)}</strong>
+            <button type="button" class="jh-step-mini" onclick="adjustReelLikeCount('${selectedItem.id}', 1)">+</button>
           </div>
         </div>
       </div>
     `;
-  }).join('');
+  })() : '';
+
+  listEl.innerHTML = `
+    <div class="jh-admin-field-group">
+      <label class="jh-admin-label" for="jhAdminCatSelect">১. বিভাগ বেছে নাও (Category):</label>
+      <select id="jhAdminCatSelect" class="jh-admin-select" onchange="setAdminCategoryFilter(this.value)">
+        ${catOptionsHtml}
+      </select>
+    </div>
+
+    <div class="jh-admin-cat-card">
+      <div class="jh-admin-cat-summary">
+        <span>${activeCatObj.label_bn} বিভাগ</span>
+        <span>✅ ডান: ${jhBnNum(catDone)}/${jhBnNum(catTotal)} · ❤️ লাইক: ${jhBnNum(catLikes)}</span>
+      </div>
+      <div class="jh-admin-cat-actions">
+        <button type="button" class="jh-admin-mini-btn" onclick="setCategoryDoneState('${jhAdminFilterCat}', 0)">🔄 বিভাগের ডান রিসেট</button>
+        <button type="button" class="jh-admin-mini-btn" onclick="setCategoryDoneState('${jhAdminFilterCat}', 1)">✅ বিভাগের সব ডান</button>
+        <button type="button" class="jh-admin-mini-btn" onclick="resetCategoryLikeCounts('${jhAdminFilterCat}')">🔄 বিভাগের লাইক রিসেট</button>
+        <button type="button" class="jh-admin-mini-btn" onclick="adjustCategoryLikeCounts('${jhAdminFilterCat}', 1)">❤️ বিভাগের সব পাতায় +১ লাইক</button>
+      </div>
+    </div>
+
+    <div class="jh-admin-field-group">
+      <label class="jh-admin-label" for="jhAdminItemSelect">২. এই বিভাগের নির্দিষ্ট পাতা বেছে নাও (${jhBnNum(items.length)}টি):</label>
+      <select id="jhAdminItemSelect" class="jh-admin-select" onchange="selectAdminItem(this.value)">
+        ${itemOptionsHtml}
+      </select>
+    </div>
+
+    ${selectedRowHtml}
+  `;
 }
 
 /* SETTINGS GEAR: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY & LIKE COUNT TOGGLES */
@@ -716,8 +854,14 @@ function renderJhalakReelStream() {
   }).join('');
 
   const animClass = jhLastSlideDir === 'prev' ? 'jh-slide-anim-prev' : 'jh-slide-anim-next';
+  const ghostDirClass = jhLastSlideDir === 'prev' ? 'out-right' : 'out-left';
+  const ghostHtml = jhOutgoingCardHtml
+    ? `<div class="jh-outgoing-ghost ${ghostDirClass}" aria-hidden="true">${jhOutgoingCardHtml}</div>`
+    : '';
+  jhOutgoingCardHtml = '';
 
   vp.innerHTML = `
+    ${ghostHtml}
     <article id="jhSlide_${idx}" class="jh-reel-slide ${animClass}" data-idx="${idx}" data-vibe="${card.vibe}">
       <div class="jh-card-stage">
         <div class="jh-card-top">

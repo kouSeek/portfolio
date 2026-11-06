@@ -13,13 +13,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@700;800&display=swap" rel="stylesheet" />
   <style>
 /* ============================================================================
-   ✨ ঝলক (JHALAK) — LONG-FORM SCROLLABLE REELS, LEFT/RIGHT SLIDE ANIMATION,
-   DONE BUTTON, CATEGORY DROPDOWN, STICKY MULTI-LIKE & ADMIN CONTROLS
+   ✨ ঝলক (JHALAK) — MOBILE-FIRST ADAPTIVE THEME, PROFESSIONAL SIDEWAYS
+   PAGE TRANSITION, COMPACT DROPDOWNS & CATEGORY-LEVEL ADMIN CONTROLS
    ============================================================================ */
 :root {
-  --jh-bg-deep: #18120E;
-  --jh-bg-card: #231A14;
-  --jh-bg-warm: #2D2018;
+  --jh-bg-deep: #140F0C;
+  --jh-bg-card: #211813;
+  --jh-bg-warm: #2B1F17;
   --jh-surface-cream: #FFFDF9;
   --jh-surface-soft: #FBF4E8;
   --jh-ink-dark: #1F1610;
@@ -32,6 +32,8 @@
   --jh-emerald: #0E8358;
   --jh-rose: #E11D48;
   --jh-border-gold: rgba(245, 158, 11, 0.34);
+  --jh-safe-top: env(safe-area-inset-top, 0px);
+  --jh-safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 *, *::before, *::after {
@@ -43,126 +45,165 @@
 
 html, body {
   width: 100%;
+  max-width: 100vw;
   height: 100dvh;
   overflow: hidden;
   background: var(--jh-bg-deep);
   color: var(--jh-cream-text);
   font-family: 'Noto Sans Bengali', sans-serif;
-  line-height: 1.58;
+  line-height: 1.56;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* TOP BAR: BRAND + CATEGORY DROPDOWN + SETTINGS GEAR (NO PREV/NEXT OR PAGE COUNTS) */
+/* ============================================================================
+   1. MOBILE-FIRST TOP BAR & ADAPTIVE CATEGORY DROPDOWN (FITS ALL PHONES)
+   ============================================================================ */
 .jh-topbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 70;
-  background: rgba(24, 18, 14, 0.96);
-  border-bottom: 1px solid rgba(245, 158, 11, 0.25);
-  padding: 10px 14px;
-  backdrop-filter: blur(10px);
+  z-index: 80;
+  background: rgba(20, 15, 12, 0.94);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.24);
+  padding: calc(8px + var(--jh-safe-top)) 10px 8px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .jh-topbar-row1 {
-  max-width: 720px;
+  width: 100%;
+  max-width: 560px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
+  flex-wrap: nowrap;
 }
 
 .jh-brand-cluster {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
 }
 
 .jh-brand-title {
+  flex: 0 0 auto;
   font-family: 'Noto Serif Bengali', Georgia, serif;
-  font-size: 1.18rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #FFFBEB;
-  background: rgba(45, 32, 24, 0.92);
+  background: rgba(43, 31, 23, 0.95);
   border: 1.5px solid var(--jh-border-gold);
-  padding: 5px 13px;
+  padding: 5px 11px;
   border-radius: 999px;
+  white-space: nowrap;
 }
 
-/* CATEGORY DROPDOWN */
 .jh-cat-dropdown-wrap {
   position: relative;
+  min-width: 0;
+  flex: 0 1 auto;
 }
 
 .jh-cat-dropdown-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 5px;
+  max-width: 100%;
+  min-height: 36px;
   background: var(--jh-gold);
   color: #1F1610;
   border: 1.5px solid #FDE68A;
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.93rem;
+  font-size: 0.88rem;
   font-weight: 700;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 3px 12px rgba(245, 158, 11, 0.28);
 }
 
+.jh-cat-dropdown-btn:active {
+  transform: scale(0.96);
+}
+
+/* Mobile-first fixed-centered dropdown sheet so it NEVER overflows phone edges */
 .jh-cat-dropdown-menu {
   display: none;
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  min-width: 265px;
-  max-height: 75dvh;
+  position: fixed;
+  top: calc(54px + var(--jh-safe-top));
+  left: 10px;
+  right: 10px;
+  width: auto;
+  max-width: 440px;
+  max-height: calc(100dvh - 76px - var(--jh-safe-top));
   overflow-y: auto;
   background: var(--jh-surface-cream);
   color: var(--jh-ink-dark);
   border: 2px solid var(--jh-gold);
   border-radius: 18px;
   padding: 10px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
-  z-index: 100;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.62);
+  z-index: 110;
 }
 
 .jh-cat-dropdown-menu.open {
   display: block;
+  animation: jhMenuPop 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes jhMenuPop {
+  0% { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .jh-cat-menu-header {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--jh-ink-muted);
-  padding: 4px 8px 8px;
+  padding: 2px 6px 8px;
   border-bottom: 1px solid #EBD9C0;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  text-align: center;
 }
 
+/* 2-column grid on mobile so all 9 categories fit without scrolling */
 .jh-cat-options-list {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
 }
 
 .jh-cat-option {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 4px;
   width: 100%;
-  border: 1px solid transparent;
+  min-width: 0;
+  border: 1.5px solid #EBD9C0;
   background: #FBF4E8;
   color: var(--jh-ink-dark);
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.94rem;
+  font-size: 0.86rem;
   font-weight: 700;
-  padding: 8px 11px;
+  padding: 8px 9px;
   border-radius: 12px;
   cursor: pointer;
   text-align: left;
+}
+
+.jh-cat-option[data-chan="all"] {
+  grid-column: 1 / -1;
 }
 
 .jh-cat-option.active {
@@ -174,136 +215,213 @@ html, body {
 .jh-cat-opt-left {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 5px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .jh-cat-count-pill {
+  flex: 0 0 auto;
   background: #FFF1E6;
   color: #B93815;
   border: 1px solid #FCD9BD;
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  padding: 2px 9px;
+  padding: 1px 7px;
   border-radius: 999px;
 }
 
 .jh-gear-btn {
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 1.5px solid var(--jh-border-gold);
-  background: rgba(45, 32, 24, 0.92);
+  background: rgba(43, 31, 23, 0.95);
   color: #FFFBEB;
-  font-size: 1.15rem;
+  font-size: 1.08rem;
   cursor: pointer;
 }
 
-/* VERTICALLY SCROLLABLE (UP/DOWN) LONG-CONTENT PAGE VIEWPORT */
+.jh-gear-btn:active {
+  transform: scale(0.92);
+}
+
+/* ============================================================================
+   2. VIEWPORT & PROFESSIONAL SIDEWAYS PAGE TRANSITION (DUAL-CARD PARALLAX)
+   ============================================================================ */
 .jh-reels-viewport {
+  position: relative;
   width: 100%;
   height: 100dvh;
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-  padding: 68px 14px 96px;
+  padding: calc(60px + var(--jh-safe-top)) 10px calc(86px + var(--jh-safe-bottom));
+  perspective: 1200px;
 }
 
 .jh-reel-slide {
+  position: relative;
   width: 100%;
-  max-width: 680px;
+  max-width: 540px;
   margin: 0 auto;
   will-change: transform, opacity;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
-/* PAGE SLIDE LEFT / RIGHT ANIMATIONS */
+/* Professional sideways incoming card animations */
 .jh-slide-anim-next {
-  animation: jhSlideFromRight 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: jhProSidewaysInNext 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .jh-slide-anim-prev {
-  animation: jhSlideFromLeft 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: jhProSidewaysInPrev 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@keyframes jhSlideFromRight {
-  0% { opacity: 0.25; transform: translateX(64px); }
-  100% { opacity: 1; transform: translateX(0); }
+/* Outgoing ghost card animations for seamless dual-card sideways handoff */
+.jh-outgoing-ghost {
+  position: absolute;
+  top: calc(60px + var(--jh-safe-top));
+  left: 10px;
+  right: 10px;
+  max-width: 540px;
+  margin: 0 auto;
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
-@keyframes jhSlideFromLeft {
-  0% { opacity: 0.25; transform: translateX(-64px); }
-  100% { opacity: 1; transform: translateX(0); }
+.jh-outgoing-ghost.out-left {
+  animation: jhProSidewaysOutLeft 0.40s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* MAIN LONG-FORM CONTENT CARD STAGE */
+.jh-outgoing-ghost.out-right {
+  animation: jhProSidewaysOutRight 0.40s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes jhProSidewaysInNext {
+  0% {
+    opacity: 0;
+    transform: translate3d(104%, 0, 0) scale(0.95) rotateY(-4deg);
+  }
+  65% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+  }
+}
+
+@keyframes jhProSidewaysInPrev {
+  0% {
+    opacity: 0;
+    transform: translate3d(-104%, 0, 0) scale(0.95) rotateY(4deg);
+  }
+  65% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+  }
+}
+
+@keyframes jhProSidewaysOutLeft {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-44%, 0, 0) scale(0.92);
+  }
+}
+
+@keyframes jhProSidewaysOutRight {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(44%, 0, 0) scale(0.92);
+  }
+}
+
+/* ============================================================================
+   3. MOBILE-FIRST CARD STAGE, HEADER PILLS & CONTENT SECTIONS
+   ============================================================================ */
 .jh-card-stage {
   position: relative;
+  z-index: 2;
   width: 100%;
   background: var(--jh-surface-cream);
   color: var(--jh-ink-dark);
-  border-radius: 26px;
-  border: 2px solid #EBD9C0;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.48);
-  padding: 22px 22px 26px;
+  border-radius: 20px;
+  border: 1.5px solid #EBD9C0;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.46);
+  padding: 14px 14px 20px;
+  overflow: hidden;
 }
 
-@media (max-width: 520px) {
-  .jh-reels-viewport {
-    padding: 66px 10px 96px;
-  }
-  .jh-card-stage {
-    padding: 16px 15px 22px;
-    border-radius: 20px;
-  }
-}
-
-/* CARD HEADER: BADGE + TOP LISTEN & DONE BUTTONS */
 .jh-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-
-.jh-card-top-actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  gap: 6px;
+  margin-bottom: 11px;
   flex-wrap: wrap;
 }
 
 .jh-vibe-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: #FFF1E6;
   color: #B93815;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  padding: 5px 13px;
+  padding: 4px 10px;
   border-radius: 999px;
   border: 1px solid #FCD9BD;
+  white-space: nowrap;
+}
+
+.jh-card-top-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  margin-left: auto;
 }
 
 .jh-top-listen-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
+  min-height: 36px;
   background: var(--jh-emerald);
   color: #FFFFFF;
   border: none;
   border-radius: 999px;
-  padding: 8px 18px;
+  padding: 6px 13px;
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.86rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(14, 131, 88, 0.26);
+  white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(14, 131, 88, 0.25);
 }
 
 .jh-top-listen-btn.playing {
@@ -314,36 +432,38 @@ html, body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 4px;
+  min-height: 36px;
   background: #ECFDF5;
   color: #065F46;
   border: 1.5px solid #34D399;
   border-radius: 999px;
-  padding: 7px 14px;
+  padding: 5px 11px;
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;
+  white-space: nowrap;
 }
 
-.jh-done-btn:active {
+.jh-done-btn:active,
+.jh-top-listen-btn:active {
   transform: scale(0.95);
 }
 
-/* PAGE TITLE & MULTI-SECTION RICH CONTENT */
 .jh-hook-title {
   font-family: 'Noto Serif Bengali', Georgia, serif;
-  font-size: clamp(1.28rem, 3.8vw, 1.56rem);
+  font-size: clamp(1.18rem, 4.4vw, 1.44rem);
   font-weight: 800;
   color: #1F1610;
-  line-height: 1.46;
-  margin-bottom: 14px;
+  line-height: 1.42;
+  margin-bottom: 12px;
 }
 
 .jh-content-section {
-  border-radius: 16px;
-  padding: 14px 16px;
-  margin-bottom: 14px;
+  border-radius: 14px;
+  padding: 12px 13px;
+  margin-bottom: 11px;
 }
 
 .jh-sec-story {
@@ -363,17 +483,18 @@ html, body {
 
 .jh-sec-heading {
   font-family: 'Noto Serif Bengali', Georgia, serif;
-  font-size: 1.04rem;
+  font-size: 0.98rem;
   font-weight: 800;
   color: #7C2D12;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .jh-sec-para {
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   color: #2B2118;
-  line-height: 1.68;
-  margin-bottom: 10px;
+  line-height: 1.64;
+  margin-bottom: 8px;
+  overflow-wrap: anywhere;
 }
 
 .jh-sec-para:last-child {
@@ -384,10 +505,10 @@ html, body {
 .jh-curiosity-box {
   background: #F0FDF4;
   border: 1.5px dashed #16A34A;
-  border-radius: 16px;
-  padding: 13px 15px;
+  border-radius: 14px;
+  padding: 11px 13px;
   cursor: pointer;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .jh-curiosity-box.revealed {
@@ -397,11 +518,11 @@ html, body {
 }
 
 .jh-curiosity-q {
-  font-size: 0.98rem;
+  font-size: 0.93rem;
   font-weight: 700;
   color: #065F46;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
 }
@@ -410,21 +531,22 @@ html, body {
   flex: 0 0 auto;
   background: #0E8358;
   color: #FFFFFF;
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  padding: 3px 10px;
+  padding: 3px 9px;
   border-radius: 999px;
+  white-space: nowrap;
 }
 
 .jh-curiosity-a {
   display: none;
-  margin-top: 9px;
-  padding-top: 9px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid rgba(16, 185, 129, 0.28);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #064E3B;
-  line-height: 1.58;
+  line-height: 1.56;
 }
 
 .jh-curiosity-box.revealed .jh-curiosity-a {
@@ -433,42 +555,43 @@ html, body {
 
 /* YOUTUBE HYPERLINK */
 .jh-yt-link {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  width: 100%;
   justify-content: center;
+  gap: 6px;
+  width: 100%;
   background: #FFF1F2;
   color: #BE123C;
   border: 1.5px solid #FECDD3;
-  border-radius: 14px;
-  padding: 11px 15px;
-  font-size: 0.98rem;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
   font-weight: 700;
   text-decoration: none;
+  text-align: center;
 }
 
 /* TRANSLUCENT STICK-ON LIKE BUTTON */
 .jh-sticky-like-btn {
   position: fixed;
-  right: 18px;
-  bottom: 20px;
+  right: 12px;
+  bottom: calc(14px + var(--jh-safe-bottom));
   z-index: 65;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  background: rgba(255, 241, 242, 0.78);
+  gap: 6px;
+  background: rgba(255, 241, 242, 0.82);
   color: #BE123C;
   border: 1.5px solid rgba(251, 113, 133, 0.65);
   border-radius: 999px;
-  padding: 10px 18px;
+  padding: 8px 14px;
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.96rem;
+  font-size: 0.88rem;
   font-weight: 800;
   cursor: pointer;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 8px 24px rgba(190, 18, 60, 0.22);
+  box-shadow: 0 6px 20px rgba(190, 18, 60, 0.22);
   transition: transform 0.14s ease, background 0.16s ease;
 }
 
@@ -477,16 +600,16 @@ html, body {
 }
 
 .jh-sticky-like-btn.has-likes {
-  background: rgba(255, 228, 230, 0.86);
+  background: rgba(255, 228, 230, 0.9);
   border-color: #F43F5E;
 }
 
 .jh-like-count-badge {
   background: #E11D48;
   color: #FFFFFF;
-  font-size: 0.84rem;
+  font-size: 0.78rem;
   font-weight: 800;
-  padding: 2px 9px;
+  padding: 1px 8px;
   border-radius: 999px;
 }
 
@@ -495,20 +618,22 @@ html, body {
   position: fixed;
   pointer-events: none;
   z-index: 120;
-  font-size: 1.8rem;
-  animation: jhFloatUp 1.1s ease-out forwards;
+  font-size: 1.65rem;
+  animation: jhFloatUp 1.05s ease-out forwards;
 }
 
 @keyframes jhFloatUp {
   0% { opacity: 1; transform: translateY(0) scale(0.8); }
-  100% { opacity: 0; transform: translateY(-95px) scale(1.35); }
+  100% { opacity: 0; transform: translateY(-90px) scale(1.3); }
 }
 
-/* SLIDE-UP DRAWERS (SETTINGS GEAR, ADMIN & CHITHI) */
+/* ============================================================================
+   4. MOBILE-FIRST SLIDE-UP DRAWERS & CATEGORY-LEVEL SELECTABLE ADMIN STUDIO
+   ============================================================================ */
 .jh-drawer-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 10, 7, 0.74);
+  background: rgba(15, 10, 7, 0.76);
   z-index: 95;
   display: none;
   align-items: flex-end;
@@ -521,14 +646,16 @@ html, body {
 
 .jh-drawer-sheet {
   width: 100%;
-  max-width: 680px;
-  max-height: 88dvh;
+  max-width: 540px;
+  max-height: 90dvh;
   background: var(--jh-surface-cream);
   color: var(--jh-ink-dark);
-  border-radius: 26px 26px 0 0;
+  border-radius: 22px 22px 0 0;
   border-top: 3px solid var(--jh-gold);
-  padding: 18px 18px 28px;
+  padding: 14px 12px calc(22px + var(--jh-safe-bottom));
   overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.45);
 }
 
@@ -536,51 +663,57 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 14px;
-  padding-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 9px;
   border-bottom: 1px solid #EBD9C0;
 }
 
 .jh-drawer-title {
   font-family: 'Noto Serif Bengali', Georgia, serif;
-  font-size: 1.2rem;
+  font-size: 1.06rem;
   font-weight: 800;
+  min-width: 0;
 }
 
 .jh-drawer-close {
+  flex: 0 0 auto;
   border: 1.5px solid #EBD9C0;
   background: #FFF1E6;
   color: #B93815;
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.84rem;
   font-weight: 700;
-  padding: 6px 13px;
+  padding: 5px 11px;
   border-radius: 999px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .jh-settings-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
 .jh-settings-item-btn {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   width: 100%;
+  min-height: 42px;
   border: 1.5px solid #EBD9C0;
   background: #FBF4E8;
   color: var(--jh-ink-dark);
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.96rem;
+  font-size: 0.88rem;
   font-weight: 700;
-  padding: 12px 15px;
-  border-radius: 14px;
+  padding: 9px 12px;
+  border-radius: 12px;
   cursor: pointer;
+  text-align: left;
 }
 
 .jh-settings-item-btn.active-flow {
@@ -589,61 +722,148 @@ html, body {
   color: #FFFFFF;
 }
 
-/* CATEGORY STATS & ADMIN LIST IN SETTINGS */
 .jh-stats-section-title {
   font-family: 'Noto Serif Bengali', Georgia, serif;
-  font-size: 1.05rem;
+  font-size: 0.96rem;
   font-weight: 800;
-  margin: 14px 0 8px;
+  margin: 12px 0 7px;
   color: #7C2D12;
 }
 
+/* Compact 2-column category stats grid on phones */
 .jh-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
 }
 
 .jh-stat-chip {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 2px;
   background: #FBF4E8;
   border: 1px solid #EBD9C0;
-  border-radius: 12px;
-  padding: 8px 12px;
-  font-size: 0.86rem;
+  border-radius: 10px;
+  padding: 7px 9px;
+  font-size: 0.78rem;
+  min-width: 0;
+}
+
+.jh-stat-chip-top {
+  font-weight: 700;
+  color: #1F1610;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jh-stat-chip-sub {
+  color: #5C4938;
+  font-size: 0.75rem;
 }
 
 .jh-stat-likes {
-  margin-left: 4px;
+  margin-left: 3px;
   color: #BE123C;
   font-weight: 700;
 }
 
+/* CATEGORY-ORGANISED SELECTABLE ADMIN CONTROL PANEL (NO HUGE ITEM LIST) */
 .jh-admin-items-list {
-  max-height: 290px;
-  overflow-y: auto;
   border: 1.5px solid #EBD9C0;
   border-radius: 14px;
-  padding: 8px;
+  padding: 10px;
   background: #FFFDF9;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 9px;
+}
+
+.jh-admin-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.jh-admin-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #5C4938;
+}
+
+.jh-admin-select {
+  width: 100%;
+  max-width: 100%;
+  min-height: 40px;
+  border: 1.5px solid #D97706;
+  border-radius: 10px;
+  background: #FEF3C7;
+  color: #1F1610;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 700;
+  padding: 7px 10px;
+  outline: none;
+}
+
+.jh-admin-cat-card {
+  background: #FBF4E8;
+  border: 1px solid #EBD9C0;
+  border-radius: 12px;
+  padding: 9px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jh-admin-cat-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1F1610;
+}
+
+.jh-admin-cat-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.jh-admin-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 34px;
+  border: 1px solid #D97706;
+  background: #FFFDF9;
+  color: #7C2D12;
+  border-radius: 9px;
+  padding: 5px 8px;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.jh-admin-mini-btn:active {
+  transform: scale(0.96);
 }
 
 .jh-admin-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 8px;
-  flex-wrap: wrap;
-  padding: 8px 10px;
-  border-radius: 10px;
+  padding: 9px 10px;
+  border-radius: 11px;
   background: #FBF4E8;
-  border: 1px solid #EBD9C0;
-  font-size: 0.86rem;
+  border: 1.5px solid #EBD9C0;
+  font-size: 0.84rem;
 }
 
 .jh-admin-row.is-done {
@@ -652,23 +872,27 @@ html, body {
 }
 
 .jh-admin-row-title {
-  flex: 1 1 200px;
   font-weight: 700;
+  line-height: 1.38;
+  word-break: break-word;
 }
 
 .jh-admin-badge {
-  font-size: 0.78rem;
+  display: inline-block;
+  font-size: 0.74rem;
   background: #FFF1E6;
   color: #B93815;
-  padding: 2px 7px;
+  padding: 1px 7px;
   border-radius: 999px;
-  margin-right: 5px;
+  margin-right: 4px;
 }
 
 .jh-admin-row-controls {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .jh-admin-stepper {
@@ -679,11 +903,12 @@ html, body {
   border: 1px solid #EBD9C0;
   padding: 3px 8px;
   border-radius: 999px;
+  font-size: 0.8rem;
 }
 
 .jh-step-mini {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   border: 1px solid #D97706;
   background: #FEF3C7;
@@ -695,30 +920,70 @@ html, body {
 .jh-slide-img {
   width: 100%;
   height: auto;
-  max-height: 340px;
+  max-height: 300px;
   object-fit: contain;
-  border-radius: 14px;
+  border-radius: 12px;
   background: #18120E;
-  margin-bottom: 10px;
+  margin-bottom: 9px;
 }
 
 .jh-letter-controls {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 12px;
 }
 
 .jh-letter-step-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: #FFF1E6;
   color: #B93815;
   border: 1.5px solid #FCD9BD;
-  border-radius: 12px;
-  padding: 10px 14px;
+  border-radius: 10px;
+  padding: 8px 10px;
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.94rem;
+  font-size: 0.82rem;
   font-weight: 700;
   cursor: pointer;
+  text-align: center;
+}
+
+/* Desktop / Tablet adaptive scaling while preserving mobile-first ergonomics */
+@media (min-width: 600px) {
+  .jh-topbar {
+    padding: 10px 16px;
+  }
+  .jh-brand-title {
+    font-size: 1.15rem;
+  }
+  .jh-cat-dropdown-btn {
+    font-size: 0.93rem;
+    padding: 6px 14px;
+  }
+  .jh-cat-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: auto;
+    width: 340px;
+  }
+  .jh-reels-viewport {
+    padding: 68px 16px 96px;
+  }
+  .jh-reel-slide,
+  .jh-outgoing-ghost {
+    max-width: 640px;
+  }
+  .jh-card-stage {
+    padding: 20px 22px 24px;
+    border-radius: 24px;
+  }
+  .jh-drawer-sheet {
+    max-width: 620px;
+    padding: 18px 18px 28px;
+  }
 }
   </style>
 </head>
@@ -1893,7 +2158,9 @@ let jhSlideLetterIdx = 0;
 let jhRevealedMap = {};
 let jhLikesMap = {};
 let jhDoneMap = {};
-let jhAdminFilterCat = 'all';
+let jhAdminFilterCat = 'gods';
+let jhAdminSelectedItemId = '';
+let jhOutgoingCardHtml = '';
 let jhTouchStartX = 0;
 let jhTouchStartY = 0;
 let jhMouseDownX = null;
@@ -2110,8 +2377,8 @@ function renderJhCategoryStatsUI() {
       : '';
     return `
       <div class="jh-stat-chip">
-        <span>${cat.label_bn}</span>
-        <span><strong>${jhBnNum(activeCount)}/${jhBnNum(totalCount)}টি পাতা</strong> (✅ ${jhBnNum(doneCount)}) ${likeBadge}</span>
+        <div class="jh-stat-chip-top">${cat.label_bn}</div>
+        <div class="jh-stat-chip-sub"><strong>${jhBnNum(activeCount)}/${jhBnNum(totalCount)}টি পাতা</strong> · ✅ ${jhBnNum(doneCount)} ${likeBadge}</div>
       </div>
     `;
   }).join('');
@@ -2159,10 +2426,20 @@ function filterJhalakChannel(channelId, ev) {
   renderJhalakReelStream();
 }
 
-/* RANDOMIZED PAGE TRANSITION WITH LEFT/RIGHT SLIDE ANIMATION */
+/* RANDOMIZED PAGE TRANSITION WITH PROFESSIONAL SIDEWAYS ANIMATION */
+function captureOutgoingCardSnapshot() {
+  const vp = document.getElementById('jhReelsViewport');
+  if (!vp || !vp.innerHTML) return;
+  const m = vp.innerHTML.match(/<div class="jh-card-stage">[\s\S]*<\/article>/);
+  if (m) {
+    jhOutgoingCardHtml = m[0].replace(/<\/article>\s*$/, '');
+  }
+}
+
 function stepJhalakReel(delta, autoPlayAfter) {
   if (!jhFilteredReels.length) return;
   stopJhAudio();
+  captureOutgoingCardSnapshot();
 
   if (delta < 0) {
     jhLastSlideDir = 'prev';
@@ -2217,6 +2494,7 @@ function markCurrentJhalakReelDone(ev) {
   }
 
   stopJhAudio();
+  captureOutgoingCardSnapshot();
   rebuildJhFilteredPool();
   jhLastSlideDir = 'next';
 
@@ -2278,10 +2556,61 @@ function updateStickyLikeBtnUI() {
   }
 }
 
-/* ADMIN SETTINGS: ADJUST DONE & LIKES COUNTS PER ITEM OR BULK */
+/* ADMIN SETTINGS: CATEGORY-LEVEL SELECTABLE DONE & LIKES CONTROLS (NO HUGE LIST) */
 function setAdminCategoryFilter(catId) {
-  jhAdminFilterCat = catId || 'all';
+  jhAdminFilterCat = catId || 'gods';
+  const catItems = ALL_JHALAK_REELS.filter(r =>
+    jhAdminFilterCat === 'all' || r.vibe === jhAdminFilterCat
+  );
+  jhAdminSelectedItemId = catItems.length ? catItems[0].id : '';
   renderJhAdminItemsList();
+}
+
+function selectAdminItem(cardId) {
+  jhAdminSelectedItemId = cardId || '';
+  renderJhAdminItemsList();
+}
+
+function setCategoryDoneState(catId, doneVal) {
+  const clean = Math.max(0, Number(doneVal) || 0);
+  ALL_JHALAK_REELS.forEach(r => {
+    if (catId === 'all' || r.vibe === catId) {
+      if (clean === 0) delete jhDoneMap[r.id];
+      else jhDoneMap[r.id] = clean;
+    }
+  });
+  saveJhDoneAndLikes();
+  rebuildJhFilteredPool();
+  if (jhCurrentIdx >= jhFilteredReels.length) {
+    jhCurrentIdx = Math.max(0, jhFilteredReels.length - 1);
+  }
+  renderJhCategoryDropdownUI();
+  renderJhCategoryStatsUI();
+  renderJhalakReelStream();
+}
+
+function adjustCategoryLikeCounts(catId, delta) {
+  ALL_JHALAK_REELS.forEach(r => {
+    if (catId === 'all' || r.vibe === catId) {
+      const nextVal = Math.max(0, getReelLikeCount(r.id) + delta);
+      if (nextVal === 0) delete jhLikesMap[r.id];
+      else jhLikesMap[r.id] = nextVal;
+    }
+  });
+  saveJhDoneAndLikes();
+  updateStickyLikeBtnUI();
+  renderJhCategoryStatsUI();
+}
+
+function resetCategoryLikeCounts(catId) {
+  ALL_JHALAK_REELS.forEach(r => {
+    if (catId === 'all' || r.vibe === catId) {
+      delete jhLikesMap[r.id];
+    }
+  });
+  saveJhDoneAndLikes();
+  updateStickyLikeBtnUI();
+  renderJhCategoryStatsUI();
 }
 
 function adjustReelDoneCount(cardId, delta) {
@@ -2353,36 +2682,110 @@ function renderJhAdminItemsList() {
   const listEl = document.getElementById('jhAdminItemsList');
   if (!listEl) return;
 
+  const contentCats = JHALAK_CATEGORIES.filter(c => c.id !== 'all');
+  if (!jhAdminFilterCat || !JHALAK_CATEGORIES.some(c => c.id === jhAdminFilterCat)) {
+    jhAdminFilterCat = 'gods';
+  }
+
+  const catOptionsHtml = JHALAK_CATEGORIES.map(c => {
+    let total = 0;
+    let done = 0;
+    let likes = 0;
+    ALL_JHALAK_REELS.forEach(r => {
+      if (c.id === 'all' || r.vibe === c.id) {
+        total += 1;
+        if (isReelDone(r.id)) done += 1;
+        likes += getReelLikeCount(r.id);
+      }
+    });
+    const selAttr = c.id === jhAdminFilterCat ? 'selected' : '';
+    return `<option value="${c.id}" ${selAttr}>${c.label_bn} — ডান: ${jhBnNum(done)}/${jhBnNum(total)} · ❤️ ${jhBnNum(likes)}</option>`;
+  }).join('');
+
   const items = ALL_JHALAK_REELS.filter(r =>
     jhAdminFilterCat === 'all' || r.vibe === jhAdminFilterCat
   );
 
-  listEl.innerHTML = items.map(r => {
+  if (!jhAdminSelectedItemId || !items.some(r => r.id === jhAdminSelectedItemId)) {
+    jhAdminSelectedItemId = items.length ? items[0].id : '';
+  }
+
+  let catTotal = items.length;
+  let catDone = 0;
+  let catLikes = 0;
+  items.forEach(r => {
+    if (isReelDone(r.id)) catDone += 1;
+    catLikes += getReelLikeCount(r.id);
+  });
+
+  const activeCatObj = JHALAK_CATEGORIES.find(c => c.id === jhAdminFilterCat) || contentCats[0];
+  const selectedItem = items.find(r => r.id === jhAdminSelectedItemId) || items[0];
+
+  const itemOptionsHtml = items.map((r, idx) => {
     const dCount = getReelDoneCount(r.id);
     const lCount = getReelLikeCount(r.id);
+    const selAttr = selectedItem && r.id === selectedItem.id ? 'selected' : '';
+    const statusTag = dCount > 0 ? '✅' : '📖';
+    return `<option value="${r.id}" ${selAttr}>${jhBnNum(idx + 1)}. ${statusTag} ${r.title_bn} (ডান:${jhBnNum(dCount)} · ❤️${jhBnNum(lCount)})</option>`;
+  }).join('');
+
+  const selectedRowHtml = selectedItem ? (() => {
+    const dCount = getReelDoneCount(selectedItem.id);
+    const lCount = getReelLikeCount(selectedItem.id);
     return `
       <div class="jh-admin-row ${dCount > 0 ? 'is-done' : ''}">
         <div class="jh-admin-row-title">
-          <span class="jh-admin-badge">${r.badge_bn}</span>
-          <span>${r.title_bn}</span>
+          <span class="jh-admin-badge">${selectedItem.badge_bn}</span>
+          <span>${selectedItem.title_bn}</span>
         </div>
         <div class="jh-admin-row-controls">
           <div class="jh-admin-stepper">
             <span>✅ ডান:</span>
-            <button type="button" class="jh-step-mini" onclick="adjustReelDoneCount('${r.id}', -1)">−</button>
-            <strong id="adminDoneVal_${r.id}">${jhBnNum(dCount)}</strong>
-            <button type="button" class="jh-step-mini" onclick="adjustReelDoneCount('${r.id}', 1)">+</button>
+            <button type="button" class="jh-step-mini" onclick="adjustReelDoneCount('${selectedItem.id}', -1)">−</button>
+            <strong id="adminDoneVal_${selectedItem.id}">${jhBnNum(dCount)}</strong>
+            <button type="button" class="jh-step-mini" onclick="adjustReelDoneCount('${selectedItem.id}', 1)">+</button>
           </div>
           <div class="jh-admin-stepper">
             <span>❤️ লাইক:</span>
-            <button type="button" class="jh-step-mini" onclick="adjustReelLikeCount('${r.id}', -1)">−</button>
-            <strong id="adminLikeVal_${r.id}">${jhBnNum(lCount)}</strong>
-            <button type="button" class="jh-step-mini" onclick="adjustReelLikeCount('${r.id}', 1)">+</button>
+            <button type="button" class="jh-step-mini" onclick="adjustReelLikeCount('${selectedItem.id}', -1)">−</button>
+            <strong id="adminLikeVal_${selectedItem.id}">${jhBnNum(lCount)}</strong>
+            <button type="button" class="jh-step-mini" onclick="adjustReelLikeCount('${selectedItem.id}', 1)">+</button>
           </div>
         </div>
       </div>
     `;
-  }).join('');
+  })() : '';
+
+  listEl.innerHTML = `
+    <div class="jh-admin-field-group">
+      <label class="jh-admin-label" for="jhAdminCatSelect">১. বিভাগ বেছে নাও (Category):</label>
+      <select id="jhAdminCatSelect" class="jh-admin-select" onchange="setAdminCategoryFilter(this.value)">
+        ${catOptionsHtml}
+      </select>
+    </div>
+
+    <div class="jh-admin-cat-card">
+      <div class="jh-admin-cat-summary">
+        <span>${activeCatObj.label_bn} বিভাগ</span>
+        <span>✅ ডান: ${jhBnNum(catDone)}/${jhBnNum(catTotal)} · ❤️ লাইক: ${jhBnNum(catLikes)}</span>
+      </div>
+      <div class="jh-admin-cat-actions">
+        <button type="button" class="jh-admin-mini-btn" onclick="setCategoryDoneState('${jhAdminFilterCat}', 0)">🔄 বিভাগের ডান রিসেট</button>
+        <button type="button" class="jh-admin-mini-btn" onclick="setCategoryDoneState('${jhAdminFilterCat}', 1)">✅ বিভাগের সব ডান</button>
+        <button type="button" class="jh-admin-mini-btn" onclick="resetCategoryLikeCounts('${jhAdminFilterCat}')">🔄 বিভাগের লাইক রিসেট</button>
+        <button type="button" class="jh-admin-mini-btn" onclick="adjustCategoryLikeCounts('${jhAdminFilterCat}', 1)">❤️ বিভাগের সব পাতায় +১ লাইক</button>
+      </div>
+    </div>
+
+    <div class="jh-admin-field-group">
+      <label class="jh-admin-label" for="jhAdminItemSelect">২. এই বিভাগের নির্দিষ্ট পাতা বেছে নাও (${jhBnNum(items.length)}টি):</label>
+      <select id="jhAdminItemSelect" class="jh-admin-select" onchange="selectAdminItem(this.value)">
+        ${itemOptionsHtml}
+      </select>
+    </div>
+
+    ${selectedRowHtml}
+  `;
 }
 
 /* SETTINGS GEAR: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY & LIKE COUNT TOGGLES */
@@ -2588,8 +2991,14 @@ function renderJhalakReelStream() {
   }).join('');
 
   const animClass = jhLastSlideDir === 'prev' ? 'jh-slide-anim-prev' : 'jh-slide-anim-next';
+  const ghostDirClass = jhLastSlideDir === 'prev' ? 'out-right' : 'out-left';
+  const ghostHtml = jhOutgoingCardHtml
+    ? `<div class="jh-outgoing-ghost ${ghostDirClass}" aria-hidden="true">${jhOutgoingCardHtml}</div>`
+    : '';
+  jhOutgoingCardHtml = '';
 
   vp.innerHTML = `
+    ${ghostHtml}
     <article id="jhSlide_${idx}" class="jh-reel-slide ${animClass}" data-idx="${idx}" data-vibe="${card.vibe}">
       <div class="jh-card-stage">
         <div class="jh-card-top">

@@ -943,6 +943,8 @@ vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
         self.assertIn('id="jhCategoryDropdownMenu"', jh_html)
         self.assertIn("jh-slide-anim-next", jh_html)
         self.assertIn("jh-slide-anim-prev", jh_html)
+        self.assertIn("jhProSidewaysInNext", jh_html)
+        self.assertIn("jhProSidewaysOutLeft", jh_html)
         self.assertIn('id="jhStickyLikeBtn"', jh_html)
         self.assertIn("backdrop-filter: blur(10px)", jh_html)
         # 3. Settings controls: Auto-Reels, Auto-Voice, Single/Multi Category Select, Show Like Count, Chithi, Category Stats, Admin Done/Likes control
@@ -1028,10 +1030,12 @@ const suite = code + `
   assert.notStrictEqual(nextId, startId, 'Advancing must pick a randomized next page');
   assert.strictEqual(jhLastSlideDir, 'next', 'Advancing must set slide direction to next');
   assert.ok(el('jhReelsViewport').innerHTML.includes('jh-slide-anim-next'), 'Rendered card must have jh-slide-anim-next class');
+  assert.ok(el('jhReelsViewport').innerHTML.includes('jh-outgoing-ghost out-left'), 'Advancing must render outgoing ghost card sliding left');
   stepJhalakReel(-1, false);
   assert.strictEqual(jhFilteredReels[jhCurrentIdx].id, startId, 'Stepping back must return to previous page in history stack');
   assert.strictEqual(jhLastSlideDir, 'prev', 'Stepping back must set slide direction to prev');
   assert.ok(el('jhReelsViewport').innerHTML.includes('jh-slide-anim-prev'), 'Rendered card must have jh-slide-anim-prev class');
+  assert.ok(el('jhReelsViewport').innerHTML.includes('jh-outgoing-ghost out-right'), 'Stepping back must render outgoing ghost card sliding right');
 
   // 5. Mark as Done button excludes page from future reels, and Admin Settings can change Done & Likes counts
   const cardToDone = jhFilteredReels[jhCurrentIdx];
@@ -1078,7 +1082,20 @@ const suite = code + `
   assert.strictEqual(jhShowLikeCount, false);
   assert.ok(!el('jhStickyLikeBtn').innerHTML.includes('jhStickyLikeCount'), 'When jhShowLikeCount is false, like count badge is hidden');
   assert.ok(el('jhCategoryStatsBox').innerHTML.includes('পাতা'), 'Category stats must display content counts');
-  assert.ok(el('jhAdminItemsList').innerHTML.includes('jh-admin-row'), 'Admin items list must render controls for all items');
+  assert.ok(el('jhAdminItemsList').innerHTML.includes('id="jhAdminCatSelect"'), 'Admin control must have category selector dropdown');
+  assert.ok(el('jhAdminItemsList').innerHTML.includes('id="jhAdminItemSelect"'), 'Admin control must have item selector dropdown within category');
+  const adminRowMatches = el('jhAdminItemsList').innerHTML.match(/class="jh-admin-row /g) || [];
+  assert.strictEqual(adminRowMatches.length, 1, 'Admin panel must render only the 1 selected item row (no huge list)');
+
+  // 8. Category-level Done & Likes bulk controls in Admin
+  setCategoryDoneState('tv', 1);
+  assert.strictEqual(ALL_JHALAK_REELS.filter(r => r.vibe === 'tv').every(r => isReelDone(r.id)), true, 'setCategoryDoneState(tv, 1) must mark all TV items done');
+  setCategoryDoneState('tv', 0);
+  assert.strictEqual(ALL_JHALAK_REELS.filter(r => r.vibe === 'tv').every(r => !isReelDone(r.id)), true, 'setCategoryDoneState(tv, 0) must reset all TV items');
+  adjustCategoryLikeCounts('tv', 2);
+  assert.strictEqual(ALL_JHALAK_REELS.filter(r => r.vibe === 'tv').every(r => getReelLikeCount(r.id) >= 2), true, 'adjustCategoryLikeCounts must add likes to category');
+  resetCategoryLikeCounts('tv');
+  assert.strictEqual(ALL_JHALAK_REELS.filter(r => r.vibe === 'tv').every(r => getReelLikeCount(r.id) === 0), true, 'resetCategoryLikeCounts must clear likes in category');
 })();
 `;
 vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});
