@@ -16,6 +16,7 @@ let jhAutoFlow = true;
 let jhAutoPlayVoices = true;
 let jhShowLikeCount = true;
 let jhAudioPlaying = false;
+let jhAudioPaused = false;
 let jhAutoAdvanceTimer = null;
 let jhSlideLetterIdx = 0;
 let jhRevealedMap = {};
@@ -496,11 +497,13 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
   return foundIdx;
 }
 
-function startJhWordHighlightLoop(cutSec) {
+function startJhWordHighlightLoop(cutSec, keepCurrentPos) {
   stopJhWordHighlightLoop();
   jhActiveCutSec = Number(cutSec) || 0;
   jhAudioStartedAtMs = Date.now();
-  syncJhWordHighlightToTime(0, 0);
+  if (!keepCurrentPos) {
+    syncJhWordHighlightToTime(0, 0);
+  }
   jhWordHighlightTimer = setInterval(() => {
     if (!jhAudioPlaying) {
       stopJhWordHighlightLoop();
@@ -515,6 +518,37 @@ function startJhWordHighlightLoop(cutSec) {
   }, 35);
 }
 
+function pauseJhAudio() {
+  if (!jhAudioPlaying) return;
+  stopJhWordHighlightLoop();
+  const aud = getJhAudioEl();
+  if (aud) {
+    try { aud.pause(); } catch (e) {}
+  }
+  jhAudioPlaying = false;
+  jhAudioPaused = true;
+  updateActiveCardPlayBtns();
+}
+
+function resumeJhAudio() {
+  if (!jhAudioPaused) return;
+  const aud = getJhAudioEl();
+  if (!aud) return;
+  jhAudioPlaying = true;
+  jhAudioPaused = false;
+  updateActiveCardPlayBtns();
+  startJhWordHighlightLoop(jhActiveCutSec, true);
+  const playPromise = typeof aud.play === 'function' ? aud.play() : null;
+  if (playPromise && typeof playPromise.catch === 'function') {
+    playPromise.catch(() => {
+      jhAudioPlaying = false;
+      jhAudioPaused = true;
+      stopJhWordHighlightLoop();
+      updateActiveCardPlayBtns();
+    });
+  }
+}
+
 function stopJhAudio() {
   if (jhAutoAdvanceTimer) {
     clearTimeout(jhAutoAdvanceTimer);
@@ -522,9 +556,13 @@ function stopJhAudio() {
   }
   const aud = getJhAudioEl();
   if (aud) {
-    try { aud.pause(); } catch (e) {}
+    try {
+      aud.pause();
+      aud.currentTime = 0;
+    } catch (e) {}
   }
   jhAudioPlaying = false;
+  jhAudioPaused = false;
   clearJhWordHighlight();
   updateActiveCardPlayBtns();
 }
@@ -638,7 +676,7 @@ function renderJhCategoryStatsUI() {
     return `
       <div class="jh-stat-chip">
         <div class="jh-stat-chip-top">${cat.label_bn}</div>
-        <div class="jh-stat-chip-sub"><strong>${jhBnNum(activeCount)}/${jhBnNum(totalCount)}টি পাতা</strong> · ✅ ${jhBnNum(doneCount)} ${likeBadge}</div>
+        <div class="jh-stat-chip-sub"><strong>${jhBnNum(totalCount)}টি পাতা</strong> · ✅ ${jhBnNum(doneCount)} ${likeBadge}</div>
       </div>
     `;
   }).join('');
@@ -965,7 +1003,7 @@ function renderJhAdminItemsList() {
       }
     });
     const selAttr = c.id === jhAdminFilterCat ? 'selected' : '';
-    return `<option value="${c.id}" ${selAttr}>${c.label_bn} — ডান: ${jhBnNum(done)}/${jhBnNum(total)} · ❤️ ${jhBnNum(likes)}</option>`;
+    return `<option value="${c.id}" ${selAttr}>${c.label_bn} — ${jhBnNum(total)}টি পাতা · ✅ ${jhBnNum(done)} · ❤️ ${jhBnNum(likes)}</option>`;
   }).join('');
 
   const items = ALL_JHALAK_REELS.filter(r =>
@@ -976,15 +1014,6 @@ function renderJhAdminItemsList() {
     jhAdminSelectedItemId = items.length ? items[0].id : '';
   }
 
-  let catTotal = items.length;
-  let catDone = 0;
-  let catLikes = 0;
-  items.forEach(r => {
-    if (isReelDone(r.id)) catDone += 1;
-    catLikes += getReelLikeCount(r.id);
-  });
-
-  const activeCatObj = JHALAK_CATEGORIES.find(c => c.id === jhAdminFilterCat) || contentCats[0];
   const selectedItem = items.find(r => r.id === jhAdminSelectedItemId) || items[0];
 
   const itemOptionsHtml = items.map((r, idx) => {
@@ -1028,19 +1057,6 @@ function renderJhAdminItemsList() {
       <select id="jhAdminCatSelect" class="jh-admin-select" onchange="setAdminCategoryFilter(this.value)">
         ${catOptionsHtml}
       </select>
-    </div>
-
-    <div class="jh-admin-cat-card">
-      <div class="jh-admin-cat-summary">
-        <span>${activeCatObj.label_bn} বিভাগ</span>
-        <span>✅ ডান: ${jhBnNum(catDone)}/${jhBnNum(catTotal)} · ❤️ লাইক: ${jhBnNum(catLikes)}</span>
-      </div>
-      <div class="jh-admin-cat-actions">
-        <button type="button" class="jh-admin-mini-btn" onclick="setCategoryDoneState('${jhAdminFilterCat}', 0)">🔄 বিভাগের ডান রিসেট</button>
-        <button type="button" class="jh-admin-mini-btn" onclick="setCategoryDoneState('${jhAdminFilterCat}', 1)">✅ বিভাগের সব ডান</button>
-        <button type="button" class="jh-admin-mini-btn" onclick="resetCategoryLikeCounts('${jhAdminFilterCat}')">🔄 বিভাগের লাইক রিসেট</button>
-        <button type="button" class="jh-admin-mini-btn" onclick="adjustCategoryLikeCounts('${jhAdminFilterCat}', 1)">❤️ বিভাগের সব পাতায় +১ লাইক</button>
-      </div>
     </div>
 
     <div class="jh-admin-field-group">
@@ -1143,16 +1159,33 @@ function toggleJhalakCuriosityBox(idx, ev) {
 
 function updateActiveCardPlayBtns() {
   const isReelPlaying = jhAudioPlaying && jhAudioMode === 'reel';
+  const isReelPaused = jhAudioPaused && jhAudioMode === 'reel';
   const headerBtn = document.getElementById('btnJhHeaderListen');
   if (headerBtn) {
     headerBtn.classList.toggle('playing', isReelPlaying);
-    headerBtn.textContent = isReelPlaying ? '⏹️ থামাও' : '🔊 শোনো';
+    headerBtn.classList.toggle('paused', isReelPaused);
+    headerBtn.textContent = isReelPlaying
+      ? '⏸️ বিরতি'
+      : (isReelPaused ? '▶️ চালাও' : '🔊 শোনো');
   }
+  const headerStopBtn = document.getElementById('btnJhHeaderStop');
+  if (headerStopBtn && headerStopBtn.style) {
+    headerStopBtn.style.display = (isReelPlaying || isReelPaused) ? 'inline-flex' : 'none';
+  }
+
   const isLetterPlaying = jhAudioPlaying && jhAudioMode === 'letter';
+  const isLetterPaused = jhAudioPaused && jhAudioMode === 'letter';
   const letterBtn = document.getElementById('btnJhLetterPlay');
   if (letterBtn) {
     letterBtn.classList.toggle('playing', isLetterPlaying);
-    letterBtn.textContent = isLetterPlaying ? '⏹️ থামাও' : '🔊 শোনো';
+    letterBtn.classList.toggle('paused', isLetterPaused);
+    letterBtn.textContent = isLetterPlaying
+      ? '⏸️ বিরতি'
+      : (isLetterPaused ? '▶️ চালাও' : '🔊 শোনো');
+  }
+  const letterStopBtn = document.getElementById('btnJhLetterStop');
+  if (letterStopBtn && letterStopBtn.style) {
+    letterStopBtn.style.display = (isLetterPlaying || isLetterPaused) ? 'inline-flex' : 'none';
   }
 }
 
@@ -1163,9 +1196,15 @@ function playReelAudioAtIndex(idx) {
   const aud = getJhAudioEl();
   if (!aud) return;
 
-  if (jhAudioPlaying && jhAudioMode === 'reel' && jhCurrentIdx === targetIdx) {
-    stopJhAudio();
-    return;
+  if (jhAudioMode === 'reel' && jhCurrentIdx === targetIdx) {
+    if (jhAudioPlaying) {
+      pauseJhAudio();
+      return;
+    }
+    if (jhAudioPaused) {
+      resumeJhAudio();
+      return;
+    }
   }
 
   stopJhAudio();
@@ -1192,12 +1231,14 @@ function playReelAudioAtIndex(idx) {
   };
 
   jhAudioPlaying = true;
+  jhAudioPaused = false;
   updateActiveCardPlayBtns();
-  startJhWordHighlightLoop(cutSec);
+  startJhWordHighlightLoop(cutSec, false);
   const playPromise = typeof aud.play === 'function' ? aud.play() : null;
   if (playPromise && typeof playPromise.catch === 'function') {
     playPromise.catch(() => {
       jhAudioPlaying = false;
+      jhAudioPaused = false;
       clearJhWordHighlight();
       updateActiveCardPlayBtns();
     });
@@ -1206,6 +1247,7 @@ function playReelAudioAtIndex(idx) {
 
 function handleReelAudioEnded(idx) {
   jhAudioPlaying = false;
+  jhAudioPaused = false;
   clearJhWordHighlight();
   updateActiveCardPlayBtns();
   if (jhAutoFlow && idx === jhCurrentIdx && jhFilteredReels.length > 1) {
@@ -1328,11 +1370,7 @@ function renderJhalakReelStream() {
     ${ghostHtml}
     <article id="jhSlide_${idx}" class="jh-reel-slide ${animClass}" data-idx="${idx}" data-vibe="${card.vibe}">
       <div class="jh-card-stage">
-        <div class="jh-card-top">
-          <span class="jh-vibe-badge">${card.badge_bn}</span>
-        </div>
-
-        <h2 id="${titleBlockId}" class="jh-hook-title">${wrappedTitleHtml}</h2>
+        <h2 id="${titleBlockId}" class="jh-hook-title"><span class="jh-vibe-badge">${card.badge_bn}</span> ${wrappedTitleHtml}</h2>
 
         ${sectionsHtml}
 
@@ -1556,9 +1594,15 @@ function playJhalakLetterAudio() {
   const aud = getJhAudioEl();
   if (!aud || !s || !s.audio_url) return;
 
-  if (jhAudioPlaying && jhAudioMode === 'letter') {
-    stopJhAudio();
-    return;
+  if (jhAudioMode === 'letter') {
+    if (jhAudioPlaying) {
+      pauseJhAudio();
+      return;
+    }
+    if (jhAudioPaused) {
+      resumeJhAudio();
+      return;
+    }
   }
 
   stopJhAudio();
@@ -1574,17 +1618,20 @@ function playJhalakLetterAudio() {
   aud.onseeked = syncLetterAudio;
   aud.onended = function () {
     jhAudioPlaying = false;
+    jhAudioPaused = false;
     clearJhWordHighlight();
     updateActiveCardPlayBtns();
   };
 
   jhAudioPlaying = true;
+  jhAudioPaused = false;
   updateActiveCardPlayBtns();
-  startJhWordHighlightLoop(0);
+  startJhWordHighlightLoop(0, false);
   const playPromise = typeof aud.play === 'function' ? aud.play() : null;
   if (playPromise && typeof playPromise.catch === 'function') {
     playPromise.catch(() => {
       jhAudioPlaying = false;
+      jhAudioPaused = false;
       clearJhWordHighlight();
       updateActiveCardPlayBtns();
     });

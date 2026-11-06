@@ -951,6 +951,9 @@ vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
         self.assertIn('id="btnJhCategoryDropdown"', jh_html)
         self.assertIn('id="jhCategoryDropdownMenu"', jh_html)
         self.assertIn('id="btnJhHeaderListen"', jh_html)
+        self.assertIn('id="btnJhHeaderStop"', jh_html)
+        self.assertIn('<span class="jh-brand-logo" aria-label="ঝলক">✨</span>', jh_html)
+        self.assertNotIn('<span class="jh-brand-title">✨ ঝলক</span>', jh_html)
         self.assertIn("jh-page-bottom-actions", jh_html)
         self.assertIn("jh-slide-anim-next", jh_html)
         self.assertIn("jh-slide-anim-prev", jh_html)
@@ -1098,11 +1101,44 @@ const suite = code + `
   toggleJhShowLikeCount();
   assert.strictEqual(jhShowLikeCount, false);
   assert.ok(!el('jhStickyLikeBtn').innerHTML.includes('jhStickyLikeCount'), 'When jhShowLikeCount is false, like count badge is hidden');
-  assert.ok(el('jhCategoryStatsBox').innerHTML.includes('পাতা'), 'Category stats must display content counts');
+  assert.ok(el('jhCategoryStatsBox').innerHTML.includes('১৫২টি পাতা'), 'Category stats must display simple ১৫২টি পাতা without ১৫২/১৫২টি fraction');
+  assert.ok(!el('jhCategoryStatsBox').innerHTML.includes('১৫২/১৫২টি পাতা'), 'Category stats must not show redundant ১৫২/১৫২টি পাতা fraction');
   assert.ok(el('jhAdminItemsList').innerHTML.includes('id="jhAdminCatSelect"'), 'Admin control must have category selector dropdown');
   assert.ok(el('jhAdminItemsList').innerHTML.includes('id="jhAdminItemSelect"'), 'Admin control must have item selector dropdown within category');
+  assert.ok(!el('jhAdminItemsList').innerHTML.includes('বিভাগের ডান রিসেট'), 'Admin panel must not render the 4-button category bulk section');
+  assert.ok(!el('jhReelsViewport').innerHTML.includes('jh-card-top'), 'Category badge must sit inline at the start of the title without a separate .jh-card-top row');
+  assert.ok(/<h2[^>]*class="jh-hook-title"><span class="jh-vibe-badge">/.test(el('jhReelsViewport').innerHTML), 'Category badge must be placed right at the beginning of the title h2');
   const adminRowMatches = el('jhAdminItemsList').innerHTML.match(/class="jh-admin-row /g) || [];
   assert.strictEqual(adminRowMatches.length, 1, 'Admin panel must render only the 1 selected item row (no huge list)');
+
+  // 8b. Listen button Play -> Pause -> Resume -> Stop lifecycle
+  stopJhAudio();
+  assert.strictEqual(el('btnJhHeaderListen').textContent, '🔊 শোনো');
+  assert.strictEqual(el('btnJhHeaderStop').style.display, 'none', 'Stop button hidden when idle');
+  playReelAudioAtIndex();
+  assert.strictEqual(jhAudioPlaying, true);
+  assert.strictEqual(jhAudioPaused, false);
+  assert.strictEqual(el('btnJhHeaderListen').textContent, '⏸️ বিরতি', 'While playing, Listen button shows Pause');
+  assert.strictEqual(el('btnJhHeaderStop').style.display, 'inline-flex', 'While playing, Stop button is visible');
+  syncJhWordHighlightToTime(4.0, 20.0);
+  const pausedWordIdx = jhActiveWordIdx;
+  assert.ok(pausedWordIdx > 0);
+  playReelAudioAtIndex();
+  assert.strictEqual(jhAudioPlaying, false, 'Clicking Listen while playing pauses audio');
+  assert.strictEqual(jhAudioPaused, true, 'Paused flag set to true');
+  assert.strictEqual(el('btnJhHeaderListen').textContent, '▶️ চালাও', 'While paused, Listen button shows Resume');
+  assert.strictEqual(el('btnJhHeaderStop').style.display, 'inline-flex', 'While paused, Stop button remains visible');
+  assert.strictEqual(jhActiveWordIdx, pausedWordIdx, 'Pausing preserves active word highlight index');
+  playReelAudioAtIndex();
+  assert.strictEqual(jhAudioPlaying, true, 'Clicking Listen while paused resumes audio');
+  assert.strictEqual(jhAudioPaused, false);
+  assert.strictEqual(el('btnJhHeaderListen').textContent, '⏸️ বিরতি');
+  stopJhAudio();
+  assert.strictEqual(jhAudioPlaying, false);
+  assert.strictEqual(jhAudioPaused, false);
+  assert.strictEqual(el('btnJhHeaderListen').textContent, '🔊 শোনো', 'Stopping resets Listen button to Play');
+  assert.strictEqual(el('btnJhHeaderStop').style.display, 'none', 'Stopping hides Stop button');
+  assert.strictEqual(jhActiveWordIdx, -1, 'Stopping clears active word highlight');
 
   // 8. Category-level Done & Likes bulk controls in Admin
   setCategoryDoneState('tv', 1);

@@ -72,17 +72,15 @@ html, body {
   flex-wrap: nowrap;
 }
 
-.jh-brand-title {
+.jh-brand-logo {
   flex: 0 0 auto;
-  font-family: 'Noto Serif Bengali', Georgia, serif;
-  font-size: 0.98rem;
-  font-weight: 800;
-  color: #FFFBEB;
-  background: rgba(43, 31, 23, 0.95);
-  border: 1.5px solid var(--jh-border-gold);
-  padding: 4px 9px;
-  border-radius: 999px;
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 2px 3px;
+  user-select: none;
 }
 
 .jh-cat-dropdown-wrap {
@@ -143,10 +141,37 @@ html, body {
 }
 
 .jh-top-listen-btn.playing {
-  background: #D9532F;
+  background: #D97706;
+}
+
+.jh-top-listen-btn.paused {
+  background: #2563EB;
 }
 
 .jh-top-listen-btn:active {
+  transform: scale(0.95);
+}
+
+.jh-top-stop-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 34px;
+  background: #DC2626;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+.jh-top-stop-btn:active {
   transform: scale(0.95);
 }
 
@@ -509,25 +534,22 @@ html, body {
   flex-direction: column;
 }
 
-.jh-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  margin-bottom: 8px;
-}
-
 .jh-vibe-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   background: #FFF1E6;
   color: #B93815;
-  font-size: 0.8rem;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.78rem;
   font-weight: 700;
-  padding: 3px 10px;
+  line-height: 1.25;
+  padding: 2px 9px;
   border-radius: 999px;
   border: 1px solid #FCD9BD;
+  vertical-align: middle;
+  margin-right: 6px;
+  transform: translateY(-2px);
 }
 
 .jh-hook-title {
@@ -535,7 +557,7 @@ html, body {
   font-size: clamp(1.22rem, 4.5vw, 1.5rem);
   font-weight: 800;
   color: #1F1610;
-  line-height: 1.4;
+  line-height: 1.42;
   margin-bottom: 12px;
 }
 
