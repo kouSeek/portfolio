@@ -95,8 +95,12 @@ def build_kalyani(env: jinja2.Environment) -> None:
     img_dir = APP_ROOT / "assets" / "kalyani" / "slides"
     sys_md = (APP_ROOT / "personas" / "kalyani" / "client-side-gemini.md").read_text(encoding="utf-8")
     sys_prompt = sys_md.split("```text", 1)[-1].rsplit("```", 1)[0].strip()
+    kal_mpath = APP_ROOT / "audio" / "kalyani" / "tts_manifest.json"
+    slide_timings = json.loads(kal_mpath.read_text(encoding="utf-8")).get("slide_timings", {}) if kal_mpath.is_file() else {}
+    jh_mpath = APP_ROOT / "audio" / "jhalak" / "tts_manifest.json"
+    jh_timings = json.loads(jh_mpath.read_text(encoding="utf-8")).get("audio_timings", {}) if jh_mpath.is_file() else {}
     slides_payload = [
-        {**s, "img_b64": b64_uri(img_dir / f"slide_{int(s['id'])}.jpg", "image/jpeg"), "audio_url": f"{url_prefix}slides/slide_{int(s['id'])}.mp3", "audio_b64": ""}
+        {**s, "img_b64": b64_uri(img_dir / f"slide_{int(s['id'])}.jpg", "image/jpeg"), "audio_url": f"{url_prefix}slides/slide_{int(s['id'])}.mp3", "audio_b64": "", "audio_meta": slide_timings.get(f"slide_{int(s['id'])}", {})}
         for s in SLIDES
     ]
     quotes_audio = [{"url": f"{url_prefix}quotes/quote_{i}.mp3", "b64": ""} for i in range(len(MORNING_QUOTES))]
@@ -108,11 +112,12 @@ def build_kalyani(env: jinja2.Environment) -> None:
         f"const GAME_META = {json.dumps(GAME_META, ensure_ascii=False)};",
         f"const DAYS_21 = {json.dumps(_enrich_kalyani_days(DAYS_21, url_prefix), ensure_ascii=False)};",
         f"const QUOTES_AUDIO = {json.dumps(quotes_audio, ensure_ascii=False)};",
+        f"const JHALAK_AUDIO_TIMINGS = {json.dumps(jh_timings, ensure_ascii=False)};",
         "const DAY1_AG_MAP = {};",
     ])
-    for fname, tpl, css_list, js_list in (
-        ("kalyani.html", "kalyani.html.j2", KALYANI_CSS, KALYANI_JS),
-        ("jhalak.html", "jhalak.html.j2", JHALAK_CSS, JHALAK_JS),
+    for fname, tpl, css_list, js_list, fav_png in (
+        ("kalyani.html", "kalyani.html.j2", KALYANI_CSS, KALYANI_JS, "favicon-kalyani.png"),
+        ("jhalak.html", "jhalak.html.j2", JHALAK_CSS, JHALAK_JS, "favicon-jhalak.png"),
     ):
         out = APP_ROOT / fname
         out.write_text(env.get_template(tpl).render(
@@ -120,7 +125,7 @@ def build_kalyani(env: jinja2.Environment) -> None:
             data_js=data_js,
             js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in js_list),
             letter_video_url=LETTER_VIDEO_URL,
-            favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / "favicon-kalyani.png", "image/png"),
+            favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / fav_png, "image/png"),
         ), encoding="utf-8")
         print(f"Built {out.name} via Jinja2 ({out.stat().st_size:,} bytes)")
 

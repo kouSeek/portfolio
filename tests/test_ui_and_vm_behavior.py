@@ -931,6 +931,15 @@ vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
         jh_html = jh_path.read_text(encoding="utf-8")
         # 1. Renamed to just ঝলক, no বায়োস্কোপ, no Kalyani link, no header TV tab, no Prev/Next buttons, no top page counter
         self.assertIn("<title>✨ ঝলক</title>", jh_html)
+        self.assertIn('<meta name="mobile-web-app-capable" content="yes" />', jh_html)
+        self.assertIn('<meta name="apple-mobile-web-app-capable" content="yes" />', jh_html)
+        self.assertIn('<link rel="manifest" href="jhalak-manifest.json" />', jh_html)
+        self.assertIn("favicon-jhalak.png", jh_html)
+        self.assertIn("favicon-jhalak.ico", jh_html)
+        self.assertIn("navigator.serviceWorker.register('kalyani-sw.js')", jh_html)
+        self.assertTrue((APP_ROOT / "jhalak-manifest.json").is_file(), "jhalak-manifest.json must exist")
+        self.assertTrue((APP_ROOT / "assets" / "icons" / "favicon-jhalak-192.png").is_file())
+        self.assertTrue((APP_ROOT / "assets" / "icons" / "favicon-jhalak-512.png").is_file())
         self.assertNotIn("বায়োস্কোপ", jh_html)
         self.assertNotIn('href="kalyani.html"', jh_html)
         self.assertNotIn('id="tabJhTv"', jh_html)
@@ -1107,9 +1116,22 @@ const suite = code + `
 
   // 9. KORTEX-inspired real-time word-by-word read-aloud highlighting across reel pages and Chithi letter slides
   renderJhalakReelStream();
+  assert.ok(typeof JHALAK_AUDIO_TIMINGS === 'object' && Object.keys(JHALAK_AUDIO_TIMINGS).length === 152, 'All 152 Jhalak reels must have acoustic duration and silence maps');
   assert.ok(el('jhReelsViewport').innerHTML.includes('class="jh-tts-word"'), 'Reel page must wrap spoken words in .jh-tts-word spans');
   assert.ok(jhCurrentWordTimings.length > 20, 'Each reel page must build weighted word timing spans');
   assert.ok(jhCurrentTotalWeight > 2000, 'Total word weight must be positive');
+  assert.ok(jhCurrentTimelineDur > 15, 'Acoustic timeline duration must match real MP3 length');
+  const activeCardTimings = JHALAK_AUDIO_TIMINGS[jhFilteredReels[jhCurrentIdx].id];
+  if (activeCardTimings && Array.isArray(activeCardTimings.silences) && activeCardTimings.silences.length > 1) {
+    for (let wIdx = 1; wIdx < jhCurrentWordTimings.length; wIdx++) {
+      const ws = jhCurrentWordTimings[wIdx].startSec;
+      for (let sIdx = 0; sIdx < activeCardTimings.silences.length; sIdx++) {
+        const silS = activeCardTimings.silences[sIdx][0];
+        const silE = activeCardTimings.silences[sIdx][1];
+        assert.ok(!(ws > silS + 0.02 && ws < silE - 0.02), 'No subsequent word may start inside an acoustic silence pause');
+      }
+    }
+  }
 
   const midIdx = syncJhWordHighlightToTime(5.0, 20.0);
   assert.ok(midIdx > 0 && midIdx < jhCurrentWordTimings.length, 'syncJhWordHighlightToTime must resolve active word index');

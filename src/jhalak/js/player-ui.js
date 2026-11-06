@@ -26,8 +26,10 @@ let jhAdminSelectedItemId = '';
 let jhOutgoingCardHtml = '';
 let jhCurrentWordTimings = [];
 let jhCurrentTotalWeight = 0;
+let jhCurrentTimelineDur = 0;
 let jhLetterWordTimings = [];
 let jhLetterTotalWeight = 0;
+let jhLetterTimelineDur = 0;
 let jhAudioMode = 'reel';
 let jhActiveWordIdx = -1;
 let jhWordHighlightTimer = null;
@@ -170,17 +172,26 @@ function wrapTextWithJhTtsWords(text, state, opts) {
     const cleanWord = part
       .replace(/[\u{10000}-\u{10FFFF}\u2600-\u27BF\uFE0F]/gu, '')
       .replace(/[।.!?;:?!—–\-,،•*#_`~↗"'“”‘’()\[\]{}]/g, '');
+    const vowelMatches = cleanWord.match(
+      /[\u09BE-\u09CC\u09D7\u0985-\u0994\u0981-\u0983\u093E-\u094C\u0905-\u0914\u0901-\u0903aeiouyAEIOUY]/g
+    );
+    const vowelCount = vowelMatches ? vowelMatches.length : 0;
     const charCount = Math.max(1, cleanWord.length);
-    let weight = Math.max(130, charCount * 44 + 95);
+    const syllableWeight = Math.max(90, vowelCount * 58 + charCount * 32 + 55);
 
-    if (/[।.!?;:?!—–-]["'”’)\]]*$/.test(part)) {
-      weight += 260;
-    } else if (/[,،]["'”’)\]]*$/.test(part)) {
-      weight += 130;
-    }
+    let pauseTier = 0;
     if (addHeadingPause && pIdx === lastSpokenPartIdx) {
-      weight += 240;
+      pauseTier = 3;
+    } else if (/[।.?!]["'”’)\]]*$/.test(part)) {
+      pauseTier = 3;
+    } else if (/[;:—–-]["'”’)\]]*$/.test(part)) {
+      pauseTier = 2;
+    } else if (/[,،]["'”’)\]]*$/.test(part)) {
+      pauseTier = 1;
     }
+
+    const pauseWeight = pauseTier === 3 ? 680 : (pauseTier === 2 ? 340 : (pauseTier === 1 ? 185 : 0));
+    const weight = syllableWeight + pauseWeight;
 
     const wIdx = state.words.length;
     const startWeight = state.totalWeight;
@@ -189,9 +200,13 @@ function wrapTextWithJhTtsWords(text, state, opts) {
     state.words.push({
       idx: wIdx,
       word: part,
+      syllableWeight: syllableWeight,
+      pauseTier: pauseTier,
       weight: weight,
       startWeight: startWeight,
       endWeight: endWeight,
+      startSec: 0,
+      endSec: 0,
       blockId: blockId,
       inCuriosityA: inCuriosityA
     });
@@ -199,6 +214,156 @@ function wrapTextWithJhTtsWords(text, state, opts) {
     const curAttr = inCuriosityA ? ' data-curiosity-a="1"' : '';
     return `<span id="${prefix}_${wIdx}" class="jh-tts-word" data-widx="${wIdx}"${curAttr}>${part}</span>`;
   }).join('');
+}
+
+/* ACOUSTIC SILENCE-MAP & SENTENCE-SNAP WORD TIMELINE BUILDER */
+function buildAcousticWordTimeline(words, totalWeight, audioMeta) {
+  if (!words || !words.length || totalWeight <= 0) return 0;
+
+  const totalDur = (audioMeta && Number(audioMeta.dur) > 0.5)
+    ? Number(audioMeta.dur)
+    : Math.max(2.0, totalWeight / 1000);
+  const rawSilences = (audioMeta && Array.isArray(audioMeta.silences)) ? audioMeta.silences : [];
+  const silences = [];
+  for (let i = 0; i < rawSilences.length; i++) {
+    const pair = rawSilences[i];
+    if (Array.isArray(pair) && pair.length >= 2) {
+      const s = Math.max(0, Number(pair[0]) || 0);
+      const e = Math.min(totalDur, Number(pair[1]) || 0);
+      if (e - s >= 0.12) silences.push([s, e]);
+    }
+  }
+
+  if (!silences.length) {
+    const lead = totalDur > 1.2 ? 0.18 : 0;
+    const span = Math.max(0.4, totalDur - (totalDur > 1.2 ? 0.34 : 0));
+    for (let i = 0; i < words.length; i++) {
+      words[i].startSec = lead + (words[i].startWeight / totalWeight) * span;
+      words[i].endSec = lead + (words[i].endWeight / totalWeight) * span;
+    }
+    return totalDur;
+  }
+
+  function voicedTimeAt(t) {
+    const clamped = Math.max(0, Math.min(totalDur, t));
+    let v = clamped;
+    for (let i = 0; i < silences.length; i++) {
+      const s = silences[i][0];
+      const e = silences[i][1];
+      if (clamped <= s) break;
+      v -= (Math.min(clamped, e) - s);
+    }
+    return Math.max(0, v);
+  }
+
+  function invVoicedTime(targetV) {
+    let lo = 0;
+    let hi = totalDur;
+    for (let iter = 0; iter < 26; iter++) {
+      const mid = (lo + hi) * 0.5;
+      if (voicedTimeAt(mid) < targetV) lo = mid;
+      else hi = mid;
+    }
+    return (lo + hi) * 0.5;
+  }
+
+  function snapOutOfSilence(t) {
+    for (let i = 0; i < silences.length; i++) {
+      const s = silences[i][0];
+      const e = silences[i][1];
+      if (t > s + 0.01 && t < e - 0.01) return e;
+    }
+    return t;
+  }
+
+  const speechStart = (silences[0][0] <= 0.08)
+    ? Math.min(totalDur * 0.15, silences[0][1])
+    : 0.04;
+  const lastSil = silences[silences.length - 1];
+  const speechEnd = (lastSil[1] >= totalDur - 0.14)
+    ? Math.max(speechStart + 0.4, lastSil[0])
+    : totalDur;
+  const totalVoiced = Math.max(0.4, voicedTimeAt(speechEnd));
+
+  let totalVoicedWeight = 0;
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
+    const microPause = w.pauseTier === 2 ? 95 : (w.pauseTier === 1 ? 55 : 0);
+    w.voicedWeight = (w.syllableWeight || 140) + microPause;
+    w.cumVoicedStart = totalVoicedWeight;
+    totalVoicedWeight += w.voicedWeight;
+    w.cumVoicedEnd = totalVoicedWeight;
+  }
+
+  const segments = [];
+  let lastUsedSilIdx = (silences[0][0] <= 0.08) ? 0 : -1;
+  let lastAnchorSec = speechStart;
+
+  for (let i = 0; i < words.length - 1; i++) {
+    if (words[i].pauseTier < 2) continue;
+    const frac = words[i].cumVoicedEnd / totalVoicedWeight;
+    const predT = invVoicedTime(frac * totalVoiced);
+    const maxTol = words[i].pauseTier === 3 ? 1.85 : 0.75;
+
+    let bestK = -1;
+    let bestScore = 999;
+    for (let k = lastUsedSilIdx + 1; k < silences.length; k++) {
+      const s = silences[k][0];
+      const e = silences[k][1];
+      if (s <= lastAnchorSec + 0.15 || e >= speechEnd - 0.12) continue;
+      const dist = Math.abs(s - predT);
+      if (dist <= maxTol) {
+        const score = dist - (e - s) * 0.25;
+        if (score < bestScore) {
+          bestScore = score;
+          bestK = k;
+        }
+      }
+    }
+
+    if (bestK >= 0) {
+      segments.push({
+        endWordIdx: i,
+        endSec: silences[bestK][0],
+        nextStartSec: silences[bestK][1]
+      });
+      lastUsedSilIdx = bestK;
+      lastAnchorSec = silences[bestK][1];
+    }
+  }
+
+  segments.push({
+    endWordIdx: words.length - 1,
+    endSec: speechEnd,
+    nextStartSec: totalDur
+  });
+
+  let segStartWordIdx = 0;
+  let segStartSec = speechStart;
+  for (let sIdx = 0; sIdx < segments.length; sIdx++) {
+    const seg = segments[sIdx];
+    const vStart = voicedTimeAt(segStartSec);
+    const vEnd = Math.max(vStart + 0.02, voicedTimeAt(seg.endSec));
+    const wWeightStart = words[segStartWordIdx].cumVoicedStart;
+    const wWeightSpan = Math.max(1, words[seg.endWordIdx].cumVoicedEnd - wWeightStart);
+
+    for (let j = segStartWordIdx; j <= seg.endWordIdx; j++) {
+      const f0 = (words[j].cumVoicedStart - wWeightStart) / wWeightSpan;
+      const f1 = (words[j].cumVoicedEnd - wWeightStart) / wWeightSpan;
+      const rawStart = j === segStartWordIdx ? segStartSec : invVoicedTime(vStart + f0 * (vEnd - vStart));
+      const rawEnd = j === seg.endWordIdx ? seg.nextStartSec : invVoicedTime(vStart + f1 * (vEnd - vStart));
+      words[j].startSec = j === 0 ? 0 : snapOutOfSilence(rawStart);
+      words[j].endSec = Math.max(words[j].startSec + 0.02, rawEnd);
+      if (j > segStartWordIdx && words[j].startSec > words[j - 1].endSec) {
+        words[j - 1].endSec = words[j].startSec;
+      }
+    }
+
+    segStartWordIdx = seg.endWordIdx + 1;
+    segStartSec = seg.nextStartSec;
+  }
+
+  return totalDur;
 }
 
 function stopJhWordHighlightLoop() {
@@ -234,24 +399,26 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
   const isLetter = jhAudioMode === 'letter';
   const words = isLetter ? jhLetterWordTimings : jhCurrentWordTimings;
   const totalWeight = isLetter ? jhLetterTotalWeight : jhCurrentTotalWeight;
+  const timelineDur = isLetter ? jhLetterTimelineDur : jhCurrentTimelineDur;
   const prefix = isLetter ? 'jhLetterWord' : 'jhWord';
 
   if (!words || !words.length || totalWeight <= 0) return -1;
 
-  const estDurSec = Math.max(1.5, totalWeight / 1000);
-  let effDur = (Number.isFinite(durationSec) && durationSec > 0.5) ? durationSec : estDurSec;
+  const baseDur = timelineDur > 0.5 ? timelineDur : Math.max(1.5, totalWeight / 1000);
+  let effDur = (Number.isFinite(durationSec) && durationSec > 0.5) ? durationSec : baseDur;
   if (!isLetter && jhActiveCutSec > 2 && effDur > jhActiveCutSec) {
     effDur = jhActiveCutSec;
   }
 
-  const curSec = (Number.isFinite(currentTimeSec) && currentTimeSec >= 0)
+  const aud = getJhAudioEl();
+  const rawCurSec = (Number.isFinite(currentTimeSec) && currentTimeSec >= 0)
     ? currentTimeSec
-    : Math.max(0, (Date.now() - jhAudioStartedAtMs) / 1000);
+    : (aud && Number.isFinite(aud.currentTime) && aud.currentTime >= 0 ? aud.currentTime : 0);
 
-  const leadPad = effDur > 1.2 ? 0.06 : 0;
-  const spanDur = Math.max(0.4, effDur - (effDur > 1.2 ? 0.22 : 0));
-  const progress = Math.max(0, Math.min(0.9999, (curSec - leadPad) / spanDur));
-  const targetWeight = progress * totalWeight;
+  const scaleFactor = (Math.abs(effDur - baseDur) > 1.0 && effDur > 0.5)
+    ? (baseDur / effDur)
+    : 1.0;
+  const targetSec = Math.max(0, Math.min(baseDur - 0.001, rawCurSec * scaleFactor));
 
   let lo = 0;
   let hi = words.length - 1;
@@ -259,9 +426,9 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
   while (lo <= hi) {
     const mid = (lo + hi) >> 1;
     const w = words[mid];
-    if (targetWeight < w.startWeight) {
+    if (targetSec < w.startSec) {
       hi = mid - 1;
-    } else if (targetWeight >= w.endWeight) {
+    } else if (targetSec >= w.endSec) {
       foundIdx = mid;
       lo = mid + 1;
     } else {
@@ -340,10 +507,12 @@ function startJhWordHighlightLoop(cutSec) {
       return;
     }
     const aud = getJhAudioEl();
-    const cur = aud && Number.isFinite(aud.currentTime) ? aud.currentTime : undefined;
-    const dur = aud && Number.isFinite(aud.duration) && aud.duration > 0 ? aud.duration : 0;
-    syncJhWordHighlightToTime(cur, dur);
-  }, 55);
+    if (!aud || aud.paused || aud.seeking) return;
+    if (Number.isFinite(aud.currentTime)) {
+      const dur = Number.isFinite(aud.duration) && aud.duration > 0 ? aud.duration : 0;
+      syncJhWordHighlightToTime(aud.currentTime, dur);
+    }
+  }, 35);
 }
 
 function stopJhAudio() {
@@ -1007,7 +1176,7 @@ function playReelAudioAtIndex(idx) {
   aud.src = card.audio_url;
   const cutSec = Number(card.story_end) || 0;
 
-  aud.ontimeupdate = function () {
+  const syncFromAudio = function () {
     const dur = Number.isFinite(aud.duration) && aud.duration > 0 ? aud.duration : 0;
     syncJhWordHighlightToTime(aud.currentTime, dur);
     if (cutSec > 2 && aud.currentTime >= cutSec) {
@@ -1015,6 +1184,9 @@ function playReelAudioAtIndex(idx) {
       handleReelAudioEnded(targetIdx);
     }
   };
+  aud.ontimeupdate = syncFromAudio;
+  aud.onplaying = syncFromAudio;
+  aud.onseeked = syncFromAudio;
   aud.onended = function () {
     handleReelAudioEnded(targetIdx);
   };
@@ -1132,6 +1304,10 @@ function renderJhalakReelStream() {
     addHeadingPause: false
   });
 
+  const cardAudioMeta = (typeof JHALAK_AUDIO_TIMINGS !== 'undefined' && JHALAK_AUDIO_TIMINGS && JHALAK_AUDIO_TIMINGS[card.id])
+    ? JHALAK_AUDIO_TIMINGS[card.id]
+    : null;
+  jhCurrentTimelineDur = buildAcousticWordTimeline(ttsState.words, ttsState.totalWeight, cardAudioMeta);
   jhCurrentWordTimings = ttsState.words;
   jhCurrentTotalWeight = ttsState.totalWeight;
   jhActiveWordIdx = -1;
@@ -1356,6 +1532,7 @@ function renderJhalakLetterSlide() {
     addHeadingPause: false
   });
 
+  jhLetterTimelineDur = buildAcousticWordTimeline(letterState.words, letterState.totalWeight, s.audio_meta || null);
   jhLetterWordTimings = letterState.words;
   jhLetterTotalWeight = letterState.totalWeight;
   jhActiveWordIdx = -1;
@@ -1388,10 +1565,13 @@ function playJhalakLetterAudio() {
   jhAudioMode = 'letter';
   aud.src = s.audio_url;
 
-  aud.ontimeupdate = function () {
+  const syncLetterAudio = function () {
     const dur = Number.isFinite(aud.duration) && aud.duration > 0 ? aud.duration : 0;
     syncJhWordHighlightToTime(aud.currentTime, dur);
   };
+  aud.ontimeupdate = syncLetterAudio;
+  aud.onplaying = syncLetterAudio;
+  aud.onseeked = syncLetterAudio;
   aud.onended = function () {
     jhAudioPlaying = false;
     clearJhWordHighlight();
@@ -1410,6 +1590,56 @@ function playJhalakLetterAudio() {
     });
   }
 }
+
+/* PWA SERVICE WORKER REGISTRATION & FAVICON HYDRATION FOR CHROME INSTALLABILITY */
+if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+  navigator.serviceWorker.register('kalyani-sw.js').catch(() => {});
+}
+
+(function hydratePageFavicon() {
+  function apply() {
+    try {
+      if (typeof document === 'undefined' || !document.head || typeof document.createElement !== 'function') return;
+      const el = document.getElementById('pageFavicon');
+      if (!el || !el.getAttribute) return;
+      const emoji = el.getAttribute('data-emoji') || '';
+      const b64 = el.getAttribute('data-png-b64') || '';
+      const httpsPng = el.getAttribute('data-https-png') || b64;
+      const httpsIco = el.getAttribute('data-https-ico') || httpsPng;
+      const useHttps = (typeof location !== 'undefined' && /^https?:$/i.test(location.protocol) && (typeof navigator === 'undefined' || navigator.onLine !== false));
+      const pngHref = useHttps ? httpsPng : (b64 || httpsPng);
+      const icoHref = useHttps ? httpsIco : (b64 || httpsIco);
+      if (typeof document.querySelectorAll === 'function') {
+        document.querySelectorAll('link[rel*="icon"]').forEach(n => {
+          if (n.parentNode) n.parentNode.removeChild(n);
+        });
+      }
+      const l1 = document.createElement('link');
+      l1.id = 'pageFavicon';
+      l1.setAttribute('data-emoji', emoji);
+      l1.setAttribute('data-png-b64', b64);
+      l1.setAttribute('data-https-png', httpsPng);
+      l1.setAttribute('data-https-ico', httpsIco);
+      l1.rel = 'icon';
+      l1.type = 'image/png';
+      l1.sizes = '64x64';
+      l1.href = pngHref;
+      document.head.appendChild(l1);
+      const l2 = document.createElement('link');
+      l2.rel = 'shortcut icon';
+      l2.type = useHttps ? 'image/x-icon' : 'image/png';
+      l2.href = icoHref;
+      document.head.appendChild(l2);
+      const l3 = document.createElement('link');
+      l3.rel = 'apple-touch-icon';
+      l3.sizes = '64x64';
+      l3.href = b64 || pngHref;
+      document.head.appendChild(l3);
+    } catch (e) {}
+  }
+  apply();
+  if (typeof setTimeout === 'function') setTimeout(apply, 90);
+})();
 
 window.addEventListener('DOMContentLoaded', () => {
   if (jhFilteredReels.length > 0) {

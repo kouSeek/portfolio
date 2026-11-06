@@ -1,0 +1,31 @@
+{
+  "name": "✨ ঝলক — মায়ের আনন্দের ঝলক",
+  "short_name": "✨ ঝলক",
+  "description": "মায়ের জন্য ভগবানের অমৃতকথা, হাসির গল্প, মনের শান্তি, কৌতূহল, চিরদিনের গান ও অর্থ, সহজ ইংরেজি শব্দ, হিন্দি কথোপকথন এবং টিভি।",
+  "start_url": "./jhalak.html",
+  "display": "standalone",
+  "background_color": "#FAF3E8",
+  "theme_color": "#18120E",
+  "orientation": "portrait-primary",
+  "lang": "bn-IN",
+  "icons": [
+    {
+      "src": "assets/icons/favicon-jhalak-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/favicon-jhalak-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
