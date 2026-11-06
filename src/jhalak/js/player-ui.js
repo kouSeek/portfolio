@@ -1,31 +1,27 @@
 /* ============================================================================
-   ✨ ঝলক (JHALAK) — MODULE 2: FULL-SCREEN REELS PLAYER, AUTO-FLOW BIOSCOPE,
-   1-TAP CURIOSITY FLIP, WALKIE-TALKIE GEMINI STUDIO & LETTER/TV DRAWER
+   ✨ ঝলক (JHALAK) — MODULE 2: FULL-SCREEN REELS PLAYER, MULTI-SELECT CATEGORIES,
+   TOP LISTEN BUTTON, RELEVANT YOUTUBE LINKS, TV TAB & SETTINGS (AUTO-REELS,
+   AUTO-PLAY VOICES & CHITHI)
    ============================================================================ */
 
-let jhActiveChannel = 'all';
+let jhActiveTab = 'reels';
+let jhSelectedChannels = new Set(['all']);
 let jhFilteredReels = ALL_JHALAK_REELS.slice();
 let jhCurrentIdx = 0;
 let jhAutoFlow = true;
+let jhAutoPlayVoices = true;
 let jhAudioPlaying = false;
 let jhAutoAdvanceTimer = null;
 let jhSlideLetterIdx = 0;
 let jhObserver = null;
-let jhMediaRecorder = null;
-let jhRecordedChunks = [];
-
-let jhLikedMap = {};
-try {
-  jhLikedMap = JSON.parse(localStorage.getItem('ma_jhalak_liked_v1') || '{}') || {};
-} catch (e) {
-  jhLikedMap = {};
-}
-
 let jhRevealedMap = {};
 
-function saveJhLikedMap() {
-  try { localStorage.setItem('ma_jhalak_liked_v1', JSON.stringify(jhLikedMap)); } catch (e) {}
-}
+try {
+  const savedFlow = localStorage.getItem('ma_jhalak_auto_flow_v1');
+  if (savedFlow === '0') jhAutoFlow = false;
+  const savedVoice = localStorage.getItem('ma_jhalak_auto_voice_v1');
+  if (savedVoice === '0') jhAutoPlayVoices = false;
+} catch (e) {}
 
 function getJhAudioEl() {
   return document.getElementById('jhAudioPlayer');
@@ -61,48 +57,98 @@ function spawnLotusBurst(x, y, symbols) {
   }
 }
 
-function filterJhalakChannel(channelId) {
-  jhActiveChannel = channelId || 'all';
+/* HEADER TABS: JHALAK REELS vs TV */
+function switchJhalakMainTab(tabName) {
+  jhActiveTab = tabName === 'tv' ? 'tv' : 'reels';
   stopJhAudio();
+
+  const tabReels = document.getElementById('tabJhReels');
+  const tabTv = document.getElementById('tabJhTv');
+  const chanStrip = document.getElementById('jhChannelStrip');
+  const reelsVp = document.getElementById('jhReelsViewport');
+  const tvVp = document.getElementById('jhTvViewport');
+
+  if (tabReels) tabReels.classList.toggle('active', jhActiveTab === 'reels');
+  if (tabTv) tabTv.classList.toggle('active', jhActiveTab === 'tv');
+  if (chanStrip) chanStrip.style.display = jhActiveTab === 'reels' ? 'flex' : 'none';
+  if (reelsVp) reelsVp.style.display = jhActiveTab === 'reels' ? 'block' : 'none';
+  if (tvVp) tvVp.style.display = jhActiveTab === 'tv' ? 'block' : 'none';
+}
+
+/* MULTI-SELECT CATEGORY FILTERING */
+function filterJhalakChannel(channelId) {
+  const ch = channelId || 'all';
+  stopJhAudio();
+
+  if (ch === 'all') {
+    jhSelectedChannels = new Set(['all']);
+  } else {
+    jhSelectedChannels.delete('all');
+    if (jhSelectedChannels.has(ch)) {
+      jhSelectedChannels.delete(ch);
+    } else {
+      jhSelectedChannels.add(ch);
+    }
+    if (jhSelectedChannels.size === 0) {
+      jhSelectedChannels.add('all');
+    }
+  }
+
   document.querySelectorAll('.jh-chan-chip').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('data-chan') === jhActiveChannel);
+    const cAttr = btn.getAttribute('data-chan');
+    btn.classList.toggle('active', jhSelectedChannels.has(cAttr));
   });
-  if (jhActiveChannel === 'all') {
+
+  if (jhSelectedChannels.has('all')) {
     jhFilteredReels = ALL_JHALAK_REELS.slice();
   } else {
-    jhFilteredReels = ALL_JHALAK_REELS.filter(r => r.vibe === jhActiveChannel);
+    jhFilteredReels = ALL_JHALAK_REELS.filter(r =>
+      jhSelectedChannels.has(r.vibe) || (jhSelectedChannels.has('music') && r.is_music)
+    );
   }
+
   jhCurrentIdx = 0;
   renderJhalakReelStream();
   const vp = document.getElementById('jhReelsViewport');
   if (vp) vp.scrollTop = 0;
 }
 
-function shuffleJhalakFeed(ev) {
-  if (ev) spawnLotusBurst(ev.clientX, ev.clientY, ['🎲', '✨', '🌸']);
-  stopJhAudio();
-  const copy = jhFilteredReels.slice();
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const tmp = copy[i];
-    copy[i] = copy[j];
-    copy[j] = tmp;
+/* SETTINGS GEAR: AUTO-REELS, AUTO-PLAY VOICES & CHITHI */
+function syncJhSettingsButtonsUI() {
+  const flowBtn = document.getElementById('btnJhAutoFlow');
+  if (flowBtn) {
+    flowBtn.classList.toggle('active-flow', jhAutoFlow);
+    flowBtn.textContent = jhAutoFlow ? '🔄 অটো-রিলস: চালু' : '🔄 অটো-রিলস: বন্ধ';
   }
-  jhFilteredReels = copy;
-  jhCurrentIdx = 0;
-  renderJhalakReelStream();
-  const vp = document.getElementById('jhReelsViewport');
-  if (vp) vp.scrollTop = 0;
-  setTimeout(() => playReelAudioAtIndex(0), 120);
+  const voiceBtn = document.getElementById('btnJhAutoVoice');
+  if (voiceBtn) {
+    voiceBtn.classList.toggle('active-flow', jhAutoPlayVoices);
+    voiceBtn.textContent = jhAutoPlayVoices ? '🔊 অটো-ভয়েস: চালু' : '🔊 অটো-ভয়েস: বন্ধ';
+  }
 }
 
 function toggleJhAutoFlow() {
   jhAutoFlow = !jhAutoFlow;
-  const btn = document.getElementById('btnJhAutoFlow');
-  if (btn) {
-    btn.classList.toggle('active-flow', jhAutoFlow);
-    btn.textContent = jhAutoFlow ? '🎧 অটো-রিলস: চালু' : '🎧 অটো-রিলস: বন্ধ';
-  }
+  try { localStorage.setItem('ma_jhalak_auto_flow_v1', jhAutoFlow ? '1' : '0'); } catch (e) {}
+  syncJhSettingsButtonsUI();
+}
+
+function toggleJhAutoVoice() {
+  jhAutoPlayVoices = !jhAutoPlayVoices;
+  try { localStorage.setItem('ma_jhalak_auto_voice_v1', jhAutoPlayVoices ? '1' : '0'); } catch (e) {}
+  if (!jhAutoPlayVoices) stopJhAudio();
+  syncJhSettingsButtonsUI();
+}
+
+function openJhalakSettingsDrawer() {
+  syncJhSettingsButtonsUI();
+  const modal = document.getElementById('jhSettingsDrawer');
+  if (modal) modal.classList.add('open');
+}
+
+function closeJhalakSettingsDrawer() {
+  const modal = document.getElementById('jhSettingsDrawer');
+  if (modal) modal.classList.remove('open');
 }
 
 function toggleJhalakCuriosityBox(idx, ev) {
@@ -120,36 +166,13 @@ function toggleJhalakCuriosityBox(idx, ev) {
   }
 }
 
-function toggleJhalakLike(idx, ev) {
-  const card = jhFilteredReels[idx];
-  if (!card) return;
-  jhLikedMap[card.id] = !jhLikedMap[card.id];
-  saveJhLikedMap();
-  const btn = document.getElementById('jhLikeBtn_' + idx);
-  if (btn) {
-    btn.classList.toggle('liked', !!jhLikedMap[card.id]);
-    const ic = btn.querySelector('.ic');
-    if (ic) ic.textContent = jhLikedMap[card.id] ? '❤️' : '🤍';
-  }
-  if (jhLikedMap[card.id] && ev) {
-    spawnLotusBurst(ev.clientX, ev.clientY, ['❤️', '🌸', '🪷', '✨']);
-  }
-}
-
 function updateActiveCardPlayBtns() {
   jhFilteredReels.forEach((c, idx) => {
     const mainBtn = document.getElementById('jhMainPlay_' + idx);
-    const railBtn = document.getElementById('jhRailPlay_' + idx);
     const isThisPlaying = jhAudioPlaying && idx === jhCurrentIdx;
     if (mainBtn) {
       mainBtn.classList.toggle('playing', isThisPlaying);
-      mainBtn.textContent = isThisPlaying ? '⏹️ কণ্ঠ থামাও' : '🔊 এই ঝলকটি শোনো';
-    }
-    if (railBtn) {
-      const ic = railBtn.querySelector('.ic');
-      const lbl = railBtn.querySelector('.lbl');
-      if (ic) ic.textContent = isThisPlaying ? '⏹️' : '🔊';
-      if (lbl) lbl.textContent = isThisPlaying ? 'থামাও' : 'শোনো';
+      mainBtn.textContent = isThisPlaying ? '⏹️ থামাও' : '🔊 শোনো';
     }
   });
 }
@@ -198,7 +221,7 @@ function handleReelAudioEnded(idx) {
   updateActiveCardPlayBtns();
   if (jhAutoFlow && idx === jhCurrentIdx && idx + 1 < jhFilteredReels.length) {
     jhAutoAdvanceTimer = setTimeout(() => {
-      scrollToReelIndex(idx + 1, true);
+      scrollToReelIndex(idx + 1, jhAutoPlayVoices);
     }, 1600);
   }
 }
@@ -219,18 +242,25 @@ function renderJhalakReelStream() {
   const vp = document.getElementById('jhReelsViewport');
   if (!vp) return;
 
-  const total = jhFilteredReels.length;
   const html = jhFilteredReels.map((card, idx) => {
-    const isLiked = !!jhLikedMap[card.id];
     const isRev = !!jhRevealedMap[card.id];
-    const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(card.yt_query || card.title_bn);
+    const hasYt = Boolean(card.yt_query && String(card.yt_query).trim());
+    const ytUrl = hasYt
+      ? 'https://www.youtube.com/results?search_query=' + encodeURIComponent(card.yt_query)
+      : '';
+    const ytHtml = hasYt
+      ? `<a class="jh-yt-link" href="${ytUrl}" target="_blank" rel="noopener noreferrer">▶️ ইউটিউবে দেখো: ${card.yt_label_bn || card.title_bn} ↗</a>`
+      : '';
+
     return `
       <article id="jhSlide_${idx}" class="jh-reel-slide" data-idx="${idx}" data-vibe="${card.vibe}">
         <div class="jh-card-stage">
           <div>
             <div class="jh-card-top">
               <span class="jh-vibe-badge">${card.badge_bn}</span>
-              <span class="jh-card-num">ঝলক ${jhBnNum(idx + 1)} / ${jhBnNum(total)}</span>
+              <button id="jhMainPlay_${idx}" class="jh-top-listen-btn" onclick="playReelAudioAtIndex(${idx})">
+                🔊 শোনো
+              </button>
             </div>
             <h2 class="jh-hook-title">${card.title_bn}</h2>
             <div class="jh-hook-story">${card.hook_bn}</div>
@@ -245,51 +275,22 @@ function renderJhalakReelStream() {
               </div>
               <div class="jh-curiosity-a">${card.curiosity_a_bn}</div>
             </div>
+            ${ytHtml}
           </div>
-
-          <div class="jh-audio-strip">
-            <button id="jhMainPlay_${idx}" class="jh-main-listen-btn" onclick="playReelAudioAtIndex(${idx})">
-              🔊 এই ঝলকটি শোনো
-            </button>
-            <button class="jh-next-inline-btn" onclick="scrollToReelIndex(${idx + 1}, true)">
-              পরের ঝলক ⬇️
-            </button>
-          </div>
-
-          <aside class="jh-right-rail" aria-label="ঝলক অ্যাকশন">
-            <button id="jhRailPlay_${idx}" class="jh-rail-btn" onclick="playReelAudioAtIndex(${idx})">
-              <span class="ic">🔊</span>
-              <span class="lbl">শোনো</span>
-            </button>
-            <button id="jhLikeBtn_${idx}" class="jh-rail-btn ${isLiked ? 'liked' : ''}" onclick="toggleJhalakLike(${idx}, event)">
-              <span class="ic">${isLiked ? '❤️' : '🤍'}</span>
-              <span class="lbl">ভালো</span>
-            </button>
-            <a class="jh-rail-btn" href="${ytUrl}" target="_blank" rel="noopener noreferrer" onclick="stopJhAudio()">
-              <span class="ic">🎬</span>
-              <span class="lbl">ভিডিও</span>
-            </a>
-            <button class="jh-rail-btn" onclick="openJhalakVoiceDrawer(${idx})">
-              <span class="ic">🎤</span>
-              <span class="lbl">কল্যাণী</span>
-            </button>
-            <button class="jh-rail-btn" onclick="scrollToReelIndex(${idx + 1}, true)">
-              <span class="ic">⬇️</span>
-              <span class="lbl">পরের</span>
-            </button>
-          </aside>
         </div>
       </article>
     `;
   }).join('');
 
   vp.innerHTML = html;
-  setupJhalakIntersectionObserver();
+  setupJhalakScrollObserver();
 }
 
-function setupJhalakIntersectionObserver() {
+function setupJhalakScrollObserver() {
   if (typeof IntersectionObserver === 'undefined') return;
-  if (jhObserver) jhObserver.disconnect();
+  if (jhObserver) {
+    try { jhObserver.disconnect(); } catch (e) {}
+  }
   const vp = document.getElementById('jhReelsViewport');
   jhObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -298,7 +299,7 @@ function setupJhalakIntersectionObserver() {
         if (idx !== jhCurrentIdx) {
           stopJhAudio();
           jhCurrentIdx = idx;
-          if (jhAutoFlow) {
+          if (jhAutoPlayVoices) {
             playReelAudioAtIndex(idx);
           }
         }
@@ -309,54 +310,9 @@ function setupJhalakIntersectionObserver() {
   document.querySelectorAll('.jh-reel-slide').forEach(el => jhObserver.observe(el));
 }
 
-/* WALKIE-TALKIE VOICE/VIDEO DRAWER */
-function openJhalakVoiceDrawer(idx) {
-  stopJhAudio();
-  const card = jhFilteredReels[idx] || jhFilteredReels[jhCurrentIdx];
-  const modal = document.getElementById('jhVoiceDrawer');
-  const ctxTitle = document.getElementById('jhVoiceCardTitle');
-  if (ctxTitle && card) ctxTitle.textContent = card.title_bn;
-  if (modal) modal.classList.add('open');
-}
-
-function closeJhalakVoiceDrawer() {
-  const modal = document.getElementById('jhVoiceDrawer');
-  if (modal) modal.classList.remove('open');
-}
-
-async function sendQuickGreetingToKalyani() {
-  const statusEl = document.getElementById('jhWtReplyBox');
-  const card = jhFilteredReels[jhCurrentIdx] || ALL_JHALAK_REELS[0];
-  if (!statusEl) return;
-  const apiKey = (typeof localStorage !== 'undefined' && localStorage.getItem('ma_kalyani_gemini_key_v1')) || '';
-  if (!apiKey) {
-    statusEl.innerHTML = '🌸 <strong>কল্যাণী:</strong> মা, তোমার কথা শুনে আমার মনটা আনন্দে ভরে গেল! এই গল্পটা সত্যিই খুব মিষ্টি—তুমি একদম নিজের আনন্দে থাকো মা, আমি সবসময় তোমার পাশে আছি।';
-    return;
-  }
-  statusEl.innerHTML = '🔴 <strong>কল্যাণী (জেমিনি) তোমার জন্য উত্তর সাজাচ্ছে...</strong>';
-  try {
-    const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + encodeURIComponent(apiKey), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{
-          role: 'user',
-          parts: [{
-            text: KALYANI_SYSTEM_PROMPT + '\n\nমা এখন এই রিলস কার্ডটি দেখছেন: ' + card.title_bn + ' — ' + card.hook_bn + '\nমাকে ৩-৪টি অত্যন্ত স্নেহময়, সহজ ঘরোয়া বাংলা বাক্যে আনন্দ ও উৎসাহ দাও।'
-          }]
-        }]
-      })
-    });
-    const data = await resp.json();
-    const reply = (((data.candidates || [])[0] || {}).content || {}).parts?.[0]?.text || 'মা, তুমি সবসময় আনন্দে আর আরামে থাকো!';
-    statusEl.innerHTML = '✨ <strong>জেমিনি (কল্যাণী) বলছে:</strong><br>' + reply;
-  } catch (e) {
-    statusEl.innerHTML = '🌸 <strong>কল্যাণী:</strong> মা, আজকের এই গল্পটা ভীষণ সুন্দর—তুমি আরাম করে বসে উপভোগ করো!';
-  }
-}
-
-/* KOUSHIK'S 8-SLIDE LETTER & TV DRAWER */
+/* KOUSHIK'S 8-SLIDE LETTER (CHITHI — OPENED FROM SETTINGS) */
 function openJhalakLetterDrawer() {
+  closeJhalakSettingsDrawer();
   stopJhAudio();
   renderJhalakLetterSlide();
   const modal = document.getElementById('jhLetterDrawer');
@@ -395,5 +351,6 @@ function playJhalakLetterAudio() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  syncJhSettingsButtonsUI();
   renderJhalakReelStream();
 });
