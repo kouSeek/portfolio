@@ -1131,6 +1131,29 @@ const suite = code + `
   assert.ok(letterMidIdx > 0, 'Letter audio playback must highlight active letter word');
   assert.ok(el('jhLetterWord_' + letterMidIdx).classList.contains('jh-word-active'), 'Active letter word must have jh-word-active class');
   stopJhAudio();
+
+  // 10. Elastic Overscroll Pull-to-Turn Indicators (Top = Prev, Bottom = Next) & 3D Curtain-Lift transition
+  const beforePullId = jhFilteredReels[jhCurrentIdx].id;
+  updateJhOverscrollPullUI('next', 50);
+  assert.ok(el('jhPullIndicatorBottom').classList.contains('visible'), 'Partial bottom pull must show bottom pull indicator');
+  assert.ok(!el('jhPullIndicatorBottom').classList.contains('ready'), 'Partial bottom pull below threshold must not be ready');
+  assert.strictEqual(commitOrResetJhOverscrollPull(), false, 'Releasing below threshold must spring back without changing page');
+  assert.strictEqual(jhFilteredReels[jhCurrentIdx].id, beforePullId, 'Page must remain unchanged when released below threshold');
+
+  el('jhReelsViewport').scrollTop = 320;
+  updateJhOverscrollPullUI('next', 120);
+  assert.ok(el('jhPullIndicatorBottom').classList.contains('ready'), 'Long bottom pull past threshold must mark indicator ready');
+  assert.strictEqual(commitOrResetJhOverscrollPull(), true, 'Releasing past threshold must commit next-page transition');
+  assert.notStrictEqual(jhFilteredReels[jhCurrentIdx].id, beforePullId, 'Long bottom pull must advance to next page');
+  assert.strictEqual(el('jhReelsViewport').scrollTop, 0, 'Advancing to next page must land at the top of the next page');
+
+  el('jhReelsViewport').scrollTop = 240;
+  updateJhOverscrollPullUI('prev', 105);
+  assert.ok(el('jhPullIndicatorTop').classList.contains('ready'), 'Top pull past threshold must mark top indicator ready');
+  assert.strictEqual(commitOrResetJhOverscrollPull(), true, 'Releasing top pull past threshold must return to previous page');
+  assert.strictEqual(jhFilteredReels[jhCurrentIdx].id, beforePullId, 'Top pull must return to previous page');
+  assert.strictEqual(el('jhReelsViewport').scrollTop, 0, 'Returning to previous page must land at the top of the previous page');
+  stopJhAudio();
 })();
 `;
 vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});

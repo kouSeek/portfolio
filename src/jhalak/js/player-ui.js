@@ -38,9 +38,19 @@ let jhTouchStartY = 0;
 let jhTouchStartScrollTop = 0;
 let jhTouchStartAtTop = true;
 let jhTouchStartAtBottom = true;
+let jhPullAnchorY = null;
+let jhPullDirection = '';
+let jhPullDistance = 0;
+let jhPullThresholdReached = false;
 let jhMouseDownX = null;
 let jhMouseDownY = null;
 let jhWheelLock = false;
+let jhWheelOverscrollAccum = 0;
+let jhWheelOverscrollDir = '';
+let jhWheelDecayTimer = null;
+
+const JH_NEXT_PULL_THRESHOLD = 105;
+const JH_PREV_PULL_THRESHOLD = 90;
 
 try {
   const savedFlow = localStorage.getItem('ma_jhalak_auto_flow_v1');
@@ -1166,12 +1176,143 @@ function renderJhalakReelStream() {
             ✅ হয়ে গেছে
           </button>
         </div>
+
+        <div class="jh-bottom-pull-cue">
+          ⬆️ পরের পাতায় যেতে নিচে পৌঁছে আরও একটু উপরে টানো • ⬇️ আগের পাতায় যেতে শুরুতে থেকে নিচে টানো
+        </div>
       </div>
     </article>
   `;
 
+  resetJhOverscrollPullUI(false);
   updateStickyLikeBtnUI();
   updateActiveCardPlayBtns();
+}
+
+/* ============================================================================
+   ELASTIC OVERSCROLL PULL-TO-TURN & 3D CURTAIN-LIFT ENGINE
+   (Top Pull -> Smooth Top of Previous Page | Bottom Long Pull -> Top of Next Page)
+   ============================================================================ */
+function hideJhPullIndicators() {
+  const topInd = document.getElementById('jhPullIndicatorTop');
+  const botInd = document.getElementById('jhPullIndicatorBottom');
+  if (topInd && topInd.classList) {
+    topInd.classList.remove('visible');
+    topInd.classList.remove('ready');
+  }
+  if (botInd && botInd.classList) {
+    botInd.classList.remove('visible');
+    botInd.classList.remove('ready');
+  }
+  const topFill = document.getElementById('jhPullTopFill');
+  const botFill = document.getElementById('jhPullBottomFill');
+  if (topFill && topFill.style) topFill.style.width = '0%';
+  if (botFill && botFill.style) botFill.style.width = '0%';
+}
+
+function updateJhOverscrollPullUI(dir, rawPullPx) {
+  const cleanPull = Math.max(0, Number(rawPullPx) || 0);
+  jhPullDirection = dir;
+  jhPullDistance = cleanPull;
+
+  const threshold = dir === 'next' ? JH_NEXT_PULL_THRESHOLD : JH_PREV_PULL_THRESHOLD;
+  const progress = Math.max(0, Math.min(1, cleanPull / threshold));
+  const isReady = progress >= 1;
+
+  if (isReady && !jhPullThresholdReached) {
+    jhPullThresholdReached = true;
+    try {
+      if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+        navigator.vibrate(16);
+      }
+    } catch (e) {}
+  } else if (!isReady && jhPullThresholdReached) {
+    jhPullThresholdReached = false;
+  }
+
+  const dampedPx = Math.min(92, Math.round(Math.pow(cleanPull, 0.8) * 1.35));
+  const scaleVal = (1 - progress * 0.025).toFixed(4);
+  const slideEl = document.getElementById('jhSlide_' + jhCurrentIdx);
+  if (slideEl && slideEl.style) {
+    if (slideEl.classList) slideEl.classList.remove('jh-pull-springback');
+    const signedY = dir === 'next' ? -dampedPx : dampedPx;
+    slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scale(${scaleVal})`;
+  }
+
+  const topInd = document.getElementById('jhPullIndicatorTop');
+  const botInd = document.getElementById('jhPullIndicatorBottom');
+  if (dir === 'next') {
+    if (topInd && topInd.classList) {
+      topInd.classList.remove('visible');
+      topInd.classList.remove('ready');
+    }
+    if (botInd && botInd.classList) {
+      botInd.classList.toggle('visible', cleanPull > 8);
+      botInd.classList.toggle('ready', isReady);
+    }
+    const botArrow = document.getElementById('jhPullBottomArrow');
+    const botText = document.getElementById('jhPullBottomText');
+    const botFill = document.getElementById('jhPullBottomFill');
+    if (botArrow) botArrow.textContent = isReady ? '✨' : '⬆️';
+    if (botText) {
+      botText.textContent = isReady
+        ? 'ছেড়ে দাও — পরের পাতার শুরুতে যাচ্ছো!'
+        : 'পরের পাতায় যেতে আরও একটু উপরে টানো...';
+    }
+    if (botFill && botFill.style) botFill.style.width = Math.round(progress * 100) + '%';
+  } else if (dir === 'prev') {
+    if (botInd && botInd.classList) {
+      botInd.classList.remove('visible');
+      botInd.classList.remove('ready');
+    }
+    if (topInd && topInd.classList) {
+      topInd.classList.toggle('visible', cleanPull > 8);
+      topInd.classList.toggle('ready', isReady);
+    }
+    const topArrow = document.getElementById('jhPullTopArrow');
+    const topText = document.getElementById('jhPullTopText');
+    const topFill = document.getElementById('jhPullTopFill');
+    if (topArrow) topArrow.textContent = isReady ? '✨' : '⬇️';
+    if (topText) {
+      topText.textContent = isReady
+        ? 'ছেড়ে দাও — আগের পাতার শুরুতে যাচ্ছো!'
+        : 'আগের পাতায় যেতে আরও একটু নিচে টানো...';
+    }
+    if (topFill && topFill.style) topFill.style.width = Math.round(progress * 100) + '%';
+  }
+}
+
+function resetJhOverscrollPullUI(animateSpring) {
+  jhPullAnchorY = null;
+  jhPullDirection = '';
+  jhPullDistance = 0;
+  jhPullThresholdReached = false;
+  hideJhPullIndicators();
+
+  const slideEl = document.getElementById('jhSlide_' + jhCurrentIdx);
+  if (slideEl && slideEl.style) {
+    if (animateSpring && slideEl.classList) {
+      slideEl.classList.add('jh-pull-springback');
+    }
+    slideEl.style.transform = '';
+  }
+}
+
+function commitOrResetJhOverscrollPull() {
+  const dir = jhPullDirection;
+  const dist = jhPullDistance;
+  if (dir === 'next' && dist >= JH_NEXT_PULL_THRESHOLD) {
+    resetJhOverscrollPullUI(false);
+    stepJhalakReel(1, jhAutoPlayVoices);
+    return true;
+  }
+  if (dir === 'prev' && dist >= JH_PREV_PULL_THRESHOLD) {
+    resetJhOverscrollPullUI(false);
+    stepJhalakReel(-1, jhAutoPlayVoices);
+    return true;
+  }
+  resetJhOverscrollPullUI(true);
+  return false;
 }
 
 /* KOUSHIK'S 8-SLIDE LETTER (CHITHI — OPENED FROM SETTINGS) */
@@ -1299,62 +1440,167 @@ window.addEventListener('DOMContentLoaded', () => {
         const curScroll = vp.scrollTop || 0;
         const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
         jhTouchStartScrollTop = curScroll;
-        jhTouchStartAtTop = maxScroll <= 24 || curScroll <= 28;
-        jhTouchStartAtBottom = maxScroll <= 24 || curScroll >= maxScroll - 36;
+        jhTouchStartAtTop = maxScroll <= 12 || curScroll <= 10;
+        jhTouchStartAtBottom = maxScroll <= 12 || curScroll >= maxScroll - 14;
+        jhPullAnchorY = null;
+        jhPullDirection = '';
+        jhPullDistance = 0;
+        jhPullThresholdReached = false;
       }
     }, { passive: true });
+
+    vp.addEventListener('touchmove', ev => {
+      if (!ev.touches || !ev.touches[0]) return;
+      const curX = ev.touches[0].clientX;
+      const curY = ev.touches[0].clientY;
+      const totalDx = curX - jhTouchStartX;
+      const totalDy = curY - jhTouchStartY;
+      if (Math.abs(totalDx) > Math.abs(totalDy) * 1.2) return;
+
+      const curScroll = vp.scrollTop || 0;
+      const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
+      const atTop = maxScroll <= 12 || curScroll <= 8;
+      const atBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+
+      if (atBottom && totalDy < -12) {
+        if (jhPullDirection !== 'next') {
+          jhPullDirection = 'next';
+          jhPullAnchorY = curY;
+        }
+        const rawPull = Math.max(0, jhPullAnchorY - curY);
+        updateJhOverscrollPullUI('next', rawPull);
+      } else if (atTop && totalDy > 12) {
+        if (jhPullDirection !== 'prev') {
+          jhPullDirection = 'prev';
+          jhPullAnchorY = curY;
+        }
+        const rawPull = Math.max(0, curY - jhPullAnchorY);
+        updateJhOverscrollPullUI('prev', rawPull);
+      } else if (jhPullDirection) {
+        resetJhOverscrollPullUI(false);
+      }
+    }, { passive: true });
+
     vp.addEventListener('touchend', ev => {
+      if (jhPullDirection) {
+        commitOrResetJhOverscrollPull();
+        return;
+      }
       if (ev.changedTouches && ev.changedTouches[0]) {
         const dx = ev.changedTouches[0].clientX - jhTouchStartX;
         const dy = ev.changedTouches[0].clientY - jhTouchStartY;
         const curScroll = vp.scrollTop || 0;
         const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
-        const nowAtTop = maxScroll <= 24 || curScroll <= 18;
-        const nowAtBottom = maxScroll <= 24 || curScroll >= maxScroll - 24;
-
-        if (Math.abs(dy) > 42 && Math.abs(dy) > Math.abs(dx) * 1.15) {
-          if (dy < 0) {
-            if (jhTouchStartAtBottom || (nowAtBottom && Math.abs(dy) > 85)) {
-              stepJhalakReel(1, jhAutoPlayVoices);
-            }
-          } else {
-            if (jhTouchStartAtTop || (nowAtTop && Math.abs(dy) > 85)) {
-              stepJhalakReel(-1, jhAutoPlayVoices);
-            }
+        const nowAtTop = maxScroll <= 12 || curScroll <= 8;
+        const nowAtBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+        if (Math.abs(dy) >= JH_NEXT_PULL_THRESHOLD && Math.abs(dy) > Math.abs(dx) * 1.2) {
+          if (dy < 0 && jhTouchStartAtBottom && nowAtBottom) {
+            stepJhalakReel(1, jhAutoPlayVoices);
+          } else if (dy > 0 && jhTouchStartAtTop && nowAtTop) {
+            stepJhalakReel(-1, jhAutoPlayVoices);
           }
         }
       }
     }, { passive: true });
+
+    vp.addEventListener('touchcancel', () => {
+      resetJhOverscrollPullUI(true);
+    }, { passive: true });
+
     vp.addEventListener('mousedown', ev => {
       jhMouseDownX = ev.clientX;
       jhMouseDownY = ev.clientY;
+      jhPullAnchorY = null;
+      jhPullDirection = '';
+      jhPullDistance = 0;
     });
-    vp.addEventListener('mouseup', ev => {
-      if (jhMouseDownX === null) return;
-      const dx = ev.clientX - jhMouseDownX;
-      const dy = ev.clientY - jhMouseDownY;
-      jhMouseDownX = null;
-      jhMouseDownY = null;
-      if (Math.abs(dy) > 55 && Math.abs(dy) > Math.abs(dx) * 1.2) {
-        stepJhalakReel(dy < 0 ? 1 : -1, jhAutoPlayVoices);
+
+    vp.addEventListener('mousemove', ev => {
+      if (jhMouseDownY === null) return;
+      const totalDx = ev.clientX - jhMouseDownX;
+      const totalDy = ev.clientY - jhMouseDownY;
+      if (Math.abs(totalDx) > Math.abs(totalDy) * 1.2) return;
+      const curScroll = vp.scrollTop || 0;
+      const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
+      const atTop = maxScroll <= 12 || curScroll <= 8;
+      const atBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+
+      if (atBottom && totalDy < -12) {
+        if (jhPullDirection !== 'next') {
+          jhPullDirection = 'next';
+          jhPullAnchorY = ev.clientY;
+        }
+        updateJhOverscrollPullUI('next', Math.max(0, jhPullAnchorY - ev.clientY));
+      } else if (atTop && totalDy > 12) {
+        if (jhPullDirection !== 'prev') {
+          jhPullDirection = 'prev';
+          jhPullAnchorY = ev.clientY;
+        }
+        updateJhOverscrollPullUI('prev', Math.max(0, ev.clientY - jhPullAnchorY));
       }
     });
+
+    vp.addEventListener('mouseup', () => {
+      jhMouseDownX = null;
+      jhMouseDownY = null;
+      if (jhPullDirection) {
+        commitOrResetJhOverscrollPull();
+      }
+    });
+
     vp.addEventListener('wheel', ev => {
       if (jhWheelLock) return;
       const curScroll = vp.scrollTop || 0;
       const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
-      if (ev.deltaY > 36 && Math.abs(ev.deltaY) >= Math.abs(ev.deltaX)) {
-        if (maxScroll <= 24 || curScroll >= maxScroll - 20) {
-          jhWheelLock = true;
-          stepJhalakReel(1, jhAutoPlayVoices);
-          setTimeout(() => { jhWheelLock = false; }, 520);
+      const atTop = maxScroll <= 12 || curScroll <= 8;
+      const atBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+
+      if (atBottom && ev.deltaY > 4 && Math.abs(ev.deltaY) >= Math.abs(ev.deltaX)) {
+        if (jhWheelOverscrollDir !== 'next') {
+          jhWheelOverscrollDir = 'next';
+          jhWheelOverscrollAccum = 0;
         }
-      } else if (ev.deltaY < -36 && Math.abs(ev.deltaY) >= Math.abs(ev.deltaX)) {
-        if (maxScroll <= 24 || curScroll <= 16) {
+        jhWheelOverscrollAccum += ev.deltaY * 0.65;
+        updateJhOverscrollPullUI('next', jhWheelOverscrollAccum);
+        if (jhWheelDecayTimer) clearTimeout(jhWheelDecayTimer);
+        if (jhPullDistance >= JH_NEXT_PULL_THRESHOLD) {
           jhWheelLock = true;
-          stepJhalakReel(-1, jhAutoPlayVoices);
-          setTimeout(() => { jhWheelLock = false; }, 520);
+          jhWheelOverscrollAccum = 0;
+          jhWheelOverscrollDir = '';
+          commitOrResetJhOverscrollPull();
+          setTimeout(() => { jhWheelLock = false; }, 650);
+        } else {
+          jhWheelDecayTimer = setTimeout(() => {
+            jhWheelOverscrollAccum = 0;
+            jhWheelOverscrollDir = '';
+            resetJhOverscrollPullUI(true);
+          }, 240);
         }
+      } else if (atTop && ev.deltaY < -4 && Math.abs(ev.deltaY) >= Math.abs(ev.deltaX)) {
+        if (jhWheelOverscrollDir !== 'prev') {
+          jhWheelOverscrollDir = 'prev';
+          jhWheelOverscrollAccum = 0;
+        }
+        jhWheelOverscrollAccum += Math.abs(ev.deltaY) * 0.65;
+        updateJhOverscrollPullUI('prev', jhWheelOverscrollAccum);
+        if (jhWheelDecayTimer) clearTimeout(jhWheelDecayTimer);
+        if (jhPullDistance >= JH_PREV_PULL_THRESHOLD) {
+          jhWheelLock = true;
+          jhWheelOverscrollAccum = 0;
+          jhWheelOverscrollDir = '';
+          commitOrResetJhOverscrollPull();
+          setTimeout(() => { jhWheelLock = false; }, 650);
+        } else {
+          jhWheelDecayTimer = setTimeout(() => {
+            jhWheelOverscrollAccum = 0;
+            jhWheelOverscrollDir = '';
+            resetJhOverscrollPullUI(true);
+          }, 240);
+        }
+      } else if (jhWheelOverscrollAccum > 0) {
+        jhWheelOverscrollAccum = 0;
+        jhWheelOverscrollDir = '';
+        resetJhOverscrollPullUI(false);
       }
     }, { passive: true });
   }

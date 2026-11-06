@@ -43,8 +43,29 @@
     </div>
   </header>
 
-  <!-- FULL-SCREEN LONG-CONTENT PAGE VIEWPORT (SWIPE LEFT/RIGHT FOR NEXT/PREV) -->
+  <!-- ELASTIC PULL-TO-TURN INDICATORS (TOP = PREVIOUS PAGE, BOTTOM = NEXT PAGE) -->
+  <div id="jhPullIndicatorTop" class="jh-pull-indicator jh-pull-indicator-top" aria-live="polite">
+    <div class="jh-pull-row">
+      <span id="jhPullTopArrow" class="jh-pull-arrow">⬇️</span>
+      <span id="jhPullTopText">আগের পাতায় যেতে আরও একটু টানো...</span>
+    </div>
+    <div class="jh-pull-progress-track">
+      <div id="jhPullTopFill" class="jh-pull-progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- FULL-SCREEN LONG-CONTENT PAGE VIEWPORT (ELASTIC OVERSCROLL PULL FOR PREV/NEXT) -->
   <main id="jhReelsViewport" class="jh-reels-viewport" aria-label="ঝলক পাতা"></main>
+
+  <div id="jhPullIndicatorBottom" class="jh-pull-indicator jh-pull-indicator-bottom" aria-live="polite">
+    <div class="jh-pull-row">
+      <span id="jhPullBottomArrow" class="jh-pull-arrow">⬆️</span>
+      <span id="jhPullBottomText">পরের পাতায় যেতে আরও একটু টানো...</span>
+    </div>
+    <div class="jh-pull-progress-track">
+      <div id="jhPullBottomFill" class="jh-pull-progress-fill"></div>
+    </div>
+  </div>
 
   <!-- SETTINGS & ADMIN DRAWER: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY, LIKE COUNT TOGGLE, CHITHI, STATS & ADMIN DONE/LIKE EDITOR -->
   <div id="jhSettingsDrawer" class="jh-drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="jhSettingsDrawerTitle">
