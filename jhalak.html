@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@700;800&display=swap" rel="stylesheet" />
   <style>
 /* ============================================================================
-   ✨ ঝলক (JHALAK) — LONG-FORM SCROLLABLE REELS, LEFT/RIGHT NAVIGATION,
-   CATEGORY DROPDOWN, TRANSLUCENT STICKY LIKE BUTTON & CATEGORY STATS
+   ✨ ঝলক (JHALAK) — LONG-FORM SCROLLABLE REELS, LEFT/RIGHT SLIDE ANIMATION,
+   DONE BUTTON, CATEGORY DROPDOWN, STICKY MULTI-LIKE & ADMIN CONTROLS
    ============================================================================ */
 :root {
   --jh-bg-deep: #18120E;
@@ -51,7 +51,7 @@ html, body {
   line-height: 1.58;
 }
 
-/* TOP BAR: BRAND + CATEGORY DROPDOWN + LEFT/RIGHT NAV + SETTINGS GEAR */
+/* TOP BAR: BRAND + CATEGORY DROPDOWN + SETTINGS GEAR (NO PREV/NEXT OR PAGE COUNTS) */
 .jh-topbar {
   position: fixed;
   top: 0;
@@ -71,7 +71,6 @@ html, body {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .jh-brand-cluster {
@@ -188,40 +187,6 @@ html, body {
   border-radius: 999px;
 }
 
-/* TOP RIGHT CONTROLS: LEFT/RIGHT PAGE NAV + SETTINGS GEAR */
-.jh-top-right-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.jh-top-nav-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  border: 1.5px solid var(--jh-border-gold);
-  background: rgba(45, 32, 24, 0.92);
-  color: #FFFBEB;
-  font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 700;
-  padding: 6px 12px;
-  border-radius: 999px;
-  cursor: pointer;
-}
-
-.jh-top-nav-btn:active {
-  transform: scale(0.94);
-}
-
-.jh-page-counter-badge {
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: var(--jh-cream-sub);
-  padding: 0 4px;
-}
-
 .jh-gear-btn {
   display: inline-flex;
   align-items: center;
@@ -243,13 +208,33 @@ html, body {
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
-  padding: 72px 14px 96px;
+  padding: 68px 14px 96px;
 }
 
 .jh-reel-slide {
   width: 100%;
   max-width: 680px;
   margin: 0 auto;
+  will-change: transform, opacity;
+}
+
+/* PAGE SLIDE LEFT / RIGHT ANIMATIONS */
+.jh-slide-anim-next {
+  animation: jhSlideFromRight 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.jh-slide-anim-prev {
+  animation: jhSlideFromLeft 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes jhSlideFromRight {
+  0% { opacity: 0.25; transform: translateX(64px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes jhSlideFromLeft {
+  0% { opacity: 0.25; transform: translateX(-64px); }
+  100% { opacity: 1; transform: translateX(0); }
 }
 
 /* MAIN LONG-FORM CONTENT CARD STAGE */
@@ -266,7 +251,7 @@ html, body {
 
 @media (max-width: 520px) {
   .jh-reels-viewport {
-    padding: 108px 10px 96px;
+    padding: 66px 10px 96px;
   }
   .jh-card-stage {
     padding: 16px 15px 22px;
@@ -274,7 +259,7 @@ html, body {
   }
 }
 
-/* CARD HEADER: BADGE + PAGE COUNTER + TOP LISTEN BUTTON */
+/* CARD HEADER: BADGE + TOP LISTEN & DONE BUTTONS */
 .jh-card-top {
   display: flex;
   align-items: center;
@@ -284,8 +269,8 @@ html, body {
   flex-wrap: wrap;
 }
 
-.jh-card-top-left {
-  display: flex;
+.jh-card-top-actions {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
@@ -304,16 +289,6 @@ html, body {
   border: 1px solid #FCD9BD;
 }
 
-.jh-page-pos-pill {
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: var(--jh-ink-muted);
-  background: #FBF4E8;
-  padding: 4px 11px;
-  border-radius: 999px;
-  border: 1px solid #EBD9C0;
-}
-
 .jh-top-listen-btn {
   display: inline-flex;
   align-items: center;
@@ -325,7 +300,7 @@ html, body {
   border-radius: 999px;
   padding: 8px 18px;
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.96rem;
+  font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(14, 131, 88, 0.26);
@@ -333,6 +308,26 @@ html, body {
 
 .jh-top-listen-btn.playing {
   background: #D9532F;
+}
+
+.jh-done-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1.5px solid #34D399;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.jh-done-btn:active {
+  transform: scale(0.95);
 }
 
 /* PAGE TITLE & MULTI-SECTION RICH CONTENT */
@@ -451,45 +446,6 @@ html, body {
   font-size: 0.98rem;
   font-weight: 700;
   text-decoration: none;
-  margin-bottom: 16px;
-}
-
-/* BOTTOM LEFT / RIGHT PAGE NAVIGATION BAR */
-.jh-bottom-lr-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding-top: 14px;
-  border-top: 1.5px solid #EBD9C0;
-}
-
-.jh-lr-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  background: #FFF1E6;
-  color: #B93815;
-  border: 1.5px solid #FCD9BD;
-  border-radius: 14px;
-  padding: 10px 18px;
-  font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.96rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.jh-lr-btn.primary {
-  background: var(--jh-gold);
-  color: #1F1610;
-  border-color: #F59E0B;
-}
-
-.jh-lr-page-indicator {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--jh-ink-muted);
 }
 
 /* TRANSLUCENT STICK-ON LIKE BUTTON */
@@ -548,7 +504,7 @@ html, body {
   100% { opacity: 0; transform: translateY(-95px) scale(1.35); }
 }
 
-/* SLIDE-UP DRAWERS (SETTINGS GEAR & CHITHI) */
+/* SLIDE-UP DRAWERS (SETTINGS GEAR, ADMIN & CHITHI) */
 .jh-drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -565,7 +521,7 @@ html, body {
 
 .jh-drawer-sheet {
   width: 100%;
-  max-width: 660px;
+  max-width: 680px;
   max-height: 88dvh;
   background: var(--jh-surface-cream);
   color: var(--jh-ink-dark);
@@ -633,18 +589,18 @@ html, body {
   color: #FFFFFF;
 }
 
-/* CATEGORY STATS IN SETTINGS */
+/* CATEGORY STATS & ADMIN LIST IN SETTINGS */
 .jh-stats-section-title {
   font-family: 'Noto Serif Bengali', Georgia, serif;
   font-size: 1.05rem;
   font-weight: 800;
-  margin-bottom: 8px;
+  margin: 14px 0 8px;
   color: #7C2D12;
 }
 
 .jh-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 8px;
 }
 
@@ -656,13 +612,84 @@ html, body {
   border: 1px solid #EBD9C0;
   border-radius: 12px;
   padding: 8px 12px;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
 }
 
 .jh-stat-likes {
-  margin-left: 6px;
+  margin-left: 4px;
   color: #BE123C;
   font-weight: 700;
+}
+
+.jh-admin-items-list {
+  max-height: 290px;
+  overflow-y: auto;
+  border: 1.5px solid #EBD9C0;
+  border-radius: 14px;
+  padding: 8px;
+  background: #FFFDF9;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.jh-admin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #FBF4E8;
+  border: 1px solid #EBD9C0;
+  font-size: 0.86rem;
+}
+
+.jh-admin-row.is-done {
+  background: #ECFDF5;
+  border-color: #6EE7B7;
+}
+
+.jh-admin-row-title {
+  flex: 1 1 200px;
+  font-weight: 700;
+}
+
+.jh-admin-badge {
+  font-size: 0.78rem;
+  background: #FFF1E6;
+  color: #B93815;
+  padding: 2px 7px;
+  border-radius: 999px;
+  margin-right: 5px;
+}
+
+.jh-admin-row-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jh-admin-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FFFFFF;
+  border: 1px solid #EBD9C0;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.jh-step-mini {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #D97706;
+  background: #FEF3C7;
+  color: #92400E;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .jh-slide-img {
@@ -697,7 +724,7 @@ html, body {
 </head>
 <body>
 
-  <!-- TOP BAR: BRAND + CATEGORY DROPDOWN (SINGLE/MULTI) + LEFT/RIGHT PAGE NAV + SETTINGS GEAR -->
+  <!-- TOP BAR: BRAND + CATEGORY DROPDOWN + SETTINGS GEAR (NO PREV/NEXT OR PAGE COUNTS) -->
   <header class="jh-topbar" role="banner">
     <div class="jh-topbar-row1">
       <div class="jh-brand-cluster">
@@ -712,23 +739,13 @@ html, body {
         </div>
       </div>
 
-      <!-- LEFT / RIGHT PAGE NAVIGATION + SETTINGS GEAR -->
-      <div class="jh-top-right-controls">
-        <button id="btnJhPrevPage" type="button" class="jh-top-nav-btn" onclick="stepJhalakReel(-1, jhAutoPlayVoices)" title="আগের পাতা">
-          ⬅️ আগের
-        </button>
-        <span id="jhPageCounterBadge" class="jh-page-counter-badge">১ / ১২০</span>
-        <button id="btnJhNextPage" type="button" class="jh-top-nav-btn" onclick="stepJhalakReel(1, jhAutoPlayVoices)" title="পরের পাতা">
-          পরের ➡️
-        </button>
-        <button id="btnJhSettings" type="button" class="jh-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="সেটিংস" title="সেটিংস">
-          ⚙️
-        </button>
-      </div>
+      <button id="btnJhSettings" type="button" class="jh-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="সেটিংস" title="সেটিংস">
+        ⚙️
+      </button>
     </div>
   </header>
 
-  <!-- VERTICALLY SCROLLABLE (UP/DOWN) LONG-CONTENT PAGE VIEWPORT -->
+  <!-- VERTICALLY SCROLLABLE (UP/DOWN) LONG-CONTENT PAGE VIEWPORT (SWIPE LEFT/RIGHT FOR NEXT/PREV) -->
   <main id="jhReelsViewport" class="jh-reels-viewport" aria-label="ঝলক পাতা"></main>
 
   <!-- TRANSLUCENT STICK-ON LIKE BUTTON (SAME CONTENT CAN BE LIKED MULTIPLE TIMES) -->
@@ -736,11 +753,11 @@ html, body {
     <span class="jh-like-heart">❤️</span> <span class="jh-like-label">ভালো লেগেছে</span> <span id="jhStickyLikeCount" class="jh-like-count-badge">০</span>
   </button>
 
-  <!-- SETTINGS GEAR DRAWER: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY, LIKE COUNT TOGGLE, CHITHI & STATS -->
+  <!-- SETTINGS & ADMIN DRAWER: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY, LIKE COUNT TOGGLE, CHITHI, STATS & ADMIN DONE/LIKE EDITOR -->
   <div id="jhSettingsDrawer" class="jh-drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="jhSettingsDrawerTitle">
     <div class="jh-drawer-sheet">
       <div class="jh-drawer-head">
-        <h2 id="jhSettingsDrawerTitle" class="jh-drawer-title">⚙️ সেটিংস ও পরিসংখ্যান</h2>
+        <h2 id="jhSettingsDrawerTitle" class="jh-drawer-title">⚙️ সেটিংস ও অ্যাডমিন কন্ট্রোল</h2>
         <button id="btnCloseSettingsDrawer" type="button" class="jh-drawer-close" onclick="closeJhalakSettingsDrawer()">✕ বন্ধ করো</button>
       </div>
 
@@ -766,6 +783,15 @@ html, body {
       <div>
         <h3 class="jh-stats-section-title">📊 প্রতিটি বিভাগের পাতার সংখ্যা ও লাইক পরিসংখ্যান</h3>
         <div id="jhCategoryStatsBox" class="jh-stats-grid"></div>
+      </div>
+
+      <div id="jhAdminControlSection">
+        <h3 class="jh-stats-section-title">🛠️ অ্যাডমিন কন্ট্রোল: ডান (Done) ও লাইক (Likes) পরিবর্তন করো</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <button id="btnAdminResetDone" type="button" class="jh-letter-step-btn" onclick="resetAllJhDoneCounts()">🔄 সব ডান (Done) রিসেট করো</button>
+          <button id="btnAdminResetLikes" type="button" class="jh-letter-step-btn" onclick="resetAllJhLikeCounts()">🔄 সব লাইক (Likes) রিসেট করো</button>
+        </div>
+        <div id="jhAdminItemsList" class="jh-admin-items-list"></div>
       </div>
     </div>
   </div>
@@ -809,14 +835,14 @@ const DAY1_AG_MAP = {};
    ----------------------------------------------------------------------------
    Categories:
    - all (✨ সব)
-   - gods (🪷 ভগবান — Gods Stories & Devotional Lila)
-   - laugh (😂 হাসি — Gopal Bhar, Birbal, Shibram & Joyful Comedy)
-   - calm (🦋 শান্তি — Inner Peace, Nostalgia & Covert CBT)
-   - curiosity (🔍 কৌতূহল — World Wonders & Inspiring Lives)
-   - music (🎵 গান — Golden Songs, Inspiration & Deep Meaning Hooks)
-   - english (🔤 ইংরেজি — Simple English Words Learn for Everyday Life)
-   - hindi (🗣️ হিন্দি — Day-to-Day Hindi Conversation)
-   - tv (📺 টিভি — Curated Bengali TV, Movies & Musical Jalsa in Reels)
+   - gods (🪷 ভগবান — 18 Rich Gods Stories & Devotional Lila)
+   - laugh (😂 হাসি — 16 Rich Gopal Bhar, Birbal, Shibram & Joyful Comedy Stories)
+   - calm (🦋 শান্তি — 24 Inner Peace, Nostalgia & Covert CBT Pages)
+   - curiosity (🔍 কৌতূহল — 18 World Wonders & Inspiring Lives)
+   - music (🎵 গান — 21 Golden Songs, Inspiration & Deep Meaning Hooks)
+   - english (🔤 ইংরেজি — 25 Simple English Words Learn Pages)
+   - hindi (🗣️ হিন্দি — 16 Day-to-Day Hindi Conversation Pages)
+   - tv (📺 টিভি — 14 Curated Bengali TV, Movies & Musical Jalsa Guides)
    ============================================================================ */
 
 const JHALAK_CATEGORIES = [
@@ -833,9 +859,7 @@ const JHALAK_CATEGORIES = [
 
 const JHALAK_GODS_STORIES = [
   {
-    id: 'god_1',
-    vibe: 'gods',
-    badge_bn: '🪷 ভগবান',
+    id: 'god_1', vibe: 'gods', badge_bn: '🪷 ভগবান',
     title_bn: 'মা সারদার পোষা টিয়াপাখি ‘গঙ্গারাম’ ও সেরা ফলের প্রসাদ!',
     story_bn: 'জয়রামবাটীতে মা সারদার একটি অত্যন্ত প্রিয় পোষা টিয়াপাখি ছিল, তার নাম ছিল গঙ্গারাম। সকালবেলা সূর্যের আলো ফুটলেই গঙ্গারাম খাঁচা থেকে স্পষ্ট গলায় ডেকে উঠত— “মা, খোকাকে পাকা কলা দাও! মা, খোকাকে ছানা দাও!” মা সারদা শুনে খিলখিল করে হাসতেন এবং নিজের হাতে সবচেয়ে পাকা কলা আর টাটকা ছানা মেখে আগে গঙ্গারামকে খাওয়াতেন।\n\nএকদিন এক ভক্ত মাকে জিজ্ঞেস করলেন— “মা, আপনি পশুপাখিকেও এত বাছাই করা তাজা ফল খাওয়ান?” মা সারদা স্নেহভরা গলায় উত্তর দিলেন— “ওরাও যে আমারই সন্তান গো! টাটকা ও ভালো জিনিস আনন্দে খাওয়ানোর মধ্যেই তো ভগবানের সেবা। ভালো জিনিস ফেলে রেখে শুকিয়ে ফেললে কি ঠাকুর খুশি হন?”',
     hitch_title_bn: '🪷 মায়ের আশীর্বাদ ও মনের কথা',
@@ -843,122 +867,182 @@ const JHALAK_GODS_STORIES = [
     extra_title_bn: '🌺 জীবনের গভীর ভাবনা',
     extra_bn: 'দক্ষিণেশ্বর ও জয়রামবাটীতে মা সারদা সারাজীবন শিখিয়েছেন যে ভক্তি মানে নিজেকে কষ্ট দেওয়া নয়; বরং সহজ, প্রসন্ন মনে নিজের ও পরিবারের সবার আনন্দ বজায় রাখাই প্রকৃত সাধনা।',
     curiosity_q_bn: '🔮 অমৃত প্রশ্ন: গঙ্গারাম টিয়াপাখি মা সারদাকে আর কী বলে ডাকত?',
-    curiosity_a_bn: '🌸 গঙ্গারাম স্পষ্ট বাংলায় “হরে কৃষ্ণ” আর “মা, মা গো” বলে ডাকত, আর মা স্নান সেরে না আসা পর্যন্ত ডাকাডাকি থামাত না!',
-    yt_query: 'Maa Sarada story Jayrambati Bengali',
-    yt_label_bn: 'মা সারদার জয়রামবাটীর অমৃতকথা'
+    curiosity_a_bn: '🌸 গঙ্গারাম স্পষ্ট বাংলায় “হরে কৃষ্ণ” আর “মা, মা গো” বলে ডাকত!',
+    yt_query: 'Maa Sarada story Jayrambati Bengali', yt_label_bn: 'মা সারদার জয়রামবাটীর অমৃতকথা'
   },
   {
-    id: 'god_2',
-    vibe: 'gods',
-    badge_bn: '🪷 ভগবান',
+    id: 'god_2', vibe: 'gods', badge_bn: '🪷 ভগবান',
     title_bn: 'যশোদা মায়ের হাঁড়ি থেকে ননী চুরি করে ছোট্ট গোপালের মিষ্টি যুক্তি!',
-    story_bn: 'বৃন্দাবনে একদিন দুপুরে যশোদা মা সবেমাত্র তাজা দুধ জ্বাল দিয়ে মাখন তুলে শিকেয় ঝোলানো মাটির হাঁড়িতে রেখেছেন। ছোট্ট গোপাল তার বন্ধু মধুমঙ্গল আর সুবলকে নিয়ে চুপিচুপি ঘরে ঢুকে পিঁড়ির ওপর দাঁড়িয়ে একমুঠো তাজা ননী নিজে খেল, আর বাকিটা বন্ধুদের ও পাশের এক ছোট্ট বাঁদরছানাকে খাইয়ে দিল!\n\nঠিক সেই সময় যশোদা মা ঘরে ঢুকে হাতে-নাতে ধরে ফেলে বললেন— “কানাই, তুই আবার ননী চুরি করেছিস? বললেই তো আমি তোকে বাটিতে করে দিতাম!” গোপাল তার মাখন-মাখা ছোট্ট মুখটা তুলে মিটমিট করে হেসে বলল— “মা, ননী কি শিকেয় তুলে জমিয়ে রাখার জন্য? তাজা মাখন তাজা থাকতে থাকতেই তো সবাই মিলে আনন্দে খেতে হয়!” গোপালের সেই কথা শুনে যশোদা মায়ের সব রাগ গলে জল হয়ে গেল।',
+    story_bn: 'বৃন্দাবনে একদিন দুপুরে যশোদা মা সবেমাত্র তাজা দুধ জ্বাল দিয়ে মাখন তুলে শিকেয় ঝোলানো মাটির হাঁড়িতে রেখেছেন। ছোট্ট গোপাল তার বন্ধু মধুমঙ্গল আর সুবলকে নিয়ে চুপিচুপি ঘরে ঢুকে পিঁড়ির ওপর দাঁড়িয়ে একমুঠো তাজা ননী নিজে খেল, আর বাকিটা বন্ধুদের ও পাশের এক ছোট্ট বাঁদরছানাকে খাইয়ে দিল!\n\nঠিক সেই সময় যশোদা মা ঘরে ঢুকে হাতে-নাতে ধরে ফেলে বললেন— “কানাই, তুই আবার ননী চুরি করেছিস?” গোপাল তার মাখন-মাখা ছোট্ট মুখটা তুলে মিটমিট করে হেসে বলল— “মা, ননী কি শিকেয় তুলে জমিয়ে রাখার জন্য? তাজা মাখন তাজা থাকতে থাকতেই তো সবাই মিলে আনন্দে খেতে হয়!” গোপালের সেই কথা শুনে যশোদা মায়ের সব রাগ গলে জল হয়ে গেল।',
     hitch_title_bn: '🪷 গোপালের মিষ্টি শিক্ষা',
     hitch_bn: 'স্বয়ং ভগবান শ্রীকৃষ্ণও তাজা মাখন জমিয়ে না রেখে আজই আনন্দে খেতে ভালোবাসেন মা—তাই ভালো খাবার বা নতুন জিনিস পরে খাওয়ার জন্য ফেলে না রেখে আজই তৃপ্তি করে উপভোগ করো!',
     extra_title_bn: '🌺 বৃন্দাবনের মাধুর্য',
-    extra_bn: 'শ্রীমদ্ভাগবতে গোপালের এই মাখন-চুরির লীলাকে বলা হয়েছে ‘হৃদয়-চুরি’—অর্থাৎ সংসারের মানুষের মনের জমাট বাঁধা দুশ্চিন্তা ও কৃপণতা চুরি করে সেখানে নিখাদ আনন্দ ভরে দেওয়া।',
+    extra_bn: 'শ্রীমদ্ভাগবতে গোপালের এই মাখন-চুরির লীলাকে বলা হয়েছে ‘হৃদয়-চুরি’—অর্থাৎ মানুষের মনের জমাট বাঁধা দুশ্চিন্তা দূর করে নিখাদ আনন্দ ভরে দেওয়া।',
     curiosity_q_bn: '🔮 অমৃত প্রশ্ন: বৃন্দাবনে গোপালের গলার প্রিয় মালাটির নাম কী ছিল?',
     curiosity_a_bn: '🌸 বৈজয়ন্তী মালা—যা পাঁচ রকমের বুনো ফুল ও তুলসী দিয়ে গাঁথা থাকত!',
-    yt_query: 'Little Krishna Makhan Chor Bengali cartoon story',
-    yt_label_bn: 'ছোট্ট গোপালের মাখন চুরির লীলা'
+    yt_query: 'Little Krishna Makhan Chor Bengali cartoon story', yt_label_bn: 'ছোট্ট গোপালের মাখন চুরির লীলা'
   },
   {
-    id: 'god_3',
-    vibe: 'gods',
-    badge_bn: '🪷 ভগবান',
+    id: 'god_3', vibe: 'gods', badge_bn: '🪷 ভগবান',
     title_bn: 'মা লক্ষ্মীর মান ভাঙাতে মহাপ্রভু জগন্নাথের এক হাঁড়ি রসগোল্লা!',
-    story_bn: 'প্রতি বছর আষাঢ় মাসে রথযাত্রার সময় মহাপ্রভু জগন্নাথদেব তাঁর দাদা বলরাম ও বোন সুভদ্রাকে নিয়ে গুণ্ডিচা মন্দিরে মাসির বাড়ি বেড়াতে যান। কিন্তু যাওয়ার সময় মা লক্ষ্মীকে সাথে না নিয়ে যাওয়ায় মা লক্ষ্মী ভীষণ অভিমান করেন!\n\nনয় দিন পর জগন্নাথদেব যখন রথে চড়ে নিজের শ্রীমন্দিরে ফিরে আসেন, মা লক্ষ্মী তখন মন্দিরের সিংহদ্বার ভেতর থেকে বন্ধ করে দেন। স্বয়ং ত্রিভুবনের মালিক তখন দরজার বাইরে দাঁড়িয়ে বিনীতভাবে মা লক্ষ্মীর হাতে এক হাঁড়ি নরম, গরম রসগোল্লা তুলে দিয়ে বলেন— “লক্ষ্মীটি, আমার ভুল হয়ে গেছে, এবার মিষ্টিমুখ করে দরজা খোলো!” তখন মা লক্ষ্মী হেসে দরজা খুলে দেন।',
+    story_bn: 'প্রতি বছর আষাঢ় মাসে রথযাত্রার সময় মহাপ্রভু জগন্নাথদেব তাঁর দাদা বলরাম ও বোন সুভদ্রাকে নিয়ে গুণ্ডিচা মন্দিরে মাসির বাড়ি বেড়াতে যান। কিন্তু যাওয়ার সময় মা লক্ষ্মীকে সাথে না নিয়ে যাওয়ায় মা লক্ষ্মী ভীষণ অভিমান করেন!\n\nনয় দিন পর জগন্নাথদেব যখন রথে চড়ে নিজের শ্রীমন্দিরে ফিরে আসেন, মা লক্ষ্মী তখন মন্দিরের সিংহদ্বার ভেতর থেকে বন্ধ করে দেন। স্বয়ং ত্রিভুবনের মালিক তখন দরজার বাইরে দাঁড়িয়ে বিনীতভাবে মা লক্ষ্মীর হাতে এক হাঁড়ি নরম, গরম রসগোল্লা তুলে দিয়ে বলেন— “লক্ষ্মীটি, এবার মিষ্টিমুখ করে দরজা খোলো!” তখন মা লক্ষ্মী হেসে দরজা খুলে দেন।',
     hitch_title_bn: '🪷 সংসারের মিষ্টি মন্ত্র',
     hitch_bn: 'স্বয়ং ভগবানের সংসারেও মাঝে মাঝে একটু মান-অভিমান হয় মা—কিন্তু মনের ভেতর কথা চেপে না রেখে একটু মিষ্টি কথা আর হাসিতেই সব অভিমান গলে যায়!',
     extra_title_bn: '🌺 নীলাদ্রি বিজে উৎসব',
-    extra_bn: 'পুরীর জগন্নাথ ধামে রথযাত্রার শেষের এই দিনটিকে বলা হয় ‘নীলাদ্রি বিজে’। আজও এই দিনে জগন্নাথদেবকে রসগোল্লা ভোগ নিবেদন করার পর মন্দিরের ভেতরে প্রবেশ করানো হয়।',
+    extra_bn: 'পুরীর জগন্নাথ ধামে রথযাত্রার শেষের এই দিনটিকে বলা হয় ‘নীলাদ্রি বিজে’। আজও এই দিনে জগন্নাথদেবকে রসগোল্লা ভোগ নিবেদন করা হয়।',
     curiosity_q_bn: '🔮 অমৃত প্রশ্ন: পুরীর মন্দিরের চূড়ার পতাকাটি কোন আশ্চর্য নিয়মে ওড়ে?',
-    curiosity_a_bn: '🌸 সমুদ্রের হাওয়া যেদিকে বয়, পুরীর মন্দিরের চূড়ার ‘পতিতপাবন বানা’ পতাকাটি সবসময় তার ঠিক বিপরীত দিকে ওড়ে!',
-    yt_query: 'Puri Jagannath Rasagolla Niladri Bije Bengali story',
-    yt_label_bn: 'জগন্নাথদেবের রসগোল্লা ও নীলাদ্রি বিজে'
+    curiosity_a_bn: '🌸 সমুদ্রের হাওয়া যেদিকে বয়, পুরীর মন্দিরের চূড়ার পতাকাটি সবসময় তার ঠিক বিপরীত দিকে ওড়ে!',
+    yt_query: 'Puri Jagannath Rasagolla Niladri Bije Bengali story', yt_label_bn: 'জগন্নাথদেবের রসগোল্লা ও নীলাদ্রি বিজে'
   },
   {
-    id: 'god_4',
-    vibe: 'gods',
-    badge_bn: '🪷 ভগবান',
+    id: 'god_4', vibe: 'gods', badge_bn: '🪷 ভগবান',
     title_bn: 'ঠাকুর শ্রীরামকৃষ্ণের জিলিপি প্রীতি ও আনন্দময় ভক্তির কথা!',
-    story_bn: 'দক্ষিণেশ্বরে ঠাকুর শ্রীরামকৃষ্ণ পরমহংসদেব ভক্তদের সাথে গল্প করতে করতে হঠাৎ শিশুদের মতো সরলভাবে বলতেন— “হ্যাঁ গা, আজ একটু গরম জিলিপি বা সন্দেশ খেতে ইচ্ছে করছে!” ভক্তরা যখনই মিষ্টি আনতেন, ঠাকুর মা ভবতারিণীকে নিবেদন করে পরম আনন্দে সেই প্রসাদ খেতেন এবং সবাইকে ভাগ করে দিতেন।\n\nএকদিন এক কঠোর তপস্বী এসে ঠাকুরকে বললেন— “সাধক হয়ে আপনি ভালো মিষ্টি আর ভালো খাবারের কথা বলেন কেন?” ঠাকুর খিলখিল করে হেসে বললেন— “ওগো, ঈশ্বর কি রসকষহীন শুকনো কাঠ? তিনি যে আনন্দময় রসস্বরূপ! মনটাকে পরিষ্কার ও সরল রেখে মায়ের দেওয়া ভালো জিনিস আনন্দে গ্রহণ করাতেই তো আসল ভক্তি!”',
+    story_bn: 'দক্ষিণেশ্বরে ঠাকুর শ্রীরামকৃষ্ণ পরমহংসদেব ভক্তদের সাথে গল্প করতে করতে হঠাৎ শিশুদের মতো সরলভাবে বলতেন— “হ্যাঁ গা, আজ একটু গরম জিলিপি বা সন্দেশ খেতে ইচ্ছে করছে!” ভক্তরা যখনই মিষ্টি আনতেন, ঠাকুর মা ভবতারিণীকে নিবেদন করে পরম আনন্দে সেই প্রসাদ খেতেন।\n\nএকদিন এক কঠোর তপস্বী এসে ঠাকুরকে বললেন— “সাধক হয়ে আপনি ভালো মিষ্টি আর ভালো খাবারের কথা বলেন কেন?” ঠাকুর খিলখিল করে হেসে বললেন— “ওগো, ঈশ্বর কি রসকষহীন শুকনো কাঠ? তিনি যে আনন্দময় রসস্বরূপ! মনটাকে সরল রেখে মায়ের দেওয়া ভালো জিনিস আনন্দে গ্রহণ করাতেই তো আসল ভক্তি!”',
     hitch_title_bn: '🪷 ঠাকুরের অমৃত বাণী',
     hitch_bn: 'মনকে কখনো শুকনো বা উদাস রাখবে না মা—ঠাকুর নিজে বলেছেন ভগবান হলেন আনন্দের সাগর; তাই রোজকার ভালো খাবার, গান আর হাসির মধ্যেই ঈশ্বরের কৃপা অনুভব করো!',
     extra_title_bn: '🌺 কথামৃতের শিক্ষা',
     extra_bn: 'শ্রীশ্রীরামকৃষ্ণ কথামৃতে বারবার বলা হয়েছে—সংসারে থেকে পানকৌড়ি পাখির মতো আনন্দে ভেসে থাকো, যেন দুশ্চিন্তার জল ডানায় একটুও না লাগে।',
-    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: দক্ষিণেশ্বরে ঠাকুরের ঘরের কোন মিষ্টিটি সবচেয়ে প্রিয় ছিল?',
+    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: দক্ষিণেশ্বরে ঠাকুরের কোন মিষ্টিটি সবচেয়ে প্রিয় ছিল?',
     curiosity_a_bn: '🌸 গরম জিলিপি, বাগবাজারের রসগোল্লা আর মা সারদার হাতের তৈরি সুজির পায়েস!',
-    yt_query: 'Sri Ramakrishna Kathamrita Bengali stories',
-    yt_label_bn: 'ঠাকুর শ্রীরামকৃষ্ণের কথামৃতের গল্প'
+    yt_query: 'Sri Ramakrishna Kathamrita Bengali stories', yt_label_bn: 'ঠাকুর শ্রীরামকৃষ্ণের কথামৃতের গল্প'
   },
   {
-    id: 'god_5',
-    vibe: 'gods',
-    badge_bn: '🪷 ভগবান',
+    id: 'god_5', vibe: 'gods', badge_bn: '🪷 ভগবান',
     title_bn: 'শ্রীরামচন্দ্রের সেতু বন্ধন ও ছোট্ট কাঠবিড়ালির পিঠের তিনটি রেখা!',
-    story_bn: 'রামায়ণে সমুদ্র পেরিয়ে লঙ্কায় যাওয়ার জন্য যখন বানর সেনারা বিশাল বড় বড় পাথর তুলে সমুদ্রের বুকে সেতু তৈরি করছিলেন, তখন সমুদ্রের তীরে এক ছোট্ট কাঠবিড়ালিও বসে তা দেখছিল। তার মনে হলো— “ভগবানের কাজে আমিও আমার সাধ্যমতো একটু সাহায্য করি!”\n\nকাঠবিড়ালিটি বারবার সমুদ্রের জলে নিজের শরীর ভিজিয়ে তীরে এসে বালির ওপর গড়াগড়ি খেত, আর গায়ে লেগে থাকা বালিটুকু সেতুর পাথরের ফাঁকে ঝেড়ে দিয়ে আসত। তা দেখে কয়েকজন বানর হাসাহাসি করলেও শ্রীরামচন্দ্র পরম স্নেহে কাঠবিড়ালিটিকে নিজের কোলে তুলে নিলেন এবং বললেন— “ভালোবাসায় কোনো কাজই ছোট নয়!” এই বলে শ্রীরামচন্দ্র তাঁর ডান হাতের তিনটি আঙুল দিয়ে কাঠবিড়ালির পিঠে স্নেহের হাত বুলিয়ে দিলেন।',
+    story_bn: 'রামায়ণে সমুদ্র পেরিয়ে লঙ্কায় যাওয়ার জন্য যখন বানর সেনারা বিশাল পাথর তুলে সমুদ্রের বুকে সেতু তৈরি করছিলেন, তখন এক ছোট্ট কাঠবিড়ালি বারবার সমুদ্রের জলে নিজের শরীর ভিজিয়ে তীরে এসে বালির ওপর গড়াগড়ি খেত, আর গায়ে লেগে থাকা বালিটুকু সেতুর পাথরের ফাঁকে ঝেড়ে দিয়ে আসত।\n\nশ্রীরামচন্দ্র পরম স্নেহে কাঠবিড়ালিটিকে নিজের কোলে তুলে নিলেন এবং বললেন— “ভালোবাসায় কোনো কাজই ছোট নয়!” এই বলে শ্রীরামচন্দ্র তাঁর ডান হাতের তিনটি আঙুল দিয়ে কাঠবিড়ালির পিঠে স্নেহের হাত বুলিয়ে দিলেন।',
     hitch_title_bn: '🪷 শ্রীরামের আশীর্বাদ',
     hitch_bn: 'কাজ কত বড় বা ছোট তার চেয়ে মনের ভালোবাসাটাই আসল মা—তুমি সারাজীবন সংসার ও সন্তানদের জন্য যে অকৃত্রিম ভালোবাসা দিয়েছো, তা ভগবানের কাছে সবচেয়ে বড় পূজা!',
     extra_title_bn: '🌺 ভক্তির মহিমা',
     extra_bn: 'কথিত আছে, শ্রীরামচন্দ্রের স্নেহের তিনটি আঙুলের ছোঁয়াতেই আজও ভারতীয় কাঠবিড়ালির পিঠে তিনটি সুন্দর সাদা ডোরা দাগ দেখা যায়।',
-    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: রামচন্দ্রের সেতু তৈরি করার প্রধান স্থপতি বানরটির নাম কী ছিল?',
+    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: রামচন্দ্রের সেতু তৈরি করার প্রধান স্থপতি বানর দুটির নাম কী ছিল?',
     curiosity_a_bn: '🌸 বিশ্বকর্মা-পুত্র নল ও নীল—যাঁদের হাতের ছোঁয়ায় পাথর জলের ওপর ভেসে থাকত!',
-    yt_query: 'Ramayan squirrel story Ram Setu Bengali',
-    yt_label_bn: 'শ্রীরামচন্দ্র ও কাঠবিড়ালির ভক্তির গল্প'
+    yt_query: 'Ramayan squirrel story Ram Setu Bengali', yt_label_bn: 'শ্রীরামচন্দ্র ও কাঠবিড়ালির ভক্তির গল্প'
   },
   {
-    id: 'god_6',
-    vibe: 'gods',
-    badge_bn: '🪷 ভগবান',
+    id: 'god_6', vibe: 'gods', badge_bn: '🪷 ভগবান',
     title_bn: 'কৈলাসে দেবাদিদেব মহাদেব ও মা অন্নপূর্ণার ভিক্ষার ঝুলি!',
-    story_bn: 'একবার কৈলাসে কথার ছলে ভোলা মহেশ্বর বললেন— “পার্বতী, এই সংসার ও অন্ন-জল সবই তো মায়া!” মা পার্বতী মৃদু হেসে ভাবলেন, সংসারের ক্ষুধা ও অন্নের গুরুত্ব বোঝাতে মহাদেবকে একটু লীলা দেখানো দরকার। তিনি মুহূর্তের জন্য কৈলাস ছেড়ে কাশীধামে গিয়ে মা অন্নপূর্ণা রূপে আবির্ভূতা হলেন।\n\nএদিকে মা পার্বতী না থাকায় ত্রিভুবনে কোথাও আর অন্ন পাওয়া গেল না! শেষে স্বয়ং মহাদেব ভিক্ষাপাত্র হাতে কাশীতে মা অন্নপূর্ণার দ্বারে এসে দাঁড়ালেন এবং হাত পেতে বললেন— “দেবী, ত্রিভুবনের প্রাণ রক্ষার জন্য অন্ন ভিক্ষা দিন!” মা অন্নপূর্ণা হাসিমুখে সোনার হাতা দিয়ে মহাদেবের পাত্রে পরমান্ন তুলে দিলেন।',
+    story_bn: 'একবার কৈলাসে কথার ছলে ভোলা মহেশ্বর বললেন— “পার্বতী, এই সংসার ও অন্ন-জল সবই তো মায়া!” মা পার্বতী মৃদু হেসে সংসারের অন্নের গুরুত্ব বোঝাতে কাশীধামে গিয়ে মা অন্নপূর্ণা রূপে আবির্ভূতা হলেন।\n\nমা পার্বতী না থাকায় ত্রিভুবনে কোথাও আর অন্ন পাওয়া গেল না! শেষে স্বয়ং মহাদেব ভিক্ষাপাত্র হাতে কাশীতে মা অন্নপূর্ণার দ্বারে এসে দাঁড়ালেন। মা অন্নপূর্ণা হাসিমুখে সোনার হাতা দিয়ে মহাদেবের পাত্রে পরমান্ন তুলে দিলেন।',
     hitch_title_bn: '🪷 মা অন্নপূর্ণার শিক্ষা',
-    hitch_bn: 'ঘরের মা হলেন স্বয়ং মা অন্নপূর্ণার রূপ মা—তাই সবার আগে মায়ের নিজের পাত যেন তাজা, পুষ্টিকর ও গরম খাবারে ভরা থাকে, তবেই তো সংসারের কল্যাণ!',
+    hitch_bn: 'ঘরের মা হলেন স্বয়ং মা অন্নপূর্ণার রূপ মা—তাই সবার আগে মায়ের নিজের পাত যেন তাজা, পুষ্টিকর ও গরম খাবারে ভরা থাকে!',
     extra_title_bn: '🌺 কাশীধামের ঐতিহ্য',
-    extra_bn: 'আজও কাশীর বিশ্বনাথ মন্দিরের পাশে মা অন্নপূর্ণার মন্দিরে প্রতিদিন হাজার হাজার ভক্তকে বিনা মূল্যে প্রসাদ খাওয়ানো হয়।',
+    extra_bn: 'আজও কাশীর বিশ্বনাথ মন্দিরের পাশে মা অন্নপূর্ণার মন্দিরে প্রতিদিন ভক্তদের প্রসাদ খাওয়ানো হয়।',
     curiosity_q_bn: '🔮 অমৃত প্রশ্ন: মা অন্নপূর্ণার দুই হাতে কী কী থাকে?',
     curiosity_a_bn: '🌸 এক হাতে রত্নখচিত অন্নপাত্র এবং অন্য হাতে পরমান্ন পরিবেশনের সোনার হাতা!',
-    yt_query: 'Maa Annapurna Shiva Kashi story Bengali',
-    yt_label_bn: 'মা অন্নপূর্ণা ও মহাদেবের কাশী লীলা'
+    yt_query: 'Maa Annapurna Shiva Kashi story Bengali', yt_label_bn: 'মা অন্নপূর্ণা ও মহাদেবের কাশী লীলা'
   },
   {
-    id: 'god_7',
-    vibe: 'gods',
-    badge_bn: '🪷 ভগবান',
+    id: 'god_7', vibe: 'gods', badge_bn: '🪷 ভগবান',
     title_bn: 'দ্বারকায় ভগবান শ্রীকৃষ্ণ ও বাল্যবন্ধু সুদামার একমুঠো চিঁড়ে ভাজা!',
-    story_bn: 'শ্রীকৃষ্ণের বাল্যবন্ধু সুদামা ছিলেন অত্যন্ত দরিদ্র ব্রাহ্মণ। একদিন স্ত্রীর অনুরোধে সুদামা দ্বারকায় কৃষ্ণের সাথে দেখা করতে গেলেন। বন্ধুর জন্য উপহার দেওয়ার মতো ঘরে কিছু ছিল না বলে সুদামার স্ত্রী ছেঁড়া কাপড়ের খুঁটে সামান্য তিন মুঠো চিঁড়ে ভাজা বেঁধে দিয়েছিলেন।\n\nদ্বারকার সোনার প্রাসাদে পৌঁছে সুদামা লজ্জায় সেই চিঁড়ের পুঁটলিটা লুকিয়ে রাখছিলেন। কিন্তু শ্রীকৃষ্ণ ছুটে এসে বন্ধুকে বুকে জড়িয়ে ধরলেন, নিজের হাতে সুদামার পা ধুইয়ে দিলেন এবং পুঁটলিটা কেড়ে নিয়ে পরম তৃপ্তিতে একমুঠো চিঁড়ে মুখে পুরে বললেন— “ভাই সুদামা, এই চিঁড়ে ভাজার যে অমৃত স্বাদ, তা স্বর্গের রাজভোগেও নেই!”',
+    story_bn: 'শ্রীকৃষ্ণের বাল্যবন্ধু সুদামা স্ত্রীর অনুরোধে দ্বারকায় কৃষ্ণের সাথে দেখা করতে গেলেন। উপহার দেওয়ার মতো ঘরে কিছু ছিল না বলে সুদামার স্ত্রী কাপড়ের খুঁটে সামান্য তিন মুঠো চিঁড়ে ভাজা বেঁধে দিয়েছিলেন।\n\nদ্বারকার সোনার প্রাসাদে পৌঁছে সুদামা লজ্জায় সেই পুঁটলিটা লুকিয়ে রাখছিলেন। কিন্তু শ্রীকৃষ্ণ ছুটে এসে বন্ধুকে বুকে জড়িয়ে ধরলেন এবং পুঁটলিটা কেড়ে নিয়ে পরম তৃপ্তিতে একমুঠো চিঁড়ে মুখে পুরে বললেন— “ভাই সুদামা, এই চিঁড়ে ভাজার যে অমৃত স্বাদ, তা স্বর্গের রাজভোগেও নেই!”',
     hitch_title_bn: '🪷 বন্ধুত্ব ও ভালোবাসার মূল্য',
-    hitch_bn: 'ভগবান কখনো দাম বা আড়ম্বর দেখেন না মা—তিনি শুধু মনের সরল ভালোবাসা দেখেন। তোমার হাতের সামান্য জল বা আদরও কৌশিক ও দিদির কাছে অমৃতের সমান!',
+    hitch_bn: 'ভগবান কখনো দাম বা আড়ম্বর দেখেন না মা—তিনি শুধু মনের সরল ভালোবাসা দেখেন। তোমার হাতের সামান্য আদরও কৌশিক ও দিদির কাছে অমৃতের সমান!',
     extra_title_bn: '🌺 নিঃস্বার্থ প্রীতি',
     extra_bn: 'পুরাণে সুদামা ও শ্রীকৃষ্ণের এই মিলনকে পৃথিবীর সর্বশ্রেষ্ঠ নিঃস্বার্থ বন্ধুত্বের প্রতীক হিসেবে মানা হয়।',
-    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: শ্রীকৃষ্ণ ও সুদামা ছোটবেলায় কোন ঋষির আশ্রমে একসাথে পড়াশোনা করেছিলেন?',
+    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: শ্রীকৃষ্ণ ও সুদামা কোন ঋষির আশ্রমে একসাথে পড়াশোনা করেছিলেন?',
     curiosity_a_bn: '🌸 উজ্জয়িনীর মহর্ষি সান্দীপনির আশ্রমে!',
-    yt_query: 'Krishna Sudama friendship story Bengali',
-    yt_label_bn: 'শ্রীকৃষ্ণ ও সুদামার অমর বন্ধুত্বের গল্প'
+    yt_query: 'Krishna Sudama friendship story Bengali', yt_label_bn: 'শ্রীকৃষ্ণ ও সুদামার অমর বন্ধুত্বের গল্প'
   },
   {
-    id: 'god_8',
-    vibe: 'gods',
-    badge_bn: '🪷 ভগবান',
+    id: 'god_8', vibe: 'gods', badge_bn: '🪷 ভগবান',
     title_bn: 'শারদীয়া দুর্গোৎসব — কৈলাস ছেড়ে উমার তিন দিনের বাপের বাড়ি আগমন!',
-    story_bn: 'বাংলার দুর্গাপুজো শুধু মহিষাসুরমর্দিনীর যুদ্ধ নয়—বাঙালির কাছে মা দুর্গা হলেন ঘরের আদরের মেয়ে ‘উমা’, যিনি শরৎকালে শিউলি ফুলের গন্ধ আর কাশফুলের দোলা লাগলে চার সন্তান লক্ষ্মী, সরস্বতী, কার্তিক ও গণেশকে সাথে নিয়ে তিন দিনের জন্য বাপের বাড়ি বেড়াতে আসেন!\n\nআগমনী গানে মেনকা মা যেমন বলেন— “যাও যাও গিরিরাজ, আনো গিয়ে আমার উমারে!”—ঠিক তেমনই ষষ্ঠীর বোধন থেকে নবমীর সন্ধিপুজো পর্যন্ত বাংলার প্রতিটি ঘর মেয়ের আগমনের আনন্দে উৎসবে মেতে ওঠে।',
+    story_bn: 'বাঙালির কাছে মা দুর্গা হলেন ঘরের আদরের মেয়ে ‘উমা’, যিনি শরৎকালে শিউলি ফুলের গন্ধ আর কাশফুলের দোলা লাগলে চার সন্তান লক্ষ্মী, সরস্বতী, কার্তিক ও গণেশকে সাথে নিয়ে তিন দিনের জন্য বাপের বাড়ি বেড়াতে আসেন!\n\nআগমনী গানে মেনকা মা যেমন বলেন— “যাও যাও গিরিরাজ, আনো গিয়ে আমার উমারে!”—ঠিক তেমনই ষষ্ঠীর বোধন থেকে নবমী পর্যন্ত বাংলার প্রতিটি ঘর মেয়ের আগমনের আনন্দে উৎসবে মেতে ওঠে।',
     hitch_title_bn: '🪷 মায়ের আগমনী আনন্দ',
     hitch_bn: 'উমা যেমন বাপের বাড়ি এসে সব কাজের চাপ ভুলে আনন্দে থাকেন, তেমনই তুমিও নিজের জীবনকে রোজ উৎসবের মতো হালকা ও আনন্দে রাখবে মা!',
     extra_title_bn: '🌺 আগমনী ও বিজয়া',
-    extra_bn: 'অষ্টাদশ শতকে সাধক কমলাকান্ত ভট্টাচার্য ও রামপ্রসাদ সেনের আগমনী গানে মা দুর্গাকে ঘরের কন্যা রূপে আরাধনার এই মধুর ধারা অমর হয়ে আছে।',
+    extra_bn: 'সাধক কমলাকান্ত ও রামপ্রসাদ সেনের আগমনী গানে মা দুর্গাকে ঘরের কন্যা রূপে আরাধনার এই মধুর ধারা অমর হয়ে আছে।',
     curiosity_q_bn: '🔮 অমৃত প্রশ্ন: অকালবোধনে শ্রীরামচন্দ্র মা দুর্গার পুজোয় ক’টি নীলপদ্ম নিবেদন করেছিলেন?',
     curiosity_a_bn: '🌸 একশো আটটি নীলপদ্ম!',
-    yt_query: 'Mahalaya Birendra Krishna Bhadra Durga Puja story Bengali',
-    yt_label_bn: 'শারদীয়া দুর্গোৎসব ও উমার আগমনী কথা'
+    yt_query: 'Mahalaya Birendra Krishna Bhadra Durga Puja story Bengali', yt_label_bn: 'শারদীয়া দুর্গোৎসব ও উমার আগমনী কথা'
+  },
+  {
+    id: 'god_9', vibe: 'gods', badge_bn: '🪷 ভগবান',
+    title_bn: 'সাধক রামপ্রসাদের বাগানের বেড়া বাঁধা ও মা কালীর অপরূপ লীলা!',
+    story_bn: 'হালিশহরে সাধক কবি রামপ্রসাদ সেন একদিন নিজের ভিটের চারপাশে বাঁশের কঞ্চি আর দড়ি দিয়ে বেড়া বাঁধছিলেন। তাঁর ছোট্ট মেয়ে জগদীশ্বরী পাশে বসে দড়ি এগিয়ে দিচ্ছিল। হঠাৎ মেয়েটি খেলা করতে চলে গেলে স্বয়ং মা কালী সেই ছোট্ট মেয়ের রূপ ধরে এসে রামপ্রসাদের হাতে দড়ি এগিয়ে দিতে লাগলেন এবং বেড়ার ওপাশ থেকে ফাঁস ঘুরিয়ে বেঁধে দিলেন!\n\nকিছুক্ষণ পর আসল মেয়েটি ফিরে এসে যখন বলল সে এতক্ষণ পুকুরঘাটে ছিল, তখন রামপ্রসাদ আনন্দে কেঁদে ফেলে গাইলেন— “রামপ্রসাদ বলে মা হলে কি ছেলের বুদ্ধি হারাতে হয়?”',
+    hitch_title_bn: '🪷 মায়ের অদৃশ্য হাত',
+    hitch_bn: 'তুমি যখন একা হাতে সংসারের কাজ সামলেছো মা, তখন স্বয়ং জগজ্জননী অদৃশ্যভাবে তোমার পাশেই দাঁড়িয়ে তোমাকে শক্তি দিয়েছেন—এখন তিনি তোমাকে বিশ্রাম ও আনন্দে থাকতে বলছেন!',
+    extra_title_bn: '🌺 রামপ্রসাদী সুরের জাদু',
+    extra_bn: 'হালিশহরের গঙ্গার ঘাটে বসে রামপ্রসাদ যে শ্যামাসঙ্গীত রচনা করেছিলেন, তা আজও বাংলার ঘরে ঘরে গীত হয়।',
+    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: মহারাজ কৃষ্ণচন্দ্র সাধক রামপ্রসাদকে কী উপাধি দিয়েছিলেন?',
+    curiosity_a_bn: '🌸 ‘কবিরঞ্জন’ উপাধি এবং নিষ্কর জমি উপহার দিয়েছিলেন!',
+    yt_query: 'Sadhak Ramprasad Maa Kali story Bengali', yt_label_bn: 'সাধক রামপ্রসাদ ও মা কালীর লীলা'
+  },
+  {
+    id: 'god_10', vibe: 'gods', badge_bn: '🪷 ভগবান',
+    title_bn: 'স্বামী বিবেকানন্দ ও দক্ষিণেশ্বরের মা ভবতারিণীর কাছে জ্ঞান ও ভক্তির প্রার্থনা!',
+    story_bn: 'তরুণ নরেন্দ্রনাথ (স্বামী বিবেকানন্দ)-এর সংসারে যখন পিতার মৃত্যুর পর চরম অভাব দেখা দিল, তখন তিনি ঠাকুর শ্রীরামকৃষ্ণের কাছে গিয়ে বললেন— “ঠাকুর, আপনি মা ভবতারিণীকে বলুন যেন আমার পরিবারের কষ্ট দূর হয়।” ঠাকুর বললেন— “তুই নিজেই আজ মন্দিরে গিয়ে মাকে বল না, মা তোর কথা নিশ্চয়ই শুনবেন!”\n\nনরেন্দ্রনাথ মন্দিরে ঢুকে মা ভবতারিণীর জ্যোতির্ময় রূপ দেখে সংসারের টাকাপয়সার কথা বেমালুম ভুলে গেলেন! তিনবার গিয়েও তিনি কেবল প্রার্থনা করলেন— “মা, আমাকে জ্ঞান দাও, ভক্তি দাও, বিবেক ও বৈরাগ্য দাও!” ঠাকুর শুনে হাসিমুখে আশীর্বাদ করলেন যে তাঁর পরিবারের অন্নবস্ত্রের অভাব কখনো হবে না।',
+    hitch_title_bn: '🪷 স্বামীজির নির্ভীক মন্ত্র',
+    hitch_bn: 'স্বামী বিবেকানন্দ বলতেন— “ভয়ই একমাত্র পাপ, সর্বদা নির্ভীক হয়ে আনন্দে থাকো!”—তাই মনের সব ছোটখাটো ভয় ঝেড়ে ফেলে মাথা উঁচু করে হাসিমুখে থাকো মা।',
+    extra_title_bn: '🌺 বেলুড় মঠের শান্তি',
+    extra_bn: 'গঙ্গার তীরে স্বামীজির প্রতিষ্ঠিত বেলুড় মঠ আজও সারা বিশ্বের মানুষের কাছে শান্তি ও সম্প্রীতির তীর্থক্ষেত্র।',
+    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: স্বামী বিবেকানন্দ কত সালে শিকাগো ধর্মমহাসভায় ভারতের জয়গান গেয়েছিলেন?',
+    curiosity_a_bn: '🌸 ১৮৯৩ সালের ১১ই সেপ্টেম্বর!',
+    yt_query: 'Swami Vivekananda Maa Bhavatarini Dakshineswar story Bengali', yt_label_bn: 'স্বামী বিবেকানন্দ ও মা ভবতারিণীর গল্প'
+  },
+  {
+    id: 'god_11', vibe: 'gods', badge_bn: '🪷 ভগবান',
+    title_bn: 'গণেশ ও কার্তিকের বিশ্বপরিক্রমা — মা ও বাবাই যে ত্রিভুবনের সার!',
+    story_bn: 'একদিন কৈলাসে দেবতারা একটি দিব্য জ্ঞানফল নিয়ে এলেন। ঠিক হলো, কার্তিক ও গণেশের মধ্যে যিনি সবার আগে ত্রিভুবন প্রদক্ষিণ করে ফিরে আসবেন, তিনিই সেই ফল পাবেন। কার্তিক তৎক্ষণাৎ তাঁর ময়ূর বাহনে চড়ে বিদ্যুতের গতিতে সারা পৃথিবী ঘুরতে বেরিয়ে পড়লেন।\n\nকিন্তু গণেশজি তাঁর ছোট্ট ইঁদুর বাহনের দিকে তাকিয়ে মৃদু হাসলেন। তিনি মা পার্বতী ও পিতা মহাদেবকে পাশাপাশি বসিয়ে ভক্তিভরে তাঁদের চারপাশে সাতবার প্রদক্ষিণ করে প্রণাম করলেন এবং বললেন— “মা ও পিতার চরণেই তো সমগ্র ব্রহ্মাণ্ড ও ত্রিভুবন বিরাজমান!” দেবতারা মুগ্ধ হয়ে গণেশজির হাতেই জ্ঞানফল তুলে দিলেন।',
+    hitch_title_bn: '🪷 মায়ের চরণেই তীর্থ',
+    hitch_bn: 'সন্তানদের কাছে মায়ের হাসিমুখই সবচেয়ে বড় তীর্থ মা—তুমি যখন খুশি ও সুস্থ থাকো, তখন কৌশিক ও দিদির মনে হয় তারা বিশ্বজয়ের আশীর্বাদ পেয়েছে!',
+    extra_title_bn: '🌺 সিদ্ধিদাতা গণেশের বুদ্ধি',
+    extra_bn: 'এই কারণেই যেকোনো শুভ কাজের শুরুতে সর্বপ্রথম সিদ্ধিদাতা গণেশের পূজা করা হয়।',
+    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: মহাভারত লেখার সময় ব্যাসদেবের কথা শুনে কে লিপিকর হিসেবে লিখেছিলেন?',
+    curiosity_a_bn: '🌸 স্বয়ং সিদ্ধিদাতা গণেশ!',
+    yt_query: 'Ganesh Kartik world tour story Shiva Parvati Bengali', yt_label_bn: 'গণেশ ও কার্তিকের বিশ্বপরিক্রমার গল্প'
+  },
+  {
+    id: 'god_12', vibe: 'gods', badge_bn: '🪷 ভগবান',
+    title_bn: 'নবদ্বীপে শ্রীচৈতন্য মহাপ্রভুর হরিনাম ও জগাই-মাধাই উদ্ধার!',
+    story_bn: 'পঞ্চদশ শতকে নদীয়ার নবদ্বীপে নিমাই পণ্ডিত (শ্রীচৈতন্য মহাপ্রভু) ও নিত্যানন্দ প্রভু খোল-করতাল নিয়ে গঙ্গার তীরে আনন্দে হরিনাম সংকীর্তন শুরু করলেন। সেই সময় নবদ্বীপে জগাই ও মাধাই নামে দুই দুর্ধর্ষ ভাই ছিল, যাদের ভয়ে সবাই কাঁপত।\n\nএকদিন মাধাই রাগের বশে নিত্যানন্দ প্রভুর কপালে মাটির কলসির ভাঙা টুকরো ছুঁড়ে মারল। রক্তাক্ত কপালেও নিত্যানন্দ প্রভু মাধাইকে বুকে জড়িয়ে ধরে বললেন— “মেরেছিস বেশ করেছিস, কিন্তু একবার মুখে হরিনাম বল ভাই!” এমন অসীম ক্ষমা দেখে জগাই ও মাধাইয়ের কঠিন হৃদয় গলে গেল এবং তারা পরম বৈষ্ণব ভক্তে পরিণত হলো।',
+    hitch_title_bn: '🪷 ক্ষমা ও আনন্দের শক্তি',
+    hitch_bn: 'রাগ বা কাঠিন্যের চেয়ে স্নেহ, ক্ষমা আর গানের সুরের শক্তি হাজার গুণ বেশি মা—মনকে হালকা রেখে গুনগুন করে গান গাইলেই সব অশান্তি দূর হয়ে যায়!',
+    extra_title_bn: '🌺 নদীয়ার গৌরচন্দ্র',
+    extra_bn: 'নবদ্বীপ ও মায়াপুর আমাদের রানাঘাটের একদম কাছেই—যেখানকার বাতাসে আজও মহাপ্রভুর প্রেমভক্তির সুর ভেসে বেড়ায়।',
+    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: শ্রীচৈতন্য মহাপ্রভুর ডাকনাম ‘নিমাই’ রাখা হয়েছিল কেন?',
+    curiosity_a_bn: '🌸 কারণ শচীমাতার আঙিনায় একটি নিমগাছের নিচে তাঁর জন্ম হয়েছিল!',
+    yt_query: 'Chaitanya Mahaprabhu Jagai Madhai story Bengali', yt_label_bn: 'শ্রীচৈতন্য মহাপ্রভু ও জগাই-মাধাইয়ের গল্প'
+  },
+  {
+    id: 'god_13', vibe: 'gods', badge_bn: '🪷 ভগবান',
+    title_bn: 'সীতা মায়ের সিঁদুর ও হনুমানজির সিঁদুর মাখার মধুর ভক্তির গল্প!',
+    story_bn: 'লঙ্কাজয়ের পর অযোধ্যায় ফিরে একদিন মা সীতা তাঁর কপালে সিঁদুর পরছিলেন। মহাবীর হনুমানজি কৌতূহলী হয়ে জিজ্ঞেস করলেন— “মা, আপনি প্রতিদিন সিঁথিতে এই লাল সিঁদুর পরেন কেন?” মা সীতা স্নেহভরে বললেন— “বৎস, এই সিঁদুর পরলে তোমার প্রভু শ্রীরামচন্দ্রের আয়ু ও আনন্দ বৃদ্ধি পায় এবং তিনি খুশি হন।”\n\nসরলপ্রাণ হনুমানজি ভাবলেন—এক চিমটি সিঁদুরে যদি প্রভু এত খুশি হন, তবে পুরো গায়ে মাখলে প্রভু কত আনন্দ পাবেন! তিনি তৎক্ষণাৎ এক ভাঁড় সিঁদুর ও ঘি নিয়ে নিজের সারা শরীরে মেখে রাজসভায় এসে দাঁড়ালেন। শ্রীরামচন্দ্র হনুমানজির এই নিষ্পাপ ভক্তি দেখে হেসে তাঁকে বুকে জড়িয়ে ধরলেন।',
+    hitch_title_bn: '🪷 সরল মনের জয়',
+    hitch_bn: 'ভগবান কোনো জটিল নিয়ম বা মন্ত্র খোঁজেন না মা—হনুমানজির মতো সরল, নিষ্পাপ ভালোবাসা দেখলেই তিনি সবচেয়ে বেশি খুশি হন!',
+    extra_title_bn: '🌺 বজরংবলীর আশীর্বাদ',
+    extra_bn: 'এই ঘটনার পর থেকেই ভক্তরা হনুমানজির মূর্তিতে মেটে সিঁদুর নিবেদন করেন।',
+    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: হনুমানজির আরেক নাম ‘বজরংবলী’ হওয়ার কারণ কী?',
+    curiosity_a_bn: '🌸 কারণ তাঁর অঙ্গ বজ্রের মতো দৃঢ় এবং সিঁদুরের রঙে (বজরং/গেরুয়া) শোভিত!',
+    yt_query: 'Hanuman sindoor story Sita Ramayan Bengali', yt_label_bn: 'হনুমানজির সিঁদুর মাখার ভক্তির গল্প'
+  },
+  {
+    id: 'god_14', vibe: 'gods', badge_bn: '🪷 ভগবান',
+    title_bn: 'সমুদ্রমন্থন ও দেবাদিদেব মহাদেবের ‘নীলকণ্ঠ’ হয়ে ওঠার কথা!',
+    story_bn: 'পুরাণে দেবতা ও অসুরেরা মিলে যখন অমৃত লাভের আশায় ক্ষীরসমুদ্র মন্থন করছিলেন, তখন অমৃত ওঠার আগে সমুদ্রের তলদেশ থেকে ভয়ঙ্কর হলাহল বিষ উঠে এল। সেই বিষের তাপে ত্রিভুবন দগ্ধ হতে শুরু করল।\n\nসৃষ্টিকে রক্ষা করতে করুণাময় দেবাদিদেব মহাদেব এগিয়ে এলেন এবং অঞ্জলি ভরে সেই হলাহল পান করলেন। কিন্তু মা পার্বতী স্বামীর প্রাণ রক্ষার্থে মহাদেবের গলা চেপে ধরলেন, যাতে বিষ উদরে প্রবেশ না করে কণ্ঠেই থেমে থাকে। বিষের প্রভাবে মহাদেবের কণ্ঠ নীলবর্ণ ধারণ করল এবং তাঁর নাম হলো ‘নীলকণ্ঠ’!',
+    hitch_title_bn: '🪷 নীলকণ্ঠের শিক্ষা',
+    hitch_bn: 'বাইরের মানুষের কটু কথা বা সংসারের অপ্রিয় কথা কখনো মনের ভেতরে নামতে দেবে না মা—মহাদেবের মতো বাইরেই তা থামিয়ে রেখে নিজের হৃদয়কে অমৃতের মতো শান্ত রাখো!',
+    extra_title_bn: '🌺 শ্রাবণ ও শিবপূজা',
+    extra_bn: 'সমুদ্রমন্থনের শেষে ধন্বন্তরি দেব অমৃতের কলস হাতে আবির্ভূত হয়েছিলেন, যা দেবতাদের অমরত্ব দান করে।',
+    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: সমুদ্রমন্থনে কোন পর্বতকে মন্থনদণ্ড করা হয়েছিল?',
+    curiosity_a_bn: '🌸 মন্দার পর্বতকে, আর বাসুকি নাগকে করা হয়েছিল মন্থনের রজ্জু!',
+    yt_query: 'Samudra Manthan Shiva Neelkanth story Bengali', yt_label_bn: 'দেবাদিদেব মহাদেবের নীলকণ্ঠ লীলা'
+  },
+  {
+    id: 'god_15', vibe: 'gods', badge_bn: '🪷 ভগবান',
+    title_bn: 'গিরিগোবর্ধন পূজা ও ছোট্ট শ্রীকৃষ্ণের কনিষ্ঠ আঙুলে পর্বত ধারণ!',
+    story_bn: 'বৃন্দাবনের গোপেরা প্রতি বছর বৃষ্টির দেবতা ইন্দ্রের পূজা করতেন। কিশোর শ্রীকৃষ্ণ নন্দমহারাজ ও গোপদের বোঝালেন যে আমাদের গাভীদের ঘাস, ফলমূল ও ছায়া দেয় এই গোবর্ধন পর্বত—তাই প্রকৃতি ও গোবর্ধন পর্বতের পূজা করাই আমাদের কর্তব্য। গোপেরা আনন্দে অন্নকূট সাজিয়ে গোবর্ধনের পূজা করলেন।\n\nএতে দেবরাজ ইন্দ্র ক্রুদ্ধ হয়ে বৃন্দাবনে প্রলয়ঙ্করী মেঘ ও ঝড়-বৃষ্টি পাঠালেন। তখন ছোট্ট কৃষ্ণ বৃন্দাবনবাসীকে রক্ষা করতে নিজের বাম হাতের কনিষ্ঠ আঙুলের ডগায় বিশাল গোবর্ধন পর্বতকে ছাতার মতো তুলে ধরলেন! সাত দিন ধরে বৃন্দাবনের সব মানুষ ও পশুপাখি সেই পর্বতের নিচে নিরাপদে ও আনন্দে রইল।',
+    hitch_title_bn: '🪷 ভগবানের ছায়া',
+    hitch_bn: 'যখনই মনে কোনো অকারণ দুশ্চিন্তার মেঘ জমবে মা, জানবে গোবর্ধনধারী শ্রীকৃষ্ণের অভয় হাত ছাতার মতো সবসময় তোমার ও তোমার পরিবারের মাথার ওপর রয়েছে!',
+    extra_title_bn: '🌺 অন্নকূট মহোৎসব',
+    extra_bn: 'দীপাবলির পরদিন আজও সারা ভারতে গোবর্ধন পূজা ও অন্নকূট উৎসব মহাসমারোহে পালিত হয়।',
+    curiosity_q_bn: '🔮 অমৃত প্রশ্ন: গোবর্ধন পর্বত তুলে ধরার জন্য শ্রীকৃষ্ণের কী নাম হয়েছিল?',
+    curiosity_a_bn: '🌸 ‘গিরিধারী’ বা ‘গোবর্ধনধারী’!',
+    yt_query: 'Govardhan Puja Little Krishna story Bengali', yt_label_bn: 'শ্রীকৃষ্ণের গিরিগোবর্ধন ধারণের লীলা'
   }
 ];
 
 const JHALAK_LAUGH_STORIES = [
   {
-    id: 'laugh_1',
-    vibe: 'laugh',
-    badge_bn: '😂 হাসি',
+    id: 'laugh_1', vibe: 'laugh', badge_bn: '😂 হাসি',
     title_bn: 'বাটা মাছের ঝোল আর গোপাল ভাঁড়ের জাদুর চশমা!',
     story_bn: 'একদিন মহারাজ কৃষ্ণচন্দ্র গোপাল ভাঁড়কে ডেকে বললেন— “গোপাল, আজ রাজবাড়িতে গরম ধোঁয়া-ওঠা ভাতের সাথে সর্ষে বাটা মাছের ঝোল আর নতুন গুড়ের পায়েস রান্না হয়েছে! কিন্তু তোমাকে তখনি খেতে দেব যদি তুমি এক কথায় বলো পৃথিবীর সবচেয়ে সুন্দর দৃশ্য কী!”\n\nগোপাল চশমাটা নাকের ডগায় নামিয়ে এক গাল হেসে বলল— “মহারাজ, এর জন্য কি আর চশমা লাগে? ভরদুপুরে খিদের সময় কলাপাতার ওপর ধোঁয়া-ওঠা সাদা ভাত, তার পাশে সর্ষে বাটা মাছের পেটি আর এক বাটি ঘন ক্ষীরের পায়েস—এর চেয়ে সুন্দর দৃশ্য স্বর্গের ইন্দ্রদেবও কোনোদিন দেখেননি!” মহারাজ হেসে গড়িয়ে পড়লেন এবং গোপালকে পেট ভরে খাওয়ালেন।',
     hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
@@ -967,180 +1051,370 @@ const JHALAK_LAUGH_STORIES = [
     extra_bn: 'গোপাল ভাঁড়ের গল্প আমাদের শেখায়—জীবনের ছোট ছোট আনন্দগুলো নিয়ে কোনো দ্বিধা না রেখে প্রাণখুলে হাসা আর ভালো খাবার উপভোগ করাই আসল বুদ্ধির কাজ।',
     curiosity_q_bn: '🔮 মজার পর্দা খোলো: মহারাজ খুশি হয়ে গোপালকে বাড়ি নিয়ে যাওয়ার জন্য কী উপহার দিয়েছিলেন?',
     curiosity_a_bn: '🌸 পুরো এক হাঁড়ি মিষ্টি দই আর এক ঝুড়ি তাজা বাটা মাছ!',
-    yt_query: 'Gopal Bhar funny Bengali cartoon stories',
-    yt_label_bn: 'গোপাল ভাঁড়ের সেরা হাসির গল্প'
+    yt_query: 'Gopal Bhar funny Bengali cartoon stories', yt_label_bn: 'গোপাল ভাঁড়ের সেরা হাসির গল্প'
   },
   {
-    id: 'laugh_2',
-    vibe: 'laugh',
-    badge_bn: '😂 হাসি',
+    id: 'laugh_2', vibe: 'laugh', badge_bn: '😂 হাসি',
     title_bn: 'নদিয়া রাজ্যে মোট ক’টা কাক আছে? গোপাল ভাঁড়ের পেট ফাটা হাসির হিসাব!',
-    story_bn: 'একদিন রাজসভায় বসে মহারাজ কৃষ্ণচন্দ্র গোপালকে জব্দ করার জন্য হঠাৎ জিজ্ঞেস করলেন— “বলো তো গোপাল, আমাদের এই নদিয়া রাজ্যে মোট ক’টা কাক আছে? ঠিক সংখ্যা না বলতে পারলে আজ তোমার জরিমানা হবে!” সভাসদরা সবাই ভাবলেন আজ গোপাল নির্ঘাত ধরা পড়বে।\n\nগোপাল একটুও না ঘাবড়ে আঙুল গুনে গম্ভীর মুখে বলল— “মহারাজ, আমাদের রাজ্যে ঠিক নিরানব্বই হাজার নয়শো নিরানব্বইটা কাক আছে! বিশ্বাস না হলে গুনে দেখুন। যদি দেখেন কয়েকটা কম আছে, তবে জানবেন তারা পাশের রাজ্যে মামাবাড়ি বেড়াতে গেছে; আর যদি দেখেন কয়েকটা বেশি আছে, তবে জানবেন ভিনরাজ্যের কাকেরা আমাদের রাজ্যে কুটুম্ববাড়ি বেড়াতে এসেছে!”',
+    story_bn: 'একদিন রাজসভায় বসে মহারাজ কৃষ্ণচন্দ্র গোপালকে জব্দ করার জন্য হঠাৎ জিজ্ঞেস করলেন— “বলো তো গোপাল, আমাদের এই নদিয়া রাজ্যে মোট ক’টা কাক আছে?”\n\nগোপাল একটুও না ঘাবড়ে আঙুল গুনে গম্ভীর মুখে বলল— “মহারাজ, আমাদের রাজ্যে ঠিক নিরানব্বই হাজার নয়শো নিরানব্বইটা কাক আছে! যদি দেখেন কয়েকটা কম আছে, তবে জানবেন তারা পাশের রাজ্যে মামাবাড়ি বেড়াতে গেছে; আর যদি দেখেন কয়েকটা বেশি আছে, তবে জানবেন ভিনরাজ্যের কাকেরা আমাদের রাজ্যে কুটুম্ববাড়ি বেড়াতে এসেছে!”',
     hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
     hitch_bn: 'কেউ কোনো কঠিন বা বাঁকা প্রশ্ন করলে ঘাবড়ে যাওয়ার কিচ্ছু নেই মা—গোপালের মতো হালকা হাসিমুখে উড়িয়ে দেওয়াই সবচেয়ে বুদ্ধিমানের কাজ!',
     extra_title_bn: '🌟 উপস্থিত বুদ্ধির আনন্দ',
     extra_bn: 'মহারাজ কৃষ্ণচন্দ্রের রাজসভায় গোপাল ভাঁড় তার এই চটজলদি রসবোধ দিয়ে বড় বড় সমস্যারও হাসিমুখে সমাধান করে দিতেন।',
     curiosity_q_bn: '🔮 মজার পর্দা খোলো: মহারাজ কৃষ্ণচন্দ্রের রাজধানী কোথায় ছিল?',
     curiosity_a_bn: '🌸 নদিয়া জেলার কৃষ্ণনগরে (যা আমাদের রানাঘাটের একদম কাছেই মা)!',
-    yt_query: 'Gopal Bhar counting crows funny Bengali comedy',
-    yt_label_bn: 'গোপাল ভাঁড়ের কাক গোনার হাসির পর্ব'
+    yt_query: 'Gopal Bhar counting crows funny Bengali comedy', yt_label_bn: 'গোপাল ভাঁড়ের কাক গোনার হাসির পর্ব'
   },
   {
-    id: 'laugh_3',
-    vibe: 'laugh',
-    badge_bn: '😂 হাসি',
+    id: 'laugh_3', vibe: 'laugh', badge_bn: '😂 হাসি',
     title_bn: 'শিবরাম চক্রবর্তীর হর্ষবর্ধন ও গোবর্ধনের রাবড়ি খাওয়ার কাণ্ড!',
-    story_bn: 'শিবরাম চক্রবর্তীর বিখ্যাত দুই ভাই হর্ষবর্ধন আর গোবর্ধন একদিন কলকাতার দোকানে গেল গরম রাবড়ি খেতে। দোকানদারকে গোবর্ধন জিজ্ঞেস করল— “দাদা, এক ভাঁড় রাবড়ির দাম কত?” দোকানদার বলল— “দুই টাকা, আর উপরের মোটা সরটুকু নিলে ফ্রি!”\n\nতখন গোবর্ধন খুব বুদ্ধি খাটিয়ে বলল— “তাহলে এক কাজ করুন দাদা, রাবড়িটা থাক, আপনি শুধু উপরের ফ্রি মোটা সরটুকুই আমাকে এক ভাঁড় দিন!” হর্ষবর্ধন মাথায় হাত দিয়ে বলল— “ওরে বোকা, রাবড়ি ছাড়া কি শুধু উপরের সর হয়?” দোকানের সবাই শুনে হেসে লুটোপুটি খেল!',
+    story_bn: 'শিবরাম চক্রবর্তীর বিখ্যাত দুই ভাই হর্ষবর্ধন আর গোবর্ধন একদিন কলকাতার দোকানে গেল গরম রাবড়ি খেতে। দোকানদারকে গোবর্ধন জিজ্ঞেস করল— “দাদা, এক ভাঁড় রাবড়ির দাম কত?” দোকানদার বলল— “দুই টাকা, আর উপরের মোটা সরটুকু নিলে ফ্রি!”\n\nতখন গোবর্ধন খুব বুদ্ধি খাটিয়ে বলল— “তাহলে এক কাজ করুন দাদা, রাবড়িটা থাক, আপনি শুধু উপরের ফ্রি মোটা সরটুকুই আমাকে এক ভাঁড় দিন!” দোকানের সবাই শুনে হেসে লুটোপুটি খেল!',
     hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
     hitch_bn: 'শিবরাম চক্রবর্তীর গল্পের মতোই জীবনে মাঝে মাঝে নির্ভেজাল হাসি আর মিষ্টিমুখ করলে মনের বয়স এক নিমেষে কুড়ি বছর কমে যায় মা!',
     extra_title_bn: '🌟 বাংলা সাহিত্যের নির্মল হাসি',
-    extra_bn: 'শিবরাম চক্রবর্তী সারাজীবন কলকাতার মুক্তারাম বাবু স্ট্রিটের মেসে থেকে ছোট-বড় সবার জন্য শত শত অমর হাসির গল্প লিখে গেছেন।',
-    curiosity_q_bn: '🔮 মজার পর্দা খোলো: হর্ষবর্ধন কার কাছ থেকে টাকা ধার করে আর ফেরত দিতেন না?',
-    curiosity_a_bn: '🌸 স্বয়ং লেখক শিবরাম চক্রবর্তীর কাছ থেকে—গল্পের মধ্যেই!',
-    yt_query: 'Harshabardhan Gobardhan Shibram Chakraborty Bengali audio story',
-    yt_label_bn: 'হর্ষবর্ধন ও গোবর্ধনের হাসির গল্প'
+    extra_bn: 'শিবরাম চক্রবর্তী ছোট-বড় সবার জন্য শত শত অমর হাসির গল্প লিখে গেছেন।',
+    curiosity_q_bn: '🔮 মজার পর্দা খোলো: হর্ষবর্ধনের কাঠের ব্যবসার ডিপো কোথায় ছিল?',
+    curiosity_a_bn: '🌸 আসামের বনে ও কলকাতার ক্যানাল স্ট্রিটে!',
+    yt_query: 'Harshabardhan Gobardhan Shibram Chakraborty Bengali audio story', yt_label_bn: 'হর্ষবর্ধন ও গোবর্ধনের হাসির গল্প'
   },
   {
-    id: 'laugh_4',
-    vibe: 'laugh',
-    badge_bn: '😂 হাসি',
+    id: 'laugh_4', vibe: 'laugh', badge_bn: '😂 হাসি',
     title_bn: 'সুকুমার রায়ের ‘পাগলা দাশু’ ও জিলিপির পুঁটলির রহস্য!',
-    story_bn: 'স্কুলে পাগলা দাশু একদিন এক প্রকাণ্ড কাগজের পুঁটলি বগলে করে ক্লাসে এল এবং বারবার পুঁটলিটার দিকে তাকিয়ে মুচকি হাসতে লাগল। ক্লাসের ছেলেরা কৌতূহলে ফেটে পড়ে ভাবল ওর ভেতর নিশ্চয়ই দারুণ কোনো খেলনা বা জাদুর জিনিস আছে!\n\nঅনেক সাধ্যসাধনার পর দাশু শর্ত দিল—আগে সবাই মিলে তাকে গরম জিলিপি খাওয়ালে তবেই সে পুঁটলি খুলবে। ছেলেরা চাঁদা তুলে দাশুকে পেট ভরে জিলিপি খাওয়াল। তারপর পুঁটলির দশ পরত কাগজ ও দড়ি খুলে দেখা গেল ভেতরে একটা ছোট্ট কাগজে লেখা— “অতিবৃদ্ধি চোরের লক্ষণ!”',
+    story_bn: 'স্কুলে পাগলা দাশু একদিন এক প্রকাণ্ড কাগজের পুঁটলি বগলে করে ক্লাসে এল। ক্লাসের ছেলেরা কৌতূহলে ফেটে পড়ে ভাবল ওর ভেতর নিশ্চয়ই দারুণ কোনো জাদুর জিনিস আছে!\n\nঅনেক সাধ্যসাধনার পর দাশু শর্ত দিল—আগে সবাই মিলে তাকে গরম জিলিপি খাওয়ালে তবেই সে পুঁটলি খুলবে। ছেলেরা চাঁদা তুলে দাশুকে পেট ভরে জিলিপি খাওয়াল। তারপর পুঁটলির দশ পরত কাগজ খুলে দেখা গেল ভেতরে একটা ছোট্ট চিরকুটে লেখা— “অতিবৃদ্ধি চোরের লক্ষণ!”',
     hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
     hitch_bn: 'ছোটবেলার সেই নির্মল দুষ্টুমি আর হাসির গল্পগুলো মনে করলে আজও মনটা স্কুলের টিফিনবেলার মতোই চনমনে হয়ে ওঠে মা!',
     extra_title_bn: '🌟 আবোল তাবোল ও সুকুমার রায়',
-    extra_bn: 'সত্যজিৎ রায়ের পিতা সুকুমার রায় বাংলা সাহিত্যে এমন নির্মল হাসির জগৎ তৈরি করে গেছেন যা একশো বছর পরেও বাঙালির প্রিয়।',
+    extra_bn: 'সুকুমার রায় বাংলা সাহিত্যে এমন নির্মল হাসির জগৎ তৈরি করে গেছেন যা একশো বছর পরেও বাঙালির প্রিয়।',
     curiosity_q_bn: '🔮 মজার পর্দা খোলো: সুকুমার রায়ের তৈরি বিখ্যাত হাসির ক্লাবটির নাম কী ছিল?',
-    curiosity_a_bn: '🌸 ‘মনডে ক্লাব’ (যাকে মজা করে সবাই ‘মণ্ডা ক্লাব’ বলত, কারণ সেখানে মিষ্টি খাওয়া হতো)!',
-    yt_query: 'Pagla Dashu Sukumar Ray Bengali funny story',
-    yt_label_bn: 'পাগলা দাশুর হাসির গল্প'
+    curiosity_a_bn: '🌸 ‘মনডে ক্লাব’ (যাকে মজা করে সবাই ‘মণ্ডা ক্লাব’ বলত)!',
+    yt_query: 'Pagla Dashu Sukumar Ray Bengali funny story', yt_label_bn: 'পাগলা দাশুর হাসির গল্প'
   },
   {
-    id: 'laugh_5',
-    vibe: 'laugh',
-    badge_bn: '😂 হাসি',
+    id: 'laugh_5', vibe: 'laugh', badge_bn: '😂 হাসি',
     title_bn: 'বাদশাহ আকবর ও বীরবলের খিচুড়ি রান্নার মজার শিক্ষা!',
-    story_bn: 'একবার শীতকালে বাদশাহ আকবর ও বীরবলের মধ্যে তর্ক হলো। বীরবল বললেন যে মানুষ আশার জোরে প্রচণ্ড ঠান্ডাও সহ্য করতে পারে। পরীক্ষা নেওয়ার জন্য এক দরিদ্র মানুষ সারারাত যমুনার ঠান্ডা জলে দাঁড়িয়ে রইল। সকালে বাদশাহ জিজ্ঞেস করলেন সে কীভাবে বাঁচল; লোকটি বলল সে প্রাসাদের দূরের একটি প্রদীপের আলোর দিকে তাকিয়ে রাত কাটিয়েছে। বাদশাহ বললেন প্রদীপের তাপে সে গরম পেয়েছে, তাই পুরস্কার পাবে না!\n\nপরদিন বীরবল রাজসভায় এলেন না। আকবর নিজে বীরবলের বাড়িতে গিয়ে দেখলেন—মাটিতে ছোট্ট আগুন জ্বলছে, আর তার থেকে দশ হাত উঁচুতে গাছের ডালে খিচুড়ির হাঁড়ি ঝুলছে! আকবর হেসে বললেন— “বীরবল, এত দূর থেকে কি হাঁড়িতে তাপ লাগবে?” বীরবল হাত জোড় করে বললেন— “জাহাঁপনা, এক মাইল দূরের প্রদীপ থেকে যদি যমুনার জলে দাঁড়ানো মানুষ তাপ পায়, তবে আমার খিচুড়িও নিশ্চয়ই রান্না হবে!” বাদশাহ নিজের ভুল বুঝে লোকটিকে পুরস্কৃত করলেন।',
+    story_bn: 'একবার শীতকালে এক দরিদ্র মানুষ সারারাত যমুনার ঠান্ডা জলে দাঁড়িয়ে থাকার পর সকালে বলল সে প্রাসাদের দূরের একটি প্রদীপের আলোর দিকে তাকিয়ে রাত কাটিয়েছে। বাদশাহ বললেন প্রদীপের তাপে সে গরম পেয়েছে, তাই পুরস্কার পাবে না!\n\nপরদিন বীরবল মাটিতে ছোট্ট আগুন জ্বালিয়ে তার থেকে দশ হাত উঁচুতে গাছের ডালে খিচুড়ির হাঁড়ি ঝুলিয়ে দিলেন! আকবর হেসে জিজ্ঞেস করলে বীরবল বললেন— “জাহাঁপনা, এক মাইল দূরের প্রদীপ থেকে যদি যমুনার জলে দাঁড়ানো মানুষ তাপ পায়, তবে আমার খিচুড়িও নিশ্চয়ই রান্না হবে!” বাদশাহ নিজের ভুল বুঝে লোকটিকে পুরস্কৃত করলেন।',
     hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
     hitch_bn: 'রাগ বা তর্ক না করে একটু রসবোধ আর মিষ্টি বুদ্ধির সাহায্যেই যেকোনো কঠিন কথা সহজে বুঝিয়ে দেওয়া যায় মা!',
     extra_title_bn: '🌟 বীরবলের রসবোধ',
-    extra_bn: 'বীরবলের আসল নাম ছিল মহেশ দাস; তাঁর উপস্থিত বুদ্ধি ও ন্যায়পরায়ণতার গল্প সারা ভারতে প্রচলিত।',
+    extra_bn: 'বীরবলের আসল নাম ছিল মহেশ দাস; তাঁর উপস্থিত বুদ্ধির গল্প সারা ভারতে প্রচলিত।',
     curiosity_q_bn: '🔮 মজার পর্দা খোলো: বীরবলের খিচুড়ি কথাটি বাংলায় কোন অর্থে প্রবাদ হয়ে গেছে?',
     curiosity_a_bn: '🌸 কোনো কাজ দীর্ঘ সময় ধরে ঝুলে থাকলে মজা করে বলা হয় ‘বীরবলের খিচুড়ি পাকছে’!',
-    yt_query: 'Akbar Birbal Khichdi story Bengali cartoon',
-    yt_label_bn: 'আকবর ও বীরবলের খিচুড়ির গল্প'
+    yt_query: 'Akbar Birbal Khichdi story Bengali cartoon', yt_label_bn: 'আকবর ও বীরবলের খিচুড়ির গল্প'
   },
   {
-    id: 'laugh_6',
-    vibe: 'laugh',
-    badge_bn: '😂 হাসি',
+    id: 'laugh_6', vibe: 'laugh', badge_bn: '😂 হাসি',
     title_bn: 'পটলডাঙার টেনিদা ও চামচিকের সঙ্গে কুস্তি!',
-    story_bn: 'নারায়ণ গঙ্গোপাধ্যায়ের বিখ্যাত চরিত্র পটলডাঙার টেনিদা রোজ বিকেলে রোয়াকে বসে হাবুল, ক্যাবলা আর প্যালাকে নিয়ে বিশাল বড় বড় বীরত্বের গল্প শোনাতেন। একদিন টেনিদা বুক ফুলিয়ে বললেন— “জানিস, সেদিন অন্ধকারে এক ভয়ঙ্কর বাঘের সাথে আমার খালি হাতে কুস্তি হয়েছিল! ডিগবাজি খেয়ে এক ঘুষিতে তাকে কাত করে দিলাম!”\n\nতখন ক্যাবলা মুচকি হেসে বলল— “কিন্তু টেনিদা, পরদিন সকালে তো দেখা গেল ঘরের জানলায় একটা ছোট্ট চামচিকে ঢুকে পড়েছিল আর তুমি লেপ মুড়ি দিয়ে চিৎকার করছিলে!” টেনিদা গম্ভীর মুখে বললেন— “আরে বোকা, অন্ধকারে চামচিকেও তো বাঘের মতোই ভয়ঙ্কর দেখায়! আগে পাঁঠার ঘুগনি আর চা খাওয়া, তারপর বাকি গল্প বলছি!”',
+    story_bn: 'পটলডাঙার টেনিদা একদিন রোয়াকে বসে হাবুল, ক্যাবলা আর প্যালাকে বললেন— “জানিস, সেদিন অন্ধকারে এক ভয়ঙ্কর বাঘের সাথে আমার খালি হাতে কুস্তি হয়েছিল!”\n\nতখন ক্যাবলা মুচকি হেসে বলল— “কিন্তু টেনিদা, পরদিন সকালে তো দেখা গেল ঘরের জানলায় একটা ছোট্ট চামচিকে ঢুকে পড়েছিল আর তুমি লেপ মুড়ি দিয়ে চিৎকার করছিলে!” টেনিদা গম্ভীর মুখে বললেন— “আরে বোকা, অন্ধকারে চামচিকেও তো বাঘের মতোই ভয়ঙ্কর দেখায়! আগে পাঁঠার ঘুগনি খাওয়া, তারপর বাকি গল্প বলছি!”',
     hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
     hitch_bn: 'আমাদের মনের বেশিরভাগ ভয়ও টেনিদার ঘরের সেই ছোট্ট চামচিকের মতোই মা—আলো জ্বেলে সাহস করে তাকালেই দেখা যায় ভয়ের কিচ্ছু নেই!',
     extra_title_bn: '🌟 টেনিদার অমর সংলাপ',
     extra_bn: 'টেনিদার বিখ্যাত সংলাপ ‘ডি-লা গ্র্যান্ডি মেফিস্টোফিলিস ইয়াক ইয়াক’ আজও বাঙালি পাঠকের মুখে মুখে ফেরে।',
     curiosity_q_bn: '🔮 মজার পর্দা খোলো: প্যালা সবসময় কোন খাবারটা খেতে হতো বলে দুঃখ করত?',
     curiosity_a_bn: '🌸 প্যালার পিলের জ্বর ছিল বলে তাকে রোজ ‘পটল দিয়ে শিঙি মাছের ঝোল’ খেতে হতো!',
-    yt_query: 'Tenida Narayan Gangopadhyay funny Bengali audio story',
-    yt_label_bn: 'পটলডাঙার টেনিদার হাসির আড্ডা'
+    yt_query: 'Tenida Narayan Gangopadhyay funny Bengali audio story', yt_label_bn: 'পটলডাঙার টেনিদার হাসির আড্ডা'
+  },
+  {
+    id: 'laugh_7', vibe: 'laugh', badge_bn: '😂 হাসি',
+    title_bn: 'গোপাল ভাঁড় ও মাটির কুঁজোর অমৃতের মতো মিষ্টি জল!',
+    story_bn: 'একদিন বৈশাখ মাসের প্রচণ্ড গরমে মহারাজ কৃষ্ণচন্দ্র গোপালকে বললেন— “গোপাল, লোকে বলে তুমি নাকি পৃথিবীর সবচেয়ে মিষ্টি শরবত বানাতে পারো? আজ আমাকে এমন শরবত খাওয়াও যা অমৃতের মতো মিষ্টি লাগে!”\n\nগোপাল মহারাজকে বলল— “মহারাজ, সেই শরবত খেতে হলে রাজবাড়ির বাগানের শেষ প্রান্তে আমগাছের নিচে হেঁটে যেতে হবে।” প্রচণ্ড রোদে বিশাল বাগান হেঁটে যাওয়ার পর মহারাজের গলা তৃষ্ণায় শুকিয়ে কাঠ হয়ে গেল। তখন গোপাল নতুন মাটির কুঁজো থেকে এক গ্লাস ঠান্ডা কুঁয়োর জল ঢেলে দিল। মহারাজ এক নিঃশ্বাসে পান করে বললেন— “আহা গোপাল! এমন অমৃত শরবত কী দিয়ে বানিয়েছ?” গোপাল হেসে বলল— “মহারাজ, ওটা শুধুই ঠান্ডা জল, আর তার সাথে মেশানো ছিল আপনার তৃষ্ণা!”',
+    hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
+    hitch_bn: 'সঠিক সময়ে সাধারণ মাটির কুঁজোর ঠান্ডা জল আর ঘরের সহজ খাবারই রাজভোগের চেয়ে বেশি তৃপ্তি দেয় মা!',
+    extra_title_bn: '🌟 গোপালের জীবনদর্শন',
+    extra_bn: 'গোপাল ভাঁড়ের প্রতিটি হাসির গল্পের ভেতরেই লুকিয়ে থাকে সহজ ও বাস্তব জীবনবোধ।',
+    curiosity_q_bn: '🔮 মজার পর্দা খোলো: নতুন মাটির কুঁজো বা কলসিতে জল ঠান্ডা থাকে কেন?',
+    curiosity_a_bn: '🌸 মাটির কলসির অসংখ্য সূক্ষ্ম ছিদ্র দিয়ে জল বাষ্পীভূত হওয়ার সময় ভেতরের তাপ টেনে নেয়, তাই জল প্রাকৃতিকভাবেই ঠান্ডা ও মিষ্টি থাকে!',
+    yt_query: 'Gopal Bhar sweet water pot story Bengali', yt_label_bn: 'গোপাল ভাঁড়ের মিষ্টি জলের গল্প'
+  },
+  {
+    id: 'laugh_8', vibe: 'laugh', badge_bn: '😂 হাসি',
+    title_bn: 'ভানু বন্দ্যোপাধ্যায়ের অমর কৌতুক — ‘মাসিমা, মালপোয়া খামু!’',
+    story_bn: 'বাংলা সিনেমার কিংবদন্তি অভিনেতা ভানু বন্দ্যোপাধ্যায় একবার ‘সাড়ে চুয়াত্তর’ ছবিতে মেসবাড়ির বাসিন্দা কেদারের চরিত্রে অভিনয় করছিলেন। মেসে নতুন আসা রমনীবাবুর স্ত্রীকে দেখে ভানু এক গাল হেসে খাঁটি ঢাকাইয়া টানে বলে উঠলেন— “মাসিমা, মালপোয়া খামু!”\n\nভানু বন্দ্যোপাধ্যায়ের সেই সরল, পেটুক অথচ মিষ্টি মুখের ভঙ্গি দেখে শুটিং ফ্লোরের সবাই এত জোরে হেসে উঠেছিলেন যে ক্যামেরাম্যানের হাত কেঁপে গিয়েছিল! সত্তর বছর পেরিয়ে গেলেও আজও বাঙালির ঘরে মালপোয়া ভাজা হলেই সবার আগে এই সংলাপটিই মনে পড়ে।',
+    hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
+    hitch_bn: 'নিজের পছন্দের খাবারের কথা ভানু বন্দ্যোপাধ্যায়ের মতোই হাসিমুখে ও খোলা মনে বলবে মা—এতে ঘরে আনন্দের আবহাওয়া তৈরি হয়!',
+    extra_title_bn: '🌟 ভানু বন্দ্যোপাধ্যায়ের কৌতুক নকশা',
+    extra_bn: 'ভানু বন্দ্যোপাধ্যায়ের অডিও কমিকস (‘ভানু এল কলকাতায়’, ‘লটারি’, ‘হাজরা মোড়’) আজও বাঙালির প্রিয় হাসির খোরাক।',
+    curiosity_q_bn: '🔮 মজার পর্দা খোলো: ‘সাড়ে চুয়াত্তর’ ছবিতে মাসিমার চরিত্রে কে অভিনয় করেছিলেন?',
+    curiosity_a_bn: '🌸 কিংবদন্তি অভিনেত্রী মলিনা দেবী (আর রমনীবাবুর চরিত্রে তুলসী চক্রবর্তী)!',
+    yt_query: 'Bhanu Bandyopadhyay Masima Malpua Khamu Sharey Chuattor comedy', yt_label_bn: 'ভানু বন্দ্যোপাধ্যায়ের সেরা হাসির দৃশ্য'
+  },
+  {
+    id: 'laugh_9', vibe: 'laugh', badge_bn: '😂 হাসি',
+    title_bn: 'গোপাল ভাঁড় ও জামাইষষ্ঠীর এক হাঁড়ি ফলারের গল্প!',
+    story_bn: 'জামাইষষ্ঠীর দিন গোপাল ভাঁড় গেছে শ্বশুরবাড়িতে। শাশুড়ি মা ভাবলেন জামাইকে আজ একটু জব্দ করবেন, তাই গোপালের পাতে বিশাল এক কাঁসার থালায় চিঁড়ে, দই, বিশটা পাকা আম, কাঁঠাল আর সন্দেশ সাজিয়ে দিয়ে বললেন— “বাবাজি, থালায় একটুও খাবার ফেলে রাখলে কিন্তু অমঙ্গল হবে!”\n\nগোপাল দেখল একার পক্ষে অত খাওয়া অসম্ভব। সে চুপিচুপি শাশুড়িকে ডেকে বলল— “মা, আমাদের বংশের নিয়ম হলো জামাইষষ্ঠীতে জামাই একা খায় না, শাশুড়ি মা-ও অর্ধেক প্রসাদ ভাগ করে খান, নইলে ঘোর অমঙ্গল!” শাশুড়ি মা ভয়ে ভয়ে অর্ধেক ফলার নিজের পাতে তুলে নিলেন আর গোপাল মনের আনন্দে বাকিটা খেয়ে ঢেকুর তুলল!',
+    hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
+    hitch_bn: 'খাবার কখনো জোর করে বা চাপে পড়ে খেতে নেই মা—যতটুকু খেলে শরীর ও মন আরামে থাকে, ঠিক ততটুকুই আনন্দে খাবে!',
+    extra_title_bn: '🌟 বাংলার জামাইষষ্ঠী',
+    extra_bn: 'জ্যৈষ্ঠ মাসে আম-কাঁঠাল ও তালের পাখার বাতাসে জামাইষষ্ঠী বাংলার এক চিরন্তন পারিবারিক আনন্দোৎসব।',
+    curiosity_q_bn: '🔮 মজার পর্দা খোলো: জামাইষষ্ঠীর ফলারের প্রধান তিনটি উপাদান কী কী?',
+    curiosity_a_bn: '🌸 চিঁড়ে বা লুচি, পাকা হিমসাগর আম এবং মিষ্টি দই!',
+    yt_query: 'Gopal Bhar Jamai Sasthi funny Bengali cartoon', yt_label_bn: 'গোপাল ভাঁড়ের জামাইষষ্ঠীর হাসির পর্ব'
+  },
+  {
+    id: 'laugh_10', vibe: 'laugh', badge_bn: '😂 হাসি',
+    title_bn: 'নাসিরুদ্দিন হোজ্জার দড়ি ধার চাওয়া ও আটা মাখানোর অজুহাত!',
+    story_bn: 'একদিন নাসিরুদ্দিন হোজ্জার এক কৃপণ প্রতিবেশী এসে বলল— “হোজ্জা সাহেব, আপনার কাপড় মেলার লম্বা দড়িটা আজ একটু ধার দেবেন?” হোজ্জা জানতেন লোকটি জিনিস নিলে আর ফেরত দেয় না। তাই হোজ্জা গম্ভীর মুখে বললেন— “ভাই, আজ তো দড়িটা দেওয়া যাবে না, কারণ আমার স্ত্রী ওই দড়ির ওপর আটা মেখে রুটি বেলছেন!”\n\nপ্রতিবেশী অবাক হয়ে বলল— “সে কী হোজ্জা সাহেব! সরু দড়ির ওপর আবার কেউ আটা মাখে নাকি?” হোজ্জা মুচকি হেসে বললেন— “ভাই, যখন কারো দড়ি ধার দেওয়ার ইচ্ছে না থাকে, তখন দড়ির ওপর আটা মাখাও দিব্যি চলে!”',
+    hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
+    hitch_bn: 'নিজের সুবিধা বা শান্তি বজায় রাখতে মাঝে মাঝে হাসিমুখে ‘না’ বলাটাও একটা দারুণ শিল্প মা!',
+    extra_title_bn: '🌟 মোল্লা নাসিরুদ্দিনের রসবোধ',
+    extra_bn: 'গোপাল ভাঁড় ও বীরবলের মতোই নাসিরুদ্দিন হোজ্জার ছোট ছোট হাসির গল্প সারা পৃথিবীতে সমান জনপ্রিয়।',
+    curiosity_q_bn: '🔮 মজার পর্দা খোলো: নাসিরুদ্দিন হোজ্জা কোন বাহনে উল্টো মুখ করে চড়তেন?',
+    curiosity_a_bn: '🌸 তাঁর প্রিয় গাধার পিঠে!',
+    yt_query: 'Nasiruddin Hojja funny stories Bengali cartoon', yt_label_bn: 'নাসিরুদ্দিন হোজ্জার মজার গল্প'
+  },
+  {
+    id: 'laugh_11', vibe: 'laugh', badge_bn: '😂 হাসি',
+    title_bn: 'পরশুরামের ‘লম্বকর্ণ’ ও ছাগলের কান মলার মজার কাহিনী!',
+    story_bn: 'রাজশেখর বসু (পরশুরাম)-এর বিখ্যাত হাসির গল্প ‘লম্বকর্ণ’-এ রায়বাহাদুর বংশলোচনবাবু একদিন গাড়ি করে যাওয়ার সময় এক বিশাল কানওয়ালা ছাগলকে ধাক্কা লাগার হাত থেকে বাঁচালেন। ছাগলটি কৃতজ্ঞতায় বংশলোচনবাবুর পিছু পিছু তাঁর বৈঠকখানায় এসে হাজির হলো!\n\nবংশলোচনবাবু যতই তাকে তাড়াতে চান, লম্বকর্ণ ছাগলটি ততই আদুরে ভঙ্গিতে তাঁর সোফায় বসে পান চিবোয়। শেষে দেখা গেল রায়বাহাদুরের কঠিন মেজাজ ওই নিরীহ ছাগলের মায়ায় একদম নরম মাখনের মতো গলে গেছে!',
+    hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
+    hitch_bn: 'পশুপাখির নিষ্পাপ ভালোবাসা মানুষের মনের সব কাঠিন্য ও একাকীত্ব এক নিমেষে দূর করে দেয় মা!',
+    extra_title_bn: '🌟 পরশুরামের অমর সাহিত্য',
+    extra_bn: 'বিজ্ঞানী ও সাহিত্যিক রাজশেখর বসু ‘পরশুরাম’ ছদ্মনামে ‘গড্ডলিকা’, ‘কজ্জলী’ ও ‘হনুমানের স্বপ্ন’-এর মতো কালজয়ী হাসির বই লিখেছেন।',
+    curiosity_q_bn: '🔮 মজার পর্দা খোলো: রাজশেখর বসু কোন বিখ্যাত বাংলা অভিধানটি সংকলন করেছিলেন?',
+    curiosity_a_bn: '🌸 ‘চলন্তিকা’ অভিধান!',
+    yt_query: 'Lambakarna Parashuram Bengali comedy audio story', yt_label_bn: 'পরশুরামের ‘লম্বকর্ণ’ হাসির গল্প'
+  },
+  {
+    id: 'laugh_12', vibe: 'laugh', badge_bn: '😂 হাসি',
+    title_bn: 'বীরবল ও জাদুর কাঠির দৈর্ঘ্য — বোকা চোর ধরা পড়ল নিজের ভয়ে!',
+    story_bn: 'একবার এক ধনী বণিকের বাড়িতে চুরি হলো। বীরবল বণিকের চারজন ভৃত্যকে ডেকে প্রত্যেকের হাতে সমান মাপের একটি করে কাঠির টুকরো দিয়ে বললেন— “এটা জাদুর কাঠি! যে চুরি করেছে, কাল সকালের মধ্যে তার কাঠিটা আপনাআপনি দুই আঙুল লম্বা হয়ে যাবে!”\n\nআসল চোর রাতের বেলা ভয়ে ভাবল, কাল সকালে যদি আমার কাঠি দুই আঙুল লম্বা হয়ে যায় তবে তো ধরা পড়ে যাব! তাই সে ছুরি দিয়ে নিজের কাঠিটা দুই আঙুল কেটে ছোট করে রাখল। পরদিন সকালে বীরবল দেখেই বুঝে ফেললেন যার কাঠি দুই আঙুল ছোট, সেই আসল চোর!',
+    hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
+    hitch_bn: 'মন পরিষ্কার ও সৎ থাকলে পৃথিবীর কোনো ভয়ই মানুষকে ছুঁতে পারে না মা!',
+    extra_title_bn: '🌟 বীরবলের মনস্তত্ত্ব',
+    extra_bn: 'কোনো শাস্তির ভয় না দেখিয়ে কেবল মানুষের মনের ভাব বুঝে সত্য বের করাই ছিল বীরবলের বিশেষত্ব।',
+    curiosity_q_bn: '🔮 মজার পর্দা খোলো: আকবরের দরবারে ন’জন শ্রেষ্ঠ গুণী মানুষকে একত্রে কী বলা হতো?',
+    curiosity_a_bn: '🌸 ‘নবরত্ন’ (যাঁদের মধ্যে বীরবল ও তানসেন অন্যতম ছিলেন)!',
+    yt_query: 'Birbal magic stick thief story Bengali', yt_label_bn: 'বীরবল ও জাদুর কাঠির হাসির গল্প'
+  },
+  {
+    id: 'laugh_13', vibe: 'laugh', badge_bn: '😂 হাসি',
+    title_bn: 'গোপাল ভাঁড় ও রাজবৈদ্যের ‘স্মৃতিশক্তি বাড়ানোর বড়ি’!',
+    story_bn: 'একবার এক চতুর বৈদ্য রাজসভায় এসে দাবি করল সে এমন বড়ি বানিয়েছে যা খেলে মানুষের স্মৃতিশক্তি দশ গুণ বেড়ে যায়। গোপাল বলল— “বৈদ্যমশাই, আপনার বড়ি কতটা কাজের তা আমি কাল পরীক্ষা করব।”\n\nপরদিন গোপাল একটা ছোট্ট কৌটোয় গোবরের গুঁড়ো ভরে ওপরে চিনির রস মাখিয়ে বৈদ্যকে খেতে দিল। বৈদ্য কামড় দিয়েই থু থু করে বলে উঠল— “ছি ছি গোপাল, এটা তো গোবর!” গোপাল হাততালি দিয়ে বলল— “দেখুন মহারাজ, আমার ওষুধের কী জাদু! মাত্র এক কামড়েই বৈদ্যমশাইয়ের স্মৃতিশক্তি এত বেড়ে গেছে যে উনি ঠিক চিনে ফেলেছেন!” বৈদ্য লজ্জায় মাথা নিচু করে পালাল।',
+    hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
+    hitch_bn: 'রোজকার ছোটখাটো কথা ভুলে যাওয়া একদম স্বাভাবিক মা—তার জন্য কোনো দুশ্চিন্তা না করে গোপালের মতো হাসিখুশি থাকলেই মন তাজা থাকে!',
+    extra_title_bn: '🌟 নির্ভেজাল কৌতুক',
+    extra_bn: 'গোপাল ভাঁড় ভণ্ডামি ও অহংকারকে সবসময় হাসির ছলে জব্দ করতেন।',
+    curiosity_q_bn: '🔮 মজার পর্দা খোলো: মহারাজ কৃষ্ণচন্দ্র গোপালকে কী উপাধি দিয়েছিলেন?',
+    curiosity_a_bn: '🌸 ‘রসরাজ’!',
+    yt_query: 'Gopal Bhar Vaidya funny story Bengali', yt_label_bn: 'গোপাল ভাঁড় ও বৈদ্যমশাইয়ের গল্প'
+  },
+  {
+    id: 'laugh_14', vibe: 'laugh', badge_bn: '😂 হাসি',
+    title_bn: 'নাদুসনুদুস পান্ডা ছানার বাঁশপাতা খাওয়া ও ডিগবাজির খেলা!',
+    story_bn: 'চীনের পাহাড়ি বনে সাদা-কালো রঙের গোলগাল জায়ান্ট পান্ডা ছানাদের কাণ্ডকারখানা দেখলে না হেসে থাকা যায় না! পান্ডা ছানারা এতটাই নরম আর গোলগাল হয় যে গাছের নিচু ডাল থেকে নামতে গেলেই তারা ফুটবলের মতো গড়িয়ে ডিগবাজি খেতে খেতে নিচে নামে।\n\nসবচেয়ে মজার ব্যাপার হলো, পান্ডা ছানা ডিগবাজি খেয়ে মাটিতে পড়ার পরও তার হাতের কচি বাঁশের ডালটা একটুও ছাড়ে না—চিত হয়ে শুয়েই পা দুলিয়ে মনের আনন্দে বাঁশপাতা চিবোতে থাকে!',
+    hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
+    hitch_bn: 'পান্ডা ছানাদের মতোই জীবনে মাঝে মাঝে সব নিয়ম ভুলে কেবল আরাম করে শুয়ে-বসে নিজের প্রিয় জিনিস উপভোগ করাটা ভীষণ আনন্দের মা!',
+    extra_title_bn: '🌟 প্রকৃতির আদুরে প্রাণী',
+    extra_bn: 'জায়ান্ট পান্ডা দিনে প্রায় বারো ঘণ্টা ধরে কেবল কচি বাঁশপাতা খায় আর বাকি সময় ঘুমিয়ে ও খেলা করে কাটায়।',
+    curiosity_q_bn: '🔮 মজার পর্দা খোলো: জন্মের সময় একটি পান্ডা ছানা আকারে কতটুকু ছোট থাকে?',
+    curiosity_a_bn: '🌸 মাত্র একটি ছোট্ট মাখনের টুকরো বা চায়ের কাপের সমান (প্রায় ১০০ গ্রাম)!',
+    yt_query: 'Cute baby panda rolling funny video', yt_label_bn: 'মিষ্টি পান্ডা ছানার ডিগবাজির ভিডিও'
+  },
+  {
+    id: 'laugh_15', vibe: 'laugh', badge_bn: '😂 হাসি',
+    title_bn: 'শিবরাম চক্রবর্তীর তক্তপোশ ও ছারপোকার সাথে আপস!',
+    story_bn: 'মুক্তারাম বাবু স্ট্রিটের মেসে শিবরাম চক্রবর্তীর তক্তপোশে একবার বিস্তর ছারপোকা হলো। বন্ধুরা বললেন— “শিবরাম, বিছানাটা রোদে দাও বা ওষুধ দাও!” শিবরাম বললেন— “আরে না, ওরাও তো আমার মেসের ভাড়াটের মতোই! আমি ঠিক করেছি আমি তক্তপোশের ডান দিকে ঘুমোব, আর ওদের জন্য বাঁ দিকটা ছেড়ে রাখব!”\n\nপরদিন সকালে বন্ধুরা জিজ্ঞেস করল ব্যবস্থাটা কাজ করল কি না। শিবরাম মাথা চুলকে বললেন— “আমি তো আমার কথা রেখে ডান দিকেই শুয়েছিলাম, কিন্তু ছারপোকারা যে বাংলা কথা বোঝে না, ওরা রাতদুপুরে সীমানা পেরিয়ে আমার দিকেই চলে এল!”',
+    hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
+    hitch_bn: 'নিজের ছোটখাটো অসুবিধাগুলোকে শিবরামের মতো রসিকতায় উড়িয়ে দিতে পারলে মন কখনো ভারাক্রান্ত হয় না মা!',
+    extra_title_bn: '🌟 মেসবাড়ির রসায়ন',
+    extra_bn: 'শিবরাম চক্রবর্তীর আত্মজীবনী ‘ঈশ্বর পৃথিবী ভালোবাসা’ বাংলা সাহিত্যের এক অনন্য সম্পদ।',
+    curiosity_q_bn: '🔮 মজার পর্দা খোলো: শিবরাম চক্রবর্তী নিজের নাম ভেঙে কী ধরনের মজার শব্দবন্ধ বানাতেন?',
+    curiosity_a_bn: '🌸 ‘শিবরাম চকরবরতি’ ও অজস্র মজার পান (Pun) বা শব্দের খেলা!',
+    yt_query: 'Shibram Chakraborty funny stories Bengali', yt_label_bn: 'শিবরাম চক্রবর্তীর মজার গল্প'
+  },
+  {
+    id: 'laugh_16', vibe: 'laugh', badge_bn: '😂 হাসি',
+    title_bn: 'গোপাল ভাঁড় ও রাজসভার মাছি তাড়ানোর রাজকীয় পরোয়ানা!',
+    story_bn: 'একদিন দুপুরে গোপালের মিষ্টির দোকানে বসে খাওয়ার সময় এক ঝাঁক মাছি এসে তাকে খুব জ্বালাতন করছিল। গোপাল মহারাজ কৃষ্ণচন্দ্রের কাছে গিয়ে নালিশ করল। মহারাজ মজা করে বললেন— “ঠিক আছে গোপাল, আমি পরোয়ানা জারি করছি—আজ থেকে তুমি যেখানেই মাছি দেখবে, তৎক্ষণাৎ লাঠি দিয়ে মাছি মারার পূর্ণ অধিকার তোমাকে দেওয়া হলো!”\n\nঠিক সেই মুহূর্তে একটি মাছি উড়ে এসে মহারাজের নাকের ডগায় বসল! গোপাল হাতের তালু উঁচিয়ে এগিয়ে যেতেই মহারাজ আঁতকে উঠে বললেন— “আরে আরে গোপাল, করছ কী!” গোপাল হেসে বলল— “মহারাজ, আপনার রাজকীয় পরোয়ানা পালন করছি!” মহারাজ হেসে ফেললেন।',
+    hitch_title_bn: '😊 হাসির আড়ালে মিষ্টি সত্যি',
+    hitch_bn: 'কোনো নিয়মই মানুষের সাধারণ বুদ্ধি ও আনন্দের চেয়ে বড় নয় মা—তাই সবসময় নিজের সুবিধামতো সহজভাবে চলবে!',
+    extra_title_bn: '🌟 হাসির রাজা গোপাল',
+    extra_bn: 'দুই শতাব্দী পেরিয়ে গেলেও গোপাল ভাঁড়ের এই নির্মল রসিকতা বাঙালির মুখে হাসি ফোটায়।',
+    curiosity_q_bn: '🔮 মজার পর্দা খোলো: কৃষ্ণনগরের মাটির পুতুল কেন বিশ্ববিখ্যাত?',
+    curiosity_a_bn: '🌸 ঘূর্ণি অঞ্চলের মৃৎশিল্পীদের নিখুঁত জীবন্ত মাটির পুতুলের জন্য!',
+    yt_query: 'Gopal Bhar fly funny story Bengali cartoon', yt_label_bn: 'গোপাল ভাঁড়ের মাছি তাড়ানোর গল্প'
   }
 ];
 
 const JHALAK_TV_CARDS = [
   {
-    id: 'tv_1',
-    vibe: 'tv',
-    badge_bn: '📺 টিভি',
+    id: 'tv_1', vibe: 'tv', badge_bn: '📺 টিভি',
     title_bn: 'গোপাল ভাঁড়ের পেট ফাটা হাসির কার্টুন ও গল্পের আসর',
     story_bn: 'মহারাজ কৃষ্ণচন্দ্রের রাজসভার মধ্যমণি গোপাল ভাঁড়ের বুদ্ধিদীপ্ত হাসির গল্পগুলো যখন রঙিন কার্টুনে দেখা যায়, তখন দুপুরের বা বিকেলের অবসর এক নিমেষে আনন্দে ভরে ওঠে।\n\nএখানে গোপাল ভাঁড়ের সেরা পর্বগুলো—যেমন বাটা মাছের ঝোল, কাক গোনার হিসাব, জামাই ঠকানো, আর নবাবের দরবারে গোপালের বুদ্ধির খেলা—এক ক্লিকে ইউটিউবে সরাসরি দেখতে পাবে মা।',
     hitch_title_bn: '🌟 এই চ্যানেলে কী কী দেখবে',
     hitch_bn: '• গোপাল ভাঁড় ও মহারাজ কৃষ্ণচন্দ্রের সেরা হাসির পর্ব\n• গোপালের গিন্নির মজার রান্নাবান্না ও সংসারের গল্প\n• এক ঘণ্টার নন-স্টপ বাংলা হাসির কার্টুন সংকলন',
     extra_title_bn: '🛋️ দেখার আনন্দ',
     extra_bn: 'নিচের লাল ইউটিউব বোতামটিতে ছুঁলেই সরাসরি গোপাল ভাঁড়ের সম্পূর্ণ বাংলা পর্বগুলো চালু হয়ে যাবে।',
-    yt_query: 'Gopal Bhar Bengali full episodes Sony Aath',
-    yt_label_bn: 'গোপাল ভাঁড়ের সম্পূর্ণ হাসির কার্টুন দেখো'
+    yt_query: 'Gopal Bhar Bengali full episodes Sony Aath', yt_label_bn: 'গোপাল ভাঁড়ের সম্পূর্ণ হাসির কার্টুন দেখো'
   },
   {
-    id: 'tv_2',
-    vibe: 'tv',
-    badge_bn: '📺 টিভি',
+    id: 'tv_2', vibe: 'tv', badge_bn: '📺 টিভি',
     title_bn: 'উত্তম–সুচিত্রার চিরকালের সেরা বাংলা চলচ্চিত্র',
-    story_bn: 'বাংলা সিনেমার স্বর্ণযুগের কথা মনে পড়লেই চোখের সামনে ভেসে ওঠে মহানায়ক উত্তম কুমার ও মহানায়িকা সুচিত্রা সেনের সেই অমর হাসি ও অভিনয়। ‘হারানো সুর’, ‘সপ্তপদী’, ‘পথে হলো দেরী’, ‘ইন্দ্রাণী’ থেকে শুরু করে ‘সাড়ে চুয়াত্তর’-এর মতো দমফাটা হাসির ছবি আজও মনের সব ক্লান্তি দূর করে দেয়।\n\nপুরনো দিনের সেই সাদাকালো ছবির সংলাপ, পারিবারিক টান আর হেমন্ত-সন্ধ্যার কণ্ঠের গান যেন নিজের ছোটবেলার সোনালী দিনগুলোতে ফিরিয়ে নিয়ে যায়।',
+    story_bn: 'বাংলা সিনেমার স্বর্ণযুগের কথা মনে পড়লেই চোখের সামনে ভেসে ওঠে মহানায়ক উত্তম কুমার ও মহানায়িকা সুচিত্রা সেনের সেই অমর হাসি ও অভিনয়। ‘হারানো সুর’, ‘সপ্তপদী’, ‘পথে হলো দেরী’, ‘ইন্দ্রাণী’ থেকে শুরু করে ‘সাড়ে চুয়াত্তর’-এর মতো দমফাটা হাসির ছবি আজও মনের সব ক্লান্তি দূর করে দেয়।',
     hitch_title_bn: '🌟 সেরা ছবির তালিকা',
     hitch_bn: '• সাড়ে চুয়াত্তর, মৌচাক ও ধন্যি মেয়ে (দমফাটা হাসির ছবি)\n• সপ্তপদী, হারানো সুর ও পথে হলো দেরী (চিরসবুজ রোমান্টিক ছবি)\n• দেবী চৌধুরানী ও সন্ন্যাসী রাজা',
     extra_title_bn: '🛋️ বিকেলের সিনেমা ঘর',
     extra_bn: 'যেকোনো দিন দুপুরে বা বিকেলে আরাম করে বসে ইউটিউবে এই চিরসবুজ বাংলা ছবিগুলো উপভোগ করো মা।',
-    yt_query: 'Uttam Suchitra Bengali full movies classic',
-    yt_label_bn: 'উত্তম–সুচিত্রার সেরা বাংলা ছবি দেখো'
+    yt_query: 'Uttam Suchitra Bengali full movies classic', yt_label_bn: 'উত্তম–সুচিত্রার সেরা বাংলা ছবি দেখো'
   },
   {
-    id: 'tv_3',
-    vibe: 'tv',
-    badge_bn: '📺 টিভি',
+    id: 'tv_3', vibe: 'tv', badge_bn: '📺 টিভি',
     title_bn: 'হেমন্ত মুখোপাধ্যায় ও সন্ধ্যা মুখোপাধ্যায়ের স্বর্ণযুগের গানের জলসা',
-    story_bn: 'হেমন্ত মুখোপাধ্যায়ের দরাজ, মেঘমন্দ্র কণ্ঠস্বর আর সন্ধ্যা মুখোপাধ্যায়ের মায়াবী গায়কী—এই দুই সুরের জাদুকরের গান শুনলে ঘরের পরিবেশটাই শান্ত ও মধুর হয়ে ওঠে।\n\n‘এই রাত তোমার আমার’, ‘ও নদীরে’, ‘পথের ক্লান্তি ভুলে’, ‘মধুমালতী ডাকে আয়’, ‘গুনগুন মন ভ্রমরা’—একের পর এক চিরসবুজ গানের ভিডিও ও জুকবক্স এখানে সাজানো রয়েছে।',
+    story_bn: 'হেমন্ত মুখোপাধ্যায়ের দরাজ কণ্ঠস্বর আর সন্ধ্যা মুখোপাধ্যায়ের মায়াবী গায়কী—এই দুই সুরের জাদুকরের গান শুনলে ঘরের পরিবেশটাই শান্ত ও মধুর হয়ে ওঠে।\n\n‘এই রাত তোমার আমার’, ‘ও নদীরে’, ‘পথের ক্লান্তি ভুলে’, ‘মধুমালতী ডাকে আয়’—একের পর এক চিরসবুজ গানের জুকবক্স এখানে সাজানো রয়েছে।',
     hitch_title_bn: '🌟 এই গানের আসরে যা থাকছে',
     hitch_bn: '• হেমন্ত–সন্ধ্যার সেরা রোমান্টিক ডুয়েট গানের সংকলন\n• হেমন্ত মুখোপাধ্যায়ের সেরা রবীন্দ্রসঙ্গীত ও আধুনিক গান\n• সন্ধ্যা মুখোপাধ্যায়ের কালজয়ী সিনেমার গান',
     extra_title_bn: '🛋️ সুরের আরাম',
     extra_bn: 'চা খেতে খেতে বা বিশ্রামের সময় ইউটিউবে এই গানের ডালি চালিয়ে দিলে একটার পর একটা গান আপনাআপনি বাজতে থাকবে।',
-    yt_query: 'Hemanta Mukherjee Sandhya Mukherjee Best Bengali Songs Jukebox',
-    yt_label_bn: 'হেমন্ত ও সন্ধ্যা মুখোপাধ্যায়ের গানের জলসা চালাও'
+    yt_query: 'Hemanta Mukherjee Sandhya Mukherjee Best Bengali Songs Jukebox', yt_label_bn: 'হেমন্ত ও সন্ধ্যা মুখোপাধ্যায়ের গানের জলসা চালাও'
   },
   {
-    id: 'tv_4',
-    vibe: 'tv',
-    badge_bn: '📺 টিভি',
+    id: 'tv_4', vibe: 'tv', badge_bn: '📺 টিভি',
     title_bn: 'মা সারদা ও ঠাকুর শ্রীরামকৃষ্ণের অমৃতকথা ও দক্ষিণেশ্বর দর্শন',
-    story_bn: 'দক্ষিণেশ্বরের ভবতারিণী মন্দিরের গঙ্গার ঘাট, জয়রামবাটীর মাটির বাড়ি আর কামারপুকুরের শান্ত পরিবেশ—ঠাকুর শ্রীরামকৃষ্ণ ও মা সারদার জীবনের সত্য ঘটনা ও অমৃত বাণীগুলো যখন ভিডিওতে দেখা ও শোনা যায়, তখন মন এক স্বর্গীয় শান্তিতে ভরে যায়।\n\nস্বামী বিবেকানন্দের কথা, কথামৃতের সহজ গল্প আর বেলুড় মঠের সন্ধ্যারতি—সবকিছুই এই ভক্তিমূলক টিভি পর্বে এক ক্লিকে পাওয়া যাবে।',
+    story_bn: 'দক্ষিণেশ্বরের ভবতারিণী মন্দিরের গঙ্গার ঘাট, জয়রামবাটীর মাটির বাড়ি আর কামারপুকুরের শান্ত পরিবেশ—ঠাকুর শ্রীরামকৃষ্ণ ও মা সারদার জীবনের সত্য ঘটনা ও অমৃত বাণীগুলো যখন ভিডিওতে দেখা ও শোনা যায়, তখন মন এক স্বর্গীয় শান্তিতে ভরে যায়।',
     hitch_title_bn: '🌟 এই পর্বে যা দেখবে',
     hitch_bn: '• মা সারদার জয়রামবাটী ও উদ্বোধন বাড়ির অমৃত স্মৃতি\n• ঠাকুর শ্রীরামকৃষ্ণের কথামৃতের সহজ গল্প ও বাণী\n• বেলুড় মঠ ও দক্ষিণেশ্বরের সন্ধ্যারতি ও ভক্তিগীতি',
     extra_title_bn: '🛋️ মনের প্রশান্তি',
     extra_bn: 'সকালবেলা বা সন্ধ্যাবেলা মন শান্ত রাখতে এই অমৃতকথা চালিয়ে শোনো মা।',
-    yt_query: 'Maa Sarada Sri Ramakrishna Bengali stories Belur Math',
-    yt_label_bn: 'মা সারদা ও ঠাকুরের অমৃতকথা দেখো'
+    yt_query: 'Maa Sarada Sri Ramakrishna Bengali stories Belur Math', yt_label_bn: 'মা সারদা ও ঠাকুরের অমৃতকথা দেখো'
   },
   {
-    id: 'tv_5',
-    vibe: 'tv',
-    badge_bn: '📺 টিভি',
+    id: 'tv_5', vibe: 'tv', badge_bn: '📺 টিভি',
     title_bn: 'সত্যজিৎ রায়ের ফেলুদা, সোনার কেল্লা ও হীরক রাজার দেশে',
-    story_bn: 'সত্যজিৎ রায়ের তৈরি ‘সোনার কেল্লা’, ‘জয় বাবা ফেলুনাথ’, ‘গুপি গাইন বাঘা বাইন’ আর ‘হীরক রাজার দেশে’—এই ছবিগুলো যতবারই দেখা হোক না কেন, কখনো পুরনো হয় না!\n\nসৌমিত্র চট্টোপাধ্যায়ের ফেলুদা, সন্তোষ দত্তের লালমোহনবাবু (জটায়ু)-র হাসির কাণ্ড আর রাজস্থানের মরুভূমির দুর্গের রহস্য দেখার আনন্দই আলাদা।',
+    story_bn: 'সত্যজিৎ রায়ের তৈরি ‘সোনার কেল্লা’, ‘জয় বাবা ফেলুনাথ’, ‘গুপি গাইন বাঘা বাইন’ আর ‘হীরক রাজার দেশে’—এই ছবিগুলো যতবারই দেখা হোক না কেন, কখনো পুরনো হয় না! সৌমিত্র চট্টোপাধ্যায়ের ফেলুদা আর সন্তোষ দত্তের লালমোহনবাবু (জটায়ু)-র হাসির কাণ্ড দেখার আনন্দই আলাদা।',
     hitch_title_bn: '🌟 সেরা ছবির ডালি',
     hitch_bn: '• সোনার কেল্লা ও জয় বাবা ফেলুনাথ (সৌমিত্র ও জটায়ু)\n• গুপি গাইন বাঘা বাইন ও হীরক রাজার দেশে\n• পথের পাঁচালী ও অপুর সংসার',
     extra_title_bn: '🛋️ চিরসবুজ ক্ল্যাসিক',
     extra_bn: 'লালমোহনবাবুর মজার কথা আর সত্যজিৎ রায়ের অমর সৃষ্টি উপভোগ করতে নিচের বোতামে ছুঁয়ে দেখো।',
-    yt_query: 'Satyajit Ray Sonar Kella Joy Baba Felunath Bengali full movie',
-    yt_label_bn: 'সত্যজিৎ রায়ের ফেলুদা ও সেরা ছবি দেখো'
+    yt_query: 'Satyajit Ray Sonar Kella Joy Baba Felunath Bengali full movie', yt_label_bn: 'সত্যজিৎ রায়ের ফেলুদা ও সেরা ছবি দেখো'
   },
   {
-    id: 'tv_6',
-    vibe: 'tv',
-    badge_bn: '📺 টিভি',
+    id: 'tv_6', vibe: 'tv', badge_bn: '📺 টিভি',
     title_bn: 'মান্না দে ও রবীন্দ্রসঙ্গীতের চিরসবুজ সান্ধ্য আসর',
     story_bn: 'মান্না দে-র কণ্ঠে ‘কফি হাউসের সেই আড্ডাটা’, ‘সবাই তো সুখী হতে চায়’, ‘আবার হবে তো দেখা’ আর তার সাথে শান্তিনিকেতনের স্নিগ্ধ রবীন্দ্রসঙ্গীতের সুর—বিকেল বা সন্ধ্যার সময় শোনার জন্য এর চেয়ে সুন্দর সঙ্গী আর কিছু হতে পারে না।',
     hitch_title_bn: '🌟 সুরের বিশেষ আকর্ষণ',
     hitch_bn: '• মান্না দে-র সর্বকালের সেরা ২০টি বাংলা গান\n• দেবব্রত বিশ্বাস, কণিকা বন্দ্যোপাধ্যায় ও সুচিত্রা মিত্রের রবীন্দ্রসঙ্গীত\n• পুরনো দিনের শ্রেষ্ঠ বাংলা আধুনিক গানের সংকলন',
     extra_title_bn: '🛋️ সুরের ঝর্ণাধারা',
     extra_bn: 'নিচের ইউটিউব লিঙ্কে ক্লিক করলেই একটানা মান্না দে ও রবীন্দ্রসঙ্গীতের আসর শুরু হয়ে যাবে।',
-    yt_query: 'Manna Dey Rabindra Sangeet Bengali Evergreen Hits Jukebox',
-    yt_label_bn: 'মান্না দে ও রবীন্দ্রসঙ্গীতের আসর চালাও'
+    yt_query: 'Manna Dey Rabindra Sangeet Bengali Evergreen Hits Jukebox', yt_label_bn: 'মান্না দে ও রবীন্দ্রসঙ্গীতের আসর চালাও'
+  },
+  {
+    id: 'tv_7', vibe: 'tv', badge_bn: '📺 টিভি',
+    title_bn: 'বীরেন্দ্রকৃষ্ণ ভদ্রের মহালয়া — মহিষাসুরমর্দিনীর অমর প্রভাতী সুর',
+    story_bn: 'আশ্বিনের শারদপ্রাতে বেতারে বীরেন্দ্রকৃষ্ণ ভদ্রের উদাত্ত কণ্ঠে চণ্ডীপাঠ আর বাণীকুমারের রচনা ও পঙ্কজকুমার মল্লিকের সুরে ‘মহিষাসুরমর্দিনী’ শোনা বাঙালির প্রাণের ঐতিহ্য। শুধু মহালয়ার ভোরেই নয়, মন যখনই মায়ের আগমনী সুর শুনতে চায়, তখনই এই অমর অনুষ্ঠানটি শুনে মন ভরে ওঠে।',
+    hitch_title_bn: '🌟 এই অনুষ্ঠানে যা শুনবে',
+    hitch_bn: '• বীরেন্দ্রকৃষ্ণ ভদ্রের সম্পূর্ণ চণ্ডীপাঠ ও স্তোত্র\n• ‘জাগো দুর্গা দশপ্রহরণধারিণী’ ও ‘বাজলো তোমার আলোর বেণু’\n• দ্বিজেন মুখোপাধ্যায়, সন্ধ্যা মুখোপাধ্যায় ও মানবেন্দ্র মুখোপাধ্যায়ের আগমনী গান',
+    extra_title_bn: '🛋️ ভক্তির প্রাতঃকাল',
+    extra_bn: 'সকালবেলা এই পবিত্র সুরটি চালিয়ে রাখলে সারা ঘর মায়ের আশীর্বাদে ভরে ওঠে।',
+    yt_query: 'Mahalaya Birendra Krishna Bhadra full audio Mahishasuramardini', yt_label_bn: 'বীরেন্দ্রকৃষ্ণ ভদ্রের সম্পূর্ণ মহালয়া শোনো'
+  },
+  {
+    id: 'tv_8', vibe: 'tv', badge_bn: '📺 টিভি',
+    title_bn: 'পান্নালাল ভট্টাচার্য ও ধনঞ্জয় ভট্টাচার্যের ভক্তিগীতি ও শ্যামাসঙ্গীত',
+    story_bn: '‘মায়ের পায়ের জবা হয়ে ওঠ না ফুটে মন’, ‘আমার সাধ না মিটিল আশা না পুরিল’, ‘সকলই তোমারই ইচ্ছা’—পান্নালাল ভট্টাচার্য ও ধনঞ্জয় ভট্টাচার্যের কণ্ঠে গাওয়া এই অমর শ্যামাসঙ্গীতগুলো শুনলে মনের সব অস্থিরতা নিমেষে শান্ত হয়ে যায়।',
+    hitch_title_bn: '🌟 সেরা ভক্তিগীতির তালিকা',
+    hitch_bn: '• পান্নালাল ভট্টাচার্যের সেরা শ্যামাসঙ্গীত সংকলন\n• ধনঞ্জয় ভট্টাচার্য ও রামকুমার চট্টোপাধ্যায়ের ভক্তিমূলক গান\n• দক্ষিণেশ্বরের মা ভবতারিণীর আরতি ও স্তব',
+    extra_title_bn: '🛋️ সন্ধ্যার প্রার্থনা',
+    extra_bn: 'সন্ধ্যাবেলা প্রদীপ জ্বালানোর পর শোনার জন্য অপূর্ব গানের ডালি।',
+    yt_query: 'Pannalal Bhattacharya Best Shyama Sangeet Bengali Jukebox', yt_label_bn: 'পান্নালাল ভট্টাচার্যের শ্যামাসঙ্গীত চালাও'
+  },
+  {
+    id: 'tv_9', vibe: 'tv', badge_bn: '📺 টিভি',
+    title_bn: 'কিশোর কুমার ও লতা মঙ্গেশকরের চিরসবুজ বাংলা গানের ডালি',
+    story_bn: 'কিশোর কুমারের প্রাণখোলা কণ্ঠের বাংলা গান—‘আশা ছিল ভালোবাসা ছিল’, ‘একদিন পাখি উড়ে যাবে’, ‘কি আশায় বাঁধি খেলাঘর’—আর লতা মঙ্গেশকরের জাদুকরী কণ্ঠের ‘আষাঢ় শ্রাবণ মানে না তো মন’, ‘প্রেম একবারই এসেছিল নীরবে’—এই দুই মহারথীর সেরা বাংলা গানগুলো এক জায়গায় সাজানো হয়েছে।',
+    hitch_title_bn: '🌟 এই চ্যানেলের বিশেষ আকর্ষণ',
+    hitch_bn: '• কিশোর কুমারের সেরা রোমান্টিক ও চিরসবুজ বাংলা গান\n• লতা মঙ্গেশকর ও আশা ভোঁসলের কালজয়ী বাংলা আধুনিক গান\n• সলিল চৌধুরীর সুরের সেরা গান',
+    extra_title_bn: '🛋️ গানের দুপুর',
+    extra_bn: 'দুপুরের বিশ্রামের সময় শোনার জন্য চিরসবুজ সুরের আসর।',
+    yt_query: 'Kishore Kumar Lata Mangeshkar Bengali Hit Songs Jukebox', yt_label_bn: 'কিশোর কুমার ও লতা মঙ্গেশকরের গান শোনো'
+  },
+  {
+    id: 'tv_10', vibe: 'tv', badge_bn: '📺 টিভি',
+    title_bn: 'ভানু বন্দ্যোপাধ্যায়, জহর রায় ও রবি ঘোষের দমফাটা হাসির কৌতুক',
+    story_bn: 'বাংলা সিনেমার তিন হাসির সম্রাট—ভানু বন্দ্যোপাধ্যায়, জহর রায় এবং রবি ঘোষ! তাঁদের ‘ভানু গোয়েন্দা জহর অ্যাসিস্ট্যান্ট’, ‘যমালয়ে জীবন্ত মানুষ’, ‘গল্প হলেও সত্যি’ এবং অডিও কৌতুক নকশাগুলো দেখলে পেট চেপে হাসতে হয়।',
+    hitch_title_bn: '🌟 হাসির সেরা সম্ভার',
+    hitch_bn: '• ভানু বন্দ্যোপাধ্যায়ের বিখ্যাত অডিও কমিকস সংকলন\n• গল্প হলেও সত্যি ও যমালয়ে জীবন্ত মানুষ (রবি ঘোষ ও ভানু)\n• ভানু ও জহর রায়ের সেরা কমেডি দৃশ্য',
+    extra_title_bn: '🛋️ নির্মল আনন্দ',
+    extra_bn: 'মন একটুও ভারী লাগলে এই হাসির ছবি ও কৌতুক চালিয়ে প্রাণখুলে হাসো মা।',
+    yt_query: 'Bhanu Bandyopadhyay Jahor Roy Rabi Ghosh Bengali comedy movies', yt_label_bn: 'ভানু–জহর–রবি ঘোষের হাসির ছবি দেখো'
+  },
+  {
+    id: 'tv_11', vibe: 'tv', badge_bn: '📺 টিভি',
+    title_bn: 'পুরীর জগন্নাথদেবের রথযাত্রা, ভজন ও মহাপ্রসাদের মহিমা',
+    story_bn: 'পুরীর নীলচক্র, সমুদ্রের গর্জন, জগন্নাথ-বলরাম-সুভদ্রার দর্শন আর তার সাথে ভজন ও কীর্তন—ঘরে বসেই শ্রীক্ষেত্র পুরীধাম দর্শনের আনন্দ পাওয়া যায় এই পর্বে।',
+    hitch_title_bn: '🌟 এই পর্বে যা দেখবে',
+    hitch_bn: '• পুরীর শ্রীমন্দিরের ধ্বজা পরিবর্তন ও আরতি দর্শন\n• জগন্নাথদেবের মহাপ্রসাদ রান্নার আশ্চর্য রহস্য\n• জগন্নাথ অষ্টকম ও মধুর বাংলা ভজন',
+    extra_title_bn: '🛋️ তীর্থ দর্শনের আনন্দ',
+    extra_bn: 'ঘরে বসেই মহাপ্রভু জগন্নাথের দর্শন ও ভজন উপভোগ করো মা।',
+    yt_query: 'Puri Jagannath Temple darshan bhajan Bengali story', yt_label_bn: 'পুরীর জগন্নাথ ধাম দর্শন ও ভজন চালাও'
+  },
+  {
+    id: 'tv_12', vibe: 'tv', badge_bn: '📺 টিভি',
+    title_bn: 'তরুণ মজুমদারের পারিবারিক বাংলা ছবি — বালিকা বধূ, দাদার কীর্তি ও শ্রীমান পৃথ্বীরাজ',
+    story_bn: 'তরুণ মজুমদারের তৈরি বাংলা ছবি মানেই যৌথ পরিবারের ভালোবাসা, গ্রামের সহজ-সরল মানুষ, রবীন্দ্রসঙ্গীত ও হেমন্ত মুখোপাধ্যায়ের গান আর নির্মল হাসি। ‘শ্রীমান পৃথ্বীরাজ’, ‘দাদার কীর্তি’, ‘বালিকা বধূ’ ও ‘ভালোবাসা ভালোবাসা’ ছবিগুলো দেখলে মন ভরে যায়।',
+    hitch_title_bn: '🌟 সেরা পারিবারিক ছবি',
+    hitch_bn: '• শ্রীমান পৃথ্বীরাজ (অয়ন বন্দ্যোপাধ্যায় ও মহুয়া রায়চৌধুরী)\n• দাদার কীর্তি ও ভালোবাসা ভালোবাসা\n• বালিকা বধূ ও ফুলেশ্বরী',
+    extra_title_bn: '🛋️ ঘরোয়া সিনেমার আমেজ',
+    extra_bn: 'বাংলার মাটির গন্ধ মাখা এই মিষ্টি পারিবারিক ছবিগুলো যেকোনো সময় দেখার জন্য আদর্শ।',
+    yt_query: 'Tarun Majumdar Sriman Prithviraj Dadar Kirti Bengali full movie', yt_label_bn: 'শ্রীমান পৃথ্বীরাজ ও দাদার কীর্তি দেখো'
+  },
+  {
+    id: 'tv_13', vibe: 'tv', badge_bn: '📺 টিভি',
+    title_bn: 'শান্তিনিকেতনের বসন্ত উৎসব, পৌষ মেলা ও রবীন্দ্রনৃত্য',
+    story_bn: 'বীরভূমের লাল মাটির দেশ শান্তিনিকেতনে পলাশ ফুলের রঙ, ছাতিমতলার উপাসনা, আশ্রমিকদের কণ্ঠে ‘ওরে গৃহবাসী খোল্ দ্বার খোল্’ আর বাউল গানের একতারা—শান্তিনিকেতনের সেই স্নিগ্ধ পরিবেশের ভিডিও দেখলে মন শান্ত হয়ে যায়।',
+    hitch_title_bn: '🌟 এই পর্বে যা দেখবে',
+    hitch_bn: '• বিশ্বভারতীর বসন্ত উৎসব ও আবির খেলার নৃত্য\n• শান্তিনিকেতনের উত্তরায়ণ ও রবীন্দ্রভবন দর্শন\n• খোয়াইয়ের হাট ও বীরভূমের বাউল গান',
+    extra_title_bn: '🛋️ প্রকৃতির ছোঁয়া',
+    extra_bn: 'রবীন্দ্রনাথের প্রাণের শান্তিনিকেতন ঘরে বসেই ঘুরে দেখো মা।',
+    yt_query: 'Santiniketan Basanta Utsav Rabindra Sangeet video', yt_label_bn: 'শান্তিনিকেতনের বসন্ত উৎসব ও গান দেখো'
+  },
+  {
+    id: 'tv_14', vibe: 'tv', badge_bn: '📺 টিভি',
+    title_bn: 'সৌমিত্র চট্টোপাধ্যায়, মাধবী মুখোপাধ্যায় ও অপর্ণা সেনের ক্লাসিক বাংলা ছবি',
+    story_bn: '‘চারুলতা’, ‘বাক্স বদল’, ‘তিন ভুবনের পারে’, ‘বসন্ত বিলাপ’—সৌমিত্র চট্টোপাধ্যায় ও অপর্ণা সেনের অভিনীত এই চিরসবুজ বাংলা ছবিগুলোতে যেমন আছে তীক্ষ্ণ বুদ্ধিদীপ্ত হাসি, তেমনই আছে অসাধারণ সব গান।',
+    hitch_title_bn: '🌟 সেরা ছবির তালিকা',
+    hitch_bn: '• বসন্ত বিলাপ ও বাক্স বদল (দমফাটা হাসির ছবি)\n• তিন ভুবনের পারে (মান্না দে-র অমর গানের ছবি)\n• চারুলতা ও সমাপ্তি (রবীন্দ্রনাথের গল্প অবলম্বনে)',
+    extra_title_bn: '🛋️ চিরসবুজ বিনোদন',
+    extra_bn: 'নিচের ইউটিউব লিঙ্কে ছুঁয়ে এই জনপ্রিয় বাংলা ছবিগুলো উপভোগ করো।',
+    yt_query: 'Basanta Bilap Baksho Badal Soumitra Aparna Sen Bengali full movie', yt_label_bn: 'বসন্ত বিলাপ ও বাক্স বদল ছবি দেখো'
+  }
+];
+
+const JHALAK_EXTRA_HINDI = [
+  {
+    id: 'hindi_extra_1',
+    title_bn: 'অটো বা গাড়ির চালককে সহজ হিন্দিতে রাস্তা ও গন্তব্য বলা',
+    detail_bn: 'হায়দরাবাদে বা বাইরে কোথাও যাওয়ার সময় অটো বা ক্যাব চালককে রাস্তা বোঝাতে মাত্র তিনটি সহজ হিন্দি কথা জানলেই যথেষ্ট— ‘ভাইয়া, প্রগতি নগর মেইন গেট চলিয়ে’, ‘ইয়াহাঁ বাঁয়ে মুড়িয়ে’ (এখানে বাঁ দিকে ঘুরুন), আর ‘বাস, গেট কে সামনে রোক দিজিয়ে’ (ব্যস, গেটের সামনে থামিয়ে দিন)।',
+    prompt_bn: 'ভাইয়া, প্রগতি নগর সোসাইটি কে মেইন গেট কে সামনে রোক দিজিয়ে।'
+  },
+  {
+    id: 'hindi_extra_2',
+    title_bn: 'ডেলিভারি বয় বা কুরিয়ার এলে দরজায় সহজ হিন্দিতে কথা বলা',
+    detail_bn: 'বাড়িতে পার্সেল বা ফলের ডেলিভারি এলে দরজার ওপাশ থেকে বা ফোনে পরিষ্কার হিন্দিতে বলো— ‘ভাইয়া, পার্সেল দরওয়াজে কে পাস রাখ দিজিয়ে, পেমেন্ট অনলাইন হো গয়া হ্যায়’ (ভাই, পার্সেলটা দরজার কাছে রেখে দিন, পেমেন্ট অনলাইনে হয়ে গেছে)।',
+    prompt_bn: 'ভাইয়া, ম্যায় দরওয়াজা খোল রহি হুঁ, কৃপয়া প্যাকেট ইয়াহাঁ রাখ দিজিয়ে।'
+  },
+  {
+    id: 'hindi_extra_3',
+    title_bn: 'মন্দিরে বা সোসাইটির উৎসবে অবাঙালি মহিলাদের সাথে আনন্দ ভাগ করা',
+    detail_bn: 'সোসাইটির পুজোয় বা মন্দিরে অবাঙালি মহিলাদের সাথে দেখা হলে হাসিমুখে বলো— ‘দিদি, আজ কি আরতি বহুত সুন্দর হুয়ি, লিজিয়ে প্রসাদ লিজিয়ে!’ (দিদি, আজকের আরতি খুব সুন্দর হয়েছে, নিন প্রসাদ নিন!)। দেখবে এক কথাতেই কত আপন সম্পর্ক তৈরি হয়ে যায়!',
+    prompt_bn: 'দিদি, আজ মন্‌দির কা পরিবেশ বহুত শান্ত অউর সুন্দর হ্যায়, প্রসাদ লিজিয়ে।'
   }
 ];
 
 /* ============================================================================
    ✨ ঝলক (JHALAK) — MODULE 1B: MULTI-CATEGORY ENRICHMENT & FEED ENGINE
    ----------------------------------------------------------------------------
-   Builds long-form, multi-section scrollable pages across 8 categories:
-   - gods (🪷 ভগবান)
-   - laugh (😂 হাসি)
-   - calm (🦋 শান্তি)
-   - curiosity (🔍 কৌতূহল)
-   - music (🎵 গান — with Inspiration & Right Question Hook for Lyrics Meaning)
-   - english (🔤 ইংরেজি — Simple English Words Learn for Everyday Life)
-   - hindi (🗣️ হিন্দি — Day-to-Day Hindi Conversation)
-   - tv (📺 টিভি — Curated TV & Cinema Channels inside Reels)
+   Builds 152 long-form, multi-section scrollable pages across 8 categories:
+   - gods (🪷 ভগবান — 18 pages)
+   - laugh (😂 হাসি — 16 pages)
+   - calm (🦋 শান্তি — 24 pages)
+   - curiosity (🔍 কৌতূহল — 18 pages)
+   - music (🎵 গান — 21 pages with Song Inspiration & Right Question Hook)
+   - english (🔤 ইংরেজি — 25 pages of Simple English Words Learn)
+   - hindi (🗣️ হিন্দি — 16 pages of Day-to-Day Hindi Conversation)
+   - tv (📺 টিভি — 14 Curated TV & Cinema Channels inside Reels)
+   Every page points to its dedicated full-content Aoede MP3 in `audio/jhalak/reels/<id>.mp3`.
    ============================================================================ */
+
+const JHALAK_AUDIO_BASE = 'https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/audio/jhalak/reels/';
 
 const ENGLISH_WORD_DICTIONARY = {
   COMFORTABLE: { pron: 'কমফোর্টেবল', mean: 'আরামদায়ক ও স্বস্তিদায়ক', ex: 'This chair is very comfortable. (দিস চেয়ার ইজ ভেরি কমফোর্টেবল — এই চেয়ারটা খুব আরামদায়ক।)' },
@@ -1187,7 +1461,7 @@ function buildSongDeepMeaning(ag) {
       story: '১৯৫৯ সালের ‘দীপ জ্বেলে যাই’ ছবির এই কালজয়ী গানটি গেয়েছেন ও সুর করেছেন হেমন্ত মুখোপাধ্যায় এবং কথা লিখেছেন গৌরীপ্রসন্ন মজুমদার। শুধুমাত্র মৃদু শিস আর পিয়ানোর ছোঁয়ায় রাতের নিস্তব্ধতাকে এমন মায়াবী রূপ আর কোনো বাংলা গানে দেওয়া হয়নি।',
       meaning: 'গানের কথায় রাত শুধু ঘড়ির সময় নয়—রাত হলো সংসারের সব কোলাহল থেমে যাওয়ার পর নিজের মনের সবচেয়ে প্রিয় মানুষ ও শান্ত স্মৃতির সাথে একান্তে কথা বলার আশ্রয়।',
       hook_q: '💡 গানের অর্থ বোঝার সঠিক প্রশ্ন: এই গানে হেমন্ত মুখোপাধ্যায় কেন শুরুতেই যন্ত্রসঙ্গীতের বদলে কেবল মিষ্টি ‘শিস’ ব্যবহার করেছিলেন?',
-      hook_a: '🎵 কারণ গভীর রাতে নিস্তব্ধ ঘরে একা বসে মানুষ যখন প্রিয়জনের কথা ভাবে, তখন তার মনের ভেতর থেকে আপনাআপনি যেমন সুরের গুঞ্জন ওঠে—সেই অকৃত্রিম একাকীত্ব ও মায়া ফুটিয়ে তুলতেই এই শিসের সুর!'
+      hook_a: '🎵 কারণ গভীর রাতে নিস্তব্ধ ঘরে একা বসে মানুষ যখন প্রিয়জনের কথা ভাবে, তখন তার মনের ভেতর থেকে আপনাআপনি যেমন সুরের গুঞ্জন ওঠে—সেই অকৃত্রিম মায়া ফুটিয়ে তুলতেই এই শিসের সুর!'
     },
     {
       match: /একদিন পাখি উড়ে যাবে/,
@@ -1238,6 +1512,7 @@ function buildSongDeepMeaning(ag) {
 }
 
 function buildEnglishSimpleLearnCard(ag, dNum, agIdx) {
+  const id = 'd' + dNum + '_g' + agIdx;
   const rawSentence = String(ag.prompt_bn || '').replace(/^জেমিনি,?\s*(শোনো—?)?\s*/i, '').trim();
   const cleanIntro = stripGeminiBoilerplate(ag.detail_bn);
   const foundWords = [];
@@ -1258,7 +1533,7 @@ function buildEnglishSimpleLearnCard(ag, dNum, agIdx) {
   ).join('\n\n');
 
   return {
-    id: 'd' + dNum + '_g' + agIdx,
+    id: id,
     vibe: 'english',
     badge_bn: '🔤 ইংরেজি',
     title_bn: ag.title_bn,
@@ -1283,19 +1558,19 @@ function buildEnglishSimpleLearnCard(ag, dNum, agIdx) {
     hitch_bn: rawSentence,
     curiosity_q_bn: '🔮 চটপট ঝালাই: আজকের মূল ইংরেজি বাক্যটি মুখে কীভাবে বলবে?',
     curiosity_a_bn: '✨ “' + rawSentence + '” — একদম সহজ ও সাবলীল!',
-    audio_url: ag.audio_url || '',
-    story_end: Number(ag.story_end) || 0,
+    audio_url: JHALAK_AUDIO_BASE + id + '.mp3',
+    story_end: 0,
     yt_query: '',
     yt_label_bn: ''
   };
 }
 
-function buildHindiConversationCard(ag, dNum, agIdx) {
+function buildHindiConversationCard(ag, id) {
   const spokenLine = String(ag.prompt_bn || '').replace(/^জেমিনি,?\s*(শোনো—?)?\s*/i, '').trim();
   const cleanIntro = stripGeminiBoilerplate(ag.detail_bn);
 
   return {
-    id: 'd' + dNum + '_g' + agIdx,
+    id: id,
     vibe: 'hindi',
     badge_bn: '🗣️ হিন্দি',
     title_bn: ag.title_bn,
@@ -1320,8 +1595,8 @@ function buildHindiConversationCard(ag, dNum, agIdx) {
     hitch_bn: spokenLine,
     curiosity_q_bn: '🔮 কথার জাদু: আজকের এই পরিস্থিতিতে প্রথম হিন্দি লাইনটি কী বলবে?',
     curiosity_a_bn: '🌸 “' + spokenLine + '”',
-    audio_url: ag.audio_url || '',
-    story_end: Number(ag.story_end) || 0,
+    audio_url: JHALAK_AUDIO_BASE + id + '.mp3',
+    story_end: 0,
     yt_query: '',
     yt_label_bn: ''
   };
@@ -1339,9 +1614,8 @@ function buildAllJhalakReels() {
     tv: []
   };
 
-  // 1. Curated Gods Stories
-  JHALAK_GODS_STORIES.forEach((gs, idx) => {
-    const refDay = DAYS_21[idx % DAYS_21.length] || DAYS_21[0];
+  // 1. Curated Gods Stories (15)
+  JHALAK_GODS_STORIES.forEach(gs => {
     byCat.gods.push({
       id: gs.id,
       vibe: 'gods',
@@ -1356,16 +1630,15 @@ function buildAllJhalakReels() {
       hitch_bn: gs.hitch_bn,
       curiosity_q_bn: gs.curiosity_q_bn,
       curiosity_a_bn: gs.curiosity_a_bn,
-      audio_url: refDay.audio_url || '',
+      audio_url: JHALAK_AUDIO_BASE + gs.id + '.mp3',
       story_end: 0,
       yt_query: gs.yt_query,
       yt_label_bn: gs.yt_label_bn
     });
   });
 
-  // 2. Curated Laugh Stories
-  JHALAK_LAUGH_STORIES.forEach((ls, idx) => {
-    const refDay = DAYS_21[(idx + 3) % DAYS_21.length] || DAYS_21[0];
+  // 2. Curated Laugh Stories (16)
+  JHALAK_LAUGH_STORIES.forEach(ls => {
     byCat.laugh.push({
       id: ls.id,
       vibe: 'laugh',
@@ -1380,16 +1653,15 @@ function buildAllJhalakReels() {
       hitch_bn: ls.hitch_bn,
       curiosity_q_bn: ls.curiosity_q_bn,
       curiosity_a_bn: ls.curiosity_a_bn,
-      audio_url: refDay.audio_url || '',
+      audio_url: JHALAK_AUDIO_BASE + ls.id + '.mp3',
       story_end: 0,
       yt_query: ls.yt_query,
       yt_label_bn: ls.yt_label_bn
     });
   });
 
-  // 3. Curated TV Cards (Moved from header tab into Reels 'tv' category)
-  JHALAK_TV_CARDS.forEach((tv, idx) => {
-    const refDay = DAYS_21[(idx + 6) % DAYS_21.length] || DAYS_21[0];
+  // 3. Curated TV Cards (14)
+  JHALAK_TV_CARDS.forEach(tv => {
     byCat.tv.push({
       id: tv.id,
       vibe: 'tv',
@@ -1404,33 +1676,34 @@ function buildAllJhalakReels() {
       hitch_bn: tv.hitch_bn,
       curiosity_q_bn: '🔮 টিভি গাইড: এই চ্যানেলটি কীভাবে চালু করবে?',
       curiosity_a_bn: '✨ নিচের ইউটিউব লিঙ্কে একবার ছুঁলেই সরাসরি ভিডিও চালু হয়ে যাবে!',
-      audio_url: refDay.audio_url || '',
+      audio_url: JHALAK_AUDIO_BASE + tv.id + '.mp3',
       story_end: 0,
       yt_query: tv.yt_query,
       yt_label_bn: tv.yt_label_bn
     });
   });
 
-  // 4. Enrich Curriculum Items (Excluding nonsensical tech_65 phone/camera tutorials)
+  // 4. Enrich Curriculum Items (Excluding tech_65 phone/camera tutorials)
   DAYS_21.forEach(d => {
     const dNum = Number(d.day) || 1;
     (d.agendas || []).forEach((ag, agIdx) => {
       const p = String(ag.pillar || '');
-      if (p === 'tech_65') return; // Skip phone/camera tutorial instructions that don't make sense in Jhalak
-      if (dNum === 20 && agIdx === 0) return; // Skip camera/mic tutorial card
+      if (p === 'tech_65') return;
+      if (dNum === 20 && agIdx === 0) return;
+      const cid = 'd' + dNum + '_g' + agIdx;
 
       if (p === 'english') {
         byCat.english.push(buildEnglishSimpleLearnCard(ag, dNum, agIdx));
         return;
       }
       if (p === 'hindi') {
-        byCat.hindi.push(buildHindiConversationCard(ag, dNum, agIdx));
+        byCat.hindi.push(buildHindiConversationCard(ag, cid));
         return;
       }
       if (p === 'music') {
         const sInfo = buildSongDeepMeaning(ag);
         byCat.music.push({
-          id: 'd' + dNum + '_g' + agIdx,
+          id: cid,
           vibe: 'music',
           badge_bn: '🎵 গান',
           title_bn: '🎵 ' + sInfo.song_name + ' — গানের গল্প ও গভীর অর্থ',
@@ -1443,8 +1716,8 @@ function buildAllJhalakReels() {
           hitch_bn: sInfo.hook_q_bn,
           curiosity_q_bn: sInfo.hook_q_bn,
           curiosity_a_bn: sInfo.hook_a_bn,
-          audio_url: ag.audio_url || d.audio_url || '',
-          story_end: Number(ag.story_end) || 0,
+          audio_url: JHALAK_AUDIO_BASE + cid + '.mp3',
+          story_end: 0,
           yt_query: sInfo.song_name + ' Bengali song',
           yt_label_bn: '‘' + sInfo.song_name + '’ গানটি ইউটিউবে শোনো'
         });
@@ -1456,7 +1729,7 @@ function buildAllJhalakReels() {
 
       if (isGodsTopic) {
         byCat.gods.push({
-          id: 'd' + dNum + '_g' + agIdx,
+          id: cid,
           vibe: 'gods',
           badge_bn: '🪷 ভগবান',
           title_bn: ag.title_bn,
@@ -1476,8 +1749,8 @@ function buildAllJhalakReels() {
           hitch_bn: 'নিজের মনকে সর্বদা প্রসন্ন ও ভয়হীন রাখাই ভগবানের সবচেয়ে বড় পূজা মা।',
           curiosity_q_bn: '🔮 অমৃত ভাবনা: এই জীবনকথা থেকে আমাদের প্রতিদিনের জীবনে কোন শান্তির শিক্ষাটি মেলে?',
           curiosity_a_bn: '🌸 সংসারের সব কাজের মাঝেও নিজের মনকে শান্ত, উদার ও আনন্দময় রাখা!',
-          audio_url: ag.audio_url || d.audio_url || '',
-          story_end: Number(ag.story_end) || 0,
+          audio_url: JHALAK_AUDIO_BASE + cid + '.mp3',
+          story_end: 0,
           yt_query: ag.title_bn + ' Bengali story',
           yt_label_bn: ag.title_bn
         });
@@ -1486,7 +1759,7 @@ function buildAllJhalakReels() {
 
       if (p === 'gk_inspiring') {
         byCat.curiosity.push({
-          id: 'd' + dNum + '_g' + agIdx,
+          id: cid,
           vibe: 'curiosity',
           badge_bn: '🔍 কৌতূহল',
           title_bn: ag.title_bn,
@@ -1506,15 +1779,14 @@ function buildAllJhalakReels() {
           hitch_bn: 'রোজ একটি করে নতুন ও অবাক করা বিষয় জানার আনন্দ মনকে সবসময় সজীব ও তরুণ রাখে মা!',
           curiosity_q_bn: '🔮 জাদুর পর্দা খোলো: এই বিস্ময়কর বিষয়টির সবচেয়ে সুন্দর দিক কোনটি?',
           curiosity_a_bn: '✨ প্রকৃতির অসীম বুদ্ধি আর মানুষের অদম্য মনের জোর!',
-          audio_url: ag.audio_url || d.audio_url || '',
-          story_end: Number(ag.story_end) || 0,
+          audio_url: JHALAK_AUDIO_BASE + cid + '.mp3',
+          story_end: 0,
           yt_query: ag.title_bn + ' Bengali',
           yt_label_bn: ag.title_bn
         });
         return;
       }
 
-      // covert_cbt, personal_therapy, bengali_expr -> calm (🦋 শান্তি)
       const calmReframe = p === 'covert_cbt'
         ? 'তাজা ও ভালো জিনিস আজই আনন্দে ব্যবহার করো মা—পুরনো বা সামান্য জিনিসের মায়ায় নিজের বর্তমানের আনন্দকে কখনো তুলে রাখবে না।'
         : (p === 'bengali_expr'
@@ -1522,7 +1794,7 @@ function buildAllJhalakReels() {
           : 'রানাঘাটের শৈশব থেকে শুরু করে কৌশিক ও দিদিকে মানুষ করা—তোমার জীবনের প্রতিটি অধ্যায় গর্বের ও ভালোবাসার। আজ সব পুরনো ভার নামিয়ে রেখে কেবল নিজের আনন্দে থাকো মা।');
 
       byCat.calm.push({
-        id: 'd' + dNum + '_g' + agIdx,
+        id: cid,
         vibe: 'calm',
         badge_bn: '🦋 শান্তি',
         title_bn: ag.title_bn,
@@ -1547,15 +1819,21 @@ function buildAllJhalakReels() {
         hitch_bn: calmReframe,
         curiosity_q_bn: '🔮 মনের আয়না: আজ নিজেকে কোন মিষ্টি সত্যিটা মনে করিয়ে দেবে মা?',
         curiosity_a_bn: '🌸 “আমার নিজের আরাম, তাজা খাবার ও মনের আনন্দই আজ সবার আগে!”',
-        audio_url: ag.audio_url || d.audio_url || '',
-        story_end: Number(ag.story_end) || 0,
+        audio_url: JHALAK_AUDIO_BASE + cid + '.mp3',
+        story_end: 0,
         yt_query: /রানাঘাট|শান্তিনিকেতন|দুর্গাপুজো/.test(ag.title_bn) ? ag.title_bn + ' Bengali' : '',
         yt_label_bn: ag.title_bn
       });
     });
   });
 
-  // Interleave harmoniously across all 8 categories
+  // 5. Extra Day-to-Day Hindi Conversations (3 more -> 16 total)
+  if (typeof JHALAK_EXTRA_HINDI !== 'undefined') {
+    JHALAK_EXTRA_HINDI.forEach(eh => {
+      byCat.hindi.push(buildHindiConversationCard(eh, eh.id));
+    });
+  }
+
   const order = ['gods', 'laugh', 'calm', 'music', 'curiosity', 'english', 'hindi', 'tv'];
   const ptr = { gods: 0, laugh: 0, calm: 0, music: 0, curiosity: 0, english: 0, hindi: 0, tv: 0 };
   const mixed = [];
@@ -1593,16 +1871,19 @@ function getJhalakCategoryCounts() {
 const JHALAK_CATEGORY_COUNTS = getJhalakCategoryCounts();
 
 /* ============================================================================
-   ✨ ঝলক (JHALAK) — MODULE 2: LONG-PAGE UP/DOWN READER, LEFT/RIGHT NAVIGATION,
-   CATEGORY DROPDOWN (SINGLE / MULTI-SELECT), STICKY MULTI-LIKE BUTTON,
-   CATEGORY STATS & SETTINGS DRAWER
+   ✨ ঝলক (JHALAK) — MODULE 2: RANDOMIZED REELS ENGINE, LEFT/RIGHT SLIDE
+   ANIMATION, DONE FILTERING, STICKY MULTI-LIKE, AND ADMIN SETTINGS
    ============================================================================ */
 
 let jhSelectedChannels = new Set(['all']);
 let jhMultiSelectCategories = false;
 let jhCategoryDropdownOpen = false;
-let jhFilteredReels = ALL_JHALAK_REELS.slice();
+let jhFilteredReels = [];
 let jhCurrentIdx = 0;
+let jhHistoryStack = [];
+let jhHistoryPos = -1;
+let jhVisitedIds = new Set();
+let jhLastSlideDir = 'next';
 let jhAutoFlow = true;
 let jhAutoPlayVoices = true;
 let jhShowLikeCount = true;
@@ -1611,8 +1892,13 @@ let jhAutoAdvanceTimer = null;
 let jhSlideLetterIdx = 0;
 let jhRevealedMap = {};
 let jhLikesMap = {};
+let jhDoneMap = {};
+let jhAdminFilterCat = 'all';
 let jhTouchStartX = 0;
 let jhTouchStartY = 0;
+let jhMouseDownX = null;
+let jhMouseDownY = null;
+let jhWheelLock = false;
 
 try {
   const savedFlow = localStorage.getItem('ma_jhalak_auto_flow_v1');
@@ -1625,10 +1911,76 @@ try {
   if (savedShowLikes === '0') jhShowLikeCount = false;
   const savedLikes = localStorage.getItem('ma_jhalak_likes_v1');
   if (savedLikes) {
-    const parsed = JSON.parse(savedLikes);
-    if (parsed && typeof parsed === 'object') jhLikesMap = parsed;
+    const parsedL = JSON.parse(savedLikes);
+    if (parsedL && typeof parsedL === 'object') jhLikesMap = parsedL;
+  }
+  const savedDone = localStorage.getItem('ma_jhalak_done_v1');
+  if (savedDone) {
+    const parsedD = JSON.parse(savedDone);
+    if (parsedD && typeof parsedD === 'object') jhDoneMap = parsedD;
   }
 } catch (e) {}
+
+function isReelDone(cardId) {
+  return (Number(jhDoneMap[cardId]) || 0) > 0;
+}
+
+function getReelDoneCount(cardId) {
+  return Number(jhDoneMap[cardId]) || 0;
+}
+
+function getReelLikeCount(cardId) {
+  return Number(jhLikesMap[cardId]) || 0;
+}
+
+function saveJhDoneAndLikes() {
+  try {
+    localStorage.setItem('ma_jhalak_likes_v1', JSON.stringify(jhLikesMap));
+    localStorage.setItem('ma_jhalak_done_v1', JSON.stringify(jhDoneMap));
+  } catch (e) {}
+}
+
+/* BUILD ACTIVE UN-DONE POOL FOR CURRENT CATEGORY SELECTION */
+function rebuildJhFilteredPool() {
+  const catMatched = jhSelectedChannels.has('all')
+    ? ALL_JHALAK_REELS.slice()
+    : ALL_JHALAK_REELS.filter(r => jhSelectedChannels.has(r.vibe));
+
+  const undone = catMatched.filter(r => !isReelDone(r.id));
+  jhFilteredReels = undone;
+}
+
+rebuildJhFilteredPool();
+if (jhFilteredReels.length > 0 && jhFilteredReels[jhCurrentIdx]) {
+  jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+  jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+  jhHistoryPos = 0;
+}
+
+/* PICK NEXT RANDOM REEL INDEX AUTOMATICALLY */
+function pickRandomNextReelIndex() {
+  const len = jhFilteredReels.length;
+  if (len <= 1) return 0;
+
+  let candidates = [];
+  for (let i = 0; i < len; i++) {
+    const c = jhFilteredReels[i];
+    if (i !== jhCurrentIdx && !jhVisitedIds.has(c.id)) {
+      candidates.push(i);
+    }
+  }
+  if (candidates.length === 0) {
+    jhVisitedIds.clear();
+    if (jhFilteredReels[jhCurrentIdx]) {
+      jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+    }
+    for (let i = 0; i < len; i++) {
+      if (i !== jhCurrentIdx) candidates.push(i);
+    }
+  }
+  const randPos = Math.floor(Math.random() * candidates.length);
+  return candidates[randPos] !== undefined ? candidates[randPos] : 0;
+}
 
 function getJhAudioEl() {
   return document.getElementById('jhAudioPlayer');
@@ -1664,7 +2016,7 @@ function spawnLotusBurst(x, y, symbols) {
   }
 }
 
-/* CATEGORY DROPDOWN: SINGLE-SELECT OR MULTI-SELECT (TOGGLED IN SETTINGS) */
+/* CATEGORY DROPDOWN (NO PAGE COUNTS ON TOP BAR) */
 function toggleJhCategoryDropdown(ev) {
   if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
   jhCategoryDropdownOpen = !jhCategoryDropdownOpen;
@@ -1681,14 +2033,27 @@ function closeJhCategoryDropdown() {
 
 function getSelectedCategorySummaryLabel() {
   if (jhSelectedChannels.has('all') || jhSelectedChannels.size === 0) {
-    return `✨ সব (${jhBnNum(JHALAK_CATEGORY_COUNTS.all || ALL_JHALAK_REELS.length)}) ▾`;
+    return '✨ সব ▾';
   }
   const selectedList = JHALAK_CATEGORIES.filter(c => jhSelectedChannels.has(c.id));
   if (selectedList.length === 1) {
-    const c = selectedList[0];
-    return `${c.label_bn} (${jhBnNum(JHALAK_CATEGORY_COUNTS[c.id] || 0)}) ▾`;
+    return `${selectedList[0].label_bn} ▾`;
   }
-  return `📂 ${jhBnNum(selectedList.length)}টি বিভাগ (${jhBnNum(jhFilteredReels.length)}) ▾`;
+  return `📂 ${jhBnNum(selectedList.length)}টি বিভাগ ▾`;
+}
+
+function getActiveCategoryCounts() {
+  const counts = { all: 0 };
+  JHALAK_CATEGORIES.forEach(c => {
+    if (c.id !== 'all') counts[c.id] = 0;
+  });
+  ALL_JHALAK_REELS.forEach(r => {
+    if (!isReelDone(r.id)) {
+      counts.all += 1;
+      counts[r.vibe] = (counts[r.vibe] || 0) + 1;
+    }
+  });
+  return counts;
 }
 
 function renderJhCategoryDropdownUI() {
@@ -1699,13 +2064,14 @@ function renderJhCategoryDropdownUI() {
   const menu = document.getElementById('jhCategoryDropdownMenu');
   if (!menu) return;
 
+  const activeCounts = getActiveCategoryCounts();
   const modeBadge = jhMultiSelectCategories
     ? '☑️ একসাথে একাধিক বিভাগ বেছে নাও (Multi-Select)'
     : '🔘 যেকোনো একটি বিভাগ বেছে নাও (Single-Select)';
 
   const itemsHtml = JHALAK_CATEGORIES.map(cat => {
     const isSel = jhSelectedChannels.has(cat.id);
-    const count = JHALAK_CATEGORY_COUNTS[cat.id] || 0;
+    const count = activeCounts[cat.id] || 0;
     const indicator = jhMultiSelectCategories
       ? (isSel ? '☑️' : '⬜')
       : (isSel ? '🔘' : '⚪');
@@ -1728,25 +2094,30 @@ function renderJhCategoryStatsUI() {
   if (!statsBox) return;
 
   const rowsHtml = JHALAK_CATEGORIES.map(cat => {
-    const count = JHALAK_CATEGORY_COUNTS[cat.id] || 0;
+    let totalCount = 0;
+    let doneCount = 0;
     let catLikes = 0;
     ALL_JHALAK_REELS.forEach(r => {
       if (cat.id === 'all' || r.vibe === cat.id) {
-        catLikes += Number(jhLikesMap[r.id]) || 0;
+        totalCount += 1;
+        if (isReelDone(r.id)) doneCount += 1;
+        catLikes += getReelLikeCount(r.id);
       }
     });
+    const activeCount = totalCount - doneCount;
     const likeBadge = jhShowLikeCount
       ? `<span class="jh-stat-likes">❤️ ${jhBnNum(catLikes)}</span>`
       : '';
     return `
       <div class="jh-stat-chip">
         <span>${cat.label_bn}</span>
-        <span><strong>${jhBnNum(count)}টি পাতা</strong> ${likeBadge}</span>
+        <span><strong>${jhBnNum(activeCount)}/${jhBnNum(totalCount)}টি পাতা</strong> (✅ ${jhBnNum(doneCount)}) ${likeBadge}</span>
       </div>
     `;
   }).join('');
 
   statsBox.innerHTML = rowsHtml;
+  renderJhAdminItemsList();
 }
 
 function filterJhalakChannel(channelId, ev) {
@@ -1755,11 +2126,9 @@ function filterJhalakChannel(channelId, ev) {
   stopJhAudio();
 
   if (!jhMultiSelectCategories) {
-    // Single-Select dropdown mode
     jhSelectedChannels = new Set([ch]);
     closeJhCategoryDropdown();
   } else {
-    // Multi-Select dropdown mode
     if (ch === 'all') {
       jhSelectedChannels = new Set(['all']);
     } else {
@@ -1775,23 +2144,57 @@ function filterJhalakChannel(channelId, ev) {
     }
   }
 
-  if (jhSelectedChannels.has('all')) {
-    jhFilteredReels = ALL_JHALAK_REELS.slice();
-  } else {
-    jhFilteredReels = ALL_JHALAK_REELS.filter(r => jhSelectedChannels.has(r.vibe));
+  rebuildJhFilteredPool();
+  jhVisitedIds.clear();
+  jhHistoryStack = [];
+  jhHistoryPos = -1;
+  jhCurrentIdx = jhFilteredReels.length > 0 ? Math.floor(Math.random() * jhFilteredReels.length) : 0;
+  if (jhFilteredReels[jhCurrentIdx]) {
+    jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+    jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+    jhHistoryPos = 0;
   }
-
-  jhCurrentIdx = 0;
+  jhLastSlideDir = 'next';
   renderJhCategoryDropdownUI();
   renderJhalakReelStream();
 }
 
-/* LEFT / RIGHT PAGE NAVIGATION (PREV / NEXT) */
+/* RANDOMIZED PAGE TRANSITION WITH LEFT/RIGHT SLIDE ANIMATION */
 function stepJhalakReel(delta, autoPlayAfter) {
   if (!jhFilteredReels.length) return;
   stopJhAudio();
-  const len = jhFilteredReels.length;
-  jhCurrentIdx = (jhCurrentIdx + delta + len) % len;
+
+  if (delta < 0) {
+    jhLastSlideDir = 'prev';
+    if (jhHistoryPos > 0) {
+      jhHistoryPos -= 1;
+      const prevId = jhHistoryStack[jhHistoryPos];
+      const foundIdx = jhFilteredReels.findIndex(r => r.id === prevId);
+      if (foundIdx >= 0) {
+        jhCurrentIdx = foundIdx;
+      } else {
+        jhCurrentIdx = pickRandomNextReelIndex();
+      }
+    } else {
+      jhCurrentIdx = pickRandomNextReelIndex();
+    }
+  } else {
+    jhLastSlideDir = 'next';
+    if (jhHistoryPos >= 0 && jhHistoryPos + 1 < jhHistoryStack.length) {
+      jhHistoryPos += 1;
+      const nextId = jhHistoryStack[jhHistoryPos];
+      const foundIdx = jhFilteredReels.findIndex(r => r.id === nextId);
+      jhCurrentIdx = foundIdx >= 0 ? foundIdx : pickRandomNextReelIndex();
+    } else {
+      jhCurrentIdx = pickRandomNextReelIndex();
+      if (jhFilteredReels[jhCurrentIdx]) {
+        jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+        jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+        jhHistoryPos = jhHistoryStack.length - 1;
+      }
+    }
+  }
+
   renderJhalakReelStream();
   const vp = document.getElementById('jhReelsViewport');
   if (vp) vp.scrollTop = 0;
@@ -1800,19 +2203,51 @@ function stepJhalakReel(delta, autoPlayAfter) {
   }
 }
 
-/* TRANSLUCENT STICK-ON LIKE BUTTON (SAME CONTENT CAN BE LIKED SEVERAL TIMES) */
-function getReelLikeCount(cardId) {
-  return Number(jhLikesMap[cardId]) || 0;
+/* MARK DONE BUTTON: EXCLUDES CONTENT FROM FUTURE REELS & ADVANCES TO RANDOM NEXT */
+function markCurrentJhalakReelDone(ev) {
+  if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
+  const card = jhFilteredReels[jhCurrentIdx];
+  if (!card) return;
+
+  jhDoneMap[card.id] = (Number(jhDoneMap[card.id]) || 0) + 1;
+  saveJhDoneAndLikes();
+
+  if (ev) {
+    spawnLotusBurst(ev.clientX, ev.clientY, ['✅', '🌸', '✨', '🎉']);
+  }
+
+  stopJhAudio();
+  rebuildJhFilteredPool();
+  jhLastSlideDir = 'next';
+
+  if (jhFilteredReels.length > 0) {
+    jhCurrentIdx = Math.floor(Math.random() * jhFilteredReels.length);
+    if (jhFilteredReels[jhCurrentIdx]) {
+      jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+      jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+      jhHistoryPos = jhHistoryStack.length - 1;
+    }
+  } else {
+    jhCurrentIdx = 0;
+  }
+
+  renderJhCategoryDropdownUI();
+  renderJhCategoryStatsUI();
+  renderJhalakReelStream();
+  const vp = document.getElementById('jhReelsViewport');
+  if (vp) vp.scrollTop = 0;
+  if (jhAutoPlayVoices && jhFilteredReels.length > 0) {
+    setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 260);
+  }
 }
 
+/* TRANSLUCENT STICK-ON LIKE BUTTON (SAME CONTENT CAN BE LIKED MULTIPLE TIMES) */
 function likeJhalakReelAtIndex(idx, ev) {
   if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
   const card = jhFilteredReels[idx !== undefined ? idx : jhCurrentIdx];
   if (!card) return;
   jhLikesMap[card.id] = (Number(jhLikesMap[card.id]) || 0) + 1;
-  try {
-    localStorage.setItem('ma_jhalak_likes_v1', JSON.stringify(jhLikesMap));
-  } catch (e) {}
+  saveJhDoneAndLikes();
 
   if (ev) {
     spawnLotusBurst(ev.clientX, ev.clientY, ['❤️', '💖', '🌸', '✨']);
@@ -1828,7 +2263,12 @@ function likeCurrentJhalakReel(ev) {
 function updateStickyLikeBtnUI() {
   const card = jhFilteredReels[jhCurrentIdx];
   const btn = document.getElementById('jhStickyLikeBtn');
-  if (!btn || !card) return;
+  if (!btn) return;
+  if (!card) {
+    btn.style.display = 'none';
+    return;
+  }
+  btn.style.display = 'inline-flex';
   const count = getReelLikeCount(card.id);
   btn.classList.toggle('has-likes', count > 0);
   if (jhShowLikeCount) {
@@ -1836,6 +2276,113 @@ function updateStickyLikeBtnUI() {
   } else {
     btn.innerHTML = `<span class="jh-like-heart">❤️</span> <span class="jh-like-label">ভালো লেগেছে</span>`;
   }
+}
+
+/* ADMIN SETTINGS: ADJUST DONE & LIKES COUNTS PER ITEM OR BULK */
+function setAdminCategoryFilter(catId) {
+  jhAdminFilterCat = catId || 'all';
+  renderJhAdminItemsList();
+}
+
+function adjustReelDoneCount(cardId, delta) {
+  const cur = getReelDoneCount(cardId);
+  const nextVal = Math.max(0, cur + delta);
+  if (nextVal === 0) delete jhDoneMap[cardId];
+  else jhDoneMap[cardId] = nextVal;
+  saveJhDoneAndLikes();
+  rebuildJhFilteredPool();
+  if (jhCurrentIdx >= jhFilteredReels.length) {
+    jhCurrentIdx = Math.max(0, jhFilteredReels.length - 1);
+  }
+  renderJhCategoryDropdownUI();
+  renderJhCategoryStatsUI();
+  renderJhalakReelStream();
+}
+
+function setReelDoneCount(cardId, val) {
+  const clean = Math.max(0, Number(val) || 0);
+  if (clean === 0) delete jhDoneMap[cardId];
+  else jhDoneMap[cardId] = clean;
+  saveJhDoneAndLikes();
+  rebuildJhFilteredPool();
+  if (jhCurrentIdx >= jhFilteredReels.length) {
+    jhCurrentIdx = Math.max(0, jhFilteredReels.length - 1);
+  }
+  renderJhCategoryDropdownUI();
+  renderJhCategoryStatsUI();
+  renderJhalakReelStream();
+}
+
+function adjustReelLikeCount(cardId, delta) {
+  const cur = getReelLikeCount(cardId);
+  const nextVal = Math.max(0, cur + delta);
+  if (nextVal === 0) delete jhLikesMap[cardId];
+  else jhLikesMap[cardId] = nextVal;
+  saveJhDoneAndLikes();
+  updateStickyLikeBtnUI();
+  renderJhCategoryStatsUI();
+}
+
+function setReelLikeCount(cardId, val) {
+  const clean = Math.max(0, Number(val) || 0);
+  if (clean === 0) delete jhLikesMap[cardId];
+  else jhLikesMap[cardId] = clean;
+  saveJhDoneAndLikes();
+  updateStickyLikeBtnUI();
+  renderJhCategoryStatsUI();
+}
+
+function resetAllJhDoneCounts() {
+  jhDoneMap = {};
+  saveJhDoneAndLikes();
+  rebuildJhFilteredPool();
+  jhCurrentIdx = 0;
+  renderJhCategoryDropdownUI();
+  renderJhCategoryStatsUI();
+  renderJhalakReelStream();
+}
+
+function resetAllJhLikeCounts() {
+  jhLikesMap = {};
+  saveJhDoneAndLikes();
+  updateStickyLikeBtnUI();
+  renderJhCategoryStatsUI();
+}
+
+function renderJhAdminItemsList() {
+  const listEl = document.getElementById('jhAdminItemsList');
+  if (!listEl) return;
+
+  const items = ALL_JHALAK_REELS.filter(r =>
+    jhAdminFilterCat === 'all' || r.vibe === jhAdminFilterCat
+  );
+
+  listEl.innerHTML = items.map(r => {
+    const dCount = getReelDoneCount(r.id);
+    const lCount = getReelLikeCount(r.id);
+    return `
+      <div class="jh-admin-row ${dCount > 0 ? 'is-done' : ''}">
+        <div class="jh-admin-row-title">
+          <span class="jh-admin-badge">${r.badge_bn}</span>
+          <span>${r.title_bn}</span>
+        </div>
+        <div class="jh-admin-row-controls">
+          <div class="jh-admin-stepper">
+            <span>✅ ডান:</span>
+            <button type="button" class="jh-step-mini" onclick="adjustReelDoneCount('${r.id}', -1)">−</button>
+            <strong id="adminDoneVal_${r.id}">${jhBnNum(dCount)}</strong>
+            <button type="button" class="jh-step-mini" onclick="adjustReelDoneCount('${r.id}', 1)">+</button>
+          </div>
+          <div class="jh-admin-stepper">
+            <span>❤️ লাইক:</span>
+            <button type="button" class="jh-step-mini" onclick="adjustReelLikeCount('${r.id}', -1)">−</button>
+            <strong id="adminLikeVal_${r.id}">${jhBnNum(lCount)}</strong>
+            <button type="button" class="jh-step-mini" onclick="adjustReelLikeCount('${r.id}', 1)">+</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 /* SETTINGS GEAR: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY & LIKE COUNT TOGGLES */
@@ -1964,7 +2511,7 @@ function playReelAudioAtIndex(idx) {
 
   jhAudioPlaying = true;
   updateActiveCardPlayBtns();
-  const playPromise = aud.play();
+  const playPromise = typeof aud.play === 'function' ? aud.play() : null;
   if (playPromise && typeof playPromise.catch === 'function') {
     playPromise.catch(() => {
       jhAudioPlaying = false;
@@ -1983,14 +2530,29 @@ function handleReelAudioEnded(idx) {
   }
 }
 
-/* RENDER ACTIVE LONG-FORM SCROLLABLE PAGE (UP/DOWN SCROLL + LEFT/RIGHT NAV) */
+/* RENDER ACTIVE LONG-FORM SCROLLABLE PAGE (SLIDE ANIMATION + DONE BUTTON) */
 function renderJhalakReelStream() {
   const vp = document.getElementById('jhReelsViewport');
   if (!vp) return;
+
   if (!jhFilteredReels.length) {
-    jhFilteredReels = ALL_JHALAK_REELS.slice();
-    jhCurrentIdx = 0;
+    vp.innerHTML = `
+      <article class="jh-reel-slide jh-slide-anim-next">
+        <div class="jh-card-stage" style="text-align:center;padding:36px 22px;">
+          <h2 class="jh-hook-title">🎉 এই বিভাগের সব পাতা পড়া হয়ে গেছে মা!</h2>
+          <p style="font-size:1.05rem;color:#5C4938;margin-bottom:18px;">
+            তুমি চাইলে অন্য কোনো বিভাগ বেছে নিতে পারো অথবা সেটিংস (⚙️) থেকে পাতাগুলো আবার রিসেট করে নিতে পারো।
+          </p>
+          <button type="button" class="jh-top-listen-btn" onclick="resetAllJhDoneCounts()">
+            🔄 সব পাতা আবার চালু করো
+          </button>
+        </div>
+      </article>
+    `;
+    updateStickyLikeBtnUI();
+    return;
   }
+
   const idx = Math.max(0, Math.min(jhFilteredReels.length - 1, jhCurrentIdx));
   jhCurrentIdx = idx;
   const card = jhFilteredReels[idx];
@@ -2025,21 +2587,21 @@ function renderJhalakReelStream() {
     `;
   }).join('');
 
-  const pageCounterText = `${jhBnNum(idx + 1)} / ${jhBnNum(jhFilteredReels.length)}`;
-  const counterEl = document.getElementById('jhPageCounterBadge');
-  if (counterEl) counterEl.textContent = pageCounterText;
+  const animClass = jhLastSlideDir === 'prev' ? 'jh-slide-anim-prev' : 'jh-slide-anim-next';
 
   vp.innerHTML = `
-    <article id="jhSlide_${idx}" class="jh-reel-slide" data-idx="${idx}" data-vibe="${card.vibe}">
+    <article id="jhSlide_${idx}" class="jh-reel-slide ${animClass}" data-idx="${idx}" data-vibe="${card.vibe}">
       <div class="jh-card-stage">
         <div class="jh-card-top">
-          <div class="jh-card-top-left">
-            <span class="jh-vibe-badge">${card.badge_bn}</span>
-            <span class="jh-page-pos-pill">পাতা ${pageCounterText}</span>
+          <span class="jh-vibe-badge">${card.badge_bn}</span>
+          <div class="jh-card-top-actions">
+            <button id="jhMainPlay_${idx}" type="button" class="jh-top-listen-btn" onclick="playReelAudioAtIndex(${idx})">
+              🔊 শোনো
+            </button>
+            <button id="jhDoneBtn_${idx}" type="button" class="jh-done-btn" onclick="markCurrentJhalakReelDone(event)">
+              ✅ হয়ে গেছে
+            </button>
           </div>
-          <button id="jhMainPlay_${idx}" class="jh-top-listen-btn" onclick="playReelAudioAtIndex(${idx})">
-            🔊 শোনো
-          </button>
         </div>
 
         <h2 class="jh-hook-title">${card.title_bn}</h2>
@@ -2055,16 +2617,6 @@ function renderJhalakReelStream() {
         </div>
 
         ${ytHtml}
-
-        <div class="jh-bottom-lr-nav">
-          <button id="btnJhBottomPrev" type="button" class="jh-lr-btn" onclick="stepJhalakReel(-1, jhAutoPlayVoices)">
-            ⬅️ আগের পাতা
-          </button>
-          <span class="jh-lr-page-indicator">${pageCounterText}</span>
-          <button id="btnJhBottomNext" type="button" class="jh-lr-btn primary" onclick="stepJhalakReel(1, jhAutoPlayVoices)">
-            পরের পাতা ➡️
-          </button>
-        </div>
       </div>
     </article>
   `;
@@ -2114,6 +2666,12 @@ function playJhalakLetterAudio() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  if (jhFilteredReels.length > 0) {
+    jhCurrentIdx = Math.floor(Math.random() * jhFilteredReels.length);
+    jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+    jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+    jhHistoryPos = 0;
+  }
   syncJhSettingsButtonsUI();
   renderJhalakReelStream();
 
@@ -2138,9 +2696,31 @@ window.addEventListener('DOMContentLoaded', () => {
       if (ev.changedTouches && ev.changedTouches[0]) {
         const dx = ev.changedTouches[0].clientX - jhTouchStartX;
         const dy = ev.changedTouches[0].clientY - jhTouchStartY;
-        if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.6) {
+        if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.4) {
           stepJhalakReel(dx < 0 ? 1 : -1, jhAutoPlayVoices);
         }
+      }
+    }, { passive: true });
+    vp.addEventListener('mousedown', ev => {
+      jhMouseDownX = ev.clientX;
+      jhMouseDownY = ev.clientY;
+    });
+    vp.addEventListener('mouseup', ev => {
+      if (jhMouseDownX === null) return;
+      const dx = ev.clientX - jhMouseDownX;
+      const dy = ev.clientY - jhMouseDownY;
+      jhMouseDownX = null;
+      jhMouseDownY = null;
+      if (Math.abs(dx) > 75 && Math.abs(dx) > Math.abs(dy) * 1.6) {
+        stepJhalakReel(dx < 0 ? 1 : -1, jhAutoPlayVoices);
+      }
+    });
+    vp.addEventListener('wheel', ev => {
+      if (jhWheelLock) return;
+      if (Math.abs(ev.deltaX) > 48 && Math.abs(ev.deltaX) > Math.abs(ev.deltaY) * 1.5) {
+        jhWheelLock = true;
+        stepJhalakReel(ev.deltaX > 0 ? 1 : -1, jhAutoPlayVoices);
+        setTimeout(() => { jhWheelLock = false; }, 480);
       }
     }, { passive: true });
   }

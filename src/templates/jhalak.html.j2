@@ -17,7 +17,7 @@
 </head>
 <body>
 
-  <!-- TOP BAR: BRAND + CATEGORY DROPDOWN (SINGLE/MULTI) + LEFT/RIGHT PAGE NAV + SETTINGS GEAR -->
+  <!-- TOP BAR: BRAND + CATEGORY DROPDOWN + SETTINGS GEAR (NO PREV/NEXT OR PAGE COUNTS) -->
   <header class="jh-topbar" role="banner">
     <div class="jh-topbar-row1">
       <div class="jh-brand-cluster">
@@ -32,23 +32,13 @@
         </div>
       </div>
 
-      <!-- LEFT / RIGHT PAGE NAVIGATION + SETTINGS GEAR -->
-      <div class="jh-top-right-controls">
-        <button id="btnJhPrevPage" type="button" class="jh-top-nav-btn" onclick="stepJhalakReel(-1, jhAutoPlayVoices)" title="আগের পাতা">
-          ⬅️ আগের
-        </button>
-        <span id="jhPageCounterBadge" class="jh-page-counter-badge">১ / ১২০</span>
-        <button id="btnJhNextPage" type="button" class="jh-top-nav-btn" onclick="stepJhalakReel(1, jhAutoPlayVoices)" title="পরের পাতা">
-          পরের ➡️
-        </button>
-        <button id="btnJhSettings" type="button" class="jh-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="সেটিংস" title="সেটিংস">
-          ⚙️
-        </button>
-      </div>
+      <button id="btnJhSettings" type="button" class="jh-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="সেটিংস" title="সেটিংস">
+        ⚙️
+      </button>
     </div>
   </header>
 
-  <!-- VERTICALLY SCROLLABLE (UP/DOWN) LONG-CONTENT PAGE VIEWPORT -->
+  <!-- VERTICALLY SCROLLABLE (UP/DOWN) LONG-CONTENT PAGE VIEWPORT (SWIPE LEFT/RIGHT FOR NEXT/PREV) -->
   <main id="jhReelsViewport" class="jh-reels-viewport" aria-label="ঝলক পাতা"></main>
 
   <!-- TRANSLUCENT STICK-ON LIKE BUTTON (SAME CONTENT CAN BE LIKED MULTIPLE TIMES) -->
@@ -56,11 +46,11 @@
     <span class="jh-like-heart">❤️</span> <span class="jh-like-label">ভালো লেগেছে</span> <span id="jhStickyLikeCount" class="jh-like-count-badge">০</span>
   </button>
 
-  <!-- SETTINGS GEAR DRAWER: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY, LIKE COUNT TOGGLE, CHITHI & STATS -->
+  <!-- SETTINGS & ADMIN DRAWER: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY, LIKE COUNT TOGGLE, CHITHI, STATS & ADMIN DONE/LIKE EDITOR -->
   <div id="jhSettingsDrawer" class="jh-drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="jhSettingsDrawerTitle">
     <div class="jh-drawer-sheet">
       <div class="jh-drawer-head">
-        <h2 id="jhSettingsDrawerTitle" class="jh-drawer-title">⚙️ সেটিংস ও পরিসংখ্যান</h2>
+        <h2 id="jhSettingsDrawerTitle" class="jh-drawer-title">⚙️ সেটিংস ও অ্যাডমিন কন্ট্রোল</h2>
         <button id="btnCloseSettingsDrawer" type="button" class="jh-drawer-close" onclick="closeJhalakSettingsDrawer()">✕ বন্ধ করো</button>
       </div>
 
@@ -86,6 +76,15 @@
       <div>
         <h3 class="jh-stats-section-title">📊 প্রতিটি বিভাগের পাতার সংখ্যা ও লাইক পরিসংখ্যান</h3>
         <div id="jhCategoryStatsBox" class="jh-stats-grid"></div>
+      </div>
+
+      <div id="jhAdminControlSection">
+        <h3 class="jh-stats-section-title">🛠️ অ্যাডমিন কন্ট্রোল: ডান (Done) ও লাইক (Likes) পরিবর্তন করো</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <button id="btnAdminResetDone" type="button" class="jh-letter-step-btn" onclick="resetAllJhDoneCounts()">🔄 সব ডান (Done) রিসেট করো</button>
+          <button id="btnAdminResetLikes" type="button" class="jh-letter-step-btn" onclick="resetAllJhLikeCounts()">🔄 সব লাইক (Likes) রিসেট করো</button>
+        </div>
+        <div id="jhAdminItemsList" class="jh-admin-items-list"></div>
       </div>
     </div>
   </div>

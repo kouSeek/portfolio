@@ -17,6 +17,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -139,11 +140,83 @@ def _collect_anondo_audio_items() -> dict[str, dict[str, str]]:
     return items
 
 
+def _find_node_bin() -> str:
+    found = shutil.which("node") or shutil.which("nodejs")
+    if found:
+        return found
+    home = Path.home()
+    for cand in [
+        *sorted(home.glob(".vscode/cli/serve-web/*/node")),
+        *sorted(home.glob(".jetski-server/bin/*/node")),
+        *sorted(home.glob(".nvm/versions/node/*/bin/node")),
+        Path("/usr/local/bin/node"),
+        Path("/usr/bin/node"),
+    ]:
+        if cand.is_file():
+            return str(cand)
+    return "node"
+
+
+def _clean_tts_text(s: str) -> str:
+    s = re.sub(r"[\U00010000-\U0010ffff\u2600-\u27bf\ufe0f]", " ", str(s or ""))
+    s = re.sub(r"[•*#_`~↗]+", " ", s)
+    return " ".join(s.split())
+
+
+def _collect_jhalak_audio_items() -> dict[str, dict[str, str]]:
+    """Collect expected full-page Bengali Aoede voice items for `jhalak` (`audio/jhalak/reels/<id>.mp3`)."""
+    js_dir = APP_ROOT / "src" / "jhalak" / "js"
+    js_code = (
+        f"const DAYS_21 = {json.dumps(DAYS_21, ensure_ascii=False)};\n"
+        + (js_dir / "curated-content.js").read_text(encoding="utf-8") + "\n"
+        + (js_dir / "feed-engine.js").read_text(encoding="utf-8") + "\n"
+        + "console.log(JSON.stringify(ALL_JHALAK_REELS));"
+    )
+    proc = subprocess.run([_find_node_bin(), "-"], input=js_code, capture_output=True, text=True, check=True)
+    reels = json.loads(proc.stdout)
+
+    items: dict[str, dict[str, str]] = {}
+    for r in reels:
+        cid = str(r["id"])
+        rel_path = f"reels/{cid}.mp3"
+        title_txt = _clean_tts_text(r.get("title_bn", ""))
+        sec_blocks: list[str] = []
+        for sec in r.get("sections", []):
+            h = _clean_tts_text(sec.get("heading_bn", ""))
+            b = _clean_tts_text(sec.get("body_bn", ""))
+            if h and b:
+                sec_blocks.append(f"{h}। {b}")
+            elif b:
+                sec_blocks.append(b)
+        cur_q = _clean_tts_text(r.get("curiosity_q_bn", ""))
+        cur_a = _clean_tts_text(r.get("curiosity_a_bn", ""))
+        cur_txt = f"{cur_q} {cur_a}".strip()
+
+        mid = max(1, (len(sec_blocks) + 1) // 2)
+        p1_list = [title_txt, *sec_blocks[:mid]]
+        p2_list = [*sec_blocks[mid:], cur_txt]
+        part1 = " ".join(x for x in p1_list if x).strip()
+        part2 = " ".join(x for x in p2_list if x).strip()
+        full_txt = f"{part1} {part2}".strip()
+
+        items[rel_path] = {
+            "hash": sha256_text(full_txt),
+            "scope": "reels",
+            "part": "0",
+            "text": full_txt,
+            "part1": part1,
+            "part2": part2,
+        }
+    return items
+
+
 def collect_expected_audio_items(persona_id: str = DEFAULT_PERSONA_ID) -> dict[str, dict[str, str]]:
     """Return mapping of relative audio path (under `audio/<persona_id>/`) -> {hash, scope, part, text, part1, part2}."""
     pid = normalize_persona_id(persona_id)
     if pid == "anondo":
         return _collect_anondo_audio_items()
+    if pid == "jhalak":
+        return _collect_jhalak_audio_items()
 
     items: dict[str, dict[str, str]] = {}
 
@@ -239,7 +312,7 @@ def matches_scope(rel_path: str, info: dict[str, str], scope: str) -> bool:
         return True
     if scope == "days-and-games":
         return info["scope"] in ("days", "games")
-    if scope in ("days", "games", "slides", "quotes", "pillars"):
+    if scope in ("days", "games", "slides", "quotes", "pillars", "reels"):
         return info["scope"] == scope
     if scope == "part1":
         return info["scope"] in ("days", "games") and info["part"] == "1"
@@ -312,12 +385,16 @@ def build_one(rel_path: str, info: dict[str, str], aud_root: Path) -> tuple[str,
 
     for attempt, model_name in enumerate((TTS_MODELS[0], TTS_MODELS[0], TTS_MODELS[1])):
         try:
-            if _synthesize_wav(info["text"], w_full, model_name, timeout_s=75):
+            if len(info["text"]) > 1350 and info["part2"]:
+                if _synthesize_wav(info["part1"], w1, model_name, timeout_s=70) and _synthesize_wav(info["part2"], w2, model_name, timeout_s=70):
+                    if _wav_to_mp3([w1, w2], out_mp3):
+                        return rel_path, True
+            if _synthesize_wav(info["text"], w_full, model_name, timeout_s=85):
                 if _wav_to_mp3([w_full], out_mp3):
                     return rel_path, True
 
             if info["part2"]:
-                if _synthesize_wav(info["part1"], w1, model_name, timeout_s=55) and _synthesize_wav(info["part2"], w2, model_name, timeout_s=45):
+                if _synthesize_wav(info["part1"], w1, model_name, timeout_s=70) and _synthesize_wav(info["part2"], w2, model_name, timeout_s=70):
                     if _wav_to_mp3([w1, w2], out_mp3):
                         return rel_path, True
         finally:
@@ -331,14 +408,14 @@ def build_one(rel_path: str, info: dict[str, str], aud_root: Path) -> tuple[str,
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Explicit-only incremental Gemini Aoede voice refresher.")
-    parser.add_argument("--persona", default=DEFAULT_PERSONA_ID, choices=("kalyani", "anondo"), help="Target persona voice set.")
+    parser.add_argument("--persona", default=DEFAULT_PERSONA_ID, choices=("kalyani", "anondo", "jhalak"), help="Target persona voice set.")
     parser.add_argument("--init-manifest", action="store_true", help="Snapshot current text hashes for existing MP3s.")
     parser.add_argument("--status", action="store_true", help="Check which audio files are stale/missing without regenerating.")
     parser.add_argument("--confirm", action="store_true", help="Explicit confirmation from Koushik to regenerate stale/missing voices.")
     parser.add_argument(
         "--scope",
         default="all",
-        choices=("all", "days-and-games", "days", "games", "part1", "slides", "quotes", "pillars"),
+        choices=("all", "days-and-games", "days", "games", "part1", "slides", "quotes", "pillars", "reels"),
         help="Target subset of voices to check or refresh.",
     )
     parser.add_argument("--workers", type=int, default=16, help="Parallel TTS worker count (default: 16).")
@@ -405,7 +482,7 @@ def main() -> int:
         for ok_key in orphan_keys:
             recorded.pop(ok_key, None)
         pruned_files = 0
-        for sub in ("slides", "quotes", "pillars", "days", "games"):
+        for sub in ("slides", "quotes", "pillars", "days", "games", "reels"):
             sub_dir = aud_root / sub
             if not sub_dir.is_dir():
                 continue

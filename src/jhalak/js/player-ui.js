@@ -1,14 +1,17 @@
 /* ============================================================================
-   ✨ ঝলক (JHALAK) — MODULE 2: LONG-PAGE UP/DOWN READER, LEFT/RIGHT NAVIGATION,
-   CATEGORY DROPDOWN (SINGLE / MULTI-SELECT), STICKY MULTI-LIKE BUTTON,
-   CATEGORY STATS & SETTINGS DRAWER
+   ✨ ঝলক (JHALAK) — MODULE 2: RANDOMIZED REELS ENGINE, LEFT/RIGHT SLIDE
+   ANIMATION, DONE FILTERING, STICKY MULTI-LIKE, AND ADMIN SETTINGS
    ============================================================================ */
 
 let jhSelectedChannels = new Set(['all']);
 let jhMultiSelectCategories = false;
 let jhCategoryDropdownOpen = false;
-let jhFilteredReels = ALL_JHALAK_REELS.slice();
+let jhFilteredReels = [];
 let jhCurrentIdx = 0;
+let jhHistoryStack = [];
+let jhHistoryPos = -1;
+let jhVisitedIds = new Set();
+let jhLastSlideDir = 'next';
 let jhAutoFlow = true;
 let jhAutoPlayVoices = true;
 let jhShowLikeCount = true;
@@ -17,8 +20,13 @@ let jhAutoAdvanceTimer = null;
 let jhSlideLetterIdx = 0;
 let jhRevealedMap = {};
 let jhLikesMap = {};
+let jhDoneMap = {};
+let jhAdminFilterCat = 'all';
 let jhTouchStartX = 0;
 let jhTouchStartY = 0;
+let jhMouseDownX = null;
+let jhMouseDownY = null;
+let jhWheelLock = false;
 
 try {
   const savedFlow = localStorage.getItem('ma_jhalak_auto_flow_v1');
@@ -31,10 +39,76 @@ try {
   if (savedShowLikes === '0') jhShowLikeCount = false;
   const savedLikes = localStorage.getItem('ma_jhalak_likes_v1');
   if (savedLikes) {
-    const parsed = JSON.parse(savedLikes);
-    if (parsed && typeof parsed === 'object') jhLikesMap = parsed;
+    const parsedL = JSON.parse(savedLikes);
+    if (parsedL && typeof parsedL === 'object') jhLikesMap = parsedL;
+  }
+  const savedDone = localStorage.getItem('ma_jhalak_done_v1');
+  if (savedDone) {
+    const parsedD = JSON.parse(savedDone);
+    if (parsedD && typeof parsedD === 'object') jhDoneMap = parsedD;
   }
 } catch (e) {}
+
+function isReelDone(cardId) {
+  return (Number(jhDoneMap[cardId]) || 0) > 0;
+}
+
+function getReelDoneCount(cardId) {
+  return Number(jhDoneMap[cardId]) || 0;
+}
+
+function getReelLikeCount(cardId) {
+  return Number(jhLikesMap[cardId]) || 0;
+}
+
+function saveJhDoneAndLikes() {
+  try {
+    localStorage.setItem('ma_jhalak_likes_v1', JSON.stringify(jhLikesMap));
+    localStorage.setItem('ma_jhalak_done_v1', JSON.stringify(jhDoneMap));
+  } catch (e) {}
+}
+
+/* BUILD ACTIVE UN-DONE POOL FOR CURRENT CATEGORY SELECTION */
+function rebuildJhFilteredPool() {
+  const catMatched = jhSelectedChannels.has('all')
+    ? ALL_JHALAK_REELS.slice()
+    : ALL_JHALAK_REELS.filter(r => jhSelectedChannels.has(r.vibe));
+
+  const undone = catMatched.filter(r => !isReelDone(r.id));
+  jhFilteredReels = undone;
+}
+
+rebuildJhFilteredPool();
+if (jhFilteredReels.length > 0 && jhFilteredReels[jhCurrentIdx]) {
+  jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+  jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+  jhHistoryPos = 0;
+}
+
+/* PICK NEXT RANDOM REEL INDEX AUTOMATICALLY */
+function pickRandomNextReelIndex() {
+  const len = jhFilteredReels.length;
+  if (len <= 1) return 0;
+
+  let candidates = [];
+  for (let i = 0; i < len; i++) {
+    const c = jhFilteredReels[i];
+    if (i !== jhCurrentIdx && !jhVisitedIds.has(c.id)) {
+      candidates.push(i);
+    }
+  }
+  if (candidates.length === 0) {
+    jhVisitedIds.clear();
+    if (jhFilteredReels[jhCurrentIdx]) {
+      jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+    }
+    for (let i = 0; i < len; i++) {
+      if (i !== jhCurrentIdx) candidates.push(i);
+    }
+  }
+  const randPos = Math.floor(Math.random() * candidates.length);
+  return candidates[randPos] !== undefined ? candidates[randPos] : 0;
+}
 
 function getJhAudioEl() {
   return document.getElementById('jhAudioPlayer');
@@ -70,7 +144,7 @@ function spawnLotusBurst(x, y, symbols) {
   }
 }
 
-/* CATEGORY DROPDOWN: SINGLE-SELECT OR MULTI-SELECT (TOGGLED IN SETTINGS) */
+/* CATEGORY DROPDOWN (NO PAGE COUNTS ON TOP BAR) */
 function toggleJhCategoryDropdown(ev) {
   if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
   jhCategoryDropdownOpen = !jhCategoryDropdownOpen;
@@ -87,14 +161,27 @@ function closeJhCategoryDropdown() {
 
 function getSelectedCategorySummaryLabel() {
   if (jhSelectedChannels.has('all') || jhSelectedChannels.size === 0) {
-    return `✨ সব (${jhBnNum(JHALAK_CATEGORY_COUNTS.all || ALL_JHALAK_REELS.length)}) ▾`;
+    return '✨ সব ▾';
   }
   const selectedList = JHALAK_CATEGORIES.filter(c => jhSelectedChannels.has(c.id));
   if (selectedList.length === 1) {
-    const c = selectedList[0];
-    return `${c.label_bn} (${jhBnNum(JHALAK_CATEGORY_COUNTS[c.id] || 0)}) ▾`;
+    return `${selectedList[0].label_bn} ▾`;
   }
-  return `📂 ${jhBnNum(selectedList.length)}টি বিভাগ (${jhBnNum(jhFilteredReels.length)}) ▾`;
+  return `📂 ${jhBnNum(selectedList.length)}টি বিভাগ ▾`;
+}
+
+function getActiveCategoryCounts() {
+  const counts = { all: 0 };
+  JHALAK_CATEGORIES.forEach(c => {
+    if (c.id !== 'all') counts[c.id] = 0;
+  });
+  ALL_JHALAK_REELS.forEach(r => {
+    if (!isReelDone(r.id)) {
+      counts.all += 1;
+      counts[r.vibe] = (counts[r.vibe] || 0) + 1;
+    }
+  });
+  return counts;
 }
 
 function renderJhCategoryDropdownUI() {
@@ -105,13 +192,14 @@ function renderJhCategoryDropdownUI() {
   const menu = document.getElementById('jhCategoryDropdownMenu');
   if (!menu) return;
 
+  const activeCounts = getActiveCategoryCounts();
   const modeBadge = jhMultiSelectCategories
     ? '☑️ একসাথে একাধিক বিভাগ বেছে নাও (Multi-Select)'
     : '🔘 যেকোনো একটি বিভাগ বেছে নাও (Single-Select)';
 
   const itemsHtml = JHALAK_CATEGORIES.map(cat => {
     const isSel = jhSelectedChannels.has(cat.id);
-    const count = JHALAK_CATEGORY_COUNTS[cat.id] || 0;
+    const count = activeCounts[cat.id] || 0;
     const indicator = jhMultiSelectCategories
       ? (isSel ? '☑️' : '⬜')
       : (isSel ? '🔘' : '⚪');
@@ -134,25 +222,30 @@ function renderJhCategoryStatsUI() {
   if (!statsBox) return;
 
   const rowsHtml = JHALAK_CATEGORIES.map(cat => {
-    const count = JHALAK_CATEGORY_COUNTS[cat.id] || 0;
+    let totalCount = 0;
+    let doneCount = 0;
     let catLikes = 0;
     ALL_JHALAK_REELS.forEach(r => {
       if (cat.id === 'all' || r.vibe === cat.id) {
-        catLikes += Number(jhLikesMap[r.id]) || 0;
+        totalCount += 1;
+        if (isReelDone(r.id)) doneCount += 1;
+        catLikes += getReelLikeCount(r.id);
       }
     });
+    const activeCount = totalCount - doneCount;
     const likeBadge = jhShowLikeCount
       ? `<span class="jh-stat-likes">❤️ ${jhBnNum(catLikes)}</span>`
       : '';
     return `
       <div class="jh-stat-chip">
         <span>${cat.label_bn}</span>
-        <span><strong>${jhBnNum(count)}টি পাতা</strong> ${likeBadge}</span>
+        <span><strong>${jhBnNum(activeCount)}/${jhBnNum(totalCount)}টি পাতা</strong> (✅ ${jhBnNum(doneCount)}) ${likeBadge}</span>
       </div>
     `;
   }).join('');
 
   statsBox.innerHTML = rowsHtml;
+  renderJhAdminItemsList();
 }
 
 function filterJhalakChannel(channelId, ev) {
@@ -161,11 +254,9 @@ function filterJhalakChannel(channelId, ev) {
   stopJhAudio();
 
   if (!jhMultiSelectCategories) {
-    // Single-Select dropdown mode
     jhSelectedChannels = new Set([ch]);
     closeJhCategoryDropdown();
   } else {
-    // Multi-Select dropdown mode
     if (ch === 'all') {
       jhSelectedChannels = new Set(['all']);
     } else {
@@ -181,23 +272,57 @@ function filterJhalakChannel(channelId, ev) {
     }
   }
 
-  if (jhSelectedChannels.has('all')) {
-    jhFilteredReels = ALL_JHALAK_REELS.slice();
-  } else {
-    jhFilteredReels = ALL_JHALAK_REELS.filter(r => jhSelectedChannels.has(r.vibe));
+  rebuildJhFilteredPool();
+  jhVisitedIds.clear();
+  jhHistoryStack = [];
+  jhHistoryPos = -1;
+  jhCurrentIdx = jhFilteredReels.length > 0 ? Math.floor(Math.random() * jhFilteredReels.length) : 0;
+  if (jhFilteredReels[jhCurrentIdx]) {
+    jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+    jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+    jhHistoryPos = 0;
   }
-
-  jhCurrentIdx = 0;
+  jhLastSlideDir = 'next';
   renderJhCategoryDropdownUI();
   renderJhalakReelStream();
 }
 
-/* LEFT / RIGHT PAGE NAVIGATION (PREV / NEXT) */
+/* RANDOMIZED PAGE TRANSITION WITH LEFT/RIGHT SLIDE ANIMATION */
 function stepJhalakReel(delta, autoPlayAfter) {
   if (!jhFilteredReels.length) return;
   stopJhAudio();
-  const len = jhFilteredReels.length;
-  jhCurrentIdx = (jhCurrentIdx + delta + len) % len;
+
+  if (delta < 0) {
+    jhLastSlideDir = 'prev';
+    if (jhHistoryPos > 0) {
+      jhHistoryPos -= 1;
+      const prevId = jhHistoryStack[jhHistoryPos];
+      const foundIdx = jhFilteredReels.findIndex(r => r.id === prevId);
+      if (foundIdx >= 0) {
+        jhCurrentIdx = foundIdx;
+      } else {
+        jhCurrentIdx = pickRandomNextReelIndex();
+      }
+    } else {
+      jhCurrentIdx = pickRandomNextReelIndex();
+    }
+  } else {
+    jhLastSlideDir = 'next';
+    if (jhHistoryPos >= 0 && jhHistoryPos + 1 < jhHistoryStack.length) {
+      jhHistoryPos += 1;
+      const nextId = jhHistoryStack[jhHistoryPos];
+      const foundIdx = jhFilteredReels.findIndex(r => r.id === nextId);
+      jhCurrentIdx = foundIdx >= 0 ? foundIdx : pickRandomNextReelIndex();
+    } else {
+      jhCurrentIdx = pickRandomNextReelIndex();
+      if (jhFilteredReels[jhCurrentIdx]) {
+        jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+        jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+        jhHistoryPos = jhHistoryStack.length - 1;
+      }
+    }
+  }
+
   renderJhalakReelStream();
   const vp = document.getElementById('jhReelsViewport');
   if (vp) vp.scrollTop = 0;
@@ -206,19 +331,51 @@ function stepJhalakReel(delta, autoPlayAfter) {
   }
 }
 
-/* TRANSLUCENT STICK-ON LIKE BUTTON (SAME CONTENT CAN BE LIKED SEVERAL TIMES) */
-function getReelLikeCount(cardId) {
-  return Number(jhLikesMap[cardId]) || 0;
+/* MARK DONE BUTTON: EXCLUDES CONTENT FROM FUTURE REELS & ADVANCES TO RANDOM NEXT */
+function markCurrentJhalakReelDone(ev) {
+  if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
+  const card = jhFilteredReels[jhCurrentIdx];
+  if (!card) return;
+
+  jhDoneMap[card.id] = (Number(jhDoneMap[card.id]) || 0) + 1;
+  saveJhDoneAndLikes();
+
+  if (ev) {
+    spawnLotusBurst(ev.clientX, ev.clientY, ['✅', '🌸', '✨', '🎉']);
+  }
+
+  stopJhAudio();
+  rebuildJhFilteredPool();
+  jhLastSlideDir = 'next';
+
+  if (jhFilteredReels.length > 0) {
+    jhCurrentIdx = Math.floor(Math.random() * jhFilteredReels.length);
+    if (jhFilteredReels[jhCurrentIdx]) {
+      jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+      jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+      jhHistoryPos = jhHistoryStack.length - 1;
+    }
+  } else {
+    jhCurrentIdx = 0;
+  }
+
+  renderJhCategoryDropdownUI();
+  renderJhCategoryStatsUI();
+  renderJhalakReelStream();
+  const vp = document.getElementById('jhReelsViewport');
+  if (vp) vp.scrollTop = 0;
+  if (jhAutoPlayVoices && jhFilteredReels.length > 0) {
+    setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 260);
+  }
 }
 
+/* TRANSLUCENT STICK-ON LIKE BUTTON (SAME CONTENT CAN BE LIKED MULTIPLE TIMES) */
 function likeJhalakReelAtIndex(idx, ev) {
   if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
   const card = jhFilteredReels[idx !== undefined ? idx : jhCurrentIdx];
   if (!card) return;
   jhLikesMap[card.id] = (Number(jhLikesMap[card.id]) || 0) + 1;
-  try {
-    localStorage.setItem('ma_jhalak_likes_v1', JSON.stringify(jhLikesMap));
-  } catch (e) {}
+  saveJhDoneAndLikes();
 
   if (ev) {
     spawnLotusBurst(ev.clientX, ev.clientY, ['❤️', '💖', '🌸', '✨']);
@@ -234,7 +391,12 @@ function likeCurrentJhalakReel(ev) {
 function updateStickyLikeBtnUI() {
   const card = jhFilteredReels[jhCurrentIdx];
   const btn = document.getElementById('jhStickyLikeBtn');
-  if (!btn || !card) return;
+  if (!btn) return;
+  if (!card) {
+    btn.style.display = 'none';
+    return;
+  }
+  btn.style.display = 'inline-flex';
   const count = getReelLikeCount(card.id);
   btn.classList.toggle('has-likes', count > 0);
   if (jhShowLikeCount) {
@@ -242,6 +404,113 @@ function updateStickyLikeBtnUI() {
   } else {
     btn.innerHTML = `<span class="jh-like-heart">❤️</span> <span class="jh-like-label">ভালো লেগেছে</span>`;
   }
+}
+
+/* ADMIN SETTINGS: ADJUST DONE & LIKES COUNTS PER ITEM OR BULK */
+function setAdminCategoryFilter(catId) {
+  jhAdminFilterCat = catId || 'all';
+  renderJhAdminItemsList();
+}
+
+function adjustReelDoneCount(cardId, delta) {
+  const cur = getReelDoneCount(cardId);
+  const nextVal = Math.max(0, cur + delta);
+  if (nextVal === 0) delete jhDoneMap[cardId];
+  else jhDoneMap[cardId] = nextVal;
+  saveJhDoneAndLikes();
+  rebuildJhFilteredPool();
+  if (jhCurrentIdx >= jhFilteredReels.length) {
+    jhCurrentIdx = Math.max(0, jhFilteredReels.length - 1);
+  }
+  renderJhCategoryDropdownUI();
+  renderJhCategoryStatsUI();
+  renderJhalakReelStream();
+}
+
+function setReelDoneCount(cardId, val) {
+  const clean = Math.max(0, Number(val) || 0);
+  if (clean === 0) delete jhDoneMap[cardId];
+  else jhDoneMap[cardId] = clean;
+  saveJhDoneAndLikes();
+  rebuildJhFilteredPool();
+  if (jhCurrentIdx >= jhFilteredReels.length) {
+    jhCurrentIdx = Math.max(0, jhFilteredReels.length - 1);
+  }
+  renderJhCategoryDropdownUI();
+  renderJhCategoryStatsUI();
+  renderJhalakReelStream();
+}
+
+function adjustReelLikeCount(cardId, delta) {
+  const cur = getReelLikeCount(cardId);
+  const nextVal = Math.max(0, cur + delta);
+  if (nextVal === 0) delete jhLikesMap[cardId];
+  else jhLikesMap[cardId] = nextVal;
+  saveJhDoneAndLikes();
+  updateStickyLikeBtnUI();
+  renderJhCategoryStatsUI();
+}
+
+function setReelLikeCount(cardId, val) {
+  const clean = Math.max(0, Number(val) || 0);
+  if (clean === 0) delete jhLikesMap[cardId];
+  else jhLikesMap[cardId] = clean;
+  saveJhDoneAndLikes();
+  updateStickyLikeBtnUI();
+  renderJhCategoryStatsUI();
+}
+
+function resetAllJhDoneCounts() {
+  jhDoneMap = {};
+  saveJhDoneAndLikes();
+  rebuildJhFilteredPool();
+  jhCurrentIdx = 0;
+  renderJhCategoryDropdownUI();
+  renderJhCategoryStatsUI();
+  renderJhalakReelStream();
+}
+
+function resetAllJhLikeCounts() {
+  jhLikesMap = {};
+  saveJhDoneAndLikes();
+  updateStickyLikeBtnUI();
+  renderJhCategoryStatsUI();
+}
+
+function renderJhAdminItemsList() {
+  const listEl = document.getElementById('jhAdminItemsList');
+  if (!listEl) return;
+
+  const items = ALL_JHALAK_REELS.filter(r =>
+    jhAdminFilterCat === 'all' || r.vibe === jhAdminFilterCat
+  );
+
+  listEl.innerHTML = items.map(r => {
+    const dCount = getReelDoneCount(r.id);
+    const lCount = getReelLikeCount(r.id);
+    return `
+      <div class="jh-admin-row ${dCount > 0 ? 'is-done' : ''}">
+        <div class="jh-admin-row-title">
+          <span class="jh-admin-badge">${r.badge_bn}</span>
+          <span>${r.title_bn}</span>
+        </div>
+        <div class="jh-admin-row-controls">
+          <div class="jh-admin-stepper">
+            <span>✅ ডান:</span>
+            <button type="button" class="jh-step-mini" onclick="adjustReelDoneCount('${r.id}', -1)">−</button>
+            <strong id="adminDoneVal_${r.id}">${jhBnNum(dCount)}</strong>
+            <button type="button" class="jh-step-mini" onclick="adjustReelDoneCount('${r.id}', 1)">+</button>
+          </div>
+          <div class="jh-admin-stepper">
+            <span>❤️ লাইক:</span>
+            <button type="button" class="jh-step-mini" onclick="adjustReelLikeCount('${r.id}', -1)">−</button>
+            <strong id="adminLikeVal_${r.id}">${jhBnNum(lCount)}</strong>
+            <button type="button" class="jh-step-mini" onclick="adjustReelLikeCount('${r.id}', 1)">+</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 /* SETTINGS GEAR: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY & LIKE COUNT TOGGLES */
@@ -370,7 +639,7 @@ function playReelAudioAtIndex(idx) {
 
   jhAudioPlaying = true;
   updateActiveCardPlayBtns();
-  const playPromise = aud.play();
+  const playPromise = typeof aud.play === 'function' ? aud.play() : null;
   if (playPromise && typeof playPromise.catch === 'function') {
     playPromise.catch(() => {
       jhAudioPlaying = false;
@@ -389,14 +658,29 @@ function handleReelAudioEnded(idx) {
   }
 }
 
-/* RENDER ACTIVE LONG-FORM SCROLLABLE PAGE (UP/DOWN SCROLL + LEFT/RIGHT NAV) */
+/* RENDER ACTIVE LONG-FORM SCROLLABLE PAGE (SLIDE ANIMATION + DONE BUTTON) */
 function renderJhalakReelStream() {
   const vp = document.getElementById('jhReelsViewport');
   if (!vp) return;
+
   if (!jhFilteredReels.length) {
-    jhFilteredReels = ALL_JHALAK_REELS.slice();
-    jhCurrentIdx = 0;
+    vp.innerHTML = `
+      <article class="jh-reel-slide jh-slide-anim-next">
+        <div class="jh-card-stage" style="text-align:center;padding:36px 22px;">
+          <h2 class="jh-hook-title">🎉 এই বিভাগের সব পাতা পড়া হয়ে গেছে মা!</h2>
+          <p style="font-size:1.05rem;color:#5C4938;margin-bottom:18px;">
+            তুমি চাইলে অন্য কোনো বিভাগ বেছে নিতে পারো অথবা সেটিংস (⚙️) থেকে পাতাগুলো আবার রিসেট করে নিতে পারো।
+          </p>
+          <button type="button" class="jh-top-listen-btn" onclick="resetAllJhDoneCounts()">
+            🔄 সব পাতা আবার চালু করো
+          </button>
+        </div>
+      </article>
+    `;
+    updateStickyLikeBtnUI();
+    return;
   }
+
   const idx = Math.max(0, Math.min(jhFilteredReels.length - 1, jhCurrentIdx));
   jhCurrentIdx = idx;
   const card = jhFilteredReels[idx];
@@ -431,21 +715,21 @@ function renderJhalakReelStream() {
     `;
   }).join('');
 
-  const pageCounterText = `${jhBnNum(idx + 1)} / ${jhBnNum(jhFilteredReels.length)}`;
-  const counterEl = document.getElementById('jhPageCounterBadge');
-  if (counterEl) counterEl.textContent = pageCounterText;
+  const animClass = jhLastSlideDir === 'prev' ? 'jh-slide-anim-prev' : 'jh-slide-anim-next';
 
   vp.innerHTML = `
-    <article id="jhSlide_${idx}" class="jh-reel-slide" data-idx="${idx}" data-vibe="${card.vibe}">
+    <article id="jhSlide_${idx}" class="jh-reel-slide ${animClass}" data-idx="${idx}" data-vibe="${card.vibe}">
       <div class="jh-card-stage">
         <div class="jh-card-top">
-          <div class="jh-card-top-left">
-            <span class="jh-vibe-badge">${card.badge_bn}</span>
-            <span class="jh-page-pos-pill">পাতা ${pageCounterText}</span>
+          <span class="jh-vibe-badge">${card.badge_bn}</span>
+          <div class="jh-card-top-actions">
+            <button id="jhMainPlay_${idx}" type="button" class="jh-top-listen-btn" onclick="playReelAudioAtIndex(${idx})">
+              🔊 শোনো
+            </button>
+            <button id="jhDoneBtn_${idx}" type="button" class="jh-done-btn" onclick="markCurrentJhalakReelDone(event)">
+              ✅ হয়ে গেছে
+            </button>
           </div>
-          <button id="jhMainPlay_${idx}" class="jh-top-listen-btn" onclick="playReelAudioAtIndex(${idx})">
-            🔊 শোনো
-          </button>
         </div>
 
         <h2 class="jh-hook-title">${card.title_bn}</h2>
@@ -461,16 +745,6 @@ function renderJhalakReelStream() {
         </div>
 
         ${ytHtml}
-
-        <div class="jh-bottom-lr-nav">
-          <button id="btnJhBottomPrev" type="button" class="jh-lr-btn" onclick="stepJhalakReel(-1, jhAutoPlayVoices)">
-            ⬅️ আগের পাতা
-          </button>
-          <span class="jh-lr-page-indicator">${pageCounterText}</span>
-          <button id="btnJhBottomNext" type="button" class="jh-lr-btn primary" onclick="stepJhalakReel(1, jhAutoPlayVoices)">
-            পরের পাতা ➡️
-          </button>
-        </div>
       </div>
     </article>
   `;
@@ -520,6 +794,12 @@ function playJhalakLetterAudio() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  if (jhFilteredReels.length > 0) {
+    jhCurrentIdx = Math.floor(Math.random() * jhFilteredReels.length);
+    jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+    jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+    jhHistoryPos = 0;
+  }
   syncJhSettingsButtonsUI();
   renderJhalakReelStream();
 
@@ -544,9 +824,31 @@ window.addEventListener('DOMContentLoaded', () => {
       if (ev.changedTouches && ev.changedTouches[0]) {
         const dx = ev.changedTouches[0].clientX - jhTouchStartX;
         const dy = ev.changedTouches[0].clientY - jhTouchStartY;
-        if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.6) {
+        if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.4) {
           stepJhalakReel(dx < 0 ? 1 : -1, jhAutoPlayVoices);
         }
+      }
+    }, { passive: true });
+    vp.addEventListener('mousedown', ev => {
+      jhMouseDownX = ev.clientX;
+      jhMouseDownY = ev.clientY;
+    });
+    vp.addEventListener('mouseup', ev => {
+      if (jhMouseDownX === null) return;
+      const dx = ev.clientX - jhMouseDownX;
+      const dy = ev.clientY - jhMouseDownY;
+      jhMouseDownX = null;
+      jhMouseDownY = null;
+      if (Math.abs(dx) > 75 && Math.abs(dx) > Math.abs(dy) * 1.6) {
+        stepJhalakReel(dx < 0 ? 1 : -1, jhAutoPlayVoices);
+      }
+    });
+    vp.addEventListener('wheel', ev => {
+      if (jhWheelLock) return;
+      if (Math.abs(ev.deltaX) > 48 && Math.abs(ev.deltaX) > Math.abs(ev.deltaY) * 1.5) {
+        jhWheelLock = true;
+        stepJhalakReel(ev.deltaX > 0 ? 1 : -1, jhAutoPlayVoices);
+        setTimeout(() => { jhWheelLock = false; }, 480);
       }
     }, { passive: true });
   }

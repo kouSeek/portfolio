@@ -925,23 +925,27 @@ vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
         self.assertEqual(proc.returncode, 0, f"Kalyani weird edge-cases VM test failed: {proc.stderr}")
 
     def test_jhalak_dopamine_reels_app_and_vm_interactions(self) -> None:
-        """Verify jhalak.html (✨ ঝলক) compiles cleanly with long-page scroll, L/R nav, 9 categories, sticky multi-like, and VM checks."""
+        """Verify jhalak.html (✨ ঝলক) compiles cleanly with randomized slide animations, Done & Admin controls, 9 categories, sticky multi-like, and VM checks."""
         jh_path = APP_ROOT / "jhalak.html"
         self.assertTrue(jh_path.is_file(), "jhalak.html must exist")
         jh_html = jh_path.read_text(encoding="utf-8")
-        # 1. Renamed to just ঝলক, no বায়োস্কোপ, no Kalyani link, no header TV tab
+        # 1. Renamed to just ঝলক, no বায়োস্কোপ, no Kalyani link, no header TV tab, no Prev/Next buttons, no top page counter
         self.assertIn("<title>✨ ঝলক</title>", jh_html)
         self.assertNotIn("বায়োস্কোপ", jh_html)
         self.assertNotIn('href="kalyani.html"', jh_html)
         self.assertNotIn('id="tabJhTv"', jh_html)
-        # 2. Category Dropdown + Left/Right page navigation + Translucent Sticky Like button
+        self.assertNotIn('id="btnJhPrevPage"', jh_html)
+        self.assertNotIn('id="btnJhNextPage"', jh_html)
+        self.assertNotIn('id="jhPageCounterBadge"', jh_html)
+        self.assertNotIn("jh-bottom-lr-nav", jh_html)
+        # 2. Category Dropdown + Slide Left/Right animations + Translucent Sticky Like button + Admin section
         self.assertIn('id="btnJhCategoryDropdown"', jh_html)
         self.assertIn('id="jhCategoryDropdownMenu"', jh_html)
-        self.assertIn('id="btnJhPrevPage"', jh_html)
-        self.assertIn('id="btnJhNextPage"', jh_html)
+        self.assertIn("jh-slide-anim-next", jh_html)
+        self.assertIn("jh-slide-anim-prev", jh_html)
         self.assertIn('id="jhStickyLikeBtn"', jh_html)
         self.assertIn("backdrop-filter: blur(10px)", jh_html)
-        # 3. Settings controls: Auto-Reels, Auto-Voice, Single/Multi Category Select, Show Like Count, Chithi, Category Stats
+        # 3. Settings controls: Auto-Reels, Auto-Voice, Single/Multi Category Select, Show Like Count, Chithi, Category Stats, Admin Done/Likes control
         for sid in (
             "btnJhSettings",
             "jhSettingsDrawer",
@@ -951,6 +955,8 @@ vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
             "btnJhShowLikeCount",
             "btnJhOpenChithi",
             "jhCategoryStatsBox",
+            "jhAdminControlSection",
+            "jhAdminItemsList",
         ):
             self.assertIn(f'id="{sid}"', jh_html)
 
@@ -964,14 +970,16 @@ const els = {};
 function el(id) {
   if (!els[id]) {
     els[id] = {
-      id, className: '', innerHTML: '', textContent: '', style: {}, src: '', scrollTop: 0,
+      id, className: '', innerHTML: '', textContent: '', value: '', style: {}, src: '', scrollTop: 0,
       classList: {
         add(c) { if (!els[id].className.includes(c)) els[id].className = (els[id].className + ' ' + c).trim(); },
         remove(c) { els[id].className = els[id].className.replace(c, '').trim(); },
         toggle(c, b) { if (b) this.add(c); else this.remove(c); },
         contains(c) { return els[id].className.includes(c); }
       },
-      querySelector: () => ({ textContent: '' }),
+      querySelector: () => ({ textContent: '', classList: { remove() {}, add() {} }, offsetWidth: 100 }),
+      play: () => Promise.resolve(),
+      pause() {},
       addEventListener() {},
       scrollIntoView() {}
     };
@@ -992,35 +1000,61 @@ const ctx = {
 };
 const suite = code + `
 ;(function() {
-  // 1. All 9 categories (all + 8 content categories including gods, english, hindi, music, tv)
+  // 1. All 9 categories (all + 8 content categories), each with >= 14 rich pages (152 total)
   const catIds = JHALAK_CATEGORIES.map(c => c.id);
   assert.deepStrictEqual(catIds, ['all', 'gods', 'laugh', 'calm', 'curiosity', 'music', 'english', 'hindi', 'tv']);
+  assert.strictEqual(ALL_JHALAK_REELS.length, 152, 'Total Jhalak pages must be 152');
   catIds.forEach(cid => {
-    assert.ok(JHALAK_CATEGORY_COUNTS[cid] > 0, 'Category ' + cid + ' must have non-zero content count');
+    assert.ok(JHALAK_CATEGORY_COUNTS[cid] >= 14, 'Category ' + cid + ' must have at least 14 rich pages');
   });
 
-  // 2. Nonsensical tech_65 phone/camera tutorials and raw Gemini prompts removed; every page has multi-section long content
+  // 2. Every page has multi-section long content and points to its dedicated full-page audio URL
   assert.ok(ALL_JHALAK_REELS.every(r => Array.isArray(r.sections) && r.sections.length >= 2), 'Every page must have rich multi-section content');
   assert.ok(ALL_JHALAK_REELS.every(r => !JSON.stringify(r.sections).includes('জেমিনি, শোনো—')), 'Must strip raw Gemini voice-assistant prompts');
+  assert.ok(ALL_JHALAK_REELS.every(r => r.audio_url === 'https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/audio/jhalak/reels/' + r.id + '.mp3' && r.story_end === 0), 'Every page must point to its dedicated full-page MP3 with story_end === 0');
 
   // 3. Songs category has inspiration & right question hook for understanding song meaning
   const musicCards = ALL_JHALAK_REELS.filter(r => r.vibe === 'music');
   assert.strictEqual(musicCards.length, 21);
   assert.ok(musicCards.every(m => m.sections.some(s => s.heading_bn.includes('গানের আসল অর্থ বোঝার সঠিক প্রশ্ন'))));
 
-  // 4. Left / Right page navigation (stepJhalakReel)
+  // 4. No page counts on top dropdown button + randomized next page + history back navigation + slide animations
   renderJhalakReelStream();
   syncJhSettingsButtonsUI();
-  assert.strictEqual(jhCurrentIdx, 0);
+  assert.strictEqual(getSelectedCategorySummaryLabel(), '✨ সব ▾', 'Top category dropdown must not show page count');
+  const startId = jhFilteredReels[jhCurrentIdx].id;
   stepJhalakReel(1, false);
-  assert.strictEqual(jhCurrentIdx, 1, 'Right navigation must advance to next page');
+  const nextId = jhFilteredReels[jhCurrentIdx].id;
+  assert.notStrictEqual(nextId, startId, 'Advancing must pick a randomized next page');
+  assert.strictEqual(jhLastSlideDir, 'next', 'Advancing must set slide direction to next');
+  assert.ok(el('jhReelsViewport').innerHTML.includes('jh-slide-anim-next'), 'Rendered card must have jh-slide-anim-next class');
   stepJhalakReel(-1, false);
-  assert.strictEqual(jhCurrentIdx, 0, 'Left navigation must return to previous page');
+  assert.strictEqual(jhFilteredReels[jhCurrentIdx].id, startId, 'Stepping back must return to previous page in history stack');
+  assert.strictEqual(jhLastSlideDir, 'prev', 'Stepping back must set slide direction to prev');
+  assert.ok(el('jhReelsViewport').innerHTML.includes('jh-slide-anim-prev'), 'Rendered card must have jh-slide-anim-prev class');
 
-  // 5. Category Dropdown: Single-Select by default, toggleable to Multi-Select in Settings
+  // 5. Mark as Done button excludes page from future reels, and Admin Settings can change Done & Likes counts
+  const cardToDone = jhFilteredReels[jhCurrentIdx];
+  assert.strictEqual(getReelDoneCount(cardToDone.id), 0);
+  markCurrentJhalakReelDone();
+  assert.strictEqual(getReelDoneCount(cardToDone.id), 1, 'Marking done must set done count to 1');
+  assert.strictEqual(jhFilteredReels.length, 151, 'Done item must be excluded from active reels pool');
+  assert.ok(!jhFilteredReels.some(r => r.id === cardToDone.id), 'Done card must not appear in future reels');
+
+  // Admin Settings: restore Done count to 0 and adjust Likes count
+  adjustReelDoneCount(cardToDone.id, -1);
+  assert.strictEqual(getReelDoneCount(cardToDone.id), 0, 'Admin control must allow decreasing Done count back to 0');
+  assert.strictEqual(jhFilteredReels.length, 152, 'Restoring Done count to 0 brings item back into reels pool');
+  adjustReelLikeCount(cardToDone.id, 5);
+  assert.strictEqual(getReelLikeCount(cardToDone.id), 5, 'Admin control must allow changing Likes count');
+  setReelLikeCount(cardToDone.id, 2);
+  assert.strictEqual(getReelLikeCount(cardToDone.id), 2, 'Admin direct input must set exact Likes count');
+
+  // 6. Category Dropdown: Single-Select by default, toggleable to Multi-Select in Settings
   assert.strictEqual(jhMultiSelectCategories, false, 'Default category mode must be Single-Select');
   filterJhalakChannel('gods');
   assert.strictEqual(jhSelectedChannels.has('gods') && jhSelectedChannels.size === 1, true);
+  assert.strictEqual(getSelectedCategorySummaryLabel(), '🪷 ভগবান ▾', 'Single category label has no count on top');
   filterJhalakChannel('music');
   assert.strictEqual(jhSelectedChannels.has('music') && jhSelectedChannels.size === 1, true, 'In Single-Select mode, choosing music replaces gods');
 
@@ -1031,19 +1065,20 @@ const suite = code + `
   filterJhalakChannel('all');
   assert.strictEqual(jhFilteredReels.length, ALL_JHALAK_REELS.length);
 
-  // 6. Translucent Sticky Like Button: same content can be liked several times + like count visibility toggle
-  const firstId = jhFilteredReels[0].id;
-  assert.strictEqual(getReelLikeCount(firstId), 0);
+  // 7. Translucent Sticky Like Button: same content can be liked several times + like count visibility toggle
+  const currentCardId = jhFilteredReels[jhCurrentIdx].id;
+  setReelLikeCount(currentCardId, 0);
   likeCurrentJhalakReel();
   likeCurrentJhalakReel();
   likeCurrentJhalakReel();
-  assert.strictEqual(getReelLikeCount(firstId), 3, 'Same content must support being liked multiple times');
+  assert.strictEqual(getReelLikeCount(currentCardId), 3, 'Same content must support being liked multiple times');
   assert.ok(el('jhStickyLikeBtn').innerHTML.includes('৩'), 'When jhShowLikeCount is true, sticky like button shows count ৩');
 
   toggleJhShowLikeCount();
   assert.strictEqual(jhShowLikeCount, false);
   assert.ok(!el('jhStickyLikeBtn').innerHTML.includes('jhStickyLikeCount'), 'When jhShowLikeCount is false, like count badge is hidden');
   assert.ok(el('jhCategoryStatsBox').innerHTML.includes('পাতা'), 'Category stats must display content counts');
+  assert.ok(el('jhAdminItemsList').innerHTML.includes('jh-admin-row'), 'Admin items list must render controls for all items');
 })();
 `;
 vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});

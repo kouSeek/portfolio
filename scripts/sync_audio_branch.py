@@ -55,7 +55,7 @@ def sync_audio_orphan_branch(dry_run: bool = False) -> int:
         shutil.copytree(AUDIO_DIR, stage_root / "audio")
         (stage_root / "README.md").write_text(
             "# ✨ AI Companion (`ai-companion-audio` Single-Commit Voice Asset Branch)\n\n"
-            "Stores active Gemini `Aoede` `.mp3` voice assets for `ai-companion` (`audio/kalyani/` & `audio/anondo/`) "
+            "Stores active Gemini `Aoede` `.mp3` voice assets for `ai-companion` (`audio/kalyani/`, `audio/anondo/` & `audio/jhalak/`) "
             "as a single-commit snapshot so replaced audio binaries never bloat Git history.\n",
             encoding="utf-8",
         )

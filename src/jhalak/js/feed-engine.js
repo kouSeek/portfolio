@@ -1,16 +1,19 @@
 /* ============================================================================
    ✨ ঝলক (JHALAK) — MODULE 1B: MULTI-CATEGORY ENRICHMENT & FEED ENGINE
    ----------------------------------------------------------------------------
-   Builds long-form, multi-section scrollable pages across 8 categories:
-   - gods (🪷 ভগবান)
-   - laugh (😂 হাসি)
-   - calm (🦋 শান্তি)
-   - curiosity (🔍 কৌতূহল)
-   - music (🎵 গান — with Inspiration & Right Question Hook for Lyrics Meaning)
-   - english (🔤 ইংরেজি — Simple English Words Learn for Everyday Life)
-   - hindi (🗣️ হিন্দি — Day-to-Day Hindi Conversation)
-   - tv (📺 টিভি — Curated TV & Cinema Channels inside Reels)
+   Builds 152 long-form, multi-section scrollable pages across 8 categories:
+   - gods (🪷 ভগবান — 18 pages)
+   - laugh (😂 হাসি — 16 pages)
+   - calm (🦋 শান্তি — 24 pages)
+   - curiosity (🔍 কৌতূহল — 18 pages)
+   - music (🎵 গান — 21 pages with Song Inspiration & Right Question Hook)
+   - english (🔤 ইংরেজি — 25 pages of Simple English Words Learn)
+   - hindi (🗣️ হিন্দি — 16 pages of Day-to-Day Hindi Conversation)
+   - tv (📺 টিভি — 14 Curated TV & Cinema Channels inside Reels)
+   Every page points to its dedicated full-content Aoede MP3 in `audio/jhalak/reels/<id>.mp3`.
    ============================================================================ */
+
+const JHALAK_AUDIO_BASE = 'https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/audio/jhalak/reels/';
 
 const ENGLISH_WORD_DICTIONARY = {
   COMFORTABLE: { pron: 'কমফোর্টেবল', mean: 'আরামদায়ক ও স্বস্তিদায়ক', ex: 'This chair is very comfortable. (দিস চেয়ার ইজ ভেরি কমফোর্টেবল — এই চেয়ারটা খুব আরামদায়ক।)' },
@@ -57,7 +60,7 @@ function buildSongDeepMeaning(ag) {
       story: '১৯৫৯ সালের ‘দীপ জ্বেলে যাই’ ছবির এই কালজয়ী গানটি গেয়েছেন ও সুর করেছেন হেমন্ত মুখোপাধ্যায় এবং কথা লিখেছেন গৌরীপ্রসন্ন মজুমদার। শুধুমাত্র মৃদু শিস আর পিয়ানোর ছোঁয়ায় রাতের নিস্তব্ধতাকে এমন মায়াবী রূপ আর কোনো বাংলা গানে দেওয়া হয়নি।',
       meaning: 'গানের কথায় রাত শুধু ঘড়ির সময় নয়—রাত হলো সংসারের সব কোলাহল থেমে যাওয়ার পর নিজের মনের সবচেয়ে প্রিয় মানুষ ও শান্ত স্মৃতির সাথে একান্তে কথা বলার আশ্রয়।',
       hook_q: '💡 গানের অর্থ বোঝার সঠিক প্রশ্ন: এই গানে হেমন্ত মুখোপাধ্যায় কেন শুরুতেই যন্ত্রসঙ্গীতের বদলে কেবল মিষ্টি ‘শিস’ ব্যবহার করেছিলেন?',
-      hook_a: '🎵 কারণ গভীর রাতে নিস্তব্ধ ঘরে একা বসে মানুষ যখন প্রিয়জনের কথা ভাবে, তখন তার মনের ভেতর থেকে আপনাআপনি যেমন সুরের গুঞ্জন ওঠে—সেই অকৃত্রিম একাকীত্ব ও মায়া ফুটিয়ে তুলতেই এই শিসের সুর!'
+      hook_a: '🎵 কারণ গভীর রাতে নিস্তব্ধ ঘরে একা বসে মানুষ যখন প্রিয়জনের কথা ভাবে, তখন তার মনের ভেতর থেকে আপনাআপনি যেমন সুরের গুঞ্জন ওঠে—সেই অকৃত্রিম মায়া ফুটিয়ে তুলতেই এই শিসের সুর!'
     },
     {
       match: /একদিন পাখি উড়ে যাবে/,
@@ -108,6 +111,7 @@ function buildSongDeepMeaning(ag) {
 }
 
 function buildEnglishSimpleLearnCard(ag, dNum, agIdx) {
+  const id = 'd' + dNum + '_g' + agIdx;
   const rawSentence = String(ag.prompt_bn || '').replace(/^জেমিনি,?\s*(শোনো—?)?\s*/i, '').trim();
   const cleanIntro = stripGeminiBoilerplate(ag.detail_bn);
   const foundWords = [];
@@ -128,7 +132,7 @@ function buildEnglishSimpleLearnCard(ag, dNum, agIdx) {
   ).join('\n\n');
 
   return {
-    id: 'd' + dNum + '_g' + agIdx,
+    id: id,
     vibe: 'english',
     badge_bn: '🔤 ইংরেজি',
     title_bn: ag.title_bn,
@@ -153,19 +157,19 @@ function buildEnglishSimpleLearnCard(ag, dNum, agIdx) {
     hitch_bn: rawSentence,
     curiosity_q_bn: '🔮 চটপট ঝালাই: আজকের মূল ইংরেজি বাক্যটি মুখে কীভাবে বলবে?',
     curiosity_a_bn: '✨ “' + rawSentence + '” — একদম সহজ ও সাবলীল!',
-    audio_url: ag.audio_url || '',
-    story_end: Number(ag.story_end) || 0,
+    audio_url: JHALAK_AUDIO_BASE + id + '.mp3',
+    story_end: 0,
     yt_query: '',
     yt_label_bn: ''
   };
 }
 
-function buildHindiConversationCard(ag, dNum, agIdx) {
+function buildHindiConversationCard(ag, id) {
   const spokenLine = String(ag.prompt_bn || '').replace(/^জেমিনি,?\s*(শোনো—?)?\s*/i, '').trim();
   const cleanIntro = stripGeminiBoilerplate(ag.detail_bn);
 
   return {
-    id: 'd' + dNum + '_g' + agIdx,
+    id: id,
     vibe: 'hindi',
     badge_bn: '🗣️ হিন্দি',
     title_bn: ag.title_bn,
@@ -190,8 +194,8 @@ function buildHindiConversationCard(ag, dNum, agIdx) {
     hitch_bn: spokenLine,
     curiosity_q_bn: '🔮 কথার জাদু: আজকের এই পরিস্থিতিতে প্রথম হিন্দি লাইনটি কী বলবে?',
     curiosity_a_bn: '🌸 “' + spokenLine + '”',
-    audio_url: ag.audio_url || '',
-    story_end: Number(ag.story_end) || 0,
+    audio_url: JHALAK_AUDIO_BASE + id + '.mp3',
+    story_end: 0,
     yt_query: '',
     yt_label_bn: ''
   };
@@ -209,9 +213,8 @@ function buildAllJhalakReels() {
     tv: []
   };
 
-  // 1. Curated Gods Stories
-  JHALAK_GODS_STORIES.forEach((gs, idx) => {
-    const refDay = DAYS_21[idx % DAYS_21.length] || DAYS_21[0];
+  // 1. Curated Gods Stories (15)
+  JHALAK_GODS_STORIES.forEach(gs => {
     byCat.gods.push({
       id: gs.id,
       vibe: 'gods',
@@ -226,16 +229,15 @@ function buildAllJhalakReels() {
       hitch_bn: gs.hitch_bn,
       curiosity_q_bn: gs.curiosity_q_bn,
       curiosity_a_bn: gs.curiosity_a_bn,
-      audio_url: refDay.audio_url || '',
+      audio_url: JHALAK_AUDIO_BASE + gs.id + '.mp3',
       story_end: 0,
       yt_query: gs.yt_query,
       yt_label_bn: gs.yt_label_bn
     });
   });
 
-  // 2. Curated Laugh Stories
-  JHALAK_LAUGH_STORIES.forEach((ls, idx) => {
-    const refDay = DAYS_21[(idx + 3) % DAYS_21.length] || DAYS_21[0];
+  // 2. Curated Laugh Stories (16)
+  JHALAK_LAUGH_STORIES.forEach(ls => {
     byCat.laugh.push({
       id: ls.id,
       vibe: 'laugh',
@@ -250,16 +252,15 @@ function buildAllJhalakReels() {
       hitch_bn: ls.hitch_bn,
       curiosity_q_bn: ls.curiosity_q_bn,
       curiosity_a_bn: ls.curiosity_a_bn,
-      audio_url: refDay.audio_url || '',
+      audio_url: JHALAK_AUDIO_BASE + ls.id + '.mp3',
       story_end: 0,
       yt_query: ls.yt_query,
       yt_label_bn: ls.yt_label_bn
     });
   });
 
-  // 3. Curated TV Cards (Moved from header tab into Reels 'tv' category)
-  JHALAK_TV_CARDS.forEach((tv, idx) => {
-    const refDay = DAYS_21[(idx + 6) % DAYS_21.length] || DAYS_21[0];
+  // 3. Curated TV Cards (14)
+  JHALAK_TV_CARDS.forEach(tv => {
     byCat.tv.push({
       id: tv.id,
       vibe: 'tv',
@@ -274,33 +275,34 @@ function buildAllJhalakReels() {
       hitch_bn: tv.hitch_bn,
       curiosity_q_bn: '🔮 টিভি গাইড: এই চ্যানেলটি কীভাবে চালু করবে?',
       curiosity_a_bn: '✨ নিচের ইউটিউব লিঙ্কে একবার ছুঁলেই সরাসরি ভিডিও চালু হয়ে যাবে!',
-      audio_url: refDay.audio_url || '',
+      audio_url: JHALAK_AUDIO_BASE + tv.id + '.mp3',
       story_end: 0,
       yt_query: tv.yt_query,
       yt_label_bn: tv.yt_label_bn
     });
   });
 
-  // 4. Enrich Curriculum Items (Excluding nonsensical tech_65 phone/camera tutorials)
+  // 4. Enrich Curriculum Items (Excluding tech_65 phone/camera tutorials)
   DAYS_21.forEach(d => {
     const dNum = Number(d.day) || 1;
     (d.agendas || []).forEach((ag, agIdx) => {
       const p = String(ag.pillar || '');
-      if (p === 'tech_65') return; // Skip phone/camera tutorial instructions that don't make sense in Jhalak
-      if (dNum === 20 && agIdx === 0) return; // Skip camera/mic tutorial card
+      if (p === 'tech_65') return;
+      if (dNum === 20 && agIdx === 0) return;
+      const cid = 'd' + dNum + '_g' + agIdx;
 
       if (p === 'english') {
         byCat.english.push(buildEnglishSimpleLearnCard(ag, dNum, agIdx));
         return;
       }
       if (p === 'hindi') {
-        byCat.hindi.push(buildHindiConversationCard(ag, dNum, agIdx));
+        byCat.hindi.push(buildHindiConversationCard(ag, cid));
         return;
       }
       if (p === 'music') {
         const sInfo = buildSongDeepMeaning(ag);
         byCat.music.push({
-          id: 'd' + dNum + '_g' + agIdx,
+          id: cid,
           vibe: 'music',
           badge_bn: '🎵 গান',
           title_bn: '🎵 ' + sInfo.song_name + ' — গানের গল্প ও গভীর অর্থ',
@@ -313,8 +315,8 @@ function buildAllJhalakReels() {
           hitch_bn: sInfo.hook_q_bn,
           curiosity_q_bn: sInfo.hook_q_bn,
           curiosity_a_bn: sInfo.hook_a_bn,
-          audio_url: ag.audio_url || d.audio_url || '',
-          story_end: Number(ag.story_end) || 0,
+          audio_url: JHALAK_AUDIO_BASE + cid + '.mp3',
+          story_end: 0,
           yt_query: sInfo.song_name + ' Bengali song',
           yt_label_bn: '‘' + sInfo.song_name + '’ গানটি ইউটিউবে শোনো'
         });
@@ -326,7 +328,7 @@ function buildAllJhalakReels() {
 
       if (isGodsTopic) {
         byCat.gods.push({
-          id: 'd' + dNum + '_g' + agIdx,
+          id: cid,
           vibe: 'gods',
           badge_bn: '🪷 ভগবান',
           title_bn: ag.title_bn,
@@ -346,8 +348,8 @@ function buildAllJhalakReels() {
           hitch_bn: 'নিজের মনকে সর্বদা প্রসন্ন ও ভয়হীন রাখাই ভগবানের সবচেয়ে বড় পূজা মা।',
           curiosity_q_bn: '🔮 অমৃত ভাবনা: এই জীবনকথা থেকে আমাদের প্রতিদিনের জীবনে কোন শান্তির শিক্ষাটি মেলে?',
           curiosity_a_bn: '🌸 সংসারের সব কাজের মাঝেও নিজের মনকে শান্ত, উদার ও আনন্দময় রাখা!',
-          audio_url: ag.audio_url || d.audio_url || '',
-          story_end: Number(ag.story_end) || 0,
+          audio_url: JHALAK_AUDIO_BASE + cid + '.mp3',
+          story_end: 0,
           yt_query: ag.title_bn + ' Bengali story',
           yt_label_bn: ag.title_bn
         });
@@ -356,7 +358,7 @@ function buildAllJhalakReels() {
 
       if (p === 'gk_inspiring') {
         byCat.curiosity.push({
-          id: 'd' + dNum + '_g' + agIdx,
+          id: cid,
           vibe: 'curiosity',
           badge_bn: '🔍 কৌতূহল',
           title_bn: ag.title_bn,
@@ -376,15 +378,14 @@ function buildAllJhalakReels() {
           hitch_bn: 'রোজ একটি করে নতুন ও অবাক করা বিষয় জানার আনন্দ মনকে সবসময় সজীব ও তরুণ রাখে মা!',
           curiosity_q_bn: '🔮 জাদুর পর্দা খোলো: এই বিস্ময়কর বিষয়টির সবচেয়ে সুন্দর দিক কোনটি?',
           curiosity_a_bn: '✨ প্রকৃতির অসীম বুদ্ধি আর মানুষের অদম্য মনের জোর!',
-          audio_url: ag.audio_url || d.audio_url || '',
-          story_end: Number(ag.story_end) || 0,
+          audio_url: JHALAK_AUDIO_BASE + cid + '.mp3',
+          story_end: 0,
           yt_query: ag.title_bn + ' Bengali',
           yt_label_bn: ag.title_bn
         });
         return;
       }
 
-      // covert_cbt, personal_therapy, bengali_expr -> calm (🦋 শান্তি)
       const calmReframe = p === 'covert_cbt'
         ? 'তাজা ও ভালো জিনিস আজই আনন্দে ব্যবহার করো মা—পুরনো বা সামান্য জিনিসের মায়ায় নিজের বর্তমানের আনন্দকে কখনো তুলে রাখবে না।'
         : (p === 'bengali_expr'
@@ -392,7 +393,7 @@ function buildAllJhalakReels() {
           : 'রানাঘাটের শৈশব থেকে শুরু করে কৌশিক ও দিদিকে মানুষ করা—তোমার জীবনের প্রতিটি অধ্যায় গর্বের ও ভালোবাসার। আজ সব পুরনো ভার নামিয়ে রেখে কেবল নিজের আনন্দে থাকো মা।');
 
       byCat.calm.push({
-        id: 'd' + dNum + '_g' + agIdx,
+        id: cid,
         vibe: 'calm',
         badge_bn: '🦋 শান্তি',
         title_bn: ag.title_bn,
@@ -417,15 +418,21 @@ function buildAllJhalakReels() {
         hitch_bn: calmReframe,
         curiosity_q_bn: '🔮 মনের আয়না: আজ নিজেকে কোন মিষ্টি সত্যিটা মনে করিয়ে দেবে মা?',
         curiosity_a_bn: '🌸 “আমার নিজের আরাম, তাজা খাবার ও মনের আনন্দই আজ সবার আগে!”',
-        audio_url: ag.audio_url || d.audio_url || '',
-        story_end: Number(ag.story_end) || 0,
+        audio_url: JHALAK_AUDIO_BASE + cid + '.mp3',
+        story_end: 0,
         yt_query: /রানাঘাট|শান্তিনিকেতন|দুর্গাপুজো/.test(ag.title_bn) ? ag.title_bn + ' Bengali' : '',
         yt_label_bn: ag.title_bn
       });
     });
   });
 
-  // Interleave harmoniously across all 8 categories
+  // 5. Extra Day-to-Day Hindi Conversations (3 more -> 16 total)
+  if (typeof JHALAK_EXTRA_HINDI !== 'undefined') {
+    JHALAK_EXTRA_HINDI.forEach(eh => {
+      byCat.hindi.push(buildHindiConversationCard(eh, eh.id));
+    });
+  }
+
   const order = ['gods', 'laugh', 'calm', 'music', 'curiosity', 'english', 'hindi', 'tv'];
   const ptr = { gods: 0, laugh: 0, calm: 0, music: 0, curiosity: 0, english: 0, hindi: 0, tv: 0 };
   const mixed = [];

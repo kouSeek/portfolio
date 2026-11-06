@@ -117,7 +117,7 @@ class TestArchitectureAndDocs(unittest.TestCase):
         self.assertIn("Genius Artist UX Design", gemini_md)
         self.assertIn("refresh_voices.py --persona", gemini_md)
 
-        for pid in ("kalyani", "anondo"):
+        for pid in ("kalyani", "anondo", "jhalak"):
             expected_count = len(collect_expected_audio_items(pid))
             proc = subprocess.run(
                 [sys.executable, str(APP_ROOT / "scripts" / "refresh_voices.py"), "--persona", pid, "--status", "--scope", "all"],

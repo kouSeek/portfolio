@@ -1,6 +1,6 @@
 /* ============================================================================
-   ✨ ঝলক (JHALAK) — LONG-FORM SCROLLABLE REELS, LEFT/RIGHT NAVIGATION,
-   CATEGORY DROPDOWN, TRANSLUCENT STICKY LIKE BUTTON & CATEGORY STATS
+   ✨ ঝলক (JHALAK) — LONG-FORM SCROLLABLE REELS, LEFT/RIGHT SLIDE ANIMATION,
+   DONE BUTTON, CATEGORY DROPDOWN, STICKY MULTI-LIKE & ADMIN CONTROLS
    ============================================================================ */
 :root {
   --jh-bg-deep: #18120E;
@@ -37,7 +37,7 @@ html, body {
   line-height: 1.58;
 }
 
-/* TOP BAR: BRAND + CATEGORY DROPDOWN + LEFT/RIGHT NAV + SETTINGS GEAR */
+/* TOP BAR: BRAND + CATEGORY DROPDOWN + SETTINGS GEAR (NO PREV/NEXT OR PAGE COUNTS) */
 .jh-topbar {
   position: fixed;
   top: 0;
@@ -57,7 +57,6 @@ html, body {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .jh-brand-cluster {
@@ -174,40 +173,6 @@ html, body {
   border-radius: 999px;
 }
 
-/* TOP RIGHT CONTROLS: LEFT/RIGHT PAGE NAV + SETTINGS GEAR */
-.jh-top-right-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.jh-top-nav-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  border: 1.5px solid var(--jh-border-gold);
-  background: rgba(45, 32, 24, 0.92);
-  color: #FFFBEB;
-  font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 700;
-  padding: 6px 12px;
-  border-radius: 999px;
-  cursor: pointer;
-}
-
-.jh-top-nav-btn:active {
-  transform: scale(0.94);
-}
-
-.jh-page-counter-badge {
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: var(--jh-cream-sub);
-  padding: 0 4px;
-}
-
 .jh-gear-btn {
   display: inline-flex;
   align-items: center;
@@ -229,13 +194,33 @@ html, body {
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
-  padding: 72px 14px 96px;
+  padding: 68px 14px 96px;
 }
 
 .jh-reel-slide {
   width: 100%;
   max-width: 680px;
   margin: 0 auto;
+  will-change: transform, opacity;
+}
+
+/* PAGE SLIDE LEFT / RIGHT ANIMATIONS */
+.jh-slide-anim-next {
+  animation: jhSlideFromRight 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.jh-slide-anim-prev {
+  animation: jhSlideFromLeft 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes jhSlideFromRight {
+  0% { opacity: 0.25; transform: translateX(64px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes jhSlideFromLeft {
+  0% { opacity: 0.25; transform: translateX(-64px); }
+  100% { opacity: 1; transform: translateX(0); }
 }
 
 /* MAIN LONG-FORM CONTENT CARD STAGE */
@@ -252,7 +237,7 @@ html, body {
 
 @media (max-width: 520px) {
   .jh-reels-viewport {
-    padding: 108px 10px 96px;
+    padding: 66px 10px 96px;
   }
   .jh-card-stage {
     padding: 16px 15px 22px;
@@ -260,7 +245,7 @@ html, body {
   }
 }
 
-/* CARD HEADER: BADGE + PAGE COUNTER + TOP LISTEN BUTTON */
+/* CARD HEADER: BADGE + TOP LISTEN & DONE BUTTONS */
 .jh-card-top {
   display: flex;
   align-items: center;
@@ -270,8 +255,8 @@ html, body {
   flex-wrap: wrap;
 }
 
-.jh-card-top-left {
-  display: flex;
+.jh-card-top-actions {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
@@ -290,16 +275,6 @@ html, body {
   border: 1px solid #FCD9BD;
 }
 
-.jh-page-pos-pill {
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: var(--jh-ink-muted);
-  background: #FBF4E8;
-  padding: 4px 11px;
-  border-radius: 999px;
-  border: 1px solid #EBD9C0;
-}
-
 .jh-top-listen-btn {
   display: inline-flex;
   align-items: center;
@@ -311,7 +286,7 @@ html, body {
   border-radius: 999px;
   padding: 8px 18px;
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.96rem;
+  font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(14, 131, 88, 0.26);
@@ -319,6 +294,26 @@ html, body {
 
 .jh-top-listen-btn.playing {
   background: #D9532F;
+}
+
+.jh-done-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1.5px solid #34D399;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.jh-done-btn:active {
+  transform: scale(0.95);
 }
 
 /* PAGE TITLE & MULTI-SECTION RICH CONTENT */
@@ -437,45 +432,6 @@ html, body {
   font-size: 0.98rem;
   font-weight: 700;
   text-decoration: none;
-  margin-bottom: 16px;
-}
-
-/* BOTTOM LEFT / RIGHT PAGE NAVIGATION BAR */
-.jh-bottom-lr-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding-top: 14px;
-  border-top: 1.5px solid #EBD9C0;
-}
-
-.jh-lr-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  background: #FFF1E6;
-  color: #B93815;
-  border: 1.5px solid #FCD9BD;
-  border-radius: 14px;
-  padding: 10px 18px;
-  font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.96rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.jh-lr-btn.primary {
-  background: var(--jh-gold);
-  color: #1F1610;
-  border-color: #F59E0B;
-}
-
-.jh-lr-page-indicator {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--jh-ink-muted);
 }
 
 /* TRANSLUCENT STICK-ON LIKE BUTTON */
@@ -534,7 +490,7 @@ html, body {
   100% { opacity: 0; transform: translateY(-95px) scale(1.35); }
 }
 
-/* SLIDE-UP DRAWERS (SETTINGS GEAR & CHITHI) */
+/* SLIDE-UP DRAWERS (SETTINGS GEAR, ADMIN & CHITHI) */
 .jh-drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -551,7 +507,7 @@ html, body {
 
 .jh-drawer-sheet {
   width: 100%;
-  max-width: 660px;
+  max-width: 680px;
   max-height: 88dvh;
   background: var(--jh-surface-cream);
   color: var(--jh-ink-dark);
@@ -619,18 +575,18 @@ html, body {
   color: #FFFFFF;
 }
 
-/* CATEGORY STATS IN SETTINGS */
+/* CATEGORY STATS & ADMIN LIST IN SETTINGS */
 .jh-stats-section-title {
   font-family: 'Noto Serif Bengali', Georgia, serif;
   font-size: 1.05rem;
   font-weight: 800;
-  margin-bottom: 8px;
+  margin: 14px 0 8px;
   color: #7C2D12;
 }
 
 .jh-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 8px;
 }
 
@@ -642,13 +598,84 @@ html, body {
   border: 1px solid #EBD9C0;
   border-radius: 12px;
   padding: 8px 12px;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
 }
 
 .jh-stat-likes {
-  margin-left: 6px;
+  margin-left: 4px;
   color: #BE123C;
   font-weight: 700;
+}
+
+.jh-admin-items-list {
+  max-height: 290px;
+  overflow-y: auto;
+  border: 1.5px solid #EBD9C0;
+  border-radius: 14px;
+  padding: 8px;
+  background: #FFFDF9;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.jh-admin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #FBF4E8;
+  border: 1px solid #EBD9C0;
+  font-size: 0.86rem;
+}
+
+.jh-admin-row.is-done {
+  background: #ECFDF5;
+  border-color: #6EE7B7;
+}
+
+.jh-admin-row-title {
+  flex: 1 1 200px;
+  font-weight: 700;
+}
+
+.jh-admin-badge {
+  font-size: 0.78rem;
+  background: #FFF1E6;
+  color: #B93815;
+  padding: 2px 7px;
+  border-radius: 999px;
+  margin-right: 5px;
+}
+
+.jh-admin-row-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jh-admin-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FFFFFF;
+  border: 1px solid #EBD9C0;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.jh-step-mini {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #D97706;
+  background: #FEF3C7;
+  color: #92400E;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .jh-slide-img {
