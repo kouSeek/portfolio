@@ -925,31 +925,34 @@ vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
         self.assertEqual(proc.returncode, 0, f"Kalyani weird edge-cases VM test failed: {proc.stderr}")
 
     def test_jhalak_dopamine_reels_app_and_vm_interactions(self) -> None:
-        """Verify jhalak.html (✨ ঝলক) compiles cleanly with all 8 UX refinements and runs in Node VM."""
+        """Verify jhalak.html (✨ ঝলক) compiles cleanly with long-page scroll, L/R nav, 9 categories, sticky multi-like, and VM checks."""
         jh_path = APP_ROOT / "jhalak.html"
         self.assertTrue(jh_path.is_file(), "jhalak.html must exist")
         jh_html = jh_path.read_text(encoding="utf-8")
-        # 1. Renamed to just ঝলক, no বায়োস্কোপ
+        # 1. Renamed to just ঝলক, no বায়োস্কোপ, no Kalyani link, no header TV tab
         self.assertIn("<title>✨ ঝলক</title>", jh_html)
         self.assertNotIn("বায়োস্কোপ", jh_html)
-        self.assertIn("scroll-snap-type: y mandatory", jh_html)
-        # 2. Settings gear button with Auto-Reels, Auto-Voice, and Chithi inside Settings
-        self.assertIn('id="btnJhSettings"', jh_html)
-        self.assertIn('id="jhSettingsDrawer"', jh_html)
-        self.assertIn('id="btnJhAutoFlow"', jh_html)
-        self.assertIn('id="btnJhAutoVoice"', jh_html)
-        self.assertIn('id="btnJhOpenChithi"', jh_html)
-        # 3 & 4 & 6. No next-page buttons, no Kalyani button, no Surprise button, no side panel rail
-        self.assertNotIn("পরের ঝলক", jh_html)
         self.assertNotIn('href="kalyani.html"', jh_html)
-        self.assertNotIn("btnJhShuffle", jh_html)
-        self.assertNotIn("jh-right-rail", jh_html)
-        # Header has only Jhalak + TV tabs
-        self.assertIn('id="tabJhReels"', jh_html)
-        self.assertIn('id="tabJhTv"', jh_html)
-        # 5. Simple one-word + emoji category titles
-        for chip_label in ["✨ সব", "😂 হাসি", "🦋 শান্তি", "🔍 কৌতূহল", "🎵 গান"]:
-            self.assertIn(chip_label, jh_html)
+        self.assertNotIn('id="tabJhTv"', jh_html)
+        # 2. Category Dropdown + Left/Right page navigation + Translucent Sticky Like button
+        self.assertIn('id="btnJhCategoryDropdown"', jh_html)
+        self.assertIn('id="jhCategoryDropdownMenu"', jh_html)
+        self.assertIn('id="btnJhPrevPage"', jh_html)
+        self.assertIn('id="btnJhNextPage"', jh_html)
+        self.assertIn('id="jhStickyLikeBtn"', jh_html)
+        self.assertIn("backdrop-filter: blur(10px)", jh_html)
+        # 3. Settings controls: Auto-Reels, Auto-Voice, Single/Multi Category Select, Show Like Count, Chithi, Category Stats
+        for sid in (
+            "btnJhSettings",
+            "jhSettingsDrawer",
+            "btnJhAutoFlow",
+            "btnJhAutoVoice",
+            "btnJhCatSelectMode",
+            "btnJhShowLikeCount",
+            "btnJhOpenChithi",
+            "jhCategoryStatsBox",
+        ):
+            self.assertIn(f'id="{sid}"', jh_html)
 
         m = re.search(r"<script>([\s\S]*?)</script>", jh_html)
         self.assertIsNotNone(m, "Missing <script> block in jhalak.html")
@@ -961,7 +964,7 @@ const els = {};
 function el(id) {
   if (!els[id]) {
     els[id] = {
-      id, className: '', innerHTML: '', textContent: '', style: {}, src: '',
+      id, className: '', innerHTML: '', textContent: '', style: {}, src: '', scrollTop: 0,
       classList: {
         add(c) { if (!els[id].className.includes(c)) els[id].className = (els[id].className + ' ' + c).trim(); },
         remove(c) { els[id].className = els[id].className.replace(c, '').trim(); },
@@ -969,6 +972,7 @@ function el(id) {
         contains(c) { return els[id].className.includes(c); }
       },
       querySelector: () => ({ textContent: '' }),
+      addEventListener() {},
       scrollIntoView() {}
     };
   }
@@ -980,6 +984,7 @@ const ctx = {
     body: { appendChild() {}, removeChild() {} },
     getElementById: el,
     querySelectorAll: () => [],
+    addEventListener() {},
     createElement: () => ({ style: {}, className: '', textContent: '' })
   },
   localStorage: { getItem: () => null, setItem: () => {} },
@@ -987,47 +992,58 @@ const ctx = {
 };
 const suite = code + `
 ;(function() {
-  assert.strictEqual(ALL_JHALAK_REELS.length, 134, 'Must assemble 8 pure delight reels + 126 curriculum reels = 134 reels');
-  assert.ok(ALL_JHALAK_REELS[0].hitch_bn.length > 15, 'Every reel must have a Covert CBT / Curiosity hitch');
-  assert.ok(ALL_JHALAK_REELS[0].curiosity_q_bn.length > 10, 'Every reel must have a 1-tap curiosity flip question');
+  // 1. All 9 categories (all + 8 content categories including gods, english, hindi, music, tv)
+  const catIds = JHALAK_CATEGORIES.map(c => c.id);
+  assert.deepStrictEqual(catIds, ['all', 'gods', 'laugh', 'calm', 'curiosity', 'music', 'english', 'hindi', 'tv']);
+  catIds.forEach(cid => {
+    assert.ok(JHALAK_CATEGORY_COUNTS[cid] > 0, 'Category ' + cid + ' must have non-zero content count');
+  });
 
+  // 2. Nonsensical tech_65 phone/camera tutorials and raw Gemini prompts removed; every page has multi-section long content
+  assert.ok(ALL_JHALAK_REELS.every(r => Array.isArray(r.sections) && r.sections.length >= 2), 'Every page must have rich multi-section content');
+  assert.ok(ALL_JHALAK_REELS.every(r => !JSON.stringify(r.sections).includes('জেমিনি, শোনো—')), 'Must strip raw Gemini voice-assistant prompts');
+
+  // 3. Songs category has inspiration & right question hook for understanding song meaning
+  const musicCards = ALL_JHALAK_REELS.filter(r => r.vibe === 'music');
+  assert.strictEqual(musicCards.length, 21);
+  assert.ok(musicCards.every(m => m.sections.some(s => s.heading_bn.includes('গানের আসল অর্থ বোঝার সঠিক প্রশ্ন'))));
+
+  // 4. Left / Right page navigation (stepJhalakReel)
   renderJhalakReelStream();
-  const vpHtml = el('jhReelsViewport').innerHTML;
-  assert.ok(vpHtml.includes('jh-reel-slide'), 'Must render full-screen reel slides');
-  assert.ok(vpHtml.includes('jh-top-listen-btn'), 'Must render simplified Listen button at top of reel card');
-  assert.ok(vpHtml.includes('jh-yt-link'), 'Must include YouTube hyperlink when reel has relevance');
-  assert.ok(ALL_JHALAK_REELS.some(r => r.yt_query && r.yt_query.length > 0), 'Relevant reels must have yt_query');
-  assert.ok(ALL_JHALAK_REELS.some(r => !r.yt_query), 'Non-YouTube reels must omit yt_query');
+  syncJhSettingsButtonsUI();
+  assert.strictEqual(jhCurrentIdx, 0);
+  stepJhalakReel(1, false);
+  assert.strictEqual(jhCurrentIdx, 1, 'Right navigation must advance to next page');
+  stepJhalakReel(-1, false);
+  assert.strictEqual(jhCurrentIdx, 0, 'Left navigation must return to previous page');
 
-  // Multi-select categories: selecting cbt_calm AND music combines both!
-  filterJhalakChannel('cbt_calm');
-  const calmCount = jhFilteredReels.length;
-  assert.ok(calmCount >= 21 && jhFilteredReels.every(r => r.vibe === 'cbt_calm'));
+  // 5. Category Dropdown: Single-Select by default, toggleable to Multi-Select in Settings
+  assert.strictEqual(jhMultiSelectCategories, false, 'Default category mode must be Single-Select');
+  filterJhalakChannel('gods');
+  assert.strictEqual(jhSelectedChannels.has('gods') && jhSelectedChannels.size === 1, true);
   filterJhalakChannel('music');
-  assert.strictEqual(jhSelectedChannels.has('cbt_calm') && jhSelectedChannels.has('music'), true, 'Multi-select must keep both categories active');
-  assert.ok(jhFilteredReels.length > calmCount, 'Adding music to cbt_calm must expand filtered reels');
-  assert.ok(jhFilteredReels.every(r => r.vibe === 'cbt_calm' || r.is_music));
+  assert.strictEqual(jhSelectedChannels.has('music') && jhSelectedChannels.size === 1, true, 'In Single-Select mode, choosing music replaces gods');
 
-  // Reset to all
+  toggleJhCategorySelectMode();
+  assert.strictEqual(jhMultiSelectCategories, true, 'Settings toggle must enable Multi-Select mode');
+  filterJhalakChannel('gods');
+  assert.strictEqual(jhSelectedChannels.has('music') && jhSelectedChannels.has('gods'), true, 'In Multi-Select mode, both music and gods stay active');
   filterJhalakChannel('all');
-  assert.strictEqual(jhFilteredReels.length, 134);
+  assert.strictEqual(jhFilteredReels.length, ALL_JHALAK_REELS.length);
 
-  // Settings toggles (Auto-Reels & Auto-Voice) + Header TV tab switch
-  assert.strictEqual(jhAutoFlow, true);
-  toggleJhAutoFlow();
-  assert.strictEqual(jhAutoFlow, false);
-  assert.strictEqual(jhAutoPlayVoices, true);
-  toggleJhAutoVoice();
-  assert.strictEqual(jhAutoPlayVoices, false);
+  // 6. Translucent Sticky Like Button: same content can be liked several times + like count visibility toggle
+  const firstId = jhFilteredReels[0].id;
+  assert.strictEqual(getReelLikeCount(firstId), 0);
+  likeCurrentJhalakReel();
+  likeCurrentJhalakReel();
+  likeCurrentJhalakReel();
+  assert.strictEqual(getReelLikeCount(firstId), 3, 'Same content must support being liked multiple times');
+  assert.ok(el('jhStickyLikeBtn').innerHTML.includes('৩'), 'When jhShowLikeCount is true, sticky like button shows count ৩');
 
-  switchJhalakMainTab('tv');
-  assert.strictEqual(jhActiveTab, 'tv');
-  assert.strictEqual(el('jhTvViewport').style.display, 'block');
-  switchJhalakMainTab('reels');
-  assert.strictEqual(jhActiveTab, 'reels');
-
-  toggleJhalakCuriosityBox(0);
-  assert.strictEqual(jhRevealedMap[jhFilteredReels[0].id], true, '1-tap curiosity flip must toggle revealed state');
+  toggleJhShowLikeCount();
+  assert.strictEqual(jhShowLikeCount, false);
+  assert.ok(!el('jhStickyLikeBtn').innerHTML.includes('jhStickyLikeCount'), 'When jhShowLikeCount is false, like count badge is hidden');
+  assert.ok(el('jhCategoryStatsBox').innerHTML.includes('পাতা'), 'Category stats must display content counts');
 })();
 `;
 vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});

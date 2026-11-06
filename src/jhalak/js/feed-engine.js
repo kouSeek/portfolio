@@ -1,288 +1,444 @@
 /* ============================================================================
-   ✨ ঝলক (JHALAK) — MODULE 1: 3-BEAT DOPAMINE-HITCHING REELS ENGINE
+   ✨ ঝলক (JHALAK) — MODULE 1B: MULTI-CATEGORY ENRICHMENT & FEED ENGINE
    ----------------------------------------------------------------------------
-   Neuro-UX Architecture for Ma:
-   - Beat 1 (15s Dopamine Hook): Effortless laughter, Gopal Bhar, ठाकुर-মা সারদা,
-     Bala Gopala, cute animals, Ranaghat nostalgia, or golden Bengali music.
-   - Beat 2 (The Hitch): Piggybacks 1 gentle Covert CBT reframe (melting kanjoosi,
-     button fear, judgment fear, family stress), 1 curiosity spark, or 1 spoken line
-     right when dopamine is elevated.
-   - Beat 3 (1-Tap Curiosity Flip): Zero-failure tap-to-reveal magic box with
-     lotus/sparkle burst.
+   Builds long-form, multi-section scrollable pages across 8 categories:
+   - gods (🪷 ভগবান)
+   - laugh (😂 হাসি)
+   - calm (🦋 শান্তি)
+   - curiosity (🔍 কৌতূহল)
+   - music (🎵 গান — with Inspiration & Right Question Hook for Lyrics Meaning)
+   - english (🔤 ইংরেজি — Simple English Words Learn for Everyday Life)
+   - hindi (🗣️ হিন্দি — Day-to-Day Hindi Conversation)
+   - tv (📺 টিভি — Curated TV & Cinema Channels inside Reels)
    ============================================================================ */
 
-const JHALAK_DELIGHT_REELS = [
-  {
-    id: 'delight_1',
-    vibe: 'laugh_gods',
-    is_music: false,
-    badge_bn: '😂 হাসি',
-    title_bn: 'বাটা মাছের ঝোল আর গোপাল ভাঁড়ের চশমা!',
-    hook_bn: 'একদিন মহারাজ কৃষ্ণচন্দ্র গোপালকে বললেন— “গোপাল, আজ রাজবাড়িতে গরম ভাতের সাথে সর্ষে বাটা মাছের ঝোল হয়েছে, কিন্তু তোমাকে তখনি দেব যদি বলো পৃথিবীর সবচেয়ে সুন্দর দৃশ্য কী!” গোপাল এক গাল হেসে বলল— “মহারাজ, খিদের সময় কলাপাতার ওপর ধোঁয়া-ওঠা ভাত আর বাটা মাছের পেটি—এর চেয়ে সুন্দর দৃশ্য স্বর্গের দেবতারাও দেখেননি!”',
-    hitch_label_bn: '🦋 মনের আরাম',
-    hitch_bn: 'নিজের পছন্দের টাটকা খাবার তৃপ্তি করে খাওয়া ভগবানেরই প্রসাদ মা—শরীর ও মন খুশি থাকলে তবেই তো সব ভালো থাকবে!',
-    curiosity_q_bn: '🔮 জাদুর পর্দা খোলো: মহারাজ খুশি হয়ে গোপালকে কী দিয়েছিলেন?',
-    curiosity_a_bn: '🌸 মহারাজ হেসে গড়িয়ে পড়েছিলেন আর গোপালকে পুরো এক হাঁড়ি দই ও বাটা মাছের ঝোল উপহার দিয়েছিলেন!',
-    yt_query: 'Gopal Bhar funny Bengali cartoon stories',
-    yt_label_bn: 'গোপাল ভাঁড়ের হাসির গল্প'
-  },
-  {
-    id: 'delight_2',
-    vibe: 'laugh_gods',
-    is_music: false,
-    badge_bn: '🪷 ভক্তি',
-    title_bn: 'মা সারদার পোষা টিয়াপাখি ‘গঙ্গারাম’-এর আবদার!',
-    hook_bn: 'জয়রামবাটীতে মা সারদার একটি অত্যন্ত প্রিয় টিয়াপাখি ছিল, তার নাম ছিল গঙ্গারাম। সকাল হলেই গঙ্গারাম খাঁচা থেকে ডেকে উঠত— “মা, খোকাকে পাকা কলা দাও! মা, খোকাকে ছানা দাও!” মা সারদা নিজের হাতে তাকে ছানা আর পাকা ফলের সেরা অংশটুকু খাইয়ে তবেই নিজে প্রসাদ নিতেন।',
-    hitch_label_bn: '🦋 মায়ের আশীর্বাদ',
-    hitch_bn: 'মা সারদা যেমন পশুপাখিকেও পাকা ও টাটকা ফল খাওয়াতেন, তেমনই তুমিও নিজের জন্য সবসময় পাকা, মিষ্টি ও ভালো অংশটুকুই প্রথমে নেবে মা!',
-    curiosity_q_bn: '🔮 জাদুর পর্দা খোলো: গঙ্গারাম টিয়াপাখি আর কী ডাকতে পারত?',
-    curiosity_a_bn: '🌸 গঙ্গারাম স্পষ্ট বাংলায় “হরে কৃষ্ণ” আর “মা, মা” বলে ডাকতে পারত!',
-    yt_query: 'Maa Sarada story Jayrambati Bengali',
-    yt_label_bn: 'মা সারদার অমৃতকথা'
-  },
-  {
-    id: 'delight_3',
-    vibe: 'laugh_gods',
-    is_music: false,
-    badge_bn: '🧈 নাড়ুগোপাল',
-    title_bn: 'যশোদা মায়ের হাঁড়ি থেকে ননী চুরি করে গোপালের দুষ্টুমি!',
-    hook_bn: 'ছোট্ট গোপাল শিকেয় ঝোলানো মাখনের হাঁড়ি থেকে একমুঠো তাজা ননী নিয়ে নিজে খেল আর অর্ধেকটা খাইয়ে দিল পাশের এক ছোট্ট বাঁদরছানাকে! যশোদা মা এসে বকতে যেতেই গোপাল মিটমিট করে হেসে বলল— “মা, ননী কি শুধু তুলে রাখার জন্য? তাজা থাকতে থাকতেই তো আনন্দ করে খেতে হয়!”',
-    hitch_label_bn: '🦋 মনের জাদু',
-    hitch_bn: 'স্বয়ং ভগবানও তাজা মাখন জমিয়ে না রেখে আনন্দে খেতে ভালোবাসেন মা—তাই ভালো জিনিস ফেলে না রেখে আজই আনন্দে ব্যবহার করো!',
-    curiosity_q_bn: '🔮 জাদুর পর্দা খোলো: বৃন্দাবনে গোপালের প্রিয় বন্ধু কারা ছিল?',
-    curiosity_a_bn: '🌸 মধুমঙ্গল, সুবল আর বৃন্দাবনের ছোট্ট বাছুর ও ময়ূররা ছিল গোপালের খেলার সঙ্গী!',
-    yt_query: 'Little Krishna Makhan Chor Bengali cartoon',
-    yt_label_bn: 'ছোট্ট কৃষ্ণের মাখন চুরির লীলা'
-  },
-  {
-    id: 'delight_4',
-    vibe: 'curiosity_song',
-    is_music: false,
-    badge_bn: '🐾 কৌতূহল',
-    title_bn: 'সমুদ্রের ভোদড় ছানারা হাত ধরে ঘুমায় কেন জানো মা?',
-    hook_bn: 'সমুদ্রের জলে ভেসে ঘুমানোর সময় মা-ভোড়ড় ও তার ছোট্ট ছানা একে অপরের হাত শক্ত করে ধরে ঘুমায়, যাতে ঢেউ এসে তাদের কখনো আলাদা না করে দেয়! এমনকি তাদের বুকের কাছে একটা ছোট্ট পকেটের মতো ভাঁজ থাকে যেখানে তারা নিজেদের প্রিয় রঙিন পাথর লুকিয়ে রাখে।',
-    hitch_label_bn: '🦋 ভালোবাসার টান',
-    hitch_bn: 'প্রকৃতির প্রতিটি মা ও সন্তানের টান ঠিক এমনই অটুট মা—কৌশিক ও দিদি দূরে বা কাজে ব্যস্ত থাকলেও মনে মনে সবসময় তোমার হাত ধরেই আছে।',
-    curiosity_q_bn: '🔮 জাদুর পর্দা খোলো: ভোদড় ছানারা ওই পাথর দিয়ে কী করে?',
-    curiosity_a_bn: '✨ ওই প্রিয় পাথরটা দিয়ে তারা খেলার ছলে ঝিনুকের খোলা ঠুকে খুলে ফেলে!',
-    yt_query: 'Cute sea otters holding hands sleeping video',
-    yt_label_bn: 'হাত ধরে ঘুমানো মিষ্টি ভোদড় ছানা'
-  },
-  {
-    id: 'delight_5',
-    vibe: 'curiosity_song',
-    is_music: true,
-    badge_bn: '🎵 গান',
-    title_bn: '“এই রাত তোমার আমার”—হেমন্ত মুখোপাধ্যায়ের জাদুকরী কণ্ঠ!',
-    hook_bn: '১৯৫৯ সালের ‘দীপ জ্বেলে যাই’ ছবির এই অমর গানটি যখন হেমন্ত মুখোপাধ্যায় রেকর্ড করছিলেন, তখন স্টুডিওর সবাই এতটাই মুগ্ধ হয়ে গিয়েছিলেন যে গান শেষ হওয়ার পরও কয়েক সেকেন্ড কেউ কথা বলতে পারেননি! শুধুমাত্র শিস আর পিয়ানোর মৃদু সুরে এমন মায়া আর কোনো গানে পাওয়া যায় না।',
-    hitch_label_bn: '🎵 সুরের আরাম',
-    hitch_bn: 'মন কখনো একটুও ক্লান্ত লাগলে শুধু গুনগুন করে প্রিয় পুরনো গানের দু-কলি গেয়ে উঠবে মা—দেখবে এক নিমেষে মন হালকা হয়ে গেছে।',
-    curiosity_q_bn: '🔮 জাদুর পর্দা খোলো: এই গানে পর্দায় অভিনয় করেছিলেন কে?',
-    curiosity_a_bn: '🌸 মহানায়িকা সুচিত্রা সেন ও বসন্ত চৌধুরী!',
-    yt_query: 'Ei Raat Tomar Amar Hemanta Mukherjee original song',
-    yt_label_bn: 'হেমন্ত মুখোপাধ্যায়ের ‘এই রাত তোমার আমার’'
-  },
-  {
-    id: 'delight_6',
-    vibe: 'cbt_calm',
-    is_music: false,
-    badge_bn: '🚂 নস্টালজিয়া',
-    title_bn: 'রানাঘাট জংশনের ঝালমুড়ি আর বিকেলের মিষ্টি রোদ!',
-    hook_bn: 'মনে পড়ে মা, ছোটবেলায় ট্রেনের জানলার ধারে বসলে কীভাবে সর্ষে ক্ষেত আর পুকুরপাড়ের তালগাছগুলো সাঁইসাঁই করে পেছনে ছুটে যেত? স্টেশনে ট্রেন থামলেই কাগজের ঠোঙায় সর্ষের তেল-মাখা গরম ঝালমুড়ি আর মাটির ভাঁড়ে চায়ের সেই গন্ধ আজও যেন বাতাসে ভেসে আসে।',
-    hitch_label_bn: '🦋 মনের মুক্তি',
-    hitch_bn: 'ট্রেনের জানলার বাইরের গাছপালার মতোই সংসারের ছোটখাটো রাগ বা কথা মনে ধরে রাখবে না মা—সব পেছনে ফেলে শুধু নিজের আনন্দে সামনের দিকে চলো!',
-    curiosity_q_bn: '🔮 জাদুর পর্দা খোলো: ভারতের প্রথম ট্রেনগুলির মধ্যে রানাঘাট লাইনের বিশেষত্ব কী?',
-    curiosity_a_bn: '✨ ১৮৬২ সালে শিয়ালদহ থেকে রানাঘাট হয়ে কুষ্টিয়া লাইনটি পূর্ব ভারতের অন্যতম প্রাচীন ও ঐতিহাসিক রেলপথ!',
-    yt_query: 'Ranaghat Junction railway station nostalgia Bengal',
-    yt_label_bn: 'রানাঘাট জংশন ও বাংলার ট্রেন ভ্রমণ'
-  },
-  {
-    id: 'delight_7',
-    vibe: 'laugh_gods',
-    is_music: false,
-    badge_bn: '🪷 ভক্তি',
-    title_bn: 'মা লক্ষ্মীর মান ভাঙাতে মহাপ্রভু জগন্নাথের এক হাঁড়ি রসগোল্লা!',
-    hook_bn: 'রথযাত্রায় মা লক্ষ্মীকে না নিয়ে ভাই-বোনকে সাথে করে মাসির বাড়ি যাওয়ায় মা লক্ষ্মী ভীষণ অভিমান করে মন্দিরের দরজা বন্ধ করে দেন! তখন স্বয়ং জগন্নাথদেব দরজার বাইরে দাঁড়িয়ে মা লক্ষ্মীর হাতে এক হাঁড়ি নরম রসগোল্লা তুলে দিয়ে বলেন— “লক্ষ্মীটি, এবার দরজা খোলো!”',
-    hitch_label_bn: '🦋 সংসারের মিষ্টি মন্ত্র',
-    hitch_bn: 'স্বয়ং ভগবানের সংসারেও মাঝে মাঝে একটু মান-অভিমান হয় মা—একটু মিষ্টি কথা আর হাসিতেই সব অভিমান গলে যায়!',
-    curiosity_q_bn: '🔮 জাদুর পর্দা খোলো: পুরীর এই রসগোল্লা উৎসবকে কী বলা হয়?',
-    curiosity_a_bn: '🌸 একে বলা হয় ‘নীলাদ্রি বিজে’! রথযাত্রার শেষে এই দিনেই পুরীতে রসগোল্লা খাওয়ার মহোৎসব হয়।',
-    yt_query: 'Puri Jagannath Rasagolla Niladri Bije Bengali story',
-    yt_label_bn: 'জগন্নাথদেবের রসগোল্লা ও নীলাদ্রি বিজে'
-  },
-  {
-    id: 'delight_8',
-    vibe: 'laugh_gods',
-    is_music: false,
-    badge_bn: '😂 হাসি',
-    title_bn: 'রাজ্যে মোট ক’টা কাক আছে? গোপাল ভাঁড়ের পেট ফাটা হাসির উত্তর!',
-    hook_bn: 'একদিন মহারাজ কৃষ্ণচন্দ্র জিজ্ঞেস করলেন— “গোপাল, আমাদের নদিয়া রাজ্যে ঠিক ক’টা কাক আছে?” গোপাল আঙুল গুনে বলল— “মহারাজ, নিরানব্বই হাজার নয়শো নিরানব্বইটা! যদি দেখেন কম আছে তবে জানবেন তারা পাশের রাজ্যে মামাবাড়ি বেড়াতে গেছে, আর বেশি থাকলে জানবেন তাদের আত্মীয়রা আমাদের রাজ্যে বেড়াতে এসেছে!”',
-    hitch_label_bn: '🦋 মনের জাদু',
-    hitch_bn: 'কেউ কোনো কঠিন প্রশ্ন করলে ঘাবড়ে যাওয়ার কিচ্ছু নেই মা—গোপালের মতো হালকা হাসিমুখে উড়িয়ে দেওয়াই আসল বুদ্ধিমানের কাজ!',
-    curiosity_q_bn: '🔮 জাদুর পর্দা খোলো: গোপাল ভাঁড়ের এই উত্তর শুনে মহারাজ কী করেছিলেন?',
-    curiosity_a_bn: '🌸 মহারাজ কৃষ্ণচন্দ্র হেসে গড়িয়ে পড়েছিলেন এবং গোপালকে খুশি হয়ে উপহার দিয়েছিলেন!',
-    yt_query: 'Gopal Bhar counting crows funny Bengali comedy',
-    yt_label_bn: 'গোপাল ভাঁড়ের কাক গোনার গল্প'
-  }
-];
+const ENGLISH_WORD_DICTIONARY = {
+  COMFORTABLE: { pron: 'কমফোর্টেবল', mean: 'আরামদায়ক ও স্বস্তিদায়ক', ex: 'This chair is very comfortable. (দিস চেয়ার ইজ ভেরি কমফোর্টেবল — এই চেয়ারটা খুব আরামদায়ক।)' },
+  'THANK YOU': { pron: 'থ্যাঙ্ক ইউ', mean: 'অনেক ধন্যবাদ', ex: 'Thank you for the warm tea. (থ্যাঙ্ক ইউ ফর দ্য ওয়ার্ম টি — গরম চায়ের জন্য ধন্যবাদ।)' },
+  PEACEFUL: { pron: 'পিসফুল', mean: 'শান্তিপূর্ণ ও নিরিবিলি', ex: 'The morning is very peaceful. (দ্য মর্নিং ইজ ভেরি পিসফুল — সকালটা খুব শান্তিপূর্ণ।)' },
+  ACTUALLY: { pron: 'অ্যাকচুয়ালি', mean: 'আসলে বা সত্যি বলতে', ex: 'Actually, I like light food. (অ্যাকচুয়ালি, আই লাইক লাইট ফুড — আসলে আমি হালকা খাবার পছন্দ করি।)' },
+  PREFER: { pron: 'প্রেফার', mean: 'বেশি পছন্দ করা', ex: 'I prefer warm water. (আই প্রেফার ওয়ার্ম ওয়াটার — আমি হালকা গরম জল বেশি পছন্দ করি।)' },
+  PLEASE: { pron: 'প্লিজ', mean: 'অনুগ্রহ করে', ex: 'Please come in and sit down. (প্লিজ কাম ইন অ্যান্ড সিট ডাউন — অনুগ্রহ করে ভেতরে এসে বসুন।)' },
+  WONDERFUL: { pron: 'ওয়ান্ডারফুল', mean: 'চমৎকার বা অপূর্ব', ex: 'This song is wonderful! (দিস সং ইজ ওয়ান্ডারফুল — এই গানটা সত্যিই অপূর্ব!)' },
+  CHOICE: { pron: 'চয়েস', mean: 'নিজের পছন্দ বা নির্বাচন', ex: 'Fresh fruit is my first choice. (ফ্রেশ ফ্রুট ইজ মাই ফার্স্ট চয়েস — তাজা ফলই আমার প্রথম পছন্দ।)' },
+  DEFINITELY: { pron: 'ডেফিনিটলি', mean: 'অবশ্যই বা নিশ্চিতভাবে', ex: 'I will definitely go today. (আই উইল ডেফিনিটলি গো টুডে — আমি আজ অবশ্যই যাব।)' },
+  EASY: { pron: 'ইজি', mean: 'সহজ ও সরল', ex: 'Speaking simple English is easy. (স্পিকিং সিম্পল ইংলিশ ইজ ইজি — সহজ ইংরেজি বলা একদম সোজা।)' },
+  RELAX: { pron: 'রিল্যাক্স', mean: 'চাপ ছেড়ে বিশ্রাম ও আরাম করা', ex: 'I want to relax in the afternoon. (আই ওয়ান্ট টু রিল্যাক্স ইন দ্য আফটারনুন — আমি দুপুরে একটু আরাম করতে চাই।)' },
+  MANAGE: { pron: 'ম্যানেজ', mean: 'সুন্দরভাবে নিজে সামলে নেওয়া', ex: 'Do not worry, I can manage. (ডু নট ওয়ারি, আই ক্যান ম্যানেজ — চিন্তা কোরো না, আমি সামলে নিতে পারব।)' }
+};
 
-function classifyAgendaToVibe(ag) {
-  const p = String(ag.pillar || '');
-  if (p === 'covert_cbt' || p === 'personal_therapy' || p === 'bengali_expr') return 'cbt_calm';
-  if (p === 'music' || p === 'gk_inspiring' || p === 'english' || p === 'hindi' || p === 'tech_65') return 'curiosity_song';
-  return 'laugh_gods';
+function stripGeminiBoilerplate(txt) {
+  return String(txt || '')
+    .replace(/টাইপ করে গান খোঁজার কোনো ঝামেলা নেই।[^।]*।/g, '')
+    .replace(/ফোনের জেমিনির ইউটিউব মিউজিকের সাথে সরাসরি যোগ আছে[^।]*।/g, '')
+    .replace(/ইউটিউব মিউজিকে গান চালানো এখন তোমার কাছে একদম চেনা কাজ।/g, '')
+    .replace(/গানের পুরো নাম মনে না থাকলেও জেমিনি ইউটিউব মিউজিকে ঠিক গানটা খুঁজে বাজিয়ে দিতে পারে।/g, '')
+    .replace(/প্রথম দিনের মতোই আজ আবার মুখে এক লাইনে বলে ইউটিউব মিউজিকে/g, 'আজ')
+    .replace(/নিজের গলায় ইউটিউব মিউজিকে গানটা চালিয়ে শোনো এবং/g, 'এই অমর গানটি শুনে')
+    .replace(/ইউটিউব মিউজিকে গানটা চালিয়ে শোনো এবং/g, 'এই গানটি শুনে')
+    .replace(/জেমিনির কাছ থেকে[^।]*শোনো।/g, 'এই অপূর্ব রহস্যের কথা জেনে নাও।')
+    .replace(/জেমিনির কাছে[^।]*শোনো।/g, 'এর সুন্দর ইতিহাসটি জেনে নাও।')
+    .replace(/জেমিনিকে বলে শোনাও!?/g, 'মনের আনন্দে একবার বলো!')
+    .replace(/জেমিনিকে বলো!?/g, 'সহজভাবে বলো!')
+    .replace(/জেমিনির সাথে[^।]*।/g, '')
+    .replace(/জেমিনি,?\s*(শোনো—?)?\s*/gi, '')
+    .trim();
 }
 
-function getSimpleBadgeForAgenda(ag, vibe) {
-  const p = String(ag.pillar || '');
-  if (p === 'music') return '🎵 গান';
-  if (vibe === 'cbt_calm') return '🦋 শান্তি';
-  if (vibe === 'curiosity_song') return '🔍 কৌতূহল';
-  return '😂 হাসি';
-}
+function buildSongDeepMeaning(ag) {
+  const rawPrompt = String(ag.prompt_bn || '');
+  const m = rawPrompt.match(/‘([^’]+)’/);
+  const songName = m ? m[1] : String(ag.title_bn || '');
+  const cleanDetail = stripGeminiBoilerplate(ag.detail_bn);
 
-function getRelevantYoutubeForAgenda(ag) {
-  const p = String(ag.pillar || '');
-  const title = String(ag.title_bn || '');
-  if (p === 'music') {
-    return {
-      query: title + ' Bengali song',
-      label_bn: title
-    };
-  }
-  if (p === 'gk_inspiring') {
-    return {
-      query: title + ' Bengali',
-      label_bn: title
-    };
-  }
-  if (/গোপাল|রামকৃষ্ণ|সারদা|জগন্নাথ|উত্তম|সুচিত্রা|হেমন্ত|সন্ধ্যা|মান্না|রবীন্দ্র|নজরুল|ফেলুদা|ব্যোমকেশ|রানাঘাট|শান্তিনিকেতন/.test(title)) {
-    return {
-      query: title + ' Bengali',
-      label_bn: title
-    };
-  }
-  return { query: '', label_bn: '' };
-}
+  const songHooks = [
+    {
+      match: /এই রাত তোমার আমার/,
+      story: '১৯৫৯ সালের ‘দীপ জ্বেলে যাই’ ছবির এই কালজয়ী গানটি গেয়েছেন ও সুর করেছেন হেমন্ত মুখোপাধ্যায় এবং কথা লিখেছেন গৌরীপ্রসন্ন মজুমদার। শুধুমাত্র মৃদু শিস আর পিয়ানোর ছোঁয়ায় রাতের নিস্তব্ধতাকে এমন মায়াবী রূপ আর কোনো বাংলা গানে দেওয়া হয়নি।',
+      meaning: 'গানের কথায় রাত শুধু ঘড়ির সময় নয়—রাত হলো সংসারের সব কোলাহল থেমে যাওয়ার পর নিজের মনের সবচেয়ে প্রিয় মানুষ ও শান্ত স্মৃতির সাথে একান্তে কথা বলার আশ্রয়।',
+      hook_q: '💡 গানের অর্থ বোঝার সঠিক প্রশ্ন: এই গানে হেমন্ত মুখোপাধ্যায় কেন শুরুতেই যন্ত্রসঙ্গীতের বদলে কেবল মিষ্টি ‘শিস’ ব্যবহার করেছিলেন?',
+      hook_a: '🎵 কারণ গভীর রাতে নিস্তব্ধ ঘরে একা বসে মানুষ যখন প্রিয়জনের কথা ভাবে, তখন তার মনের ভেতর থেকে আপনাআপনি যেমন সুরের গুঞ্জন ওঠে—সেই অকৃত্রিম একাকীত্ব ও মায়া ফুটিয়ে তুলতেই এই শিসের সুর!'
+    },
+    {
+      match: /একদিন পাখি উড়ে যাবে/,
+      story: 'কিশোর কুমারের দরাজ কণ্ঠে গাওয়া এই গানটি মানুষের জীবন ও মনের চিরন্তন মুক্তির গান। সংসারের হাজারো নিয়ম ও বাঁধনের মাঝেও মানুষের মন যে আসলে খোলা আকাশের পাখির মতো মুক্ত, এই গানে সেই সত্যই ফুটে উঠেছে।',
+      meaning: 'পাখি যেমন খাঁচার মায়া কাটিয়ে নীল আকাশে ডানা মেলে দেয়, মানুষের মনও তেমনই সব তুচ্ছ দুশ্চিন্তা পেরিয়ে আনন্দের আকাশে উড়ে যেতে চায়।',
+      hook_q: '💡 গানের অর্থ বোঝার সঠিক প্রশ্ন: এই গানে ‘পাখি’ বলতে কবি আসলে আমাদের জীবনের কোন জিনিসটিকে বুঝিয়েছেন?',
+      hook_a: '🎵 ‘পাখি’ হলো আমাদের প্রাণ ও মুক্ত মন—যা কোনো ছোটখাটো সংসারের হিসাব বা দুশ্চিন্তার খাঁচায় আটকে থাকার জন্য তৈরি হয়নি!'
+    },
+    {
+      match: /মায়ের পায়ের জবা/,
+      story: 'পান্নালাল ভট্টাচার্যের কণ্ঠে এই শ্যামাসঙ্গীতটি শুনলে ভক্তিতে চোখ ভিজে আসে। সাধক কবি এখানে বনের সাধারণ জবা ফুলের সাথে মানুষের মনের তুলনা করেছেন।',
+      meaning: 'জবা ফুল যেমন কোনো ফলের আশা না করে কেবল মা কালীর চরণে ফুটেই সার্থক হয়, মানুষের মনও যখন সব অহংকার ও ভয় ঝেড়ে ফেলে সরল ভক্তিতে ফুটে ওঠে, তখনই জীবন সুন্দর হয়।',
+      hook_q: '💡 গানের অর্থ বোঝার সঠিক প্রশ্ন: কবি কেন মনকে অন্য কোনো ফুল না বলে ঠিক ‘মায়ের পায়ের জবা’ হয়েই ফুটতে বলেছেন?',
+      hook_a: '🎵 কারণ লাল জবা হলো মায়ের সবচেয়ে প্রিয় ও নিঃস্বার্থ ভক্তির প্রতীক—যে ফুল নিজের জন্য কিছু না চেয়ে পুরোপুরি মায়ের চরণে সমর্পিত থাকে!'
+    },
+    {
+      match: /ও নদীরে|এই যে নদী/,
+      story: 'হেমন্ত মুখোপাধ্যায়ের গাওয়া নদী-কেন্দ্রিক এই গানগুলো বাংলার প্রকৃতি ও জীবনদর্শনের অমূল্য সম্পদ। নদীর বয়ে চলার সাথে মানুষের জীবনের সুখ-দুঃখের প্রবাহ এক হয়ে গেছে।',
+      meaning: 'নদী যেমন পথে পাথর বা বাঁক এলেও থেমে থাকে না, সব পেছনে ফেলে সাগরের দিকে এগিয়ে চলে—মানুষের জীবনও তেমনই পুরনো কষ্ট ধরে না রেখে সামনের আনন্দের দিকে বয়ে চলে।',
+      hook_q: '💡 গানের অর্থ বোঝার সঠিক প্রশ্ন: গানের কথায় নদীকে কেন মানুষের জীবনের সবচেয়ে বড় শিক্ষক বলা হয়েছে?',
+      hook_a: '🎵 কারণ নদী শেখায়—থেকে গেলে জল ঘোলা হয়, আর সব বাধা পেরিয়ে বয়ে চললেই জীবন স্বচ্ছ ও আনন্দময় থাকে!'
+    },
+    {
+      match: /কফি হাউসের/,
+      story: 'গৌরীপ্রসন্ন মজুমদারের লেখা, সুপর্ণকান্তি ঘোষের সুর এবং মান্না দে-র কণ্ঠে গাওয়া ‘কফি হাউসের সেই আড্ডাটা আজ আর নেই’ বাংলা গানের ইতিহাসে এক জীবন্ত মহাকাব্য।',
+      meaning: 'সময় বদলে যায়, মানুষ জীবিকার টানে ছড়িয়ে পড়ে চারদিকে, কিন্তু যৌবনের নিখাদ বন্ধুত্ব আর একসাথে কাটানো সোনালী মুহূর্তগুলো চিরকাল মনের মণিকোঠায় অমর হয়ে থাকে।',
+      hook_q: '💡 গানের অর্থ বোঝার সঠিক প্রশ্ন: কফি হাউসের আড্ডা ফুরিয়ে যাওয়ার কথা বললেও এই গানটি শুনলে আমাদের মন কেন ভালোবাসায় ভরে ওঠে?',
+      hook_a: '🎵 কারণ গানটি আমাদের মনে করিয়ে দেয় যে পুরনো বন্ধু ও প্রিয় মানুষদের সাথে কাটানো প্রতিটি হাসির মুহূর্তই জীবনের আসল অমূল্য সম্পদ!'
+    }
+  ];
 
-function buildHitchForAgenda(ag) {
-  const p = String(ag.pillar || '');
-  if (p === 'covert_cbt') {
-    return {
-      label_bn: '🦋 মনের আরাম',
-      text_bn: 'তাজা ও ভালো জিনিস আজই আনন্দে ব্যবহার করো মা—সামান্য দু-টাকার তলানি বা তিতো খোসার জন্য নিজের শরীর ও মনকে একফোঁটাও কষ্ট দেবে না।'
-    };
-  }
-  if (p === 'personal_therapy') {
-    return {
-      label_bn: '🌸 মনের হালকা হাওয়া',
-      text_bn: 'তুমি, কৌশিক আর দিদি—তোমরা তিনজনই এক মাটির নরম মনের মানুষ। পুরনো সব দুশ্চিন্তা নামিয়ে রেখে আজ শুধু নিজের আনন্দে থাকো মা।'
-    };
-  }
-  if (p === 'english') {
-    return {
-      label_bn: '🔤 মিষ্টি ইংরেজি কথা',
-      text_bn: String(ag.prompt_bn || '').replace(/^জেমিনি,?\s*(শোনো—?)?\s*/i, 'মুখে শুধু একবার আনন্দে বলো: ')
-    };
-  }
-  if (p === 'hindi') {
-    return {
-      label_bn: '🗣️ মিষ্টি হিন্দি আড্ডা',
-      text_bn: String(ag.prompt_bn || '').replace(/^জেমিনি,?\s*(শোনো—?)?\s*/i, 'হাসিমুখে আড্ডার ছলে বলো: ')
-    };
-  }
-  if (p === 'music') {
-    return {
-      label_bn: '🎵 গানের সুরের জাদু',
-      text_bn: 'গানের কথাগুলোর ভেতরে যে মিষ্টি ছবি লুকিয়ে আছে, চোখ বুজে শুধু সেই সুরটুকু উপভোগ করো মা—কোনো নিয়ম মনে রাখতে হবে না।'
-    };
-  }
-  if (p === 'tech_65') {
-    return {
-      label_bn: '📱 ভয়হীন জাদুর কাঠি',
-      text_bn: 'ফোনের কোনো বোতামে হাত পড়লে কিচ্ছু খারাপ হয় না মা! মন্দিরের হারমোনিয়ামের মতোই ফোন ছুঁলে তবেই তো সুর বাজবে।'
-    };
-  }
+  const matched = songHooks.find(h => h.match.test(songName));
   return {
-    label_bn: '🌍 অবাক করা কৌতূহল',
-    text_bn: 'পৃথিবীর এই সুন্দর রহস্যগুলো জানার জন্য কোনো পড়াশোনা লাগে না মা—শুধু গল্পের মতো শুনলেই মন আনন্দে উড়ে বেড়ায়!'
+    song_name: songName,
+    story_bn: matched
+      ? matched.story + '\n\n' + cleanDetail
+      : cleanDetail + '\n\nবাংলা গানের স্বর্ণযুগে ‘' + songName + '’ গানটি তার অনবদ্য কথা ও সুরের মাধুর্যে প্রজন্মের পর প্রজন্ম ধরে শ্রোতাদের হৃদয়ে চিরস্থায়ী জায়গা করে নিয়েছে।',
+    meaning_bn: matched
+      ? matched.meaning
+      : '‘' + songName + '’ গানের প্রতিটি ছত্রে প্রকৃতির ছবি এবং মানুষের মনের সূক্ষ্ম অনুভূতির এক অপূর্ব মেলবন্ধন ঘটেছে। চোখ বুজে শুনলে মনে হয় সুর যেন মনের সব ক্লান্তি ধুয়ে দিচ্ছে।',
+    hook_q_bn: matched
+      ? matched.hook_q
+      : '💡 গানের অর্থ বোঝার সঠিক প্রশ্ন: ‘' + songName + '’ গানটি শোনার সময় কোন মূল প্রশ্নটি মনে রাখলে এর গভীর ভাবার্থ সহজেই ধরা দেয়?',
+    hook_a_bn: matched
+      ? matched.hook_a
+      : '🎵 নিজেকে প্রশ্ন করো: “কবি এই গানের প্রকৃতির উপমার আড়ালে আমাদের মনের কোন শান্ত ও চিরন্তন অনুভূতির কথা বলছেন?”—দেখবে গানের প্রতিটি লাইন ছবির মতো স্পষ্ট হয়ে উঠবে!'
   };
 }
 
-function buildCuriosityBoxForAgenda(ag) {
-  const follow = String(ag.followup_prompt_bn || ag.prompt_bn || '').replace(/^জেমিনি,?\s*/i, '');
+function buildEnglishSimpleLearnCard(ag, dNum, agIdx) {
+  const rawSentence = String(ag.prompt_bn || '').replace(/^জেমিনি,?\s*(শোনো—?)?\s*/i, '').trim();
+  const cleanIntro = stripGeminiBoilerplate(ag.detail_bn);
+  const foundWords = [];
+  Object.keys(ENGLISH_WORD_DICTIONARY).forEach(w => {
+    if (ag.title_bn.toUpperCase().includes(w) || rawSentence.toUpperCase().includes(w)) {
+      foundWords.push({ word: w, ...ENGLISH_WORD_DICTIONARY[w] });
+    }
+  });
+  if (foundWords.length === 0) {
+    foundWords.push(
+      { word: 'COMFORTABLE', ...ENGLISH_WORD_DICTIONARY.COMFORTABLE },
+      { word: 'PLEASE', ...ENGLISH_WORD_DICTIONARY.PLEASE }
+    );
+  }
+
+  const wordBreakdown = foundWords.map(item =>
+    `• ${item.word} (${item.pron}) — অর্থ: ${item.mean}\n  উদাহরণ: ${item.ex}`
+  ).join('\n\n');
+
   return {
-    q_bn: '🔮 জাদুর পর্দা খোলো: এর পরের মজার কথাটা কী জানো মা?',
-    a_bn: '✨ ' + (follow || 'এই সুন্দর কথাটি মনের আনন্দে উপভোগ করো মা!')
+    id: 'd' + dNum + '_g' + agIdx,
+    vibe: 'english',
+    badge_bn: '🔤 ইংরেজি',
+    title_bn: ag.title_bn,
+    sections: [
+      {
+        heading_bn: '📖 আজকের সহজ ইংরেজি শব্দ ও বাংলা উচ্চারণ',
+        body_bn: cleanIntro + '\n\n' + wordBreakdown,
+        tone: 'story'
+      },
+      {
+        heading_bn: '💬 রোজকার জীবনে সহজ বাক্যে ব্যবহার',
+        body_bn: `আজকের মূল ইংরেজি বাক্য:\n“${rawSentence}”\n\nরোজকার কথাবার্তায় এই বাক্যটি যেভাবে ব্যবহার করবে:\n১. বাড়িতে বা বাইরে নিজের আরাম ও পছন্দ জানাতে একদম শান্ত গলায় এই ছোট্ট বাক্যটি বলো।\n২. পুরো লম্বা বাক্য মনে না এলেও শুধু মূল ইংরেজি শব্দটি (${foundWords.map(w => w.word).join(' / ')}) বাংলা কথার মাঝে ব্যবহার করলেই কথাটা খুব সুন্দর ও আধুনিক শোনায়!`,
+        tone: 'hitch'
+      },
+      {
+        heading_bn: '🌟 মনে রাখার সহজ কৌশল',
+        body_bn: 'ইংরেজি কোনো পরীক্ষার বিষয় নয় মা—যখনই চা খাবে, বিশ্রাম নেবে বা কারো সাথে কথা বলবে, তখন খেলার ছলে আজকের শব্দগুলো মুখে একবার উচ্চারণ করো।',
+        tone: 'extra'
+      }
+    ],
+    hitch_label_bn: '💬 রোজকার ইংরেজি বাক্য',
+    hitch_bn: rawSentence,
+    curiosity_q_bn: '🔮 চটপট ঝালাই: আজকের মূল ইংরেজি বাক্যটি মুখে কীভাবে বলবে?',
+    curiosity_a_bn: '✨ “' + rawSentence + '” — একদম সহজ ও সাবলীল!',
+    audio_url: ag.audio_url || '',
+    story_end: Number(ag.story_end) || 0,
+    yt_query: '',
+    yt_label_bn: ''
+  };
+}
+
+function buildHindiConversationCard(ag, dNum, agIdx) {
+  const spokenLine = String(ag.prompt_bn || '').replace(/^জেমিনি,?\s*(শোনো—?)?\s*/i, '').trim();
+  const cleanIntro = stripGeminiBoilerplate(ag.detail_bn);
+
+  return {
+    id: 'd' + dNum + '_g' + agIdx,
+    vibe: 'hindi',
+    badge_bn: '🗣️ হিন্দি',
+    title_bn: ag.title_bn,
+    sections: [
+      {
+        heading_bn: '🗣️ রোজকার পরিস্থিতি ও হিন্দি কথোপকথন',
+        body_bn: `${cleanIntro}\n\nপ্রাত্যহিক জীবনের কথোপকথন (বাংলা হরফে উচ্চারণ ও অর্থ):\n• তুমি বলবে: “${spokenLine}”\n• সামনের মানুষটি খুশি হয়ে উত্তর দেবে: “হাঁ দিদি, আপ বড়িয়া বোল রহে হ্যাঁয়! সব ঠিক হ্যায়।” (হ্যাঁ দিদি, আপনি খুব সুন্দর বলছেন! সব ঠিক আছে।)\n• তুমি হাসিমুখে যোগ করতে পারো: “চলিযে, মিলকর বহুত অচ্ছা লগা!” (চলুন, দেখা হয়ে খুব ভালো লাগল!)`,
+        tone: 'story'
+      },
+      {
+        heading_bn: '🔑 প্রতিদিনের কাজের হিন্দি শব্দভাণ্ডার',
+        body_bn: '• ক্যায়া চল রহা হ্যায়? — কী চলছে / কেমন কাটছে?\n• বৈঠিযে না — বসুন না\n• থোড়া গপশপ করতে হ্যাঁয় — একটু গল্পগুজব করি\n• কাফি বেহতর — আগের চেয়ে অনেক ভালো\n• মেরে খয়াল সে — আমার মনে হয় / আমার মতে',
+        tone: 'hitch'
+      },
+      {
+        heading_bn: '😊 সাবলীলভাবে হিন্দি বলার ঘরোয়া টিপস',
+        body_bn: 'হায়দরাবাদে বা বাইরে অবাঙালি প্রতিবেশীদের সাথে কথা বলার সময় ব্যাকরণের চিন্তা একদম করবে না মা। তোমার মিষ্টি হাসির সাথে এই ঘরোয়া হিন্দি লাইনগুলো বললেই সবাই আপন হয়ে যাবে!',
+        tone: 'extra'
+      }
+    ],
+    hitch_label_bn: '🗣️ আজকের হিন্দি সংলাপ',
+    hitch_bn: spokenLine,
+    curiosity_q_bn: '🔮 কথার জাদু: আজকের এই পরিস্থিতিতে প্রথম হিন্দি লাইনটি কী বলবে?',
+    curiosity_a_bn: '🌸 “' + spokenLine + '”',
+    audio_url: ag.audio_url || '',
+    story_end: Number(ag.story_end) || 0,
+    yt_query: '',
+    yt_label_bn: ''
   };
 }
 
 function buildAllJhalakReels() {
-  const delights = [];
-  const cbts = [];
-  const curiosities = [];
+  const byCat = {
+    gods: [],
+    laugh: [],
+    calm: [],
+    curiosity: [],
+    music: [],
+    english: [],
+    hindi: [],
+    tv: []
+  };
 
-  JHALAK_DELIGHT_REELS.forEach((dr, idx) => {
+  // 1. Curated Gods Stories
+  JHALAK_GODS_STORIES.forEach((gs, idx) => {
     const refDay = DAYS_21[idx % DAYS_21.length] || DAYS_21[0];
-    const refAg = (refDay.agendas && refDay.agendas[0]) ? refDay.agendas[0] : null;
-    delights.push({
-      id: dr.id,
-      vibe: dr.vibe,
-      is_music: !!dr.is_music,
-      badge_bn: dr.badge_bn,
-      title_bn: dr.title_bn,
-      hook_bn: dr.hook_bn,
-      hitch_label_bn: dr.hitch_label_bn,
-      hitch_bn: dr.hitch_bn,
-      curiosity_q_bn: dr.curiosity_q_bn,
-      curiosity_a_bn: dr.curiosity_a_bn,
-      audio_url: refDay.audio_url || (refAg ? refAg.audio_url : ''),
+    byCat.gods.push({
+      id: gs.id,
+      vibe: 'gods',
+      badge_bn: gs.badge_bn,
+      title_bn: gs.title_bn,
+      sections: [
+        { heading_bn: '📖 অমৃত লীলা ও সম্পূর্ণ গল্প', body_bn: gs.story_bn, tone: 'story' },
+        { heading_bn: gs.hitch_title_bn, body_bn: gs.hitch_bn, tone: 'hitch' },
+        { heading_bn: gs.extra_title_bn, body_bn: gs.extra_bn, tone: 'extra' }
+      ],
+      hitch_label_bn: gs.hitch_title_bn,
+      hitch_bn: gs.hitch_bn,
+      curiosity_q_bn: gs.curiosity_q_bn,
+      curiosity_a_bn: gs.curiosity_a_bn,
+      audio_url: refDay.audio_url || '',
       story_end: 0,
-      yt_query: dr.yt_query || '',
-      yt_label_bn: dr.yt_label_bn || dr.title_bn,
-      day_num: refDay.day,
-      ag_idx: 0
+      yt_query: gs.yt_query,
+      yt_label_bn: gs.yt_label_bn
     });
   });
 
+  // 2. Curated Laugh Stories
+  JHALAK_LAUGH_STORIES.forEach((ls, idx) => {
+    const refDay = DAYS_21[(idx + 3) % DAYS_21.length] || DAYS_21[0];
+    byCat.laugh.push({
+      id: ls.id,
+      vibe: 'laugh',
+      badge_bn: ls.badge_bn,
+      title_bn: ls.title_bn,
+      sections: [
+        { heading_bn: '📖 পেট ফাটা হাসির সম্পূর্ণ গল্প', body_bn: ls.story_bn, tone: 'story' },
+        { heading_bn: ls.hitch_title_bn, body_bn: ls.hitch_bn, tone: 'hitch' },
+        { heading_bn: ls.extra_title_bn, body_bn: ls.extra_bn, tone: 'extra' }
+      ],
+      hitch_label_bn: ls.hitch_title_bn,
+      hitch_bn: ls.hitch_bn,
+      curiosity_q_bn: ls.curiosity_q_bn,
+      curiosity_a_bn: ls.curiosity_a_bn,
+      audio_url: refDay.audio_url || '',
+      story_end: 0,
+      yt_query: ls.yt_query,
+      yt_label_bn: ls.yt_label_bn
+    });
+  });
+
+  // 3. Curated TV Cards (Moved from header tab into Reels 'tv' category)
+  JHALAK_TV_CARDS.forEach((tv, idx) => {
+    const refDay = DAYS_21[(idx + 6) % DAYS_21.length] || DAYS_21[0];
+    byCat.tv.push({
+      id: tv.id,
+      vibe: 'tv',
+      badge_bn: tv.badge_bn,
+      title_bn: tv.title_bn,
+      sections: [
+        { heading_bn: '📺 অনুষ্ঠানের বিস্তারিত পরিচয়', body_bn: tv.story_bn, tone: 'story' },
+        { heading_bn: tv.hitch_title_bn, body_bn: tv.hitch_bn, tone: 'hitch' },
+        { heading_bn: tv.extra_title_bn, body_bn: tv.extra_bn, tone: 'extra' }
+      ],
+      hitch_label_bn: tv.hitch_title_bn,
+      hitch_bn: tv.hitch_bn,
+      curiosity_q_bn: '🔮 টিভি গাইড: এই চ্যানেলটি কীভাবে চালু করবে?',
+      curiosity_a_bn: '✨ নিচের ইউটিউব লিঙ্কে একবার ছুঁলেই সরাসরি ভিডিও চালু হয়ে যাবে!',
+      audio_url: refDay.audio_url || '',
+      story_end: 0,
+      yt_query: tv.yt_query,
+      yt_label_bn: tv.yt_label_bn
+    });
+  });
+
+  // 4. Enrich Curriculum Items (Excluding nonsensical tech_65 phone/camera tutorials)
   DAYS_21.forEach(d => {
     const dNum = Number(d.day) || 1;
     (d.agendas || []).forEach((ag, agIdx) => {
-      const vibe = classifyAgendaToVibe(ag);
-      const hitch = buildHitchForAgenda(ag);
-      const curBox = buildCuriosityBoxForAgenda(ag);
-      const ytInfo = getRelevantYoutubeForAgenda(ag);
-      const card = {
+      const p = String(ag.pillar || '');
+      if (p === 'tech_65') return; // Skip phone/camera tutorial instructions that don't make sense in Jhalak
+      if (dNum === 20 && agIdx === 0) return; // Skip camera/mic tutorial card
+
+      if (p === 'english') {
+        byCat.english.push(buildEnglishSimpleLearnCard(ag, dNum, agIdx));
+        return;
+      }
+      if (p === 'hindi') {
+        byCat.hindi.push(buildHindiConversationCard(ag, dNum, agIdx));
+        return;
+      }
+      if (p === 'music') {
+        const sInfo = buildSongDeepMeaning(ag);
+        byCat.music.push({
+          id: 'd' + dNum + '_g' + agIdx,
+          vibe: 'music',
+          badge_bn: '🎵 গান',
+          title_bn: '🎵 ' + sInfo.song_name + ' — গানের গল্প ও গভীর অর্থ',
+          sections: [
+            { heading_bn: '🎼 গানের নেপথ্যের অনুপ্রেরণা ও ইতিহাস', body_bn: sInfo.story_bn, tone: 'story' },
+            { heading_bn: '🌺 গানের কথার অপূর্ব অর্থ ও ভাবার্থ', body_bn: sInfo.meaning_bn, tone: 'hitch' },
+            { heading_bn: '💡 গানের আসল অর্থ বোঝার সঠিক প্রশ্ন (The Right Hook)', body_bn: sInfo.hook_q_bn + '\n\n' + sInfo.hook_a_bn, tone: 'extra' }
+          ],
+          hitch_label_bn: '💡 গানের অর্থ বোঝার সঠিক প্রশ্ন',
+          hitch_bn: sInfo.hook_q_bn,
+          curiosity_q_bn: sInfo.hook_q_bn,
+          curiosity_a_bn: sInfo.hook_a_bn,
+          audio_url: ag.audio_url || d.audio_url || '',
+          story_end: Number(ag.story_end) || 0,
+          yt_query: sInfo.song_name + ' Bengali song',
+          yt_label_bn: '‘' + sInfo.song_name + '’ গানটি ইউটিউবে শোনো'
+        });
+        return;
+      }
+
+      const cleanStory = stripGeminiBoilerplate(ag.detail_bn);
+      const isGodsTopic = /সারদা|রামকৃষ্ণ|রাসমণি|দক্ষিণেশ্বর|নিবেদিতা/.test(ag.title_bn);
+
+      if (isGodsTopic) {
+        byCat.gods.push({
+          id: 'd' + dNum + '_g' + agIdx,
+          vibe: 'gods',
+          badge_bn: '🪷 ভগবান',
+          title_bn: ag.title_bn,
+          sections: [
+            {
+              heading_bn: '📖 অমৃত কথা ও অনুপ্রেরণার গল্প',
+              body_bn: cleanStory + '\n\nবাংলার আধ্যাত্মিক ইতিহাসে এই ঘটনাটি আমাদের শেখায় যে মনের সরলতা, ভয়হীনতা এবং পরম ঈশ্বরের ওপর ভরসা রাখলে সংসারের কোনো বাধাই মানুষকে দমিয়ে রাখতে পারে না।',
+              tone: 'story'
+            },
+            {
+              heading_bn: '🪷 মনের শক্তি ও আশীর্বাদ',
+              body_bn: 'মা সারদা ও ঠাকুর সবসময় বলতেন—নিজের মনকে ছোট কোরো না মা; তোমার ভেতরেই মায়ের অসীম শক্তি ও স্নেহের আলো রয়েছে।',
+              tone: 'hitch'
+            }
+          ],
+          hitch_label_bn: '🪷 মায়ের আশীর্বাদ',
+          hitch_bn: 'নিজের মনকে সর্বদা প্রসন্ন ও ভয়হীন রাখাই ভগবানের সবচেয়ে বড় পূজা মা।',
+          curiosity_q_bn: '🔮 অমৃত ভাবনা: এই জীবনকথা থেকে আমাদের প্রতিদিনের জীবনে কোন শান্তির শিক্ষাটি মেলে?',
+          curiosity_a_bn: '🌸 সংসারের সব কাজের মাঝেও নিজের মনকে শান্ত, উদার ও আনন্দময় রাখা!',
+          audio_url: ag.audio_url || d.audio_url || '',
+          story_end: Number(ag.story_end) || 0,
+          yt_query: ag.title_bn + ' Bengali story',
+          yt_label_bn: ag.title_bn
+        });
+        return;
+      }
+
+      if (p === 'gk_inspiring') {
+        byCat.curiosity.push({
+          id: 'd' + dNum + '_g' + agIdx,
+          vibe: 'curiosity',
+          badge_bn: '🔍 কৌতূহল',
+          title_bn: ag.title_bn,
+          sections: [
+            {
+              heading_bn: '📖 অবাক পৃথিবীর বিস্ময়কর কথা',
+              body_bn: cleanStory + '\n\nআমাদের চারপাশের প্রকৃতি ও পৃথিবীর এই আশ্চর্য ঘটনাগুলো জানলে মন যেমন আনন্দে ভরে ওঠে, তেমনই নতুন কিছু জানার কৌতূহল মনকে চিরতরুণ ও সতেজ রাখে।',
+              tone: 'story'
+            },
+            {
+              heading_bn: '🔬 সহজ ভাষায় এর আসল রহস্য',
+              body_bn: 'প্রকৃতি ও বিজ্ঞানের প্রতিটি নিয়মের পেছনেই রয়েছে এক আশ্চর্য ভারসাম্য। বয়স যতই হোক না কেন, প্রতিদিন এমন একটি করে নতুন বিস্ময়ের কথা জানলে মস্তিষ্ক ও মন দুটোই দারুণ চনমনে থাকে মা!',
+              tone: 'hitch'
+            }
+          ],
+          hitch_label_bn: '🌍 অবাক কৌতূহল',
+          hitch_bn: 'রোজ একটি করে নতুন ও অবাক করা বিষয় জানার আনন্দ মনকে সবসময় সজীব ও তরুণ রাখে মা!',
+          curiosity_q_bn: '🔮 জাদুর পর্দা খোলো: এই বিস্ময়কর বিষয়টির সবচেয়ে সুন্দর দিক কোনটি?',
+          curiosity_a_bn: '✨ প্রকৃতির অসীম বুদ্ধি আর মানুষের অদম্য মনের জোর!',
+          audio_url: ag.audio_url || d.audio_url || '',
+          story_end: Number(ag.story_end) || 0,
+          yt_query: ag.title_bn + ' Bengali',
+          yt_label_bn: ag.title_bn
+        });
+        return;
+      }
+
+      // covert_cbt, personal_therapy, bengali_expr -> calm (🦋 শান্তি)
+      const calmReframe = p === 'covert_cbt'
+        ? 'তাজা ও ভালো জিনিস আজই আনন্দে ব্যবহার করো মা—পুরনো বা সামান্য জিনিসের মায়ায় নিজের বর্তমানের আনন্দকে কখনো তুলে রাখবে না।'
+        : (p === 'bengali_expr'
+          ? 'কে কী ভাববে সেই অহেতুক সঙ্কোচ ঝেড়ে ফেলে নিজের খাবারের পছন্দ, বিশ্রামের প্রয়োজন এবং মনের কথা হাসিমুখে স্পষ্ট করে বলাই আত্মসম্মানের লক্ষণ মা।'
+          : 'রানাঘাটের শৈশব থেকে শুরু করে কৌশিক ও দিদিকে মানুষ করা—তোমার জীবনের প্রতিটি অধ্যায় গর্বের ও ভালোবাসার। আজ সব পুরনো ভার নামিয়ে রেখে কেবল নিজের আনন্দে থাকো মা।');
+
+      byCat.calm.push({
         id: 'd' + dNum + '_g' + agIdx,
-        vibe: vibe,
-        is_music: String(ag.pillar || '') === 'music',
-        badge_bn: getSimpleBadgeForAgenda(ag, vibe),
+        vibe: 'calm',
+        badge_bn: '🦋 শান্তি',
         title_bn: ag.title_bn,
-        hook_bn: ag.detail_bn,
-        hitch_label_bn: hitch.label_bn,
-        hitch_bn: hitch.text_bn,
-        curiosity_q_bn: curBox.q_bn,
-        curiosity_a_bn: curBox.a_bn,
+        sections: [
+          {
+            heading_bn: '📖 মনের গল্প ও স্মৃতির ঝাঁপি',
+            body_bn: cleanStory + '\n\nসংসারের দীর্ঘ পথ চলতে চলতে অনেক সময় আমরা নিজেদের খুশি ও আরামের কথা ভুলে যাই। কিন্তু একটু থেমে নিজের মনের দিকে তাকালেই বোঝা যায়—নিজেকে ভালো রাখা এবং মনের কথা খোলাখুলি বলা কতটা আনন্দের!',
+            tone: 'story'
+          },
+          {
+            heading_bn: '🦋 মনের আরাম ও নতুন দৃষ্টিভঙ্গি',
+            body_bn: calmReframe,
+            tone: 'hitch'
+          },
+          {
+            heading_bn: '🌿 আজকের শান্ত অনুভব',
+            body_bn: 'তুমি, কৌশিক আর দিদি—তোমরা তিনজনই এক মাটির মানুষ। আজকের দিনটা কোনো তাড়াহুড়ো ছাড়া নিজের পছন্দের খাবার, গান আর বিশ্রামে উপভোগ করো মা।',
+            tone: 'extra'
+          }
+        ],
+        hitch_label_bn: '🦋 মনের আরাম',
+        hitch_bn: calmReframe,
+        curiosity_q_bn: '🔮 মনের আয়না: আজ নিজেকে কোন মিষ্টি সত্যিটা মনে করিয়ে দেবে মা?',
+        curiosity_a_bn: '🌸 “আমার নিজের আরাম, তাজা খাবার ও মনের আনন্দই আজ সবার আগে!”',
         audio_url: ag.audio_url || d.audio_url || '',
         story_end: Number(ag.story_end) || 0,
-        yt_query: ytInfo.query,
-        yt_label_bn: ytInfo.label_bn,
-        day_num: dNum,
-        ag_idx: agIdx
-      };
-      if (vibe === 'cbt_calm') cbts.push(card);
-      else if (vibe === 'curiosity_song') curiosities.push(card);
-      else delights.push(card);
+        yt_query: /রানাঘাট|শান্তিনিকেতন|দুর্গাপুজো/.test(ag.title_bn) ? ag.title_bn + ' Bengali' : '',
+        yt_label_bn: ag.title_bn
+      });
     });
   });
 
+  // Interleave harmoniously across all 8 categories
+  const order = ['gods', 'laugh', 'calm', 'music', 'curiosity', 'english', 'hindi', 'tv'];
+  const ptr = { gods: 0, laugh: 0, calm: 0, music: 0, curiosity: 0, english: 0, hindi: 0, tv: 0 };
   const mixed = [];
-  let iD = 0, iC = 0, iQ = 0;
-  while (iD < delights.length || iC < cbts.length || iQ < curiosities.length) {
-    if (iD < delights.length) mixed.push(delights[iD++]);
-    if (iC < cbts.length) mixed.push(cbts[iC++]);
-    if (iQ < curiosities.length) mixed.push(curiosities[iQ++]);
-    if (iQ < curiosities.length) mixed.push(curiosities[iQ++]);
+  let added = true;
+  while (added) {
+    added = false;
+    for (let i = 0; i < order.length; i++) {
+      const k = order[i];
+      if (ptr[k] < byCat[k].length) {
+        mixed.push(byCat[k][ptr[k]++]);
+        added = true;
+      }
+    }
   }
   return mixed;
 }
@@ -292,3 +448,16 @@ const ALL_JHALAK_REELS = buildAllJhalakReels();
 function jhBnNum(n) {
   return String(n).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
 }
+
+function getJhalakCategoryCounts() {
+  const counts = { all: ALL_JHALAK_REELS.length };
+  JHALAK_CATEGORIES.forEach(c => {
+    if (c.id !== 'all') counts[c.id] = 0;
+  });
+  ALL_JHALAK_REELS.forEach(r => {
+    counts[r.vibe] = (counts[r.vibe] || 0) + 1;
+  });
+  return counts;
+}
+
+const JHALAK_CATEGORY_COUNTS = getJhalakCategoryCounts();

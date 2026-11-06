@@ -1,26 +1,39 @@
 /* ============================================================================
-   ✨ ঝলক (JHALAK) — MODULE 2: FULL-SCREEN REELS PLAYER, MULTI-SELECT CATEGORIES,
-   TOP LISTEN BUTTON, RELEVANT YOUTUBE LINKS, TV TAB & SETTINGS (AUTO-REELS,
-   AUTO-PLAY VOICES & CHITHI)
+   ✨ ঝলক (JHALAK) — MODULE 2: LONG-PAGE UP/DOWN READER, LEFT/RIGHT NAVIGATION,
+   CATEGORY DROPDOWN (SINGLE / MULTI-SELECT), STICKY MULTI-LIKE BUTTON,
+   CATEGORY STATS & SETTINGS DRAWER
    ============================================================================ */
 
-let jhActiveTab = 'reels';
 let jhSelectedChannels = new Set(['all']);
+let jhMultiSelectCategories = false;
+let jhCategoryDropdownOpen = false;
 let jhFilteredReels = ALL_JHALAK_REELS.slice();
 let jhCurrentIdx = 0;
 let jhAutoFlow = true;
 let jhAutoPlayVoices = true;
+let jhShowLikeCount = true;
 let jhAudioPlaying = false;
 let jhAutoAdvanceTimer = null;
 let jhSlideLetterIdx = 0;
-let jhObserver = null;
 let jhRevealedMap = {};
+let jhLikesMap = {};
+let jhTouchStartX = 0;
+let jhTouchStartY = 0;
 
 try {
   const savedFlow = localStorage.getItem('ma_jhalak_auto_flow_v1');
   if (savedFlow === '0') jhAutoFlow = false;
   const savedVoice = localStorage.getItem('ma_jhalak_auto_voice_v1');
   if (savedVoice === '0') jhAutoPlayVoices = false;
+  const savedMulti = localStorage.getItem('ma_jhalak_cat_multiselect_v1');
+  if (savedMulti === '1') jhMultiSelectCategories = true;
+  const savedShowLikes = localStorage.getItem('ma_jhalak_show_likes_v1');
+  if (savedShowLikes === '0') jhShowLikeCount = false;
+  const savedLikes = localStorage.getItem('ma_jhalak_likes_v1');
+  if (savedLikes) {
+    const parsed = JSON.parse(savedLikes);
+    if (parsed && typeof parsed === 'object') jhLikesMap = parsed;
+  }
 } catch (e) {}
 
 function getJhAudioEl() {
@@ -42,14 +55,14 @@ function stopJhAudio() {
 
 function spawnLotusBurst(x, y, symbols) {
   if (typeof document === 'undefined' || !document.body) return;
-  const icons = symbols || ['🌸', '✨', '💖', '🪷'];
+  const icons = symbols || ['❤️', '🌸', '✨', '💖'];
   for (let i = 0; i < 5; i++) {
     const el = document.createElement('div');
     el.className = 'jh-particle-burst';
     el.textContent = icons[i % icons.length];
     const dx = (Math.random() - 0.5) * 90;
-    el.style.left = Math.max(20, Math.min(window.innerWidth - 40, (x || window.innerWidth / 2) + dx)) + 'px';
-    el.style.top = Math.max(60, (y || window.innerHeight * 0.65) - i * 12) + 'px';
+    el.style.left = Math.max(20, Math.min(window.innerWidth - 40, (x || window.innerWidth * 0.8) + dx)) + 'px';
+    el.style.top = Math.max(60, (y || window.innerHeight * 0.75) - i * 12) + 'px';
     document.body.appendChild(el);
     setTimeout(() => {
       if (el.parentNode) el.parentNode.removeChild(el);
@@ -57,74 +70,209 @@ function spawnLotusBurst(x, y, symbols) {
   }
 }
 
-/* HEADER TABS: JHALAK REELS vs TV */
-function switchJhalakMainTab(tabName) {
-  jhActiveTab = tabName === 'tv' ? 'tv' : 'reels';
-  stopJhAudio();
-
-  const tabReels = document.getElementById('tabJhReels');
-  const tabTv = document.getElementById('tabJhTv');
-  const chanStrip = document.getElementById('jhChannelStrip');
-  const reelsVp = document.getElementById('jhReelsViewport');
-  const tvVp = document.getElementById('jhTvViewport');
-
-  if (tabReels) tabReels.classList.toggle('active', jhActiveTab === 'reels');
-  if (tabTv) tabTv.classList.toggle('active', jhActiveTab === 'tv');
-  if (chanStrip) chanStrip.style.display = jhActiveTab === 'reels' ? 'flex' : 'none';
-  if (reelsVp) reelsVp.style.display = jhActiveTab === 'reels' ? 'block' : 'none';
-  if (tvVp) tvVp.style.display = jhActiveTab === 'tv' ? 'block' : 'none';
+/* CATEGORY DROPDOWN: SINGLE-SELECT OR MULTI-SELECT (TOGGLED IN SETTINGS) */
+function toggleJhCategoryDropdown(ev) {
+  if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
+  jhCategoryDropdownOpen = !jhCategoryDropdownOpen;
+  const menu = document.getElementById('jhCategoryDropdownMenu');
+  if (menu) menu.classList.toggle('open', jhCategoryDropdownOpen);
+  renderJhCategoryDropdownUI();
 }
 
-/* MULTI-SELECT CATEGORY FILTERING */
-function filterJhalakChannel(channelId) {
+function closeJhCategoryDropdown() {
+  jhCategoryDropdownOpen = false;
+  const menu = document.getElementById('jhCategoryDropdownMenu');
+  if (menu) menu.classList.remove('open');
+}
+
+function getSelectedCategorySummaryLabel() {
+  if (jhSelectedChannels.has('all') || jhSelectedChannels.size === 0) {
+    return `✨ সব (${jhBnNum(JHALAK_CATEGORY_COUNTS.all || ALL_JHALAK_REELS.length)}) ▾`;
+  }
+  const selectedList = JHALAK_CATEGORIES.filter(c => jhSelectedChannels.has(c.id));
+  if (selectedList.length === 1) {
+    const c = selectedList[0];
+    return `${c.label_bn} (${jhBnNum(JHALAK_CATEGORY_COUNTS[c.id] || 0)}) ▾`;
+  }
+  return `📂 ${jhBnNum(selectedList.length)}টি বিভাগ (${jhBnNum(jhFilteredReels.length)}) ▾`;
+}
+
+function renderJhCategoryDropdownUI() {
+  const triggerBtn = document.getElementById('btnJhCategoryDropdown');
+  if (triggerBtn) {
+    triggerBtn.textContent = getSelectedCategorySummaryLabel();
+  }
+  const menu = document.getElementById('jhCategoryDropdownMenu');
+  if (!menu) return;
+
+  const modeBadge = jhMultiSelectCategories
+    ? '☑️ একসাথে একাধিক বিভাগ বেছে নাও (Multi-Select)'
+    : '🔘 যেকোনো একটি বিভাগ বেছে নাও (Single-Select)';
+
+  const itemsHtml = JHALAK_CATEGORIES.map(cat => {
+    const isSel = jhSelectedChannels.has(cat.id);
+    const count = JHALAK_CATEGORY_COUNTS[cat.id] || 0;
+    const indicator = jhMultiSelectCategories
+      ? (isSel ? '☑️' : '⬜')
+      : (isSel ? '🔘' : '⚪');
+    return `
+      <button type="button" class="jh-cat-option ${isSel ? 'active' : ''}" data-chan="${cat.id}" onclick="filterJhalakChannel('${cat.id}', event)">
+        <span class="jh-cat-opt-left">${indicator} <span>${cat.label_bn}</span></span>
+        <span class="jh-cat-count-pill">${jhBnNum(count)}টি</span>
+      </button>
+    `;
+  }).join('');
+
+  menu.innerHTML = `
+    <div class="jh-cat-menu-header">${modeBadge}</div>
+    <div class="jh-cat-options-list">${itemsHtml}</div>
+  `;
+}
+
+function renderJhCategoryStatsUI() {
+  const statsBox = document.getElementById('jhCategoryStatsBox');
+  if (!statsBox) return;
+
+  const rowsHtml = JHALAK_CATEGORIES.map(cat => {
+    const count = JHALAK_CATEGORY_COUNTS[cat.id] || 0;
+    let catLikes = 0;
+    ALL_JHALAK_REELS.forEach(r => {
+      if (cat.id === 'all' || r.vibe === cat.id) {
+        catLikes += Number(jhLikesMap[r.id]) || 0;
+      }
+    });
+    const likeBadge = jhShowLikeCount
+      ? `<span class="jh-stat-likes">❤️ ${jhBnNum(catLikes)}</span>`
+      : '';
+    return `
+      <div class="jh-stat-chip">
+        <span>${cat.label_bn}</span>
+        <span><strong>${jhBnNum(count)}টি পাতা</strong> ${likeBadge}</span>
+      </div>
+    `;
+  }).join('');
+
+  statsBox.innerHTML = rowsHtml;
+}
+
+function filterJhalakChannel(channelId, ev) {
+  if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
   const ch = channelId || 'all';
   stopJhAudio();
 
-  if (ch === 'all') {
-    jhSelectedChannels = new Set(['all']);
+  if (!jhMultiSelectCategories) {
+    // Single-Select dropdown mode
+    jhSelectedChannels = new Set([ch]);
+    closeJhCategoryDropdown();
   } else {
-    jhSelectedChannels.delete('all');
-    if (jhSelectedChannels.has(ch)) {
-      jhSelectedChannels.delete(ch);
+    // Multi-Select dropdown mode
+    if (ch === 'all') {
+      jhSelectedChannels = new Set(['all']);
     } else {
-      jhSelectedChannels.add(ch);
-    }
-    if (jhSelectedChannels.size === 0) {
-      jhSelectedChannels.add('all');
+      jhSelectedChannels.delete('all');
+      if (jhSelectedChannels.has(ch)) {
+        jhSelectedChannels.delete(ch);
+      } else {
+        jhSelectedChannels.add(ch);
+      }
+      if (jhSelectedChannels.size === 0) {
+        jhSelectedChannels.add('all');
+      }
     }
   }
-
-  document.querySelectorAll('.jh-chan-chip').forEach(btn => {
-    const cAttr = btn.getAttribute('data-chan');
-    btn.classList.toggle('active', jhSelectedChannels.has(cAttr));
-  });
 
   if (jhSelectedChannels.has('all')) {
     jhFilteredReels = ALL_JHALAK_REELS.slice();
   } else {
-    jhFilteredReels = ALL_JHALAK_REELS.filter(r =>
-      jhSelectedChannels.has(r.vibe) || (jhSelectedChannels.has('music') && r.is_music)
-    );
+    jhFilteredReels = ALL_JHALAK_REELS.filter(r => jhSelectedChannels.has(r.vibe));
   }
 
   jhCurrentIdx = 0;
+  renderJhCategoryDropdownUI();
+  renderJhalakReelStream();
+}
+
+/* LEFT / RIGHT PAGE NAVIGATION (PREV / NEXT) */
+function stepJhalakReel(delta, autoPlayAfter) {
+  if (!jhFilteredReels.length) return;
+  stopJhAudio();
+  const len = jhFilteredReels.length;
+  jhCurrentIdx = (jhCurrentIdx + delta + len) % len;
   renderJhalakReelStream();
   const vp = document.getElementById('jhReelsViewport');
   if (vp) vp.scrollTop = 0;
+  if (autoPlayAfter) {
+    setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 240);
+  }
 }
 
-/* SETTINGS GEAR: AUTO-REELS, AUTO-PLAY VOICES & CHITHI */
+/* TRANSLUCENT STICK-ON LIKE BUTTON (SAME CONTENT CAN BE LIKED SEVERAL TIMES) */
+function getReelLikeCount(cardId) {
+  return Number(jhLikesMap[cardId]) || 0;
+}
+
+function likeJhalakReelAtIndex(idx, ev) {
+  if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
+  const card = jhFilteredReels[idx !== undefined ? idx : jhCurrentIdx];
+  if (!card) return;
+  jhLikesMap[card.id] = (Number(jhLikesMap[card.id]) || 0) + 1;
+  try {
+    localStorage.setItem('ma_jhalak_likes_v1', JSON.stringify(jhLikesMap));
+  } catch (e) {}
+
+  if (ev) {
+    spawnLotusBurst(ev.clientX, ev.clientY, ['❤️', '💖', '🌸', '✨']);
+  }
+  updateStickyLikeBtnUI();
+  renderJhCategoryStatsUI();
+}
+
+function likeCurrentJhalakReel(ev) {
+  likeJhalakReelAtIndex(jhCurrentIdx, ev);
+}
+
+function updateStickyLikeBtnUI() {
+  const card = jhFilteredReels[jhCurrentIdx];
+  const btn = document.getElementById('jhStickyLikeBtn');
+  if (!btn || !card) return;
+  const count = getReelLikeCount(card.id);
+  btn.classList.toggle('has-likes', count > 0);
+  if (jhShowLikeCount) {
+    btn.innerHTML = `<span class="jh-like-heart">❤️</span> <span class="jh-like-label">ভালো লেগেছে</span> <span id="jhStickyLikeCount" class="jh-like-count-badge">${jhBnNum(count)}</span>`;
+  } else {
+    btn.innerHTML = `<span class="jh-like-heart">❤️</span> <span class="jh-like-label">ভালো লেগেছে</span>`;
+  }
+}
+
+/* SETTINGS GEAR: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY & LIKE COUNT TOGGLES */
 function syncJhSettingsButtonsUI() {
   const flowBtn = document.getElementById('btnJhAutoFlow');
   if (flowBtn) {
     flowBtn.classList.toggle('active-flow', jhAutoFlow);
-    flowBtn.textContent = jhAutoFlow ? '🔄 অটো-রিলস: চালু' : '🔄 অটো-রিলস: বন্ধ';
+    flowBtn.textContent = jhAutoFlow ? '🔄 অটো-রিলস (পরের পাতা): চালু' : '🔄 অটো-রিলস (পরের পাতা): বন্ধ';
   }
   const voiceBtn = document.getElementById('btnJhAutoVoice');
   if (voiceBtn) {
     voiceBtn.classList.toggle('active-flow', jhAutoPlayVoices);
     voiceBtn.textContent = jhAutoPlayVoices ? '🔊 অটো-ভয়েস: চালু' : '🔊 অটো-ভয়েস: বন্ধ';
   }
+  const catModeBtn = document.getElementById('btnJhCatSelectMode');
+  if (catModeBtn) {
+    catModeBtn.classList.toggle('active-flow', jhMultiSelectCategories);
+    catModeBtn.textContent = jhMultiSelectCategories
+      ? '📂 বিভাগ নির্বাচন: অনেকগুলো (Multi-Select)'
+      : '📂 বিভাগ নির্বাচন: একটাই (Single-Select)';
+  }
+  const showLikesBtn = document.getElementById('btnJhShowLikeCount');
+  if (showLikesBtn) {
+    showLikesBtn.classList.toggle('active-flow', jhShowLikeCount);
+    showLikesBtn.textContent = jhShowLikeCount
+      ? '❤️ লাইকের সংখ্যা দেখাও: চালু'
+      : '❤️ লাইকের সংখ্যা দেখাও: বন্ধ';
+  }
+  renderJhCategoryDropdownUI();
+  renderJhCategoryStatsUI();
+  updateStickyLikeBtnUI();
 }
 
 function toggleJhAutoFlow() {
@@ -140,7 +288,24 @@ function toggleJhAutoVoice() {
   syncJhSettingsButtonsUI();
 }
 
+function toggleJhCategorySelectMode() {
+  jhMultiSelectCategories = !jhMultiSelectCategories;
+  try { localStorage.setItem('ma_jhalak_cat_multiselect_v1', jhMultiSelectCategories ? '1' : '0'); } catch (e) {}
+  if (!jhMultiSelectCategories && jhSelectedChannels.size > 1) {
+    const first = Array.from(jhSelectedChannels)[0] || 'all';
+    filterJhalakChannel(first);
+  }
+  syncJhSettingsButtonsUI();
+}
+
+function toggleJhShowLikeCount() {
+  jhShowLikeCount = !jhShowLikeCount;
+  try { localStorage.setItem('ma_jhalak_show_likes_v1', jhShowLikeCount ? '1' : '0'); } catch (e) {}
+  syncJhSettingsButtonsUI();
+}
+
 function openJhalakSettingsDrawer() {
+  closeJhCategoryDropdown();
   syncJhSettingsButtonsUI();
   const modal = document.getElementById('jhSettingsDrawer');
   if (modal) modal.classList.add('open');
@@ -152,10 +317,10 @@ function closeJhalakSettingsDrawer() {
 }
 
 function toggleJhalakCuriosityBox(idx, ev) {
-  const card = jhFilteredReels[idx];
+  const card = jhFilteredReels[idx !== undefined ? idx : jhCurrentIdx];
   if (!card) return;
   jhRevealedMap[card.id] = !jhRevealedMap[card.id];
-  const box = document.getElementById('jhCurBox_' + idx);
+  const box = document.getElementById('jhCurBox_' + (idx !== undefined ? idx : jhCurrentIdx));
   if (box) {
     box.classList.toggle('revealed', !!jhRevealedMap[card.id]);
     const hint = box.querySelector('.jh-curiosity-tap-hint');
@@ -167,29 +332,27 @@ function toggleJhalakCuriosityBox(idx, ev) {
 }
 
 function updateActiveCardPlayBtns() {
-  jhFilteredReels.forEach((c, idx) => {
-    const mainBtn = document.getElementById('jhMainPlay_' + idx);
-    const isThisPlaying = jhAudioPlaying && idx === jhCurrentIdx;
-    if (mainBtn) {
-      mainBtn.classList.toggle('playing', isThisPlaying);
-      mainBtn.textContent = isThisPlaying ? '⏹️ থামাও' : '🔊 শোনো';
-    }
-  });
+  const mainBtn = document.getElementById('jhMainPlay_' + jhCurrentIdx);
+  if (mainBtn) {
+    mainBtn.classList.toggle('playing', jhAudioPlaying);
+    mainBtn.textContent = jhAudioPlaying ? '⏹️ থামাও' : '🔊 শোনো';
+  }
 }
 
 function playReelAudioAtIndex(idx) {
-  const card = jhFilteredReels[idx];
+  const targetIdx = idx !== undefined ? idx : jhCurrentIdx;
+  const card = jhFilteredReels[targetIdx];
   if (!card) return;
   const aud = getJhAudioEl();
   if (!aud) return;
 
-  if (jhAudioPlaying && jhCurrentIdx === idx) {
+  if (jhAudioPlaying && jhCurrentIdx === targetIdx) {
     stopJhAudio();
     return;
   }
 
   stopJhAudio();
-  jhCurrentIdx = idx;
+  jhCurrentIdx = targetIdx;
   if (!card.audio_url) return;
 
   aud.src = card.audio_url;
@@ -198,11 +361,11 @@ function playReelAudioAtIndex(idx) {
   aud.ontimeupdate = function () {
     if (cutSec > 2 && aud.currentTime >= cutSec) {
       aud.pause();
-      handleReelAudioEnded(idx);
+      handleReelAudioEnded(targetIdx);
     }
   };
   aud.onended = function () {
-    handleReelAudioEnded(idx);
+    handleReelAudioEnded(targetIdx);
   };
 
   jhAudioPlaying = true;
@@ -219,95 +382,101 @@ function playReelAudioAtIndex(idx) {
 function handleReelAudioEnded(idx) {
   jhAudioPlaying = false;
   updateActiveCardPlayBtns();
-  if (jhAutoFlow && idx === jhCurrentIdx && idx + 1 < jhFilteredReels.length) {
+  if (jhAutoFlow && idx === jhCurrentIdx && jhFilteredReels.length > 1) {
     jhAutoAdvanceTimer = setTimeout(() => {
-      scrollToReelIndex(idx + 1, jhAutoPlayVoices);
-    }, 1600);
+      stepJhalakReel(1, jhAutoPlayVoices);
+    }, 1500);
   }
 }
 
-function scrollToReelIndex(targetIdx, autoPlayAfter) {
-  const clamped = Math.max(0, Math.min(jhFilteredReels.length - 1, targetIdx));
-  jhCurrentIdx = clamped;
-  const slideEl = document.getElementById('jhSlide_' + clamped);
-  if (slideEl && typeof slideEl.scrollIntoView === 'function') {
-    slideEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-  if (autoPlayAfter) {
-    setTimeout(() => playReelAudioAtIndex(clamped), 380);
-  }
-}
-
+/* RENDER ACTIVE LONG-FORM SCROLLABLE PAGE (UP/DOWN SCROLL + LEFT/RIGHT NAV) */
 function renderJhalakReelStream() {
   const vp = document.getElementById('jhReelsViewport');
   if (!vp) return;
+  if (!jhFilteredReels.length) {
+    jhFilteredReels = ALL_JHALAK_REELS.slice();
+    jhCurrentIdx = 0;
+  }
+  const idx = Math.max(0, Math.min(jhFilteredReels.length - 1, jhCurrentIdx));
+  jhCurrentIdx = idx;
+  const card = jhFilteredReels[idx];
+  const isRev = !!jhRevealedMap[card.id];
+  const hasYt = Boolean(card.yt_query && String(card.yt_query).trim());
+  const ytUrl = hasYt
+    ? 'https://www.youtube.com/results?search_query=' + encodeURIComponent(card.yt_query)
+    : '';
+  const ytHtml = hasYt
+    ? `<a class="jh-yt-link" href="${ytUrl}" target="_blank" rel="noopener noreferrer">▶️ ইউটিউবে দেখো: ${card.yt_label_bn || card.title_bn} ↗</a>`
+    : '';
 
-  const html = jhFilteredReels.map((card, idx) => {
-    const isRev = !!jhRevealedMap[card.id];
-    const hasYt = Boolean(card.yt_query && String(card.yt_query).trim());
-    const ytUrl = hasYt
-      ? 'https://www.youtube.com/results?search_query=' + encodeURIComponent(card.yt_query)
-      : '';
-    const ytHtml = hasYt
-      ? `<a class="jh-yt-link" href="${ytUrl}" target="_blank" rel="noopener noreferrer">▶️ ইউটিউবে দেখো: ${card.yt_label_bn || card.title_bn} ↗</a>`
-      : '';
+  const sectionsList = Array.isArray(card.sections) && card.sections.length
+    ? card.sections
+    : [
+        { heading_bn: '📖 সম্পূর্ণ গল্প ও কথা', body_bn: card.hook_bn || '', tone: 'story' },
+        { heading_bn: card.hitch_label_bn || '🦋 মনের কথা', body_bn: card.hitch_bn || '', tone: 'hitch' }
+      ];
 
+  const sectionsHtml = sectionsList.map(sec => {
+    const paragraphs = String(sec.body_bn || '')
+      .split(/\n+/)
+      .filter(Boolean)
+      .map(p => `<p class="jh-sec-para">${p}</p>`)
+      .join('');
+    const toneClass = sec.tone === 'hitch' ? 'jh-sec-hitch' : (sec.tone === 'extra' ? 'jh-sec-extra' : 'jh-sec-story');
     return `
-      <article id="jhSlide_${idx}" class="jh-reel-slide" data-idx="${idx}" data-vibe="${card.vibe}">
-        <div class="jh-card-stage">
-          <div>
-            <div class="jh-card-top">
-              <span class="jh-vibe-badge">${card.badge_bn}</span>
-              <button id="jhMainPlay_${idx}" class="jh-top-listen-btn" onclick="playReelAudioAtIndex(${idx})">
-                🔊 শোনো
-              </button>
-            </div>
-            <h2 class="jh-hook-title">${card.title_bn}</h2>
-            <div class="jh-hook-story">${card.hook_bn}</div>
-            <div class="jh-hitch-ribbon">
-              <div class="jh-hitch-label">${card.hitch_label_bn}</div>
-              <div class="jh-hitch-text">${card.hitch_bn}</div>
-            </div>
-            <div id="jhCurBox_${idx}" class="jh-curiosity-box ${isRev ? 'revealed' : ''}" onclick="toggleJhalakCuriosityBox(${idx}, event)">
-              <div class="jh-curiosity-q">
-                <span>${card.curiosity_q_bn}</span>
-                <span class="jh-curiosity-tap-hint">${isRev ? '✨ খোলা হয়েছে' : '👆 ছুঁয়ে দেখো'}</span>
-              </div>
-              <div class="jh-curiosity-a">${card.curiosity_a_bn}</div>
-            </div>
-            ${ytHtml}
-          </div>
-        </div>
-      </article>
+      <section class="jh-content-section ${toneClass}">
+        <h3 class="jh-sec-heading">${sec.heading_bn}</h3>
+        <div class="jh-sec-body">${paragraphs}</div>
+      </section>
     `;
   }).join('');
 
-  vp.innerHTML = html;
-  setupJhalakScrollObserver();
-}
+  const pageCounterText = `${jhBnNum(idx + 1)} / ${jhBnNum(jhFilteredReels.length)}`;
+  const counterEl = document.getElementById('jhPageCounterBadge');
+  if (counterEl) counterEl.textContent = pageCounterText;
 
-function setupJhalakScrollObserver() {
-  if (typeof IntersectionObserver === 'undefined') return;
-  if (jhObserver) {
-    try { jhObserver.disconnect(); } catch (e) {}
-  }
-  const vp = document.getElementById('jhReelsViewport');
-  jhObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.65) {
-        const idx = Number(entry.target.getAttribute('data-idx')) || 0;
-        if (idx !== jhCurrentIdx) {
-          stopJhAudio();
-          jhCurrentIdx = idx;
-          if (jhAutoPlayVoices) {
-            playReelAudioAtIndex(idx);
-          }
-        }
-      }
-    });
-  }, { root: vp, threshold: [0.68] });
+  vp.innerHTML = `
+    <article id="jhSlide_${idx}" class="jh-reel-slide" data-idx="${idx}" data-vibe="${card.vibe}">
+      <div class="jh-card-stage">
+        <div class="jh-card-top">
+          <div class="jh-card-top-left">
+            <span class="jh-vibe-badge">${card.badge_bn}</span>
+            <span class="jh-page-pos-pill">পাতা ${pageCounterText}</span>
+          </div>
+          <button id="jhMainPlay_${idx}" class="jh-top-listen-btn" onclick="playReelAudioAtIndex(${idx})">
+            🔊 শোনো
+          </button>
+        </div>
 
-  document.querySelectorAll('.jh-reel-slide').forEach(el => jhObserver.observe(el));
+        <h2 class="jh-hook-title">${card.title_bn}</h2>
+
+        ${sectionsHtml}
+
+        <div id="jhCurBox_${idx}" class="jh-curiosity-box ${isRev ? 'revealed' : ''}" onclick="toggleJhalakCuriosityBox(${idx}, event)">
+          <div class="jh-curiosity-q">
+            <span>${card.curiosity_q_bn}</span>
+            <span class="jh-curiosity-tap-hint">${isRev ? '✨ খোলা হয়েছে' : '👆 ছুঁয়ে দেখো'}</span>
+          </div>
+          <div class="jh-curiosity-a">${card.curiosity_a_bn}</div>
+        </div>
+
+        ${ytHtml}
+
+        <div class="jh-bottom-lr-nav">
+          <button id="btnJhBottomPrev" type="button" class="jh-lr-btn" onclick="stepJhalakReel(-1, jhAutoPlayVoices)">
+            ⬅️ আগের পাতা
+          </button>
+          <span class="jh-lr-page-indicator">${pageCounterText}</span>
+          <button id="btnJhBottomNext" type="button" class="jh-lr-btn primary" onclick="stepJhalakReel(1, jhAutoPlayVoices)">
+            পরের পাতা ➡️
+          </button>
+        </div>
+      </div>
+    </article>
+  `;
+
+  updateStickyLikeBtnUI();
+  updateActiveCardPlayBtns();
 }
 
 /* KOUSHIK'S 8-SLIDE LETTER (CHITHI — OPENED FROM SETTINGS) */
@@ -353,4 +522,32 @@ function playJhalakLetterAudio() {
 window.addEventListener('DOMContentLoaded', () => {
   syncJhSettingsButtonsUI();
   renderJhalakReelStream();
+
+  document.addEventListener('click', () => {
+    if (jhCategoryDropdownOpen) closeJhCategoryDropdown();
+  });
+
+  window.addEventListener('keydown', ev => {
+    if (ev.key === 'ArrowLeft') stepJhalakReel(-1, jhAutoPlayVoices);
+    else if (ev.key === 'ArrowRight') stepJhalakReel(1, jhAutoPlayVoices);
+  });
+
+  const vp = document.getElementById('jhReelsViewport');
+  if (vp && typeof vp.addEventListener === 'function') {
+    vp.addEventListener('touchstart', ev => {
+      if (ev.touches && ev.touches[0]) {
+        jhTouchStartX = ev.touches[0].clientX;
+        jhTouchStartY = ev.touches[0].clientY;
+      }
+    }, { passive: true });
+    vp.addEventListener('touchend', ev => {
+      if (ev.changedTouches && ev.changedTouches[0]) {
+        const dx = ev.changedTouches[0].clientX - jhTouchStartX;
+        const dy = ev.changedTouches[0].clientY - jhTouchStartY;
+        if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.6) {
+          stepJhalakReel(dx < 0 ? 1 : -1, jhAutoPlayVoices);
+        }
+      }
+    }, { passive: true });
+  }
 });

@@ -53,7 +53,7 @@ KALYANI_JS = (
 ANONDO_CSS = (SRC_DIR / "anondo" / "styles" / "tokens.css", SRC_DIR / "anondo" / "styles" / "components.css")
 ANONDO_JS = (SRC_DIR / "anondo" / "js" / "audio.js", SRC_DIR / "anondo" / "js" / "views.js")
 JHALAK_CSS = (SRC_DIR / "jhalak" / "styles" / "jhalak.css",)
-JHALAK_JS = (SRC_DIR / "jhalak" / "js" / "feed-engine.js", SRC_DIR / "jhalak" / "js" / "player-ui.js")
+JHALAK_JS = (SRC_DIR / "jhalak" / "js" / "curated-content.js", SRC_DIR / "jhalak" / "js" / "feed-engine.js", SRC_DIR / "jhalak" / "js" / "player-ui.js")
 
 
 def b64_uri(path: Path, mime: str) -> str:

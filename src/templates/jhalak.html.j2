@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#18120E" />
-  <meta name="description" content="ঝলক (Jhalak) — মায়ের জন্য স্বতঃস্ফূর্ত আনন্দের রিলস, হাসির গল্প, ভগবানের লীলা, মনের আরাম, কৌতূহল ও গান।" />
+  <meta name="description" content="ঝলক (Jhalak) — মায়ের জন্য ভগবানের অমৃতকথা, হাসির গল্প, মনের শান্তি, কৌতূহল, চিরদিনের গান ও অর্থ, সহজ ইংরেজি শব্দ, হিন্দি কথোপকথন এবং টিভি।" />
   <title>✨ ঝলক</title>
   <link id="pageFavicon" data-emoji="✨" data-png-b64="{{ favicon_uri }}" data-https-png="https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion/assets/icons/favicon-kalyani.png?v=4" data-https-ico="https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion/assets/icons/favicon-kalyani.ico?v=4" rel="icon" type="image/png" sizes="64x64" href="{{ favicon_uri }}" />
   <link rel="apple-touch-icon" sizes="64x64" href="{{ favicon_uri }}" />
@@ -17,78 +17,75 @@
 </head>
 <body>
 
-  <!-- TOP FLOATING BAR: JHALAK + TV TABS, SETTINGS GEAR, AND MULTI-SELECT CATEGORIES -->
+  <!-- TOP BAR: BRAND + CATEGORY DROPDOWN (SINGLE/MULTI) + LEFT/RIGHT PAGE NAV + SETTINGS GEAR -->
   <header class="jh-topbar" role="banner">
     <div class="jh-topbar-row1">
-      <div class="jh-header-tabs" role="tablist">
-        <button id="tabJhReels" class="jh-header-tab active" onclick="switchJhalakMainTab('reels')">
-          ✨ ঝলক
+      <div class="jh-brand-cluster">
+        <span class="jh-brand-title">✨ ঝলক</span>
+
+        <!-- CATEGORY SELECTION DROPDOWN -->
+        <div id="jhCategoryDropdownWrap" class="jh-cat-dropdown-wrap">
+          <button id="btnJhCategoryDropdown" type="button" class="jh-cat-dropdown-btn" onclick="toggleJhCategoryDropdown(event)" aria-haspopup="listbox">
+            ✨ সব ▾
+          </button>
+          <div id="jhCategoryDropdownMenu" class="jh-cat-dropdown-menu" role="listbox" aria-label="বিভাগ নির্বাচন"></div>
+        </div>
+      </div>
+
+      <!-- LEFT / RIGHT PAGE NAVIGATION + SETTINGS GEAR -->
+      <div class="jh-top-right-controls">
+        <button id="btnJhPrevPage" type="button" class="jh-top-nav-btn" onclick="stepJhalakReel(-1, jhAutoPlayVoices)" title="আগের পাতা">
+          ⬅️ আগের
         </button>
-        <button id="tabJhTv" class="jh-header-tab" onclick="switchJhalakMainTab('tv')">
-          📺 টিভি
+        <span id="jhPageCounterBadge" class="jh-page-counter-badge">১ / ১২০</span>
+        <button id="btnJhNextPage" type="button" class="jh-top-nav-btn" onclick="stepJhalakReel(1, jhAutoPlayVoices)" title="পরের পাতা">
+          পরের ➡️
+        </button>
+        <button id="btnJhSettings" type="button" class="jh-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="সেটিংস" title="সেটিংস">
+          ⚙️
         </button>
       </div>
-      <button id="btnJhSettings" class="jh-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="সেটিংস" title="সেটিংস">
-        ⚙️
-      </button>
     </div>
-
-    <nav id="jhChannelStrip" class="jh-channel-strip" aria-label="বিভাগ">
-      <button id="chanAll" class="jh-chan-chip active" data-chan="all" onclick="filterJhalakChannel('all')">
-        ✨ সব
-      </button>
-      <button id="chanLaughGods" class="jh-chan-chip" data-chan="laugh_gods" onclick="filterJhalakChannel('laugh_gods')">
-        😂 হাসি
-      </button>
-      <button id="chanCbtCalm" class="jh-chan-chip" data-chan="cbt_calm" onclick="filterJhalakChannel('cbt_calm')">
-        🦋 শান্তি
-      </button>
-      <button id="chanCuriositySong" class="jh-chan-chip" data-chan="curiosity_song" onclick="filterJhalakChannel('curiosity_song')">
-        🔍 কৌতূহল
-      </button>
-      <button id="chanMusic" class="jh-chan-chip" data-chan="music" onclick="filterJhalakChannel('music')">
-        🎵 গান
-      </button>
-    </nav>
   </header>
 
-  <!-- FULL-SCREEN VERTICAL SCROLL-SNAP REELS STREAM -->
-  <main id="jhReelsViewport" class="jh-reels-viewport" aria-label="ঝলক রিলস স্ট্রিম"></main>
+  <!-- VERTICALLY SCROLLABLE (UP/DOWN) LONG-CONTENT PAGE VIEWPORT -->
+  <main id="jhReelsViewport" class="jh-reels-viewport" aria-label="ঝলক পাতা"></main>
 
-  <!-- TV TAB VIEWPORT -->
-  <section id="jhTvViewport" class="jh-tv-viewport" aria-label="টিভি">
-    <div class="jh-tv-container">
-      <h2 style="font-family:'Noto Serif Bengali',serif;font-size:1.35rem;margin-bottom:6px;">📺 মায়ের প্রিয় টিভি ও গান</h2>
-      <p style="font-size:0.95rem;color:#5C4938;margin-bottom:10px;">যেকোনো একটিতে ছুঁলেই ইউটিউবে সরাসরি চালু হয়ে যাবে:</p>
-      <div class="jh-tv-grid">
-        <a class="jh-tv-card" href="https://www.youtube.com/results?search_query=Gopal+Bhar+Bengali+full+episodes" target="_blank" rel="noopener noreferrer">😂 গোপাল ভাঁড়ের হাসির কার্টুন ↗</a>
-        <a class="jh-tv-card" href="https://www.youtube.com/results?search_query=Hemanta+Mukherjee+Sandhya+Mukherjee+Best+Bengali+Songs" target="_blank" rel="noopener noreferrer">🎵 হেমন্ত ও সন্ধ্যা মুখোপাধ্যায়ের গান ↗</a>
-        <a class="jh-tv-card" href="https://www.youtube.com/results?search_query=Uttam+Suchitra+Bengali+full+movies" target="_blank" rel="noopener noreferrer">🎬 উত্তম-সুচিত্রার সেরা বাংলা ছবি ↗</a>
-        <a class="jh-tv-card" href="https://www.youtube.com/results?search_query=Maa+Sarada+Sri+Ramakrishna+Bengali+stories" target="_blank" rel="noopener noreferrer">🪷 মা সারদা ও ঠাকুরের অমৃতকথা ↗</a>
-        <a class="jh-tv-card" href="https://www.youtube.com/results?search_query=Manna+Dey+Rabindra+Sangeet+Bengali+hit+songs" target="_blank" rel="noopener noreferrer">🎼 মান্না দে ও রবীন্দ্রসঙ্গীতের আসর ↗</a>
-        <a class="jh-tv-card" href="https://www.youtube.com/results?search_query=Satyajit+Ray+Feluda+Bengali+full+movie" target="_blank" rel="noopener noreferrer">🕵️‍♂️ সত্যজিৎ রায়ের ফেলুদা ও বাংলা ছবি ↗</a>
-      </div>
-    </div>
-  </section>
+  <!-- TRANSLUCENT STICK-ON LIKE BUTTON (SAME CONTENT CAN BE LIKED MULTIPLE TIMES) -->
+  <button id="jhStickyLikeBtn" type="button" class="jh-sticky-like-btn" onclick="likeCurrentJhalakReel(event)" aria-label="ভালো লেগেছে">
+    <span class="jh-like-heart">❤️</span> <span class="jh-like-label">ভালো লেগেছে</span> <span id="jhStickyLikeCount" class="jh-like-count-badge">০</span>
+  </button>
 
-  <!-- SETTINGS GEAR DRAWER: AUTO-REELS, AUTO-PLAY VOICES & CHITHI -->
+  <!-- SETTINGS GEAR DRAWER: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY, LIKE COUNT TOGGLE, CHITHI & STATS -->
   <div id="jhSettingsDrawer" class="jh-drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="jhSettingsDrawerTitle">
     <div class="jh-drawer-sheet">
       <div class="jh-drawer-head">
-        <h2 id="jhSettingsDrawerTitle" class="jh-drawer-title">⚙️ সেটিংস</h2>
-        <button id="btnCloseSettingsDrawer" class="jh-drawer-close" onclick="closeJhalakSettingsDrawer()">✕ বন্ধ করো</button>
+        <h2 id="jhSettingsDrawerTitle" class="jh-drawer-title">⚙️ সেটিংস ও পরিসংখ্যান</h2>
+        <button id="btnCloseSettingsDrawer" type="button" class="jh-drawer-close" onclick="closeJhalakSettingsDrawer()">✕ বন্ধ করো</button>
       </div>
+
       <div class="jh-settings-list">
-        <button id="btnJhAutoFlow" class="jh-settings-item-btn active-flow" onclick="toggleJhAutoFlow()">
-          🔄 অটো-রিলস: চালু
+        <button id="btnJhAutoFlow" type="button" class="jh-settings-item-btn active-flow" onclick="toggleJhAutoFlow()">
+          🔄 অটো-রিলস (পরের পাতা): চালু
         </button>
-        <button id="btnJhAutoVoice" class="jh-settings-item-btn active-flow" onclick="toggleJhAutoVoice()">
+        <button id="btnJhAutoVoice" type="button" class="jh-settings-item-btn active-flow" onclick="toggleJhAutoVoice()">
           🔊 অটো-ভয়েস: চালু
         </button>
-        <button id="btnJhOpenChithi" class="jh-settings-item-btn" onclick="openJhalakLetterDrawer()">
+        <button id="btnJhCatSelectMode" type="button" class="jh-settings-item-btn" onclick="toggleJhCategorySelectMode()">
+          📂 বিভাগ নির্বাচন: একটাই (Single-Select)
+        </button>
+        <button id="btnJhShowLikeCount" type="button" class="jh-settings-item-btn active-flow" onclick="toggleJhShowLikeCount()">
+          ❤️ লাইকের সংখ্যা দেখাও: চালু
+        </button>
+        <button id="btnJhOpenChithi" type="button" class="jh-settings-item-btn" onclick="openJhalakLetterDrawer()">
           <span>💌 চিঠি (কৌশিকের খোলা চিঠি ও ভিডিও)</span>
           <span>➡️</span>
         </button>
+      </div>
+
+      <div>
+        <h3 class="jh-stats-section-title">📊 প্রতিটি বিভাগের পাতার সংখ্যা ও লাইক পরিসংখ্যান</h3>
+        <div id="jhCategoryStatsBox" class="jh-stats-grid"></div>
       </div>
     </div>
   </div>
@@ -98,16 +95,16 @@
     <div class="jh-drawer-sheet">
       <div class="jh-drawer-head">
         <h2 id="jhLetterDrawerTitle" class="jh-drawer-title">💌 মায়ের জন্য কৌশিকের খোলা চিঠি</h2>
-        <button id="btnCloseLetterDrawer" class="jh-drawer-close" onclick="closeJhalakLetterDrawer()">✕ বন্ধ করো</button>
+        <button id="btnCloseLetterDrawer" type="button" class="jh-drawer-close" onclick="closeJhalakLetterDrawer()">✕ বন্ধ করো</button>
       </div>
       <div>
         <img id="jhLetterImg" class="jh-slide-img" src="" alt="মা ও পরিবারের ছবি" />
         <h3 id="jhLetterTitle" style="font-family:'Noto Serif Bengali',serif;font-size:1.15rem;margin-bottom:6px;"></h3>
         <p id="jhLetterBody" style="font-size:0.98rem;line-height:1.6;margin-bottom:12px;"></p>
         <div class="jh-letter-controls">
-          <button id="btnJhLetterPrev" class="jh-letter-step-btn" onclick="stepJhalakLetterSlide(-1)">⬅️ আগের পাতা</button>
-          <button id="btnJhLetterPlay" class="jh-top-listen-btn" onclick="playJhalakLetterAudio()">🔊 শোনো</button>
-          <button id="btnJhLetterNext" class="jh-letter-step-btn" onclick="stepJhalakLetterSlide(1)">পরের পাতা ➡️</button>
+          <button id="btnJhLetterPrev" type="button" class="jh-letter-step-btn" onclick="stepJhalakLetterSlide(-1)">⬅️ আগের পাতা</button>
+          <button id="btnJhLetterPlay" type="button" class="jh-top-listen-btn" onclick="playJhalakLetterAudio()">🔊 শোনো</button>
+          <button id="btnJhLetterNext" type="button" class="jh-letter-step-btn" onclick="stepJhalakLetterSlide(1)">পরের পাতা ➡️</button>
         </div>
         <a id="btnJhWatchMovie" class="jh-yt-link" href="{{ letter_video_url }}" target="_blank" rel="noopener noreferrer">
           🎬 পুরো ভিডিও চিঠিটি দেখো ▶️
