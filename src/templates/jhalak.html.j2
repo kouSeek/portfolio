@@ -17,7 +17,7 @@
 </head>
 <body>
 
-  <!-- TOP BAR: BRAND + CATEGORY DROPDOWN + SETTINGS GEAR (NO PREV/NEXT OR PAGE COUNTS) -->
+  <!-- TOP BAR: BRAND + CATEGORY DROPDOWN + LISTEN BUTTON + SETTINGS GEAR -->
   <header class="jh-topbar" role="banner">
     <div class="jh-topbar-row1">
       <div class="jh-brand-cluster">
@@ -32,19 +32,19 @@
         </div>
       </div>
 
-      <button id="btnJhSettings" type="button" class="jh-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="সেটিংস" title="সেটিংস">
-        ⚙️
-      </button>
+      <div class="jh-topbar-actions">
+        <button id="btnJhHeaderListen" type="button" class="jh-top-listen-btn" onclick="playReelAudioAtIndex()" aria-label="শোনো">
+          🔊 শোনো
+        </button>
+        <button id="btnJhSettings" type="button" class="jh-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="সেটিংস" title="সেটিংস">
+          ⚙️
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- VERTICALLY SCROLLABLE (UP/DOWN) LONG-CONTENT PAGE VIEWPORT (SWIPE LEFT/RIGHT FOR NEXT/PREV) -->
+  <!-- FULL-SCREEN LONG-CONTENT PAGE VIEWPORT (SWIPE LEFT/RIGHT FOR NEXT/PREV) -->
   <main id="jhReelsViewport" class="jh-reels-viewport" aria-label="ঝলক পাতা"></main>
-
-  <!-- TRANSLUCENT STICK-ON LIKE BUTTON (SAME CONTENT CAN BE LIKED MULTIPLE TIMES) -->
-  <button id="jhStickyLikeBtn" type="button" class="jh-sticky-like-btn" onclick="likeCurrentJhalakReel(event)" aria-label="ভালো লেগেছে">
-    <span class="jh-like-heart">❤️</span> <span class="jh-like-label">ভালো লেগেছে</span> <span id="jhStickyLikeCount" class="jh-like-count-badge">০</span>
-  </button>
 
   <!-- SETTINGS & ADMIN DRAWER: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY, LIKE COUNT TOGGLE, CHITHI, STATS & ADMIN DONE/LIKE EDITOR -->
   <div id="jhSettingsDrawer" class="jh-drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="jhSettingsDrawerTitle">

@@ -1,23 +1,18 @@
 /* ============================================================================
-   ✨ ঝলক (JHALAK) — MOBILE-FIRST ADAPTIVE THEME, PROFESSIONAL SIDEWAYS
-   PAGE TRANSITION, COMPACT DROPDOWNS & CATEGORY-LEVEL ADMIN CONTROLS
+   ✨ ঝলক (JHALAK) — FULL-SCREEN ZERO-WASTE MOBILE-FIRST THEME, HEADER LISTEN,
+   BOTTOM LIKE+DONE BAR, AND OPPOSITE-DIRECTION EDGE-TO-EDGE SWIPE ANIMATION
    ============================================================================ */
 :root {
   --jh-bg-deep: #140F0C;
-  --jh-bg-card: #211813;
-  --jh-bg-warm: #2B1F17;
   --jh-surface-cream: #FFFDF9;
   --jh-surface-soft: #FBF4E8;
   --jh-ink-dark: #1F1610;
   --jh-ink-muted: #5C4938;
-  --jh-cream-text: #FDF8F0;
-  --jh-cream-sub: #E6D5C3;
   --jh-gold: #F59E0B;
-  --jh-gold-soft: #FEF3C7;
   --jh-terra: #D9532F;
   --jh-emerald: #0E8358;
   --jh-rose: #E11D48;
-  --jh-border-gold: rgba(245, 158, 11, 0.34);
+  --jh-border-gold: rgba(245, 158, 11, 0.36);
   --jh-safe-top: env(safe-area-inset-top, 0px);
   --jh-safe-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -34,15 +29,15 @@ html, body {
   max-width: 100vw;
   height: 100dvh;
   overflow: hidden;
-  background: var(--jh-bg-deep);
-  color: var(--jh-cream-text);
+  background: var(--jh-surface-cream);
+  color: var(--jh-ink-dark);
   font-family: 'Noto Sans Bengali', sans-serif;
   line-height: 1.56;
   -webkit-font-smoothing: antialiased;
 }
 
 /* ============================================================================
-   1. MOBILE-FIRST TOP BAR & ADAPTIVE CATEGORY DROPDOWN (FITS ALL PHONES)
+   1. COMPACT TOP HEADER BAR: BRAND + CATEGORY DROPDOWN + LISTEN + SETTINGS
    ============================================================================ */
 .jh-topbar {
   position: fixed;
@@ -50,16 +45,16 @@ html, body {
   left: 0;
   right: 0;
   z-index: 80;
-  background: rgba(20, 15, 12, 0.94);
-  border-bottom: 1px solid rgba(245, 158, 11, 0.24);
-  padding: calc(8px + var(--jh-safe-top)) 10px 8px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(24, 18, 14, 0.96);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.28);
+  padding: calc(6px + var(--jh-safe-top)) 8px 6px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .jh-topbar-row1 {
   width: 100%;
-  max-width: 560px;
+  max-width: 720px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -71,7 +66,7 @@ html, body {
 .jh-brand-cluster {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   min-width: 0;
   flex: 1 1 auto;
   flex-wrap: nowrap;
@@ -80,12 +75,12 @@ html, body {
 .jh-brand-title {
   flex: 0 0 auto;
   font-family: 'Noto Serif Bengali', Georgia, serif;
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   font-weight: 800;
   color: #FFFBEB;
   background: rgba(43, 31, 23, 0.95);
   border: 1.5px solid var(--jh-border-gold);
-  padding: 5px 11px;
+  padding: 4px 9px;
   border-radius: 999px;
   white-space: nowrap;
 }
@@ -100,55 +95,107 @@ html, body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 4px;
   max-width: 100%;
-  min-height: 36px;
+  min-height: 34px;
   background: var(--jh-gold);
   color: #1F1610;
   border: 1.5px solid #FDE68A;
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 700;
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 999px;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  box-shadow: 0 3px 12px rgba(245, 158, 11, 0.28);
 }
 
 .jh-cat-dropdown-btn:active {
   transform: scale(0.96);
 }
 
-/* Mobile-first fixed-centered dropdown sheet so it NEVER overflows phone edges */
+.jh-topbar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.jh-top-listen-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 34px;
+  background: var(--jh-emerald);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(14, 131, 88, 0.3);
+}
+
+.jh-top-listen-btn.playing {
+  background: #D9532F;
+}
+
+.jh-top-listen-btn:active {
+  transform: scale(0.95);
+}
+
+.jh-gear-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--jh-border-gold);
+  background: rgba(43, 31, 23, 0.95);
+  color: #FFFBEB;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.jh-gear-btn:active {
+  transform: scale(0.92);
+}
+
+/* Mobile-first fixed-centered dropdown sheet (NO COUNTS IN DROPDOWN) */
 .jh-cat-dropdown-menu {
   display: none;
   position: fixed;
-  top: calc(54px + var(--jh-safe-top));
-  left: 10px;
-  right: 10px;
+  top: calc(48px + var(--jh-safe-top));
+  left: 8px;
+  right: 8px;
   width: auto;
-  max-width: 440px;
-  max-height: calc(100dvh - 76px - var(--jh-safe-top));
+  max-width: 420px;
+  max-height: calc(100dvh - 64px - var(--jh-safe-top));
   overflow-y: auto;
   background: var(--jh-surface-cream);
   color: var(--jh-ink-dark);
   border: 2px solid var(--jh-gold);
-  border-radius: 18px;
+  border-radius: 16px;
   padding: 10px;
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.62);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
   z-index: 110;
 }
 
 .jh-cat-dropdown-menu.open {
   display: block;
-  animation: jhMenuPop 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: jhMenuPop 0.16s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes jhMenuPop {
-  0% { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  0% { opacity: 0; transform: translateY(-6px) scale(0.98); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -162,7 +209,6 @@ html, body {
   text-align: center;
 }
 
-/* 2-column grid on mobile so all 9 categories fit without scrolling */
 .jh-cat-options-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -172,18 +218,18 @@ html, body {
 .jh-cat-option {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 4px;
+  justify-content: flex-start;
+  gap: 6px;
   width: 100%;
   min-width: 0;
   border: 1.5px solid #EBD9C0;
   background: #FBF4E8;
   color: var(--jh-ink-dark);
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   font-weight: 700;
-  padding: 8px 9px;
-  border-radius: 12px;
+  padding: 8px 10px;
+  border-radius: 11px;
   cursor: pointer;
   text-align: left;
 }
@@ -201,45 +247,15 @@ html, body {
 .jh-cat-opt-left {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.jh-cat-count-pill {
-  flex: 0 0 auto;
-  background: #FFF1E6;
-  color: #B93815;
-  border: 1px solid #FCD9BD;
-  font-size: 0.74rem;
-  font-weight: 700;
-  padding: 1px 7px;
-  border-radius: 999px;
-}
-
-.jh-gear-btn {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 1.5px solid var(--jh-border-gold);
-  background: rgba(43, 31, 23, 0.95);
-  color: #FFFBEB;
-  font-size: 1.08rem;
-  cursor: pointer;
-}
-
-.jh-gear-btn:active {
-  transform: scale(0.92);
-}
-
 /* ============================================================================
-   2. VIEWPORT & PROFESSIONAL SIDEWAYS PAGE TRANSITION (DUAL-CARD PARALLAX)
+   2. FULL-SCREEN EDGE-TO-EDGE VIEWPORT & OPPOSITE-DIRECTION SWIPE ANIMATIONS
    ============================================================================ */
 .jh-reels-viewport {
   position: relative;
@@ -248,116 +264,87 @@ html, body {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-  padding: calc(60px + var(--jh-safe-top)) 10px calc(86px + var(--jh-safe-bottom));
-  perspective: 1200px;
+  background: var(--jh-surface-cream);
+  padding: calc(46px + var(--jh-safe-top)) 0 0;
 }
 
 .jh-reel-slide {
   position: relative;
+  z-index: 2;
   width: 100%;
-  max-width: 540px;
-  margin: 0 auto;
-  will-change: transform, opacity;
-  transform-style: preserve-3d;
+  min-height: calc(100dvh - 46px - var(--jh-safe-top));
+  background: var(--jh-surface-cream);
+  will-change: transform;
   backface-visibility: hidden;
 }
 
-/* Professional sideways incoming card animations */
+/* Opposite-direction edge-to-edge sideways slide animations:
+   - Next (swipe left): current slides 0% -> -100% (left), next slides +100% -> 0%
+   - Prev (swipe right): current slides 0% -> +100% (right), prev slides -100% -> 0% */
 .jh-slide-anim-next {
-  animation: jhProSidewaysInNext 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: jhProSidewaysInNext 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .jh-slide-anim-prev {
-  animation: jhProSidewaysInPrev 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: jhProSidewaysInPrev 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Outgoing ghost card animations for seamless dual-card sideways handoff */
 .jh-outgoing-ghost {
   position: absolute;
-  top: calc(60px + var(--jh-safe-top));
-  left: 10px;
-  right: 10px;
-  max-width: 540px;
-  margin: 0 auto;
+  top: calc(46px + var(--jh-safe-top));
+  left: 0;
+  right: 0;
+  width: 100%;
+  min-height: calc(100dvh - 46px - var(--jh-safe-top));
+  background: var(--jh-surface-cream);
   pointer-events: none;
   z-index: 1;
-  will-change: transform, opacity;
+  will-change: transform;
   backface-visibility: hidden;
 }
 
 .jh-outgoing-ghost.out-left {
-  animation: jhProSidewaysOutLeft 0.40s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: jhProSidewaysOutLeft 0.36s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .jh-outgoing-ghost.out-right {
-  animation: jhProSidewaysOutRight 0.40s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: jhProSidewaysOutRight 0.36s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes jhProSidewaysInNext {
-  0% {
-    opacity: 0;
-    transform: translate3d(104%, 0, 0) scale(0.95) rotateY(-4deg);
-  }
-  65% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
-  }
-}
-
-@keyframes jhProSidewaysInPrev {
-  0% {
-    opacity: 0;
-    transform: translate3d(-104%, 0, 0) scale(0.95) rotateY(4deg);
-  }
-  65% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
-  }
+  0% { transform: translate3d(100%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
 }
 
 @keyframes jhProSidewaysOutLeft {
-  0% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(-44%, 0, 0) scale(0.92);
-  }
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-100%, 0, 0); }
+}
+
+@keyframes jhProSidewaysInPrev {
+  0% { transform: translate3d(-100%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
 }
 
 @keyframes jhProSidewaysOutRight {
-  0% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(44%, 0, 0) scale(0.92);
-  }
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(100%, 0, 0); }
 }
 
 /* ============================================================================
-   3. MOBILE-FIRST CARD STAGE, HEADER PILLS & CONTENT SECTIONS
+   3. FULL-PAGE ZERO-WASTE CONTENT STAGE & BOTTOM LIKE + DONE BAR
    ============================================================================ */
 .jh-card-stage {
   position: relative;
-  z-index: 2;
   width: 100%;
+  max-width: 720px;
+  min-height: calc(100dvh - 46px - var(--jh-safe-top));
+  margin: 0 auto;
   background: var(--jh-surface-cream);
   color: var(--jh-ink-dark);
-  border-radius: 20px;
-  border: 1.5px solid #EBD9C0;
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.46);
-  padding: 14px 14px 20px;
-  overflow: hidden;
+  padding: 12px 14px calc(22px + var(--jh-safe-bottom));
+  display: flex;
+  flex-direction: column;
 }
 
 .jh-card-top {
@@ -365,8 +352,7 @@ html, body {
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  margin-bottom: 11px;
-  flex-wrap: wrap;
+  margin-bottom: 8px;
 }
 
 .jh-vibe-badge {
@@ -375,81 +361,26 @@ html, body {
   gap: 4px;
   background: #FFF1E6;
   color: #B93815;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  padding: 4px 10px;
+  padding: 3px 10px;
   border-radius: 999px;
   border: 1px solid #FCD9BD;
-  white-space: nowrap;
-}
-
-.jh-card-top-actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: nowrap;
-  margin-left: auto;
-}
-
-.jh-top-listen-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  min-height: 36px;
-  background: var(--jh-emerald);
-  color: #FFFFFF;
-  border: none;
-  border-radius: 999px;
-  padding: 6px 13px;
-  font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.86rem;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-  box-shadow: 0 3px 10px rgba(14, 131, 88, 0.25);
-}
-
-.jh-top-listen-btn.playing {
-  background: #D9532F;
-}
-
-.jh-done-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  min-height: 36px;
-  background: #ECFDF5;
-  color: #065F46;
-  border: 1.5px solid #34D399;
-  border-radius: 999px;
-  padding: 5px 11px;
-  font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.84rem;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.jh-done-btn:active,
-.jh-top-listen-btn:active {
-  transform: scale(0.95);
 }
 
 .jh-hook-title {
   font-family: 'Noto Serif Bengali', Georgia, serif;
-  font-size: clamp(1.18rem, 4.4vw, 1.44rem);
+  font-size: clamp(1.22rem, 4.5vw, 1.5rem);
   font-weight: 800;
   color: #1F1610;
-  line-height: 1.42;
+  line-height: 1.4;
   margin-bottom: 12px;
 }
 
 .jh-content-section {
-  border-radius: 14px;
+  border-radius: 13px;
   padding: 12px 13px;
-  margin-bottom: 11px;
+  margin-bottom: 10px;
 }
 
 .jh-sec-story {
@@ -472,13 +403,13 @@ html, body {
   font-size: 0.98rem;
   font-weight: 800;
   color: #7C2D12;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
 
 .jh-sec-para {
-  font-size: 0.98rem;
+  font-size: 1rem;
   color: #2B2118;
-  line-height: 1.64;
+  line-height: 1.65;
   margin-bottom: 8px;
   overflow-wrap: anywhere;
 }
@@ -491,10 +422,10 @@ html, body {
 .jh-curiosity-box {
   background: #F0FDF4;
   border: 1.5px dashed #16A34A;
-  border-radius: 14px;
+  border-radius: 13px;
   padding: 11px 13px;
   cursor: pointer;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .jh-curiosity-box.revealed {
@@ -504,7 +435,7 @@ html, body {
 }
 
 .jh-curiosity-q {
-  font-size: 0.93rem;
+  font-size: 0.94rem;
   font-weight: 700;
   color: #065F46;
   display: flex;
@@ -517,9 +448,9 @@ html, body {
   flex: 0 0 auto;
   background: #0E8358;
   color: #FFFFFF;
-  font-size: 0.76rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  padding: 3px 9px;
+  padding: 2px 9px;
   border-radius: 999px;
   white-space: nowrap;
 }
@@ -529,7 +460,7 @@ html, body {
   margin-top: 8px;
   padding-top: 8px;
   border-top: 1px solid rgba(16, 185, 129, 0.28);
-  font-size: 0.95rem;
+  font-size: 0.96rem;
   font-weight: 600;
   color: #064E3B;
   line-height: 1.56;
@@ -555,38 +486,45 @@ html, body {
   font-weight: 700;
   text-decoration: none;
   text-align: center;
+  margin-bottom: 12px;
 }
 
-/* TRANSLUCENT STICK-ON LIKE BUTTON */
+/* BOTTOM OF PAGE CONTENT: LIKE BUTTON & DONE BUTTON SIDE BY SIDE */
+.jh-page-bottom-actions {
+  margin-top: auto;
+  padding-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
 .jh-sticky-like-btn {
-  position: fixed;
-  right: 12px;
-  bottom: calc(14px + var(--jh-safe-bottom));
-  z-index: 65;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  background: rgba(255, 241, 242, 0.82);
+  width: 100%;
+  min-height: 44px;
+  background: rgba(255, 241, 242, 0.92);
   color: #BE123C;
-  border: 1.5px solid rgba(251, 113, 133, 0.65);
-  border-radius: 999px;
-  padding: 8px 14px;
+  border: 1.5px solid rgba(251, 113, 133, 0.75);
+  border-radius: 14px;
+  padding: 9px 12px;
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   font-weight: 800;
   cursor: pointer;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 6px 20px rgba(190, 18, 60, 0.22);
-  transition: transform 0.14s ease, background 0.16s ease;
 }
 
 .jh-sticky-like-btn:active {
-  transform: scale(0.92);
+  transform: scale(0.96);
 }
 
 .jh-sticky-like-btn.has-likes {
-  background: rgba(255, 228, 230, 0.9);
+  background: #FFE4E6;
   border-color: #F43F5E;
 }
 
@@ -597,6 +535,28 @@ html, body {
   font-weight: 800;
   padding: 1px 8px;
   border-radius: 999px;
+}
+
+.jh-done-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 44px;
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1.5px solid #34D399;
+  border-radius: 14px;
+  padding: 9px 12px;
+  font-family: 'Noto Sans Bengali', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.jh-done-btn:active {
+  transform: scale(0.96);
 }
 
 /* FLOATING PARTICLE BURST */
@@ -657,7 +617,7 @@ html, body {
 
 .jh-drawer-title {
   font-family: 'Noto Serif Bengali', Georgia, serif;
-  font-size: 1.06rem;
+  font-size: 1.05rem;
   font-weight: 800;
   min-width: 0;
 }
@@ -716,7 +676,6 @@ html, body {
   color: #7C2D12;
 }
 
-/* Compact 2-column category stats grid on phones */
 .jh-stats-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -754,7 +713,6 @@ html, body {
   font-weight: 700;
 }
 
-/* CATEGORY-ORGANISED SELECTABLE ADMIN CONTROL PANEL (NO HUGE ITEM LIST) */
 .jh-admin-items-list {
   border: 1.5px solid #EBD9C0;
   border-radius: 14px;
@@ -936,35 +894,16 @@ html, body {
   text-align: center;
 }
 
-/* Desktop / Tablet adaptive scaling while preserving mobile-first ergonomics */
 @media (min-width: 600px) {
-  .jh-topbar {
-    padding: 10px 16px;
-  }
-  .jh-brand-title {
-    font-size: 1.15rem;
-  }
-  .jh-cat-dropdown-btn {
-    font-size: 0.93rem;
-    padding: 6px 14px;
-  }
   .jh-cat-dropdown-menu {
     position: absolute;
     top: calc(100% + 8px);
     left: 0;
     right: auto;
-    width: 340px;
-  }
-  .jh-reels-viewport {
-    padding: 68px 16px 96px;
-  }
-  .jh-reel-slide,
-  .jh-outgoing-ghost {
-    max-width: 640px;
+    width: 320px;
   }
   .jh-card-stage {
-    padding: 20px 22px 24px;
-    border-radius: 24px;
+    padding: 18px 24px 28px;
   }
   .jh-drawer-sheet {
     max-width: 620px;

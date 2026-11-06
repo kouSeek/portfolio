@@ -938,9 +938,11 @@ vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
         self.assertNotIn('id="btnJhNextPage"', jh_html)
         self.assertNotIn('id="jhPageCounterBadge"', jh_html)
         self.assertNotIn("jh-bottom-lr-nav", jh_html)
-        # 2. Category Dropdown + Slide Left/Right animations + Translucent Sticky Like button + Admin section
+        # 2. Category Dropdown + Header Listen button + Sideways animations + Bottom Like & Done actions + Admin section
         self.assertIn('id="btnJhCategoryDropdown"', jh_html)
         self.assertIn('id="jhCategoryDropdownMenu"', jh_html)
+        self.assertIn('id="btnJhHeaderListen"', jh_html)
+        self.assertIn("jh-page-bottom-actions", jh_html)
         self.assertIn("jh-slide-anim-next", jh_html)
         self.assertIn("jh-slide-anim-prev", jh_html)
         self.assertIn("jhProSidewaysInNext", jh_html)
@@ -1024,6 +1026,8 @@ const suite = code + `
   renderJhalakReelStream();
   syncJhSettingsButtonsUI();
   assert.strictEqual(getSelectedCategorySummaryLabel(), '✨ সব ▾', 'Top category dropdown must not show page count');
+  assert.ok(!el('jhCategoryDropdownMenu').innerHTML.includes('jh-cat-count-pill'), 'Category dropdown menu options must not display item counts');
+  assert.ok(el('jhReelsViewport').innerHTML.includes('jh-page-bottom-actions'), 'Done and Like buttons must sit at the bottom of each page content');
   const startId = jhFilteredReels[jhCurrentIdx].id;
   stepJhalakReel(1, false);
   const nextId = jhFilteredReels[jhCurrentIdx].id;

@@ -194,21 +194,18 @@ function renderJhCategoryDropdownUI() {
   const menu = document.getElementById('jhCategoryDropdownMenu');
   if (!menu) return;
 
-  const activeCounts = getActiveCategoryCounts();
   const modeBadge = jhMultiSelectCategories
     ? '☑️ একসাথে একাধিক বিভাগ বেছে নাও (Multi-Select)'
     : '🔘 যেকোনো একটি বিভাগ বেছে নাও (Single-Select)';
 
   const itemsHtml = JHALAK_CATEGORIES.map(cat => {
     const isSel = jhSelectedChannels.has(cat.id);
-    const count = activeCounts[cat.id] || 0;
     const indicator = jhMultiSelectCategories
       ? (isSel ? '☑️' : '⬜')
       : (isSel ? '🔘' : '⚪');
     return `
       <button type="button" class="jh-cat-option ${isSel ? 'active' : ''}" data-chan="${cat.id}" onclick="filterJhalakChannel('${cat.id}', event)">
         <span class="jh-cat-opt-left">${indicator} <span>${cat.label_bn}</span></span>
-        <span class="jh-cat-count-pill">${jhBnNum(count)}টি</span>
       </button>
     `;
   }).join('');
@@ -739,10 +736,10 @@ function toggleJhalakCuriosityBox(idx, ev) {
 }
 
 function updateActiveCardPlayBtns() {
-  const mainBtn = document.getElementById('jhMainPlay_' + jhCurrentIdx);
-  if (mainBtn) {
-    mainBtn.classList.toggle('playing', jhAudioPlaying);
-    mainBtn.textContent = jhAudioPlaying ? '⏹️ থামাও' : '🔊 শোনো';
+  const headerBtn = document.getElementById('btnJhHeaderListen');
+  if (headerBtn) {
+    headerBtn.classList.toggle('playing', jhAudioPlaying);
+    headerBtn.textContent = jhAudioPlaying ? '⏹️ থামাও' : '🔊 শোনো';
   }
 }
 
@@ -860,20 +857,17 @@ function renderJhalakReelStream() {
     : '';
   jhOutgoingCardHtml = '';
 
+  const likeCount = getReelLikeCount(card.id);
+  const likeInnerHtml = jhShowLikeCount
+    ? `<span class="jh-like-heart">❤️</span> <span class="jh-like-label">ভালো লেগেছে</span> <span id="jhStickyLikeCount" class="jh-like-count-badge">${jhBnNum(likeCount)}</span>`
+    : `<span class="jh-like-heart">❤️</span> <span class="jh-like-label">ভালো লেগেছে</span>`;
+
   vp.innerHTML = `
     ${ghostHtml}
     <article id="jhSlide_${idx}" class="jh-reel-slide ${animClass}" data-idx="${idx}" data-vibe="${card.vibe}">
       <div class="jh-card-stage">
         <div class="jh-card-top">
           <span class="jh-vibe-badge">${card.badge_bn}</span>
-          <div class="jh-card-top-actions">
-            <button id="jhMainPlay_${idx}" type="button" class="jh-top-listen-btn" onclick="playReelAudioAtIndex(${idx})">
-              🔊 শোনো
-            </button>
-            <button id="jhDoneBtn_${idx}" type="button" class="jh-done-btn" onclick="markCurrentJhalakReelDone(event)">
-              ✅ হয়ে গেছে
-            </button>
-          </div>
         </div>
 
         <h2 class="jh-hook-title">${card.title_bn}</h2>
@@ -889,6 +883,15 @@ function renderJhalakReelStream() {
         </div>
 
         ${ytHtml}
+
+        <div class="jh-page-bottom-actions">
+          <button id="jhStickyLikeBtn" type="button" class="jh-sticky-like-btn ${likeCount > 0 ? 'has-likes' : ''}" onclick="likeCurrentJhalakReel(event)">
+            ${likeInnerHtml}
+          </button>
+          <button id="jhDoneBtn_${idx}" type="button" class="jh-done-btn" onclick="markCurrentJhalakReelDone(event)">
+            ✅ হয়ে গেছে
+          </button>
+        </div>
       </div>
     </article>
   `;
