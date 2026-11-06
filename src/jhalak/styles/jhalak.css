@@ -297,12 +297,13 @@ html, body {
 }
 
 .jh-outgoing-ghost {
-  position: absolute;
+  position: fixed;
   top: calc(46px + var(--jh-safe-top));
   left: 0;
   right: 0;
   width: 100%;
-  min-height: calc(100dvh - 46px - var(--jh-safe-top));
+  height: calc(100dvh - 46px - var(--jh-safe-top));
+  overflow: hidden;
   background: var(--jh-surface-cream);
   pointer-events: none;
   z-index: 1;
@@ -344,10 +345,16 @@ html, body {
   0% {
     transform: translate3d(0, 0, 0) scale(1);
     opacity: 1;
+    visibility: visible;
+  }
+  92% {
+    opacity: 0.28;
+    visibility: visible;
   }
   100% {
     transform: translate3d(0, -104%, 0) scale(0.91);
-    opacity: 0.32;
+    opacity: 0;
+    visibility: hidden;
   }
 }
 
@@ -374,10 +381,16 @@ html, body {
   0% {
     transform: translate3d(0, 0, 0) scale(1);
     opacity: 1;
+    visibility: visible;
+  }
+  92% {
+    opacity: 0.28;
+    visibility: visible;
   }
   100% {
     transform: translate3d(0, 104%, 0) scale(0.91);
-    opacity: 0.32;
+    opacity: 0;
+    visibility: hidden;
   }
 }
 

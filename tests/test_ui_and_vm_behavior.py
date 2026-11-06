@@ -1040,6 +1040,10 @@ const suite = code + `
   assert.strictEqual(jhLastSlideDir, 'prev', 'Stepping back must set slide direction to prev');
   assert.ok(el('jhReelsViewport').innerHTML.includes('jh-slide-anim-prev'), 'Rendered card must have jh-slide-anim-prev class');
   assert.ok(el('jhReelsViewport').innerHTML.includes('jh-outgoing-ghost out-right'), 'Stepping back must render outgoing ghost card sliding right');
+  const articleTagsAfterMultiSteps = el('jhReelsViewport').innerHTML.match(/<article /g) || [];
+  assert.strictEqual(articleTagsAfterMultiSteps.length, 1, 'Viewport must never join or accumulate multiple <article> pages');
+  const stageBlocksAfterMultiSteps = el('jhReelsViewport').innerHTML.match(/class="jh-card-stage"/g) || [];
+  assert.strictEqual(stageBlocksAfterMultiSteps.length, 2, 'Viewport must contain at most 1 outgoing ghost stage and 1 active stage');
 
   // 5. Mark as Done button excludes page from future reels, and Admin Settings can change Done & Likes counts
   const cardToDone = jhFilteredReels[jhCurrentIdx];

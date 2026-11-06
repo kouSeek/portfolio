@@ -517,14 +517,16 @@ function filterJhalakChannel(channelId, ev) {
   renderJhalakReelStream();
 }
 
-/* RANDOMIZED PAGE TRANSITION WITH PROFESSIONAL SIDEWAYS ANIMATION */
+/* RANDOMIZED PAGE TRANSITION WITH 3D CURTAIN-LIFT ANIMATION */
 function captureOutgoingCardSnapshot() {
   const vp = document.getElementById('jhReelsViewport');
   if (!vp || !vp.innerHTML) return;
-  const m = vp.innerHTML.match(/<div class="jh-card-stage">[\s\S]*<\/article>/);
+  const articleMatch = vp.innerHTML.match(/<article\b[^>]*>([\s\S]*?)<\/article>/);
+  const sourceHtml = articleMatch ? articleMatch[1] : '';
+  if (!sourceHtml) return;
+  const m = sourceHtml.match(/<div class="jh-card-stage">[\s\S]*<\/div>/);
   if (m) {
     jhOutgoingCardHtml = m[0]
-      .replace(/<\/article>\s*$/, '')
       .replace(/\sid="jh(?:Word|TitleBlock|SecBlock|CurBox|DoneBtn|StickyLikeBtn|StickyLikeCount)_[^"]*"/g, '')
       .replace(/\sid="jh(?:StickyLikeBtn|StickyLikeCount)"/g, '')
       .replace(/\b(?:jh-word-active|jh-word-spoken|jh-block-active)\b/g, '');
