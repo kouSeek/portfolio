@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Unified Modular Jinja2 + Markdown Compiler for AI Companion (`kalyani` + `anondo`).
-
-Compiles:
-  1. `kalyani.html` — Ma's 21-day Bengali companion (`personas/kalyani/` + `src/kalyani/`)
-  2. `anondo.html`  — Koushik's 21-day English companion (`personas/anondo/` + `src/anondo/`)
-  3. `index.html`   — Two-persona AI Companion Hub (`src/templates/index.html.j2`)
+"""Unified Modular Jinja2 + Markdown Compiler for AI Companion (`kalyani`, `jhalak`, `anondo`, `zorba`).
 
 CRITICAL GOVERNANCE RULE (defined in GEMINI.md):
   - Runs in <0.5s and NEVER invokes TTS voice generation.
@@ -14,13 +9,8 @@ CRITICAL GOVERNANCE RULE (defined in GEMINI.md):
 
 from __future__ import annotations
 
-import argparse
-import base64
-import json
+import argparse, base64, json, shutil, sys
 from pathlib import Path
-import shutil
-import sys
-
 import jinja2
 
 APP_ROOT = Path(__file__).resolve().parent.parent
@@ -38,22 +28,14 @@ SRC_DIR = APP_ROOT / "src"
 TEMPLATES_DIR = SRC_DIR / "templates"
 GH_RAW_AUDIO_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/audio/"
 
-KALYANI_CSS = (
-    SRC_DIR / "kalyani" / "styles" / "tokens.css",
-    SRC_DIR / "kalyani" / "styles" / "layout.css",
-    SRC_DIR / "kalyani" / "styles" / "components.css",
-)
-KALYANI_JS = (
-    SRC_DIR / "kalyani" / "js" / "state.js",
-    SRC_DIR / "kalyani" / "js" / "audio.js",
-    SRC_DIR / "kalyani" / "js" / "plan-view.js",
-    SRC_DIR / "kalyani" / "js" / "letter-view.js",
-    SRC_DIR / "kalyani" / "js" / "boot.js",
-)
+KALYANI_CSS = tuple(SRC_DIR / "kalyani" / "styles" / f for f in ("tokens.css", "layout.css", "components.css"))
+KALYANI_JS = tuple(SRC_DIR / "kalyani" / "js" / f for f in ("state.js", "audio.js", "plan-view.js", "letter-view.js", "boot.js"))
 ANONDO_CSS = (SRC_DIR / "anondo" / "styles" / "tokens.css", SRC_DIR / "anondo" / "styles" / "components.css")
 ANONDO_JS = (SRC_DIR / "anondo" / "js" / "audio.js", SRC_DIR / "anondo" / "js" / "views.js")
 JHALAK_CSS = (SRC_DIR / "jhalak" / "styles" / "jhalak.css",)
 JHALAK_JS = (SRC_DIR / "jhalak" / "js" / "curated-content.js", SRC_DIR / "jhalak" / "js" / "feed-engine.js", SRC_DIR / "jhalak" / "js" / "player-ui.js")
+ZORBA_CSS = (SRC_DIR / "jhalak" / "styles" / "jhalak.css", SRC_DIR / "zorba" / "styles" / "zorba.css")
+ZORBA_JS = (SRC_DIR / "zorba" / "js" / "curated-content.js", SRC_DIR / "zorba" / "js" / "player-ui.js")
 
 
 def b64_uri(path: Path, mime: str) -> str:
@@ -138,8 +120,10 @@ def build_anondo(env: jinja2.Environment) -> None:
 
     url_prefix = GH_RAW_AUDIO_BASE + "anondo/"
     img_dir = APP_ROOT / "assets" / "anondo" / "slides"
+    an_mpath = APP_ROOT / "audio" / "anondo" / "tts_manifest.json"
+    an_timings = json.loads(an_mpath.read_text(encoding="utf-8")).get("audio_timings", {}) if an_mpath.is_file() else {}
     slides = [
-        {**s, "img_b64": b64_uri(img_dir / f"slide_{int(s['id'])}.jpg", "image/jpeg"), "audio_url": f"{url_prefix}slides/slide_{int(s['id'])}.mp3"}
+        {**s, "img_b64": b64_uri(img_dir / f"slide_{int(s['id'])}.jpg", "image/jpeg"), "audio_url": f"{url_prefix}slides/slide_{int(s['id'])}.mp3", "audio_meta": an_timings.get(f"slides/slide_{int(s['id'])}.mp3", {})}
         for s in ANONDO_SLIDES
     ]
     quotes = [{"text": q, "audio_url": f"{url_prefix}quotes/quote_{i}.mp3"} for i, q in enumerate(ANONDO_QUOTES)]
@@ -170,16 +154,20 @@ def build_anondo(env: jinja2.Environment) -> None:
     data_js = "\n".join([
         f"const ANONDO_DATA = {json.dumps({'slides': slides, 'quotes': quotes, 'days': days}, ensure_ascii=False)};",
         f"const PILLARS_DATA = {json.dumps(pillars, ensure_ascii=False)};",
+        f"const JHALAK_AUDIO_TIMINGS = {json.dumps(an_timings, ensure_ascii=False)};",
     ])
-    html = env.get_template("anondo.html.j2").render(
-        css_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in ANONDO_CSS),
-        data_js=data_js,
-        js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in ANONDO_JS),
-        favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / "favicon-anondo.png", "image/png"),
-    )
-    out = APP_ROOT / "anondo.html"
-    out.write_text(html, encoding="utf-8")
-    print(f"Built {out.name} via Jinja2 ({out.stat().st_size:,} bytes)")
+    for fname, tpl, css_list, js_list, fav_png in (
+        ("anondo.html", "anondo.html.j2", ANONDO_CSS, ANONDO_JS, "favicon-anondo.png"),
+        ("zorba.html", "zorba.html.j2", ZORBA_CSS, ZORBA_JS, "favicon-zorba.png"),
+    ):
+        out = APP_ROOT / fname
+        out.write_text(env.get_template(tpl).render(
+            css_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in css_list),
+            data_js=data_js,
+            js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in js_list),
+            favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / fav_png, "image/png"),
+        ), encoding="utf-8")
+        print(f"Built {out.name} via Jinja2 ({out.stat().st_size:,} bytes)")
 
 
 def build_all(persona: str = "all") -> None:

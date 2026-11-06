@@ -67,7 +67,16 @@ class TestArchitectureAndDocs(unittest.TestCase):
             "scripts/sync_audio_branch.py",
             "index.html",
             "kalyani.html",
+            "jhalak.html",
             "anondo.html",
+            "zorba.html",
+            "jhalak-manifest.json",
+            "zorba-manifest.json",
+            "src/templates/jhalak.html.j2",
+            "src/templates/zorba.html.j2",
+            "src/zorba/styles/zorba.css",
+            "src/zorba/js/curated-content.js",
+            "src/zorba/js/player-ui.js",
         ]
         for rel in required_files:
             self.assertTrue((APP_ROOT / rel).is_file(), f"Missing required modular file: {rel}")

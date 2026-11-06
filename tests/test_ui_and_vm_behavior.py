@@ -1012,7 +1012,7 @@ const ctx = {
     createElement: () => ({ style: {}, className: '', textContent: '' })
   },
   localStorage: { getItem: () => null, setItem: () => {} },
-  setTimeout, clearTimeout, setInterval, clearInterval, console, assert, el
+  setTimeout: () => 1, clearTimeout: () => {}, setInterval: () => 1, clearInterval: () => {}, console, assert, el
 };
 const suite = code + `
 ;(function() {
@@ -1228,6 +1228,119 @@ vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});
             check=False,
         )
         self.assertEqual(proc.returncode, 0, f"Jhalak VM test failed: {proc.stderr}")
+
+    def test_zorba_dopamine_reels_app_and_vm_interactions(self) -> None:
+        """Verify zorba.html (⚡ ZORBA) compiles cleanly with 148 Reels pages, Play/Pause/Resume/Stop, acoustic word-sync, elastic pull-to-turn, and PWA installability."""
+        zb_path = APP_ROOT / "zorba.html"
+        self.assertTrue(zb_path.is_file(), "zorba.html must exist")
+        zb_html = zb_path.read_text(encoding="utf-8")
+        self.assertIn("<title>⚡ ZORBA</title>", zb_html)
+        self.assertIn('<link rel="manifest" href="zorba-manifest.json" />', zb_html)
+        self.assertIn("favicon-zorba.png", zb_html)
+        self.assertIn("favicon-zorba.ico", zb_html)
+        self.assertIn("navigator.serviceWorker.register('kalyani-sw.js')", zb_html)
+        self.assertIn('<span class="jh-brand-logo" aria-label="Zorba">⚡</span>', zb_html)
+        self.assertIn('id="btnJhCategoryDropdown"', zb_html)
+        self.assertIn('id="btnJhHeaderListen"', zb_html)
+        self.assertIn('id="btnJhHeaderStop"', zb_html)
+
+        m = re.search(r"<script>([\s\S]*?)</script>", zb_html)
+        self.assertIsNotNone(m, "Missing <script> block in zorba.html")
+
+        vm_harness = r"""
+const fs = require('fs'), vm = require('vm'), assert = require('assert');
+const code = fs.readFileSync(0, 'utf8');
+const els = {};
+function el(id) {
+  if (!els[id]) {
+    els[id] = {
+      id, className: '', innerHTML: '', textContent: '', value: '', style: {}, src: '', scrollTop: 0,
+      classList: {
+        add(c) { if (!els[id].className.includes(c)) els[id].className = (els[id].className + ' ' + c).trim(); },
+        remove(c) { els[id].className = els[id].className.replace(c, '').trim(); },
+        toggle(c, b) { if (b) this.add(c); else this.remove(c); },
+        contains(c) { return els[id].className.includes(c); }
+      },
+      querySelector: () => ({ textContent: '', classList: { remove() {}, add() {} }, offsetWidth: 100 }),
+      play: () => Promise.resolve(),
+      pause() {},
+      addEventListener() {},
+      scrollIntoView() {}
+    };
+  }
+  return els[id];
+}
+const ctx = {
+  window: { innerWidth: 390, innerHeight: 844, addEventListener() {} },
+  document: {
+    body: { appendChild() {}, removeChild() {} },
+    getElementById: el,
+    querySelectorAll: () => [],
+    addEventListener() {},
+    createElement: () => ({ style: {}, className: '', textContent: '' })
+  },
+  localStorage: { getItem: () => null, setItem: () => {} },
+  setTimeout: () => 1, clearTimeout: () => {}, setInterval: () => 1, clearInterval: () => {}, console, assert, el
+};
+const suite = code + `
+;(function() {
+  const catIds = JHALAK_CATEGORIES.map(c => c.id);
+  assert.deepStrictEqual(catIds, ['all', 'cbt', 'clarity', 'listening', 'music', 'science', 'zorba', 'wisdom', 'tv']);
+  assert.strictEqual(ALL_JHALAK_REELS.length, 148, 'Total Zorba pages must be 148');
+  catIds.forEach(cid => {
+    assert.ok(JHALAK_CATEGORY_COUNTS[cid] >= 16, 'Category ' + cid + ' must have at least 16 rich pages');
+  });
+
+  renderJhalakReelStream();
+  syncJhSettingsButtonsUI();
+  assert.strictEqual(getSelectedCategorySummaryLabel(), '✨ All ▾');
+  assert.ok(/<h2[^>]*class="jh-hook-title"><span class="jh-vibe-badge">/.test(el('jhReelsViewport').innerHTML), 'Inline category badge at start of h2');
+  assert.ok(el('jhCategoryStatsBox').innerHTML.includes('148 Pages'), 'Category stats shows simple 148 Pages');
+  assert.ok(!el('jhCategoryStatsBox').innerHTML.includes('148/148'), 'No fraction in category stats');
+
+  // Play -> Pause -> Resume -> Stop lifecycle
+  stopJhAudio();
+  assert.strictEqual(el('btnJhHeaderListen').textContent, '🔊 Listen');
+  assert.strictEqual(el('btnJhHeaderStop').style.display, 'none');
+  playReelAudioAtIndex();
+  assert.strictEqual(jhAudioPlaying, true);
+  assert.strictEqual(el('btnJhHeaderListen').textContent, '⏸️ Pause');
+  assert.strictEqual(el('btnJhHeaderStop').style.display, 'inline-flex');
+  syncJhWordHighlightToTime(3.5, 18.0);
+  const pausedIdx = jhActiveWordIdx;
+  assert.ok(pausedIdx > 0);
+  playReelAudioAtIndex();
+  assert.strictEqual(jhAudioPlaying, false);
+  assert.strictEqual(jhAudioPaused, true);
+  assert.strictEqual(el('btnJhHeaderListen').textContent, '▶️ Resume');
+  assert.strictEqual(jhActiveWordIdx, pausedIdx);
+  playReelAudioAtIndex();
+  assert.strictEqual(jhAudioPlaying, true);
+  assert.strictEqual(el('btnJhHeaderListen').textContent, '⏸️ Pause');
+  stopJhAudio();
+  assert.strictEqual(el('btnJhHeaderListen').textContent, '🔊 Listen');
+  assert.strictEqual(el('btnJhHeaderStop').style.display, 'none');
+  assert.strictEqual(jhActiveWordIdx, -1);
+
+  // Elastic pull-to-turn
+  const beforeId = jhFilteredReels[jhCurrentIdx].id;
+  el('jhReelsViewport').scrollTop = 300;
+  updateJhOverscrollPullUI('next', 120);
+  assert.strictEqual(commitOrResetJhOverscrollPull(), true);
+  assert.notStrictEqual(jhFilteredReels[jhCurrentIdx].id, beforeId);
+  assert.strictEqual(el('jhReelsViewport').scrollTop, 0);
+})();
+`;
+vm.runInNewContext(suite, ctx, {filename: 'zorba-bundle.js'});
+"""
+        proc = subprocess.run(
+            [str(NODE_BIN), "-e", vm_harness],
+            input=m.group(1),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(proc.returncode, 0, f"Zorba VM test failed: {proc.stderr}")
 
 
 if __name__ == "__main__":

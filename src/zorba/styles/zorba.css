@@ -1,0 +1,54 @@
+/* ============================================================================
+   ⚡ ZORBA — KOUSHIK'S HIGH-IQ STUDIO TYPOGRAPHY & PALETTE OVERRIDES
+   ============================================================================ */
+:root {
+  --jh-bg-deep: #0F172A;
+  --jh-surface-cream: #F8FAFC;
+  --jh-surface-soft: #F1F5F9;
+  --jh-ink-dark: #0F172A;
+  --jh-ink-muted: #475569;
+  --jh-gold: #F59E0B;
+  --jh-terra: #0F766E;
+  --jh-emerald: #0D9488;
+  --jh-rose: #E11D48;
+  --jh-border-gold: rgba(245, 158, 11, 0.42);
+}
+
+html, body {
+  font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
+}
+
+.jh-topbar {
+  background: rgba(15, 23, 42, 0.96);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.jh-reels-viewport {
+  background: #0F172A;
+}
+
+.jh-hook-title,
+.jh-sec-heading,
+.jh-drawer-title {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.jh-vibe-badge {
+  background: #CCFBF1;
+  color: #0F766E;
+  border-color: #99F6E4;
+  font-family: 'Inter', sans-serif;
+}
+
+.jh-sec-story {
+  background: #F1F5F9;
+  border-left: 4px solid #0F766E;
+}
+
+.jh-sec-heading {
+  color: #0F172A;
+}
+
+.jh-sec-para {
+  color: #1E293B;
+}

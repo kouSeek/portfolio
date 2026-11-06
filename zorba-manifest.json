@@ -1,0 +1,36 @@
+{
+  "name": "⚡ ZORBA — Koushik's Clarity, Listening & First-Press Reels",
+  "short_name": "⚡ ZORBA",
+  "description": "Koushik's full-screen Dopamine-Hitching Reels companion: First-Press Covert CBT, Pass-1 Active Listening, Multilingual Song Meaning & Bhaavna, Frontier Science, and Zorba Play.",
+  "lang": "en",
+  "start_url": "./zorba.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F172A",
+  "theme_color": "#0F172A",
+  "icons": [
+    {
+      "src": "assets/icons/favicon-zorba-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/favicon-zorba-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/favicon-zorba.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/favicon-zorba.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

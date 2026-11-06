@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0F172A" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="description" content="ZORBA — Koushik's full-screen Dopamine-Hitching Reels companion: First-Press Covert CBT, Pass-1 Active Listening, Multilingual Song Meaning & Bhaavna, Frontier Science, and Zorba Play." />
+  <title>⚡ ZORBA</title>
+  <link id="pageFavicon" data-emoji="⚡" data-png-b64="{{ favicon_uri }}" data-https-png="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-zorba.png?v=1" data-https-ico="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-zorba.ico?v=1" rel="icon" type="image/png" sizes="64x64" href="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-zorba.png?v=1" />
+  <link rel="shortcut icon" type="image/x-icon" href="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-zorba.ico?v=1" />
+  <link rel="apple-touch-icon" sizes="64x64" href="{{ favicon_uri }}" />
+  <link rel="manifest" href="zorba-manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&family=Noto+Sans+Bengali:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+{{ css_bundle | safe }}
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR: LOGO ICON + CATEGORY DROPDOWN + PLAY/PAUSE/RESUME/STOP + SETTINGS GEAR -->
+  <header class="jh-topbar" role="banner">
+    <div class="jh-topbar-row1">
+      <div class="jh-brand-cluster">
+        <span class="jh-brand-logo" aria-label="Zorba">⚡</span>
+
+        <!-- CATEGORY SELECTION DROPDOWN -->
+        <div id="jhCategoryDropdownWrap" class="jh-cat-dropdown-wrap">
+          <button id="btnJhCategoryDropdown" type="button" class="jh-cat-dropdown-btn" onclick="toggleJhCategoryDropdown(event)" aria-haspopup="listbox">
+            ✨ All ▾
+          </button>
+          <div id="jhCategoryDropdownMenu" class="jh-cat-dropdown-menu" role="listbox" aria-label="Select Category"></div>
+        </div>
+      </div>
+
+      <div class="jh-topbar-actions">
+        <button id="btnJhHeaderListen" type="button" class="jh-top-listen-btn" onclick="playReelAudioAtIndex()" aria-label="Listen">
+          🔊 Listen
+        </button>
+        <button id="btnJhHeaderStop" type="button" class="jh-top-stop-btn" onclick="stopJhAudio()" aria-label="Stop" title="Stop" style="display:none;">
+          ⏹️ Stop
+        </button>
+        <button id="btnJhSettings" type="button" class="jh-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="Settings" title="Settings">
+          ⚙️
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ELASTIC PULL-TO-TURN INDICATORS (TOP = PREVIOUS PAGE, BOTTOM = NEXT PAGE) -->
+  <div id="jhPullIndicatorTop" class="jh-pull-indicator jh-pull-indicator-top" aria-live="polite">
+    <div class="jh-pull-row">
+      <span id="jhPullTopArrow" class="jh-pull-arrow">⬇️</span>
+      <span id="jhPullTopText">Pull down a bit more for previous page...</span>
+    </div>
+    <div id="jhPullTopFillTrack" class="jh-pull-progress-track">
+      <div id="jhPullTopFill" class="jh-pull-progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- FULL-SCREEN LONG-CONTENT PAGE VIEWPORT (ELASTIC OVERSCROLL PULL FOR PREV/NEXT) -->
+  <main id="jhReelsViewport" class="jh-reels-viewport" aria-label="Zorba Reels Page"></main>
+
+  <div id="jhPullIndicatorBottom" class="jh-pull-indicator jh-pull-indicator-bottom" aria-live="polite">
+    <div class="jh-pull-row">
+      <span id="jhPullBottomArrow" class="jh-pull-arrow">⬆️</span>
+      <span id="jhPullBottomText">Pull up a bit more for next page...</span>
+    </div>
+    <div id="jhPullBottomFillTrack" class="jh-pull-progress-track">
+      <div id="jhPullBottomFill" class="jh-pull-progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS & ADMIN DRAWER: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY, LIKE COUNT TOGGLE, LETTER, STATS & ADMIN DONE/LIKE EDITOR -->
+  <div id="jhSettingsDrawer" class="jh-drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="jhSettingsDrawerTitle">
+    <div class="jh-drawer-sheet">
+      <div class="jh-drawer-head">
+        <h2 id="jhSettingsDrawerTitle" class="jh-drawer-title">⚙️ Settings & Admin Control</h2>
+        <button id="btnCloseSettingsDrawer" type="button" class="jh-drawer-close" onclick="closeJhalakSettingsDrawer()">✕ Close</button>
+      </div>
+
+      <div class="jh-settings-list">
+        <button id="btnJhAutoFlow" type="button" class="jh-settings-item-btn active-flow" onclick="toggleJhAutoFlow()">
+          🔄 Auto-Reels (Next Page): ON
+        </button>
+        <button id="btnJhAutoVoice" type="button" class="jh-settings-item-btn active-flow" onclick="toggleJhAutoVoice()">
+          🔊 Auto-Voice: ON
+        </button>
+        <button id="btnJhCatSelectMode" type="button" class="jh-settings-item-btn" onclick="toggleJhCategorySelectMode()">
+          📂 Category Selection: Single-Select
+        </button>
+        <button id="btnJhShowLikeCount" type="button" class="jh-settings-item-btn active-flow" onclick="toggleJhShowLikeCount()">
+          ❤️ Show Like Count: ON
+        </button>
+        <button id="btnJhOpenChithi" type="button" class="jh-settings-item-btn" onclick="openJhalakLetterDrawer()">
+          <span>💌 Personal Letter (8 Slides: Jadavpur Fire to Age 33)</span>
+          <span>➡️</span>
+        </button>
+      </div>
+
+      <div>
+        <h3 class="jh-stats-section-title">📊 Category Page Counts & Like Statistics</h3>
+        <div id="jhCategoryStatsBox" class="jh-stats-grid"></div>
+      </div>
+
+      <div id="jhAdminControlSection">
+        <h3 class="jh-stats-section-title">🛠️ Admin Control: Edit Done & Likes</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <button id="btnAdminResetDone" type="button" class="jh-letter-step-btn" onclick="resetAllJhDoneCounts()">🔄 Reset All Done</button>
+          <button id="btnAdminResetLikes" type="button" class="jh-letter-step-btn" onclick="resetAllJhLikeCounts()">🔄 Reset All Likes</button>
+        </div>
+        <div id="jhAdminItemsList" class="jh-admin-items-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LETTER DRAWER: KOUSHIK'S 8-SLIDE PERSONAL LETTER -->
+  <div id="jhLetterDrawer" class="jh-drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="jhLetterDrawerTitle">
+    <div class="jh-drawer-sheet">
+      <div class="jh-drawer-head">
+        <h2 id="jhLetterDrawerTitle" class="jh-drawer-title">💌 Koushik's 8-Slide Personal Letter</h2>
+        <button id="btnCloseLetterDrawer" type="button" class="jh-drawer-close" onclick="closeJhalakLetterDrawer()">✕ Close</button>
+      </div>
+      <div>
+        <img id="jhLetterImg" class="jh-slide-img" src="" alt="Koushik's Journey" />
+        <h3 id="jhLetterTitle" style="font-family:'Playfair Display',Georgia,serif;font-size:1.15rem;margin-bottom:6px;"></h3>
+        <p id="jhLetterBody" style="font-size:0.98rem;line-height:1.6;margin-bottom:12px;"></p>
+        <div class="jh-letter-controls">
+          <button id="btnJhLetterPrev" type="button" class="jh-letter-step-btn" onclick="stepJhalakLetterSlide(-1)">⬅️ Prev Slide</button>
+          <button id="btnJhLetterPlay" type="button" class="jh-top-listen-btn" onclick="playJhalakLetterAudio()">🔊 Listen</button>
+          <button id="btnJhLetterStop" type="button" class="jh-top-stop-btn" onclick="stopJhAudio()" style="display:none;">⏹️ Stop</button>
+          <button id="btnJhLetterNext" type="button" class="jh-letter-step-btn" onclick="stepJhalakLetterSlide(1)">Next Slide ➡️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="jhAudioPlayer" preload="auto"></audio>
+
+  <script>
+{{ data_js | safe }}
+{{ js_bundle | safe }}
+  </script>
+</body>
+</html>
