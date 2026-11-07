@@ -36,6 +36,8 @@ class TestUIAndVMBehavior(unittest.TestCase):
     def test_compiled_html_ux_and_node_vm_interactions(self) -> None:
         """Verify crisp Bengali typography, zero tickers, sequential lock, auto-unlocked calendar grid, and proactive audio."""
         hub_html = (APP_ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn('href="jhalak.html"', hub_html)
+        self.assertIn('href="zorba.html"', hub_html)
         self.assertIn('href="kalyani.html"', hub_html)
         self.assertIn('href="anondo.html"', hub_html)
         self.assertIn('id="pageFavicon"', hub_html)

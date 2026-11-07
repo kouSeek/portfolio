@@ -30,7 +30,7 @@
       padding: 24px 16px;
     }
     .hub {
-      max-width: 760px;
+      max-width: 840px;
       width: 100%;
     }
     .hub-header {
@@ -56,6 +56,58 @@
       color: var(--muted);
       font-size: 0.98rem;
       line-height: 1.55;
+    }
+    .quick-links-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 22px;
+      padding: 12px 14px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    }
+    .quick-link-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.14s ease, box-shadow 0.14s ease;
+    }
+    .quick-link-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+    }
+    .quick-link-pill.jhalak { background: #FEF3C7; color: #92400E; border: 1px solid #F59E0B; }
+    .quick-link-pill.zorba { background: #E0E7FF; color: #3730A3; border: 1px solid #6366F1; }
+    .quick-link-pill.kalyani { background: #DCFCE7; color: #065F46; border: 1px solid #10B981; }
+    .quick-link-pill.anondo { background: #CCFBF1; color: #115E59; border: 1px solid #14B8A6; }
+    .card-link-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .card-sub-link {
+      flex: 1;
+      text-align: center;
+      padding: 7px 10px;
+      border-radius: 9px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-decoration: none;
+      background: rgba(15, 23, 42, 0.05);
+      color: var(--ink);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+    }
+    .card-sub-link:hover {
+      background: rgba(15, 23, 42, 0.1);
     }
     .grid {
       display: grid;
@@ -138,43 +190,78 @@
 <body>
   <main class="hub">
     <header class="hub-header">
-      <div class="hub-pill">🪷 Modular AI Companion Hub</div>
+      <div class="hub-pill">🪷 Modular AI Companion Hub — All 4 Apps</div>
       <h1 class="hub-title">🪷 AI Companion</h1>
-      <p class="hub-sub">Select a companion space—crafted with Dopamine-Hitching Reels, Gemini Live prompts, song curiosity, and gentle Ericksonian clarity.</p>
+      <p class="hub-sub">Explore all 4 companion apps—Dopamine-Hitching Reels (✨ ঝলক & ⚡ ZORBA) and 21-Day Interactive Companions (🌸 কল্যাণী & 🌻 ANONDO).</p>
     </header>
+
+    <nav class="quick-links-bar" aria-label="All Companion Apps">
+      <a class="quick-link-pill jhalak" data-app="jhalak.html" href="jhalak.html">✨ ঝলক (Ma's Reels)</a>
+      <a class="quick-link-pill zorba" data-app="zorba.html" href="zorba.html">⚡ ZORBA (My Reels)</a>
+      <a class="quick-link-pill kalyani" data-app="kalyani.html" href="kalyani.html">🌸 কল্যাণী (Ma's 21-Day)</a>
+      <a class="quick-link-pill anondo" data-app="anondo.html" href="anondo.html">🌻 ANONDO (My 21-Day)</a>
+    </nav>
+
     <div class="grid">
-      <a class="persona-card jhalak" href="jhalak.html">
+      <div class="persona-card jhalak">
         <div>
-          <span class="p-badge">Ma • NEW Dopamine-Hitching Reels (Bengali)</span>
-          <h2 class="p-title">✨ ঝলক</h2>
-          <p class="p-desc">Zero-task, full-screen vertical Reels (`152` pages): pairs Gopal Bhar / Bala Gopala / Maa Sarada comedy & stories with hitched Covert CBT, 1-tap Curiosity Flip Cards, YouTube links, and karaoke `Aoede` Bengali voice.</p>
+          <span class="p-badge">Ma • Dopamine-Hitching Reels (Bengali)</span>
+          <h2 class="p-title">✨ ঝলক (Jhalak)</h2>
+          <p class="p-desc">Full-screen vertical Reels (152 pages across 9 categories): Gopal Bhar / Bala Gopala / Maa Sarada stories with Covert CBT, 1-tap Curiosity Flip Cards, YouTube links, Play/Pause/Resume/Stop, and acoustic-synced karaoke Aoede Bengali voice.</p>
         </div>
-        <span class="p-cta">✨ Open Jhalak (Ma) →</span>
-      </a>
-      <a class="persona-card zorba" href="zorba.html">
         <div>
-          <span class="p-badge">Me • NEW Dopamine-Hitching Reels (English)</span>
+          <a class="p-cta" data-app="jhalak.html" href="jhalak.html" style="text-decoration:none;">✨ Open Jhalak (Ma) →</a>
+          <div class="card-link-row">
+            <a class="card-sub-link" href="https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/kalyani-reels/jhalak.html" target="_blank" rel="noopener">🌐 GitHub Preview</a>
+            <a class="card-sub-link" href="http://koushikchak.c.googlers.com:8765/jhalak.html" target="_blank" rel="noopener">💻 Local (:8765)</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="persona-card zorba">
+        <div>
+          <span class="p-badge">Me • Dopamine-Hitching Reels (English)</span>
           <h2 class="p-title">⚡ ZORBA — Clarity, Music & Science Reels</h2>
-          <p class="p-desc">Full-screen vertical Reels (`148` pages across 8 categories): First-Press CBT, Inner Child Clarity, Active Listening, Song Bhaavna, Frontier Science, Zorba 2e Flow, 7 Core Keys, and acoustic-synced karaoke `Aoede` voice.</p>
+          <p class="p-desc">Full-screen vertical Reels (148 pages across 9 categories): First-Press CBT, Inner Child Clarity, Active Listening, Song Bhaavna & Right Question Hook, Frontier Science, Zorba 2e Flow, 7 Core Keys, and acoustic-synced karaoke Aoede voice.</p>
         </div>
-        <span class="p-cta">⚡ Open Zorba Reels (Koushik) →</span>
-      </a>
-      <a class="persona-card kalyani" href="kalyani.html">
         <div>
-          <span class="p-badge">Ma • kalyani (Bengali)</span>
+          <a class="p-cta" data-app="zorba.html" href="zorba.html" style="text-decoration:none;">⚡ Open Zorba Reels (Koushik) →</a>
+          <div class="card-link-row">
+            <a class="card-sub-link" href="https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/kalyani-reels/zorba.html" target="_blank" rel="noopener">🌐 GitHub Preview</a>
+            <a class="card-sub-link" href="http://koushikchak.c.googlers.com:8765/zorba.html" target="_blank" rel="noopener">💻 Local (:8765)</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="persona-card kalyani">
+        <div>
+          <span class="p-badge">Ma • 21-Day Companion (Bengali)</span>
           <h2 class="p-title">🌸 কল্যাণী — আজকের খেলা ও চিঠি</h2>
-          <p class="p-desc">21-day warm Bengali companion (`126` games): 60% English / 30% Hindi / 10% Bengali confidence, in-card walkie-talkie voice replies, YouTube Music lyrics, and gentle 1-in-2-days Covert CBT.</p>
+          <p class="p-desc">21-day warm Bengali companion (126 games): 60% English / 30% Hindi / 10% Bengali confidence, Voice & Video Gemini Studio, short stories reader, YouTube Music lyrics, and gentle 1-in-2-days Covert CBT.</p>
         </div>
-        <span class="p-cta">🌸 Open Kalyani (Ma) →</span>
-      </a>
-      <a class="persona-card anondo" href="anondo.html">
         <div>
-          <span class="p-badge">Me • anondo (English)</span>
-          <h2 class="p-title">🌻 ANONDO — Clarity, Listening & Zorba</h2>
-          <p class="p-desc">21-day high-IQ English companion (`105` explorations): Wiki-grounded Covert CBT, Pass-1 Active Listening & Comprehension lab, multilingual song bhaavna, frontier science, and Zorba play.</p>
+          <a class="p-cta" data-app="kalyani.html" href="kalyani.html" style="text-decoration:none;">🌸 Open Kalyani (Ma) →</a>
+          <div class="card-link-row">
+            <a class="card-sub-link" href="https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/kalyani-reels/kalyani.html" target="_blank" rel="noopener">🌐 GitHub Preview</a>
+            <a class="card-sub-link" href="http://koushikchak.c.googlers.com:8765/kalyani.html" target="_blank" rel="noopener">💻 Local (:8765)</a>
+          </div>
         </div>
-        <span class="p-cta">🌻 Open Anondo (Koushik) →</span>
-      </a>
+      </div>
+
+      <div class="persona-card anondo">
+        <div>
+          <span class="p-badge">Me • 21-Day Companion (English)</span>
+          <h2 class="p-title">🌻 ANONDO — Clarity, Listening & Zorba</h2>
+          <p class="p-desc">21-day high-IQ English companion (105 explorations): Wiki-grounded Covert CBT, Pass-1 Active Listening & Comprehension lab, multilingual song bhaavna, frontier science, and Zorba play.</p>
+        </div>
+        <div>
+          <a class="p-cta" data-app="anondo.html" href="anondo.html" style="text-decoration:none;">🌻 Open Anondo (Koushik) →</a>
+          <div class="card-link-row">
+            <a class="card-sub-link" href="https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/kalyani-reels/anondo.html" target="_blank" rel="noopener">🌐 GitHub Preview</a>
+            <a class="card-sub-link" href="http://koushikchak.c.googlers.com:8765/anondo.html" target="_blank" rel="noopener">💻 Local (:8765)</a>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
   <script>
@@ -210,6 +297,22 @@
       }
       apply();
       if (typeof setTimeout === "function") setTimeout(apply, 90);
+    })();
+
+    (function hydrateHubAppLinks() {
+      try {
+        if (typeof location === "undefined" || typeof document === "undefined") return;
+        const isHtmlPreview = /htmlpreview\.github\.io/i.test(location.hostname || "") || /github\.com\/kouSeek\/portfolio\/blob\//i.test(location.search || "");
+        if (!isHtmlPreview) return;
+        const m = (location.search || "").match(/https:\/\/github\.com\/kouSeek\/portfolio\/blob\/([^/]+)\//i);
+        const branch = (m && m[1]) ? m[1] : "kalyani-reels";
+        document.querySelectorAll("a[data-app]").forEach(a => {
+          const appFile = a.getAttribute("data-app");
+          if (appFile) {
+            a.href = "https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/" + branch + "/" + appFile;
+          }
+        });
+      } catch (e) {}
     })();
   </script>
 </body>
