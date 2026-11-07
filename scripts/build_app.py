@@ -120,8 +120,8 @@ def build_anondo(env: jinja2.Environment) -> None:
 
     url_prefix = GH_RAW_AUDIO_BASE + "anondo/"
     img_dir = APP_ROOT / "assets" / "anondo" / "slides"
-    an_mpath = APP_ROOT / "audio" / "anondo" / "tts_manifest.json"
-    an_timings = json.loads(an_mpath.read_text(encoding="utf-8")).get("audio_timings", {}) if an_mpath.is_file() else {}
+    an_mpath, zb_mpath = APP_ROOT / "audio" / "anondo" / "tts_manifest.json", APP_ROOT / "audio" / "zorba" / "tts_manifest.json"
+    an_timings = {**(json.loads(an_mpath.read_text(encoding="utf-8")).get("audio_timings", {}) if an_mpath.is_file() else {}), **(json.loads(zb_mpath.read_text(encoding="utf-8")).get("audio_timings", {}) if zb_mpath.is_file() else {})}
     slides = [
         {**s, "img_b64": b64_uri(img_dir / f"slide_{int(s['id'])}.jpg", "image/jpeg"), "audio_url": f"{url_prefix}slides/slide_{int(s['id'])}.mp3", "audio_meta": an_timings.get(f"slides/slide_{int(s['id'])}.mp3", {})}
         for s in ANONDO_SLIDES

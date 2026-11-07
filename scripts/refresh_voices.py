@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
+import html
 import json
 import os
 from pathlib import Path
@@ -210,6 +211,76 @@ def _collect_jhalak_audio_items() -> dict[str, dict[str, str]]:
     return items
 
 
+def _collect_zorba_audio_items() -> dict[str, dict[str, str]]:
+    """Collect expected full-page English Aoede voice items for `zorba` (`audio/zorba/reels/<id>.mp3`)."""
+    days_payload = [
+        {
+            "day": int(d["day"]),
+            "phase": d.get("phase", "House-Money Era"),
+            "title": d["title_bn"],
+            "sub": d.get("summary_bn", ""),
+            "games": [
+                {
+                    "pillar": ag.get("pillar", ""),
+                    "short": ag["short_bn"],
+                    "category": ag["category"],
+                    "title": ag["title_bn"],
+                    "detail": ag["detail_bn"],
+                    "prompt": ag["prompt_bn"],
+                    "followup_prompt": ag.get("followup_prompt_bn", ""),
+                }
+                for ag in d["agendas"]
+            ],
+        }
+        for d in ANONDO_DAYS_21
+    ]
+    quotes_payload = [{"text": q} for q in ANONDO_QUOTES]
+    anondo_data = {"slides": ANONDO_SLIDES, "quotes": quotes_payload, "days": days_payload}
+    js_path = APP_ROOT / "src" / "zorba" / "js" / "curated-content.js"
+    js_code = (
+        f"const ANONDO_DATA = {json.dumps(anondo_data, ensure_ascii=False)};\n"
+        f"const PILLARS_DATA = {json.dumps(ANONDO_PILLARS, ensure_ascii=False)};\n"
+        + js_path.read_text(encoding="utf-8") + "\n"
+        + "console.log(JSON.stringify(ALL_JHALAK_REELS));"
+    )
+    proc = subprocess.run([_find_node_bin(), "-"], input=js_code, capture_output=True, text=True, check=True)
+    reels = json.loads(proc.stdout)
+
+    items: dict[str, dict[str, str]] = {}
+    for r in reels:
+        cid = str(r["id"])
+        rel_path = f"reels/{cid}.mp3"
+        title_txt = _clean_tts_text(r.get("title_bn", ""))
+        sec_blocks: list[str] = []
+        for sec in r.get("sections", []):
+            h = _clean_tts_text(sec.get("heading_bn", ""))
+            b = _clean_tts_text(sec.get("body_bn", ""))
+            if h and b:
+                sec_blocks.append(f"{h}. {b}")
+            elif b:
+                sec_blocks.append(b)
+        cur_q = _clean_tts_text(r.get("curiosity_q_bn", ""))
+        cur_a = _clean_tts_text(r.get("curiosity_a_bn", ""))
+        cur_txt = f"{cur_q} {cur_a}".strip()
+
+        mid = max(1, (len(sec_blocks) + 1) // 2)
+        p1_list = [f"{title_txt}." if title_txt else "", *sec_blocks[:mid]]
+        p2_list = [*sec_blocks[mid:], cur_txt]
+        part1 = " ".join(x for x in p1_list if x).strip()
+        part2 = " ".join(x for x in p2_list if x).strip()
+        full_txt = f"{part1} {part2}".strip()
+
+        items[rel_path] = {
+            "hash": sha256_text(full_txt),
+            "scope": "reels",
+            "part": "0",
+            "text": full_txt,
+            "part1": part1,
+            "part2": part2,
+        }
+    return items
+
+
 def collect_expected_audio_items(persona_id: str = DEFAULT_PERSONA_ID) -> dict[str, dict[str, str]]:
     """Return mapping of relative audio path (under `audio/<persona_id>/`) -> {hash, scope, part, text, part1, part2}."""
     pid = normalize_persona_id(persona_id)
@@ -217,6 +288,8 @@ def collect_expected_audio_items(persona_id: str = DEFAULT_PERSONA_ID) -> dict[s
         return _collect_anondo_audio_items()
     if pid == "jhalak":
         return _collect_jhalak_audio_items()
+    if pid == "zorba":
+        return _collect_zorba_audio_items()
 
     items: dict[str, dict[str, str]] = {}
 
@@ -298,11 +371,20 @@ def save_manifest(hashes: dict[str, str], persona_id: str = DEFAULT_PERSONA_ID) 
     pid = normalize_persona_id(persona_id)
     mpath = get_manifest_path(pid)
     mpath.parent.mkdir(parents=True, exist_ok=True)
+    extra_keys: dict = {}
+    if mpath.is_file():
+        try:
+            old_data = json.loads(mpath.read_text(encoding="utf-8"))
+            if isinstance(old_data, dict):
+                extra_keys = {k: v for k, v in old_data.items() if k not in ("voice_model", "persona_id", "total_tracked", "hashes")}
+        except Exception:
+            pass
     payload = {
         "voice_model": "gemini-v4s-tts (Aoede)",
         "persona_id": pid,
         "total_tracked": len(hashes),
         "hashes": dict(sorted(hashes.items())),
+        **extra_keys,
     }
     mpath.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -343,7 +425,66 @@ def get_stale_or_missing_files(
     return stale, expected, recorded
 
 
+_SPEECH_PROTO_PATH = Path("/tmp/aicomp_speech_synth.proto")
+_SPEECH_PROTO_TEXT = """syntax = "proto2";
+package speech;
+message Voice { required string language = 1; optional string gender = 2; optional string name = 3; }
+message AudioEncoding { enum Encoding { ANY = 0; LINEAR_16BIT = 1; MP3 = 4; MP3_64KBPS = 10; } }
+message SpeechSynthesizerRequest { required string ssml = 1; optional Voice voice = 2; optional AudioEncoding.Encoding encoding = 3; }
+message SpeechSynthesizerEvent { optional int32 type = 1; optional bytes audio = 2; }
+message SpeechSynthesizerResponse { optional string info = 1; }
+message SpeechSynthesizerSynthesizeMixedResult { optional SpeechSynthesizerEvent stream_message = 1; optional SpeechSynthesizerResponse result_message = 2; }
+service SpeechSynthesizer { rpc Synthesize(SpeechSynthesizerRequest) returns (stream SpeechSynthesizerSynthesizeMixedResult); }
+"""
+
+
+def _synthesize_voicelm_aoede(text: str, out_raw: Path, timeout_s: int = 25) -> bool:
+    cleaned = re.sub(r"\s+", " ", (text or "")).strip()
+    if not cleaned:
+        return False
+    if not _SPEECH_PROTO_PATH.is_file() or _SPEECH_PROTO_PATH.stat().st_size < 100:
+        _SPEECH_PROTO_PATH.write_text(_SPEECH_PROTO_TEXT, encoding="utf-8")
+    ssml = (
+        '<?xml version="1.0"?> '
+        '<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" '
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+        'xsi:schemaLocation="http://www.w3.org/TR/speech-synthesis/synthesis.xsd '
+        'http://www.w3.org/TR/speech-synthesis/synthesis.xsd" xml:lang="en-US">'
+        f"{html.escape(cleaned, quote=False)}</speak>"
+    )
+    req_proto = (
+        f"ssml: {json.dumps(ssml)} "
+        'voice { language: "en-US" gender: "female" name: "en-us-gia-server-voicelm#kix02" } '
+        "encoding: MP3_64KBPS"
+    )
+    try:
+        proc = subprocess.run(
+            [
+                "stubby", "call", "--proto2", "--noremotedb", "--ignore_serverstatus",
+                f"--protofiles={_SPEECH_PROTO_PATH}",
+                "blade:speech-tts-synthesizer-speech-synthesizer-prod",
+                "speech.SpeechSynthesizer.Synthesize",
+                req_proto,
+            ],
+            capture_output=True, text=True, timeout=timeout_s, check=False,
+        )
+        if proc.returncode == 0 and proc.stdout:
+            mp3_bytes = b"".join(
+                m.group(1).encode("latin1").decode("unicode_escape").encode("latin1")
+                for m in re.finditer(r'audio:\s*"((?:[^"\\]|\\.)*)"', proc.stdout)
+            )
+            if len(mp3_bytes) > 1000:
+                out_raw.write_bytes(mp3_bytes)
+                return True
+    except Exception:
+        pass
+    return False
+
+
 def _synthesize_wav(text: str, out_wav: Path, model_name: str, timeout_s: int = 75) -> bool:
+    if any(tag in out_wav.name for tag in ("_anondo_", "_zorba_")):
+        if _synthesize_voicelm_aoede(text, out_wav, timeout_s=min(30, timeout_s)):
+            return True
     try:
         proc = subprocess.run(
             [GEN_BIN, f"-timeout={timeout_s}s", f"-output={out_wav}", "tts", f"-model={model_name}", "-voice=Aoede", text],
@@ -408,7 +549,7 @@ def build_one(rel_path: str, info: dict[str, str], aud_root: Path) -> tuple[str,
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Explicit-only incremental Gemini Aoede voice refresher.")
-    parser.add_argument("--persona", default=DEFAULT_PERSONA_ID, choices=("kalyani", "anondo", "jhalak"), help="Target persona voice set.")
+    parser.add_argument("--persona", default=DEFAULT_PERSONA_ID, choices=("kalyani", "anondo", "jhalak", "zorba"), help="Target persona voice set.")
     parser.add_argument("--init-manifest", action="store_true", help="Snapshot current text hashes for existing MP3s.")
     parser.add_argument("--status", action="store_true", help="Check which audio files are stale/missing without regenerating.")
     parser.add_argument("--confirm", action="store_true", help="Explicit confirmation from Koushik to regenerate stale/missing voices.")

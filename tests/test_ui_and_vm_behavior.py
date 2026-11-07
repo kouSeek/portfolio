@@ -45,6 +45,7 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertIn("favicon-hub.png", hub_html)
         self.assertIn("data:image/png;base64,", hub_html)
         self.assertIn("<title>AI Companion — Kalyani (Ma) & Anondo (Koushik) 🪷</title>", hub_html)
+        self.assertIn("navigator.wakeLock.request", hub_html)
 
         idx_html_path = APP_ROOT / "kalyani.html"
         self.assertTrue(idx_html_path.is_file())
@@ -56,6 +57,7 @@ class TestUIAndVMBehavior(unittest.TestCase):
         self.assertIn("favicon-kalyani.png", ma_html)
         self.assertIn("data:image/png;base64,", ma_html)
         self.assertIn("<title>কল্যাণী — আজকের খেলা ও চিঠি 🌸</title>", ma_html)
+        self.assertIn("navigator.wakeLock.request", ma_html)
 
         # 1. Crisp Bengali ১ (U+09E7) Font & Anti-Clipping Invariants
         self.assertIn("Noto+Sans+Bengali", ma_html)
@@ -170,7 +172,16 @@ const sandbox = {
   fetch: () => Promise.reject(new Error('offline')),
   alert: () => {},
   Notification: { permission: 'default', requestPermission: () => Promise.resolve('granted') },
-  navigator: { serviceWorker: { register: () => Promise.resolve(), ready: Promise.resolve({ showNotification: () => {} }) } },
+  navigator: {
+    wakeLock: {
+      requested: 0,
+      request(type) {
+        if (type === 'screen') this.requested += 1;
+        return Promise.resolve({ released: false, addEventListener() {} });
+      }
+    },
+    serviceWorker: { register: () => Promise.resolve(), ready: Promise.resolve({ showNotification: () => {} }) }
+  },
   localStorage: {
     _store: { 'ma_21day_done_v2': '{corrupted_json', 'ma_kalyani_profile_v1': '{bad_json' },
     getItem(k) { return this._store[k] || null; },
@@ -191,6 +202,7 @@ vm.createContext(sandbox);
 const testBlock = `
 assert.strictEqual(DAYS_21.length, 21);
 assert.strictEqual(ALL_DAYS.length, 21);
+assert.strictEqual(navigator.wakeLock.requested >= 1, true, 'Screen wake lock must be requested on app open');
 
 const audio = getEl('audioPlayer');
 (async () => {
@@ -434,11 +446,21 @@ const ctx = {
     };
   },
   localStorage: { getItem: () => null, setItem: () => {} },
-  navigator: { clipboard: { writeText: () => {} } },
+  navigator: {
+    wakeLock: {
+      requested: 0,
+      request(type) {
+        if (type === 'screen') this.requested += 1;
+        return Promise.resolve({ released: false, addEventListener() {} });
+      }
+    },
+    clipboard: { writeText: () => {} }
+  },
   setTimeout, clearTimeout, setInterval, clearInterval, console, assert, audioListeners
 };
 const scriptAndTests = code + `
 ;(function() {
+  assert.strictEqual(navigator.wakeLock.requested >= 1, true, 'Anondo must request screen wake lock on load');
   // 1. Initial page load auto-starts day_main_1 and chains into ag_1_0 on ended
   assert.strictEqual(activeAudioKey, 'day_main_1', 'Initial load must auto-start day_main_1');
   audioListeners['ended']();
@@ -939,6 +961,7 @@ vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
         self.assertIn("favicon-jhalak.png", jh_html)
         self.assertIn("favicon-jhalak.ico", jh_html)
         self.assertIn("navigator.serviceWorker.register('kalyani-sw.js')", jh_html)
+        self.assertIn("navigator.wakeLock.request", jh_html)
         self.assertTrue((APP_ROOT / "jhalak-manifest.json").is_file(), "jhalak-manifest.json must exist")
         self.assertTrue((APP_ROOT / "assets" / "icons" / "favicon-jhalak-192.png").is_file())
         self.assertTrue((APP_ROOT / "assets" / "icons" / "favicon-jhalak-512.png").is_file())
@@ -1241,6 +1264,7 @@ vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});
         self.assertIn("favicon-zorba.png", zb_html)
         self.assertIn("favicon-zorba.ico", zb_html)
         self.assertIn("navigator.serviceWorker.register('kalyani-sw.js')", zb_html)
+        self.assertIn("navigator.wakeLock.request", zb_html)
         self.assertIn('<span class="jh-brand-logo" aria-label="Zorba">⚡</span>', zb_html)
         self.assertIn('id="btnJhCategoryDropdown"', zb_html)
         self.assertIn('id="btnJhHeaderListen"', zb_html)
@@ -1292,11 +1316,21 @@ const suite = code + `
   catIds.forEach(cid => {
     assert.ok(JHALAK_CATEGORY_COUNTS[cid] >= 16, 'Category ' + cid + ' must have at least 16 rich pages');
   });
+  ALL_JHALAK_REELS.forEach(r => {
+    assert.ok(Array.isArray(r.sections) && r.sections.length >= 3, 'Every Zorba page must have at least 3 rich sections: ' + r.id);
+    assert.ok(r.audio_url.includes('audio/zorba/reels/' + r.id + '.mp3'), 'Every Zorba page must use dedicated full-page Zorba reel audio: ' + r.id);
+    r.sections.forEach(s => {
+      assert.ok(!s.body_bn.includes('Open Gemini Live'), 'No raw Gemini Live prompt boilerplate in Zorba section: ' + r.id);
+    });
+    assert.ok(JHALAK_AUDIO_TIMINGS[r.id] || JHALAK_AUDIO_TIMINGS[r.audio_rel], 'Every Zorba page must have acoustic timing metadata: ' + r.id);
+  });
 
   renderJhalakReelStream();
   syncJhSettingsButtonsUI();
   assert.strictEqual(getSelectedCategorySummaryLabel(), '✨ All ▾');
   assert.ok(/<h2[^>]*class="jh-hook-title"><span class="jh-vibe-badge">/.test(el('jhReelsViewport').innerHTML), 'Inline category badge at start of h2');
+  assert.ok(/<h3 class="jh-sec-heading">[^<]*<span id="jhWord_/.test(el('jhReelsViewport').innerHTML), 'Section headings must be wrapped in .jh-tts-word spans');
+  assert.ok(jhCurrentWordTimings.length > 60, 'Full-page Zorba reel must wrap all words on the page (title + 3 sections + curiosity Q&A)');
   assert.ok(el('jhCategoryStatsBox').innerHTML.includes('148 Pages'), 'Category stats shows simple 148 Pages');
   assert.ok(!el('jhCategoryStatsBox').innerHTML.includes('148/148'), 'No fraction in category stats');
 

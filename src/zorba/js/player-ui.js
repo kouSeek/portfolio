@@ -1295,38 +1295,32 @@ function renderJhalakReelStream() {
 
   const ttsState = { words: [], totalWeight: 0, prefix: 'jhWord' };
   const titleBlockId = 'jhTitleBlock_' + idx;
-  const wrappedTitleHtml = (card.title_spoken !== false)
-    ? wrapTextWithJhTtsWords(card.title_bn, ttsState, {
-        blockId: titleBlockId,
-        addHeadingPause: true
-      })
-    : String(card.title_bn || '');
+  const wrappedTitleHtml = wrapTextWithJhTtsWords(card.title_bn, ttsState, {
+    blockId: titleBlockId,
+    addHeadingPause: true
+  });
 
   const sectionsList = Array.isArray(card.sections) && card.sections.length
     ? card.sections
     : [
-        { heading_bn: '📖 Deep Dive & Perspective', body_bn: card.hook_bn || '', tone: 'story', spoken: true },
-        { heading_bn: card.hitch_label_bn || '⚡ Micro-Experiment', body_bn: card.hitch_bn || '', tone: 'hitch', spoken: true }
+        { heading_bn: '📖 Deep Dive & Perspective', body_bn: card.hook_bn || '', tone: 'story' },
+        { heading_bn: card.hitch_label_bn || '⚡ Micro-Experiment', body_bn: card.hitch_bn || '', tone: 'hitch' }
       ];
 
   const sectionsHtml = sectionsList.map((sec, secIdx) => {
     const secBlockId = `jhSecBlock_${idx}_${secIdx}`;
-    const wrappedHeadingHtml = (sec.heading_spoken === true)
-      ? wrapTextWithJhTtsWords(sec.heading_bn, ttsState, {
-          blockId: secBlockId,
-          addHeadingPause: true
-        })
-      : String(sec.heading_bn || '');
+    const wrappedHeadingHtml = wrapTextWithJhTtsWords(sec.heading_bn, ttsState, {
+      blockId: secBlockId,
+      addHeadingPause: true
+    });
     const paragraphs = String(sec.body_bn || '')
       .split(/\n+/)
       .filter(Boolean)
       .map(p => {
-        const wrappedP = (sec.spoken !== false)
-          ? wrapTextWithJhTtsWords(p, ttsState, {
-              blockId: secBlockId,
-              addHeadingPause: false
-            })
-          : p;
+        const wrappedP = wrapTextWithJhTtsWords(p, ttsState, {
+          blockId: secBlockId,
+          addHeadingPause: false
+        });
         return `<p class="jh-sec-para">${wrappedP}</p>`;
       })
       .join('');
@@ -1340,23 +1334,19 @@ function renderJhalakReelStream() {
   }).join('');
 
   const curBlockId = `jhCurBox_${idx}`;
-  const wrappedCurQHtml = (card.curiosity_q_spoken === true)
-    ? wrapTextWithJhTtsWords(card.curiosity_q_bn, ttsState, {
-        blockId: curBlockId,
-        addHeadingPause: true
-      })
-    : String(card.curiosity_q_bn || '');
-  const wrappedCurAHtml = (card.curiosity_a_spoken !== false)
-    ? wrapTextWithJhTtsWords(card.curiosity_a_bn, ttsState, {
-        blockId: curBlockId,
-        inCuriosityA: true,
-        addHeadingPause: false
-      })
-    : String(card.curiosity_a_bn || '');
+  const wrappedCurQHtml = wrapTextWithJhTtsWords(card.curiosity_q_bn, ttsState, {
+    blockId: curBlockId,
+    addHeadingPause: true
+  });
+  const wrappedCurAHtml = wrapTextWithJhTtsWords(card.curiosity_a_bn, ttsState, {
+    blockId: curBlockId,
+    inCuriosityA: true,
+    addHeadingPause: false
+  });
 
-  const timingKey = card.audio_rel || card.id;
-  const cardAudioMeta = (typeof JHALAK_AUDIO_TIMINGS !== 'undefined' && JHALAK_AUDIO_TIMINGS && (JHALAK_AUDIO_TIMINGS[timingKey] || JHALAK_AUDIO_TIMINGS[card.id]))
-    ? (JHALAK_AUDIO_TIMINGS[timingKey] || JHALAK_AUDIO_TIMINGS[card.id])
+  const timingKey = card.id;
+  const cardAudioMeta = (typeof JHALAK_AUDIO_TIMINGS !== 'undefined' && JHALAK_AUDIO_TIMINGS && (JHALAK_AUDIO_TIMINGS[card.id] || JHALAK_AUDIO_TIMINGS[card.audio_rel]))
+    ? (JHALAK_AUDIO_TIMINGS[card.id] || JHALAK_AUDIO_TIMINGS[card.audio_rel])
     : null;
   jhCurrentTimelineDur = buildAcousticWordTimeline(ttsState.words, ttsState.totalWeight, cardAudioMeta);
   jhCurrentWordTimings = ttsState.words;
@@ -1670,10 +1660,80 @@ function playJhalakLetterAudio() {
   }
 }
 
-/* PWA SERVICE WORKER REGISTRATION & FAVICON HYDRATION FOR CHROME INSTALLABILITY */
+/* PWA SERVICE WORKER REGISTRATION, SCREEN WAKE LOCK & FAVICON HYDRATION */
 if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
   navigator.serviceWorker.register('kalyani-sw.js').catch(() => {});
 }
+
+let _screenWakeLock = null;
+let _screenWakeLockPending = false;
+
+async function requestScreenWakeLock() {
+  try {
+    if (typeof navigator === 'undefined' || !navigator.wakeLock || typeof navigator.wakeLock.request !== 'function') {
+      return null;
+    }
+    if (typeof document !== 'undefined' && document.visibilityState === 'hidden') {
+      return null;
+    }
+    if (_screenWakeLock && !_screenWakeLock.released) {
+      return _screenWakeLock;
+    }
+    if (_screenWakeLockPending) {
+      return _screenWakeLock;
+    }
+    _screenWakeLockPending = true;
+    const sentinel = await navigator.wakeLock.request('screen');
+    _screenWakeLock = sentinel || { released: false };
+    _screenWakeLockPending = false;
+    if (typeof window !== 'undefined') {
+      window._screenWakeLock = _screenWakeLock;
+    }
+    if (sentinel && typeof sentinel.addEventListener === 'function') {
+      sentinel.addEventListener('release', () => {
+        if (_screenWakeLock === sentinel) {
+          _screenWakeLock = null;
+        }
+      });
+    }
+    return _screenWakeLock;
+  } catch (e) {
+    _screenWakeLockPending = false;
+    return null;
+  }
+}
+
+(function initScreenWakeLock() {
+  requestScreenWakeLock();
+  if (typeof document !== 'undefined' && typeof document.addEventListener === 'function') {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'hidden') {
+        requestScreenWakeLock();
+      }
+    });
+    ['touchstart', 'pointerdown', 'click', 'keydown'].forEach(evName => {
+      document.addEventListener(evName, () => {
+        if (!_screenWakeLock || _screenWakeLock.released) {
+          requestScreenWakeLock();
+        }
+      }, { passive: true });
+    });
+  }
+  if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+    window.addEventListener('focus', () => requestScreenWakeLock());
+    window.addEventListener('pageshow', () => requestScreenWakeLock());
+  }
+  if (typeof setInterval === 'function') {
+    const _wlTimer = setInterval(() => {
+      if (typeof document === 'undefined' || document.visibilityState !== 'hidden') {
+        if (!_screenWakeLock || _screenWakeLock.released) {
+          requestScreenWakeLock();
+        }
+      }
+    }, 25000);
+    if (_wlTimer && typeof _wlTimer.unref === 'function') _wlTimer.unref();
+  }
+})();
 
 (function hydratePageFavicon() {
   function apply() {

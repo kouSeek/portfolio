@@ -265,6 +265,76 @@
     </div>
   </main>
   <script>
+    let _screenWakeLock = null;
+    let _screenWakeLockPending = false;
+
+    async function requestScreenWakeLock() {
+      try {
+        if (typeof navigator === "undefined" || !navigator.wakeLock || typeof navigator.wakeLock.request !== "function") {
+          return null;
+        }
+        if (typeof document !== "undefined" && document.visibilityState === "hidden") {
+          return null;
+        }
+        if (_screenWakeLock && !_screenWakeLock.released) {
+          return _screenWakeLock;
+        }
+        if (_screenWakeLockPending) {
+          return _screenWakeLock;
+        }
+        _screenWakeLockPending = true;
+        const sentinel = await navigator.wakeLock.request("screen");
+        _screenWakeLock = sentinel || { released: false };
+        _screenWakeLockPending = false;
+        if (typeof window !== "undefined") {
+          window._screenWakeLock = _screenWakeLock;
+        }
+        if (sentinel && typeof sentinel.addEventListener === "function") {
+          sentinel.addEventListener("release", () => {
+            if (_screenWakeLock === sentinel) {
+              _screenWakeLock = null;
+            }
+          });
+        }
+        return _screenWakeLock;
+      } catch (e) {
+        _screenWakeLockPending = false;
+        return null;
+      }
+    }
+
+    (function initScreenWakeLock() {
+      requestScreenWakeLock();
+      if (typeof document !== "undefined" && typeof document.addEventListener === "function") {
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState !== "hidden") {
+            requestScreenWakeLock();
+          }
+        });
+        ["touchstart", "pointerdown", "click", "keydown"].forEach(evName => {
+          document.addEventListener(evName, () => {
+            if (!_screenWakeLock || _screenWakeLock.released) {
+              requestScreenWakeLock();
+            }
+          }, { passive: true });
+        });
+      }
+      if (typeof window !== "undefined" && typeof window.addEventListener === "function") {
+        window.addEventListener("focus", () => requestScreenWakeLock());
+        window.addEventListener("pageshow", () => requestScreenWakeLock());
+      }
+      if (typeof setInterval === "function") {
+        const _wlTimer = setInterval(() => {
+          if (typeof document === "undefined" || document.visibilityState !== "hidden") {
+            if (!_screenWakeLock || _screenWakeLock.released) {
+              requestScreenWakeLock();
+            }
+          }
+        }, 25000);
+        if (_wlTimer && typeof _wlTimer.unref === "function") _wlTimer.unref();
+      }
+    })();
+
     (function hydratePageFavicon() {
       function apply() {
         try {
