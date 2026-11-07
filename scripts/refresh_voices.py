@@ -526,7 +526,7 @@ def build_one(rel_path: str, info: dict[str, str], aud_root: Path) -> tuple[str,
 
     for attempt, model_name in enumerate((TTS_MODELS[0], TTS_MODELS[0], TTS_MODELS[1])):
         try:
-            if len(info["text"]) > 1350 and info["part2"]:
+            if aud_root.name not in ("anondo", "zorba") and len(info["text"]) > 1350 and info["part2"]:
                 if _synthesize_wav(info["part1"], w1, model_name, timeout_s=70) and _synthesize_wav(info["part2"], w2, model_name, timeout_s=70):
                     if _wav_to_mp3([w1, w2], out_mp3):
                         return rel_path, True

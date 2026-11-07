@@ -215,7 +215,7 @@ const ZORBA_SONG_VAULT = {
     song: 'Safarnama / Ilahi (Lucky Ali, A.R. Rahman & Irshad Kamil — Tamasha, 2015)',
     yt_query: 'Safarnama Tamasha Lucky Ali A R Rahman official full song HD',
     story: 'Imtiaz Ali’s Tamasha is the cinematic biography of every gifted person who spent their twenties wearing a robotic “good engineer / responsible solver” mask while their playful, imaginative inner child waited backstage.\n\nWhen Ved finally drops the corporate robot script and steps onto the open road, A.R. Rahman brings in Lucky Ali’s unmistakable, wind-swept voice for Safarnama.',
-    bhaavna: 'Listen to Irshad Kamil’s opening lines: “O… सवालों का সফরনামা, শুরু তুমসে, খতম তুমपे”—a travelogue of open questions that begins and ends with who you truly are, without needing anyone else’s permission.\n\nNotice how Lucky Ali slides into each note with unhurried ease over a warm acoustic guitar pulse. You have already completed the hard 10-year climb; the rest of your thirties and forties is this open-sky Safarnama.',
+    bhaavna: 'Listen to Irshad Kamil’s opening lines: “O… sawaalon ka safarnama, shuru tumse, khatam tumpe”—a travelogue of open questions that begins and ends with who you truly are, without needing anyone else’s permission.\n\nNotice how Lucky Ali slides into each note with unhurried ease over a warm acoustic guitar pulse. You have already completed the hard 10-year climb; the rest of your thirties and forties is this open-sky Safarnama.',
     hook_q: 'Right Question to Unlock the Song’s Meaning: Why does a “travelogue of questions” (sawaalon ka safarnama) feel liberating rather than stressful?',
     hook_a: 'Because in survival mode, questions feel like tests you might fail; in House-Money mode, open questions are adventures you get to explore purely for fun.',
     cur_q: '🔮 Sonic Texture Secret: How does A.R. Rahman create the feeling of a moving train and open horizon in Safarnama?',
@@ -225,7 +225,7 @@ const ZORBA_SONG_VAULT = {
     song: 'Amar Poran Jaha Chay, Tumi Tai Go (Rabindranath Tagore)',
     yt_query: 'Amar Poran Jaha Chay Rabindra Sangeet best vocal HD',
     story: 'Composed by Rabindranath Tagore in 1886 in Raga Mishra Kafi / Bhairavi, Amar Poran Jaha Chay is one of the most psychologically mature love songs ever written. Most romantic songs in world music are built on scarcity and bargain: “If you love me back, I will be happy; if you leave, I am broken.”\n\nTagore flips that entire equation upside down into sovereign emotional abundance.',
-    bhaavna: 'Read the lines slowly: “Amar poran jaha chay, tumi tai, tumi tai go / Toma chhara aar e jogote mor keho nai, kichu nai go / Tumi sukhi jodi nahi hও, cholo sukhero sondhane jao—ami tomare peyechi hridoyo-majhe, aar kichu nahi chai go.”\n\n(You are what my heart delights in. If you are not happy here, go freely in search of your joy—having felt this love inside my own heart, I lack nothing.) That is the exact foundation of Clean-Slate Romantic Clarity: loving warmly from a full cup, with zero needy grasping and zero savior guilt.',
+    bhaavna: 'Read the lines slowly: “Amar poran jaha chay, tumi tai, tumi tai go / Toma chhara aar e jogote mor keho nai, kichu nai go / Tumi sukhi jodi nahi ho, cholo sukhero sondhane jao—ami tomare peyechi hridoyo-majhe, aar kichu nahi chai go.”\n\n(You are what my heart delights in. If you are not happy here, go freely in search of your joy—having felt this love inside my own heart, I lack nothing.) That is the exact foundation of Clean-Slate Romantic Clarity: loving warmly from a full cup, with zero needy grasping and zero savior guilt.',
     hook_q: 'Right Question to Unlock the Song’s Meaning: How can a singer say “Go freely in search of your happiness” without sounding cold or detached?',
     hook_a: 'Because when your inner emotional cup is full, your love is a gift rather than a hostage negotiation—honoring both your own dignity and the other person’s freedom.',
     cur_q: '🔮 Singing Phrasing Secret: Where should you take a soft breath when singing the opening line “Amar poran jaha chay”?',
@@ -392,7 +392,7 @@ const ZORBA_LISTENING_VAULT = {
     cur_a: '✨ Because once status and credit are safe, their prefrontal cortex stops defending territory and starts collaborating on architecture!'
   },
   4: {
-    monologue: 'Enjoy the natural Kolkata-to-Hyderabad bilingual rhythm of this reflection: “আসলে ব্যাপারটা কী জানো তো—when we sit in a two-hour architecture meeting, half the room is trying to sound smart with ten-dollar buzzwords, আর আসল bottleneck-টা চুপচাপ কোণায় বসে আছে। Just like Satyajit Ray’s films, যেখানে তিন পাতার ডায়লগের চেয়ে একটা ছোট্ট নীরব দৃষ্টি অনেক বেশি কথা বলে, great engineering is about cutting the noise until only the clean truth remains.”',
+    monologue: 'Enjoy the natural Kolkata-to-Hyderabad bilingual rhythm of this reflection: “Asole byapar-ta ki jano toh—when we sit in a two-hour architecture meeting, half the room is trying to sound smart with ten-dollar buzzwords, aar asol bottleneck-ta chupchap konay bose ache. Just like Satyajit Ray’s films, jekhane tin patar dialogue-er cheye ekta chhotto nirob drishti onek beshi kotha bole, great engineering is about cutting the noise until only the clean truth remains.”',
     synthesis: '1-Sentence English Headline: Just as Satyajit Ray used quiet visual economy instead of verbose dialogue, great engineering cuts through meeting buzzwords to expose the single real bottleneck.',
     cur_q: '🔮 Bilingual Ear Secret: Why does switching fluidly between Bengali warmth and English technical precision feel so natural to your ear?',
     cur_a: '✨ Because Bengali carries emotional cadence ("bhaavna") while English carries compact system labels—giving your brain dual stereo channels!'
@@ -404,7 +404,7 @@ const ZORBA_LISTENING_VAULT = {
     cur_a: '✨ Amdahl’s Law (and Eliyahu Goldratt’s Theory of Constraints)—a pipeline only speeds up to the extent that you widen its true bottleneck!'
   },
   6: {
-    monologue: 'Listen to the cadence and Urdu-Hindi idioms in this short reflection: “দেখিযে, জিন্দেগী মেঁ হার চীজ কা এক মকসদ জরুরি নহী হোতা। দরআসল, জব ইনসান হর শাম কো ভি দফতর কি ফাইলোঁ কি তরহ নাপনে লগতা হ্যায়, তো সুকুন খিরকি সে বাহর চলা জাতা হ্যায়। ইসকে বাবজুদ, বস এক পেয়ালি চায় অউর গিটার কি দো তান পুরি শাম কা রং বদল দেতি হ্যায়।” (Dekhiye, zindagi mein har cheez ka ek maqsad zaroori nahi hota. Darasal, jab insaan har shaam ko bhi daftar ki filon ki tarah naapne lagta hai, toh sukoon khidki se bahar chala jata hai. Iske bawaajood, bas ek pyali chai aur guitar ki दो taan poori shaam ka रंग badal deti hai.)',
+    monologue: 'Listen to the cadence and Urdu-Hindi idioms in this short reflection: “Dekhiye, zindagi mein har cheez ka ek maqsad zaroori nahi hota. Darasal, jab insaan har shaam ko bhi daftar ki filon ki tarah naapne lagta hai, toh sukoon khidki se bahar chala jata hai. Iske bawaajood, bas ek pyali chai aur guitar ki do taan poori shaam ka rang badal deti hai.”',
     synthesis: 'Key Idioms Caught by Ear: “Darasal” (In fact / actually) marks the real turn of the argument, and “Iske bawaajood” (Despite this / nevertheless) introduces the warm resolution: evening peace returns the moment you stop measuring leisure like office files.',
     cur_q: '🔮 Conversational Hindi Secret: How do discourse markers like "Darasal" and "Bawaajood" help your working memory?',
     cur_a: '✨ They act like road signs—telling your ear in advance whether the next sentence is a deeper explanation ("darasal") or a contrasting pivot ("bawaajood")!'
@@ -1199,7 +1199,7 @@ function buildAllZorbaReels() {
             spoken: true
           },
           {
-            heading_bn: '💡 গানের আসল অর্থ বোঝার সঠিক প্রশ্ন • The Right Question Hook for Song Meaning',
+            heading_bn: '💡 The Right Question Hook for Song Meaning',
             body_bn: `${sv.hook_q}\n\n${sv.hook_a}`,
             tone: 'extra',
             spoken: true

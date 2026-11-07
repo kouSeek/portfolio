@@ -1331,6 +1331,18 @@ const suite = code + `
   assert.ok(/<h2[^>]*class="jh-hook-title"><span class="jh-vibe-badge">/.test(el('jhReelsViewport').innerHTML), 'Inline category badge at start of h2');
   assert.ok(/<h3 class="jh-sec-heading">[^<]*<span id="jhWord_/.test(el('jhReelsViewport').innerHTML), 'Section headings must be wrapped in .jh-tts-word spans');
   assert.ok(jhCurrentWordTimings.length > 60, 'Full-page Zorba reel must wrap all words on the page (title + 3 sections + curiosity Q&A)');
+  assert.strictEqual(isSpokenWordToken('&'), true, 'Standalone & must be wrapped as a spoken word token ("and")');
+  assert.strictEqual(isSpokenWordToken('+'), true, 'Standalone + must be wrapped as a spoken word token ("plus")');
+  const wNumRange = computeCalibratedWordTimingWeights('2016–2026', 'Decade', false, false);
+  assert.ok(wNumRange.syllableWeight >= 1800, 'Multi-digit number range 2016–2026 must receive >= 1800ms spoken weight');
+  const wCurrency = computeCalibratedWordTimingWeights('₹2.61', 'Cr+', false, false);
+  assert.ok(wCurrency.syllableWeight >= 1150, 'Currency decimal ₹2.61 must receive >= 1150ms spoken weight');
+  const wUnitMs = computeCalibratedWordTimingWeights('ms).', 'Meanwhile,', false, false);
+  assert.ok(wUnitMs.syllableWeight >= 650 && wUnitMs.pauseTier === 3, 'Unit ms). must expand to milliseconds weight and sentence pauseTier 3');
+  const wAbbrev = computeCalibratedWordTimingWeights('A.R.', 'Rahman', true, false);
+  assert.strictEqual(wAbbrev.pauseTier, 0, 'Abbreviation A.R. must not be misclassified as sentence-ending pauseTier 3');
+  const wQuoteOpen = computeCalibratedWordTimingWeights('explicit', '"90%', false, false);
+  assert.strictEqual(wQuoteOpen.pauseTier, 1, 'Word preceding opening quote must receive prosodic pauseTier 1');
   assert.ok(el('jhCategoryStatsBox').innerHTML.includes('148 Pages'), 'Category stats shows simple 148 Pages');
   assert.ok(!el('jhCategoryStatsBox').innerHTML.includes('148/148'), 'No fraction in category stats');
 
