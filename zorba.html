@@ -326,44 +326,29 @@ html, body {
 }
 
 .jh-reel-slide.jh-sticky-tension {
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55);
-  border-radius: 18px;
-}
-
-.jh-reel-slide.jh-sticky-tension .jh-card-stage {
-  transform: translate3d(0, calc(var(--jh-pull-signed, 0px) * 0.35), 0);
-}
-
-.jh-reel-slide.jh-sticky-tension .jh-content-section,
-.jh-reel-slide.jh-sticky-tension .jh-curiosity-box {
-  margin-top: calc(14px + var(--jh-pull-px, 0px) * 0.22);
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.55), 0 14px 34px rgba(15, 10, 7, 0.45);
+  border-radius: 16px;
 }
 
 .jh-reel-slide.jh-sticky-broken {
-  transition: transform 0.22s cubic-bezier(0.22, 1.45, 0.36, 1), border-radius 0.18s ease, box-shadow 0.18s ease;
+  transition: transform 0.18s cubic-bezier(0.22, 1.35, 0.36, 1), border-radius 0.18s ease, box-shadow 0.18s ease;
   border-radius: 26px;
-  box-shadow: 0 28px 64px rgba(0, 0, 0, 0.72);
+  box-shadow: 0 0 0 3px #34D399, 0 28px 64px rgba(0, 0, 0, 0.72);
 }
 
 .jh-reel-slide.jh-pull-springback {
-  transition: transform 0.48s cubic-bezier(0.28, 1.75, 0.45, 0.98), border-radius 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.28s ease, box-shadow 0.28s ease;
 }
 
-.jh-reel-slide.jh-pull-springback .jh-card-stage,
-.jh-reel-slide.jh-pull-springback .jh-content-section,
-.jh-reel-slide.jh-pull-springback .jh-curiosity-box {
-  transition: transform 0.48s cubic-bezier(0.28, 1.75, 0.45, 0.98), margin-top 0.42s cubic-bezier(0.28, 1.75, 0.45, 0.98);
-}
-
-/* Pure Physics Sticky-Stretch & Spring-Momentum Page Transitions:
-   - Next (pulling up at bottom past breaking point): next page launches up with spring overshoot & bounce
-   - Prev (pulling down at top past breaking point): previous page drops in with spring overshoot & bounce */
+/* Sticky-Detent Tension-Snap vertical page transitions:
+   - Next (long pull past breaking point at bottom): current unsticks & launches up, next snaps in from bottom
+   - Prev (pull past breaking point at top): current unsticks & drops down, prev snaps in from top */
 .jh-slide-anim-next {
-  animation: jhProSidewaysInNext 0.58s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: jhProSidewaysInNext 0.52s cubic-bezier(0.22, 1.12, 0.36, 1) both;
 }
 
 .jh-slide-anim-prev {
-  animation: jhProSidewaysInPrev 0.58s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: jhProSidewaysInPrev 0.52s cubic-bezier(0.22, 1.12, 0.36, 1) both;
 }
 
 .jh-outgoing-ghost {
@@ -384,33 +369,25 @@ html, body {
 
 .jh-outgoing-ghost.out-left,
 .jh-outgoing-ghost.out-up {
-  animation: jhProSidewaysOutLeft 0.46s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: jhProSidewaysOutLeft 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .jh-outgoing-ghost.out-right,
 .jh-outgoing-ghost.out-down {
-  animation: jhProSidewaysOutRight 0.46s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: jhProSidewaysOutRight 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes jhProSidewaysInNext {
   0% {
-    transform: translate3d(0, 96%, 0) scaleY(1.09) scaleX(0.96);
-    box-shadow: 0 -28px 64px rgba(15, 10, 7, 0.72);
+    transform: translate3d(0, 104%, 0) scale(0.92);
+    box-shadow: 0 -28px 64px rgba(15, 10, 7, 0.72), 0 -4px 0 #34D399;
     border-top-left-radius: 28px;
     border-top-right-radius: 28px;
   }
-  56% {
-    transform: translate3d(0, -3.6%, 0) scaleY(0.982) scaleX(1.006);
-    border-top-left-radius: 14px;
-    border-top-right-radius: 14px;
-  }
-  78% {
-    transform: translate3d(0, 1.1%, 0) scaleY(1.006) scaleX(0.998);
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-  }
-  92% {
-    transform: translate3d(0, -0.3%, 0) scale(1);
+  72% {
+    transform: translate3d(0, -1.2%, 0) scale(1.004);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -422,17 +399,17 @@ html, body {
 
 @keyframes jhProSidewaysOutLeft {
   0% {
-    transform: translate3d(0, -38px, 0) scaleY(1.08) scaleX(0.97);
-    border-radius: 20px;
+    transform: translate3d(0, -56px, 0) scale(0.935);
+    border-radius: 24px;
     opacity: 1;
     visibility: visible;
   }
-  85% {
-    opacity: 0.22;
+  88% {
+    opacity: 0.24;
     visibility: visible;
   }
   100% {
-    transform: translate3d(0, -108%, 0) scaleY(0.9) scaleX(0.92);
+    transform: translate3d(0, -108%, 0) scale(0.88);
     border-radius: 28px;
     opacity: 0;
     visibility: hidden;
@@ -441,23 +418,15 @@ html, body {
 
 @keyframes jhProSidewaysInPrev {
   0% {
-    transform: translate3d(0, -96%, 0) scaleY(1.09) scaleX(0.96);
-    box-shadow: 0 28px 64px rgba(15, 10, 7, 0.72);
+    transform: translate3d(0, -104%, 0) scale(0.92);
+    box-shadow: 0 28px 64px rgba(15, 10, 7, 0.72), 0 4px 0 #34D399;
     border-bottom-left-radius: 28px;
     border-bottom-right-radius: 28px;
   }
-  56% {
-    transform: translate3d(0, 3.6%, 0) scaleY(0.982) scaleX(1.006);
-    border-bottom-left-radius: 14px;
-    border-bottom-right-radius: 14px;
-  }
-  78% {
-    transform: translate3d(0, -1.1%, 0) scaleY(1.006) scaleX(0.998);
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-  }
-  92% {
-    transform: translate3d(0, 0.3%, 0) scale(1);
+  72% {
+    transform: translate3d(0, 1.2%, 0) scale(1.004);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -469,17 +438,17 @@ html, body {
 
 @keyframes jhProSidewaysOutRight {
   0% {
-    transform: translate3d(0, 38px, 0) scaleY(1.08) scaleX(0.97);
-    border-radius: 20px;
+    transform: translate3d(0, 56px, 0) scale(0.935);
+    border-radius: 24px;
     opacity: 1;
     visibility: visible;
   }
-  85% {
-    opacity: 0.22;
+  88% {
+    opacity: 0.24;
     visibility: visible;
   }
   100% {
-    transform: translate3d(0, 108%, 0) scaleY(0.9) scaleX(0.92);
+    transform: translate3d(0, 108%, 0) scale(0.88);
     border-radius: 28px;
     opacity: 0;
     visibility: hidden;
@@ -495,8 +464,8 @@ html, body {
   color: #FFFDF9;
   border: 2px solid #F59E0B;
   border-radius: 999px;
-  padding: 8px 16px;
-  font-size: 0.92rem;
+  padding: 10px 14px;
+  font-size: 1.25rem;
   font-weight: 800;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
   pointer-events: none;
@@ -523,14 +492,97 @@ html, body {
   }
 }
 
-/* HIDE TEXT/PROGRESS-BAR PULL BANNERS — PURE PHYSICS STRETCH & SPRING SNAP ONLY */
-.jh-pull-indicator,
-.jh-pull-indicator.visible,
-.jh-pull-indicator.ready,
+/* COMPACT VISUAL-ONLY PHYSICS PULL CAPSULE (ZERO TEXT CLUTTER) */
+.jh-pull-indicator {
+  position: fixed;
+  left: 50%;
+  z-index: 88;
+  width: 96px;
+  background: rgba(24, 18, 14, 0.92);
+  color: #FFFDF9;
+  border: 2px solid #F59E0B;
+  border-radius: 999px;
+  padding: 7px 12px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.14s ease, border-color 0.16s ease, background-color 0.16s ease, transform 0.08s linear;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.jh-pull-indicator-top {
+  top: calc(52px + var(--jh-safe-top));
+  transform: translate3d(-50%, -14px, 0) scale(0.88);
+}
+
+.jh-pull-indicator-bottom {
+  bottom: calc(12px + var(--jh-safe-bottom));
+  transform: translate3d(-50%, 14px, 0) scale(0.88);
+}
+
+.jh-pull-indicator.visible {
+  opacity: 1;
+}
+
+.jh-pull-indicator.ready {
+  background: linear-gradient(135deg, #065F46 0%, #047857 100%);
+  border-color: #34D399;
+  box-shadow: 0 14px 36px rgba(5, 150, 105, 0.55), 0 0 0 4px rgba(52, 211, 153, 0.32);
+}
+
+.jh-pull-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#jhPullTopText,
+#jhPullBottomText {
+  display: none !important;
+}
+
+.jh-pull-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.24);
+  font-size: 1.02rem;
+  transition: transform 0.18s cubic-bezier(0.22, 1.35, 0.36, 1), background-color 0.18s ease;
+}
+
+.jh-pull-indicator.ready .jh-pull-arrow {
+  background: rgba(255, 255, 255, 0.26);
+  transform: scale(1.22) rotate(180deg);
+}
+
+.jh-pull-progress-track {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.jh-pull-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #FBBF24 0%, #F59E0B 100%);
+  border-radius: 999px;
+  transition: width 0.05s linear;
+}
+
+.jh-pull-indicator.ready .jh-pull-progress-fill {
+  background: linear-gradient(90deg, #6EE7B7 0%, #34D399 100%);
+}
+
 .jh-bottom-pull-cue {
   display: none !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
 }
 
 /* ============================================================================
@@ -3014,7 +3066,6 @@ let jhPullAnchorY = null;
 let jhPullDirection = '';
 let jhPullDistance = 0;
 let jhPullThresholdReached = false;
-let jhPullSnapTriggered = false;
 let jhMouseDownX = null;
 let jhMouseDownY = null;
 let jhWheelLock = false;
@@ -3880,6 +3931,14 @@ function stepJhalakReel(delta, autoPlayAfter) {
     }
   } else {
     jhLastSlideDir = 'next';
+    if (jhFilteredReels[jhCurrentIdx]) {
+      if (jhHistoryPos < 0 || !jhHistoryStack.length) {
+        jhHistoryStack = [jhFilteredReels[jhCurrentIdx].id];
+        jhHistoryPos = 0;
+      } else {
+        jhHistoryStack[jhHistoryPos] = jhFilteredReels[jhCurrentIdx].id;
+      }
+    }
     if (jhHistoryPos >= 0 && jhHistoryPos + 1 < jhHistoryStack.length) {
       jhHistoryPos += 1;
       const nextId = jhHistoryStack[jhHistoryPos];
@@ -4534,10 +4593,12 @@ function hideJhPullIndicators() {
   if (topInd && topInd.classList) {
     topInd.classList.remove('visible');
     topInd.classList.remove('ready');
+    if (topInd.style) topInd.style.transform = '';
   }
   if (botInd && botInd.classList) {
     botInd.classList.remove('visible');
     botInd.classList.remove('ready');
+    if (botInd.style) botInd.style.transform = '';
   }
   const topFill = document.getElementById('jhPullTopFill');
   const botFill = document.getElementById('jhPullBottomFill');
@@ -4573,26 +4634,18 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
       slideEl.classList.toggle('jh-sticky-broken', isReady);
     }
     if (!isReady) {
-      // Phase 1: Pure Physics Sticky Stretch ("Stuck & Stretched Until Breaking Point")
-      const stickyPx = Math.round(38 * (1 - Math.exp(-cleanPull / 52)));
+      // Phase 1: Sticky Magnetic Resistance ("Stuck Until Breaking Point")
+      const stickyPx = Math.round(22 * (1 - Math.exp(-cleanPull / 42)));
       const signedY = dir === 'next' ? -stickyPx : stickyPx;
-      const sx = (1 - progress * 0.024).toFixed(4);
-      const sy = (1 + Math.pow(progress, 1.05) * 0.105).toFixed(4);
-      if (typeof slideEl.style.setProperty === 'function') {
-        slideEl.style.setProperty('--jh-pull-px', stickyPx + 'px');
-        slideEl.style.setProperty('--jh-pull-signed', signedY + 'px');
-      }
+      const sx = (1 - progress * 0.012).toFixed(4);
+      const sy = (1 + progress * 0.022).toFixed(4);
       slideEl.style.transformOrigin = dir === 'next' ? 'center bottom' : 'center top';
       slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scaleX(${sx}) scaleY(${sy})`;
     } else {
-      // Phase 2: Breaking Point Reached (Instant Spring-Momentum Launch)
+      // Phase 2: Breaking Point Snap-Free (Page unsticks and detaches into floating card)
       const overPull = Math.max(0, cleanPull - threshold);
       const brokenPx = 56 + Math.min(48, Math.round(Math.pow(overPull, 0.72) * 1.6));
       const signedY = dir === 'next' ? -brokenPx : brokenPx;
-      if (typeof slideEl.style.setProperty === 'function') {
-        slideEl.style.setProperty('--jh-pull-px', '0px');
-        slideEl.style.setProperty('--jh-pull-signed', '0px');
-      }
       slideEl.style.transformOrigin = 'center center';
       slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scale(0.935)`;
     }
@@ -4600,6 +4653,8 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
 
   const topInd = document.getElementById('jhPullIndicatorTop');
   const botInd = document.getElementById('jhPullIndicatorBottom');
+  const pillShift = Math.round(progress * 10);
+  const pillScale = (0.92 + progress * 0.14).toFixed(3);
   if (dir === 'next') {
     if (topInd && topInd.classList) {
       topInd.classList.remove('visible');
@@ -4608,16 +4663,15 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
     if (botInd && botInd.classList) {
       botInd.classList.toggle('visible', cleanPull > 8);
       botInd.classList.toggle('ready', isReady);
+      if (botInd.style) {
+        botInd.style.transform = `translate3d(-50%, -${pillShift}px, 0) scale(${pillScale})`;
+      }
     }
     const botArrow = document.getElementById('jhPullBottomArrow');
     const botText = document.getElementById('jhPullBottomText');
     const botFill = document.getElementById('jhPullBottomFill');
-    if (botArrow) botArrow.textContent = isReady ? '⚡' : '🧲';
-    if (botText) {
-      botText.textContent = isReady
-        ? 'Unstuck! Release to snap to next page!'
-        : 'Page stuck — pull past breaking point...';
-    }
+    if (botArrow) botArrow.textContent = isReady ? '⚡' : '⬆️';
+    if (botText) botText.textContent = '';
     if (botFill && botFill.style) botFill.style.width = Math.round(progress * 100) + '%';
   } else if (dir === 'prev') {
     if (botInd && botInd.classList) {
@@ -4627,16 +4681,15 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
     if (topInd && topInd.classList) {
       topInd.classList.toggle('visible', cleanPull > 8);
       topInd.classList.toggle('ready', isReady);
+      if (topInd.style) {
+        topInd.style.transform = `translate3d(-50%, ${pillShift}px, 0) scale(${pillScale})`;
+      }
     }
     const topArrow = document.getElementById('jhPullTopArrow');
     const topText = document.getElementById('jhPullTopText');
     const topFill = document.getElementById('jhPullTopFill');
-    if (topArrow) topArrow.textContent = isReady ? '⚡' : '🧲';
-    if (topText) {
-      topText.textContent = isReady
-        ? 'Unstuck! Release to snap to previous page!'
-        : 'Page stuck — pull past breaking point...';
-    }
+    if (topArrow) topArrow.textContent = isReady ? '⚡' : '⬇️';
+    if (topText) topText.textContent = '';
     if (topFill && topFill.style) topFill.style.width = Math.round(progress * 100) + '%';
   }
 }
@@ -4656,10 +4709,6 @@ function resetJhOverscrollPullUI(animateSpring) {
       if (animateSpring) {
         slideEl.classList.add('jh-pull-springback');
       }
-    }
-    if ( typeof slideEl.style.setProperty === 'function') {
-      slideEl.style.setProperty('--jh-pull-px', '0px');
-      slideEl.style.setProperty('--jh-pull-signed', '0px');
     }
     slideEl.style.transformOrigin = '';
     slideEl.style.transform = '';
@@ -4734,7 +4783,7 @@ function handleJhContentDoubleTap(ev, mode) {
       tapY = ev.clientY;
     }
   }
-  const statusLabel = jhAudioPlaying ? '🔊 Playing Voice' : '⏸️ Voice Paused';
+  const statusLabel = jhAudioPlaying ? '🔊' : '⏸️';
   spawnDoubleTapVoiceToast(tapX, tapY, statusLabel);
   return true;
 }
@@ -5043,12 +5092,11 @@ window.addEventListener('DOMContentLoaded', () => {
         jhPullDirection = '';
         jhPullDistance = 0;
         jhPullThresholdReached = false;
-        jhPullSnapTriggered = false;
       }
     }, { passive: true });
 
     vp.addEventListener('touchmove', ev => {
-      if (jhPullSnapTriggered || !ev.touches || !ev.touches[0]) return;
+      if (!ev.touches || !ev.touches[0]) return;
       const curX = ev.touches[0].clientX;
       const curY = ev.touches[0].clientY;
       const totalDx = curX - jhTouchStartX;
@@ -5060,27 +5108,27 @@ window.addEventListener('DOMContentLoaded', () => {
       const atTop = maxScroll <= 12 || curScroll <= 8;
       const atBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
 
-      if (atBottom && totalDy < -12) {
+      if ((jhPullDirection === 'next' || atBottom) && totalDy < -12) {
         if (jhPullDirection !== 'next') {
           jhPullDirection = 'next';
           jhPullAnchorY = curY;
         }
         const rawPull = Math.max(0, jhPullAnchorY - curY);
-        updateJhOverscrollPullUI('next', rawPull);
-        if (rawPull >= JH_NEXT_PULL_THRESHOLD) {
-          jhPullSnapTriggered = true;
-          commitOrResetJhOverscrollPull();
+        if (rawPull > 0) {
+          updateJhOverscrollPullUI('next', rawPull);
+        } else {
+          resetJhOverscrollPullUI(false);
         }
-      } else if (atTop && totalDy > 12) {
+      } else if ((jhPullDirection === 'prev' || atTop) && totalDy > 12) {
         if (jhPullDirection !== 'prev') {
           jhPullDirection = 'prev';
           jhPullAnchorY = curY;
         }
         const rawPull = Math.max(0, curY - jhPullAnchorY);
-        updateJhOverscrollPullUI('prev', rawPull);
-        if (rawPull >= JH_PREV_PULL_THRESHOLD) {
-          jhPullSnapTriggered = true;
-          commitOrResetJhOverscrollPull();
+        if (rawPull > 0) {
+          updateJhOverscrollPullUI('prev', rawPull);
+        } else {
+          resetJhOverscrollPullUI(false);
         }
       } else if (jhPullDirection) {
         resetJhOverscrollPullUI(false);
@@ -5088,10 +5136,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
 
     vp.addEventListener('touchend', ev => {
-      if (jhPullSnapTriggered) {
-        jhPullSnapTriggered = false;
-        return;
-      }
       if (jhPullDirection) {
         commitOrResetJhOverscrollPull();
         return;
@@ -5140,11 +5184,10 @@ window.addEventListener('DOMContentLoaded', () => {
       jhPullAnchorY = null;
       jhPullDirection = '';
       jhPullDistance = 0;
-      jhPullSnapTriggered = false;
     });
 
     vp.addEventListener('mousemove', ev => {
-      if (jhMouseDownY === null || jhPullSnapTriggered) return;
+      if (jhMouseDownY === null) return;
       const totalDx = ev.clientX - jhMouseDownX;
       const totalDy = ev.clientY - jhMouseDownY;
       if (Math.abs(totalDx) > Math.abs(totalDy) * 1.2) return;
@@ -5153,29 +5196,27 @@ window.addEventListener('DOMContentLoaded', () => {
       const atTop = maxScroll <= 12 || curScroll <= 8;
       const atBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
 
-      if (atBottom && totalDy < -12) {
+      if ((jhPullDirection === 'next' || atBottom) && totalDy < -12) {
         if (jhPullDirection !== 'next') {
           jhPullDirection = 'next';
           jhPullAnchorY = ev.clientY;
         }
         const rawPull = Math.max(0, jhPullAnchorY - ev.clientY);
-        updateJhOverscrollPullUI('next', rawPull);
-        if (rawPull >= JH_NEXT_PULL_THRESHOLD) {
-          jhPullSnapTriggered = true;
-          jhMouseDownY = null;
-          commitOrResetJhOverscrollPull();
+        if (rawPull > 0) {
+          updateJhOverscrollPullUI('next', rawPull);
+        } else {
+          resetJhOverscrollPullUI(false);
         }
-      } else if (atTop && totalDy > 12) {
+      } else if ((jhPullDirection === 'prev' || atTop) && totalDy > 12) {
         if (jhPullDirection !== 'prev') {
           jhPullDirection = 'prev';
           jhPullAnchorY = ev.clientY;
         }
         const rawPull = Math.max(0, ev.clientY - jhPullAnchorY);
-        updateJhOverscrollPullUI('prev', rawPull);
-        if (rawPull >= JH_PREV_PULL_THRESHOLD) {
-          jhPullSnapTriggered = true;
-          jhMouseDownY = null;
-          commitOrResetJhOverscrollPull();
+        if (rawPull > 0) {
+          updateJhOverscrollPullUI('prev', rawPull);
+        } else {
+          resetJhOverscrollPullUI(false);
         }
       }
     });
@@ -5183,10 +5224,6 @@ window.addEventListener('DOMContentLoaded', () => {
     vp.addEventListener('mouseup', () => {
       jhMouseDownX = null;
       jhMouseDownY = null;
-      if (jhPullSnapTriggered) {
-        jhPullSnapTriggered = false;
-        return;
-      }
       if (jhPullDirection) {
         commitOrResetJhOverscrollPull();
       }
