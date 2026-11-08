@@ -102,7 +102,7 @@
 - **accent**: rose
 - **category**: 🎵 Multilingual Song Meaning, Bhaavna & Ear Curiosity
 - **title_bn**: Rabindra Sangeet: 'Majhe Majhe Tobo Dekha Pai, Chirodin Keno Pai Na'
-- **detail_bn**: Tagore asks a question every creative BFS mind knows intimately: 'I catch glimpses of You now and then—why not forever? Why does a sudden cloud hide the light from my eyes?' Listen to how the melody climbs in longing on 'Megh dekhe jeno bhoole na jai' (Seeing the cloud, let me never forget the sun still shines behind it).
+- **detail_bn**: Tagore asks a question every creative BFS mind knows intimately: 'Majhe majhe tobo dekha pai, chirodin keno pai na / Keno megh ashe hridoyo-akashe, tomare dekhite dey na?' (I catch glimpses of You now and then—why not forever? Why does a cloud drift across the sky of my heart and hide You from my eyes?). Listen to how the melody expresses tender longing on 'Kshanik aloke ankhir poloke tomay jobe pai dekhite / Ohe harai harai soda bhoy hoy, haraiya feli chokite'.
 - **prompt_bn**: Gemini, play 'Majhe Majhe Tobo Dekha Pai' on YouTube Music.
 - **followup_prompt_bn**: Gemini, unpack the poetic and psychological meaning of 'Majhe Majhe Tobo Dekha Pai' and which raga gives it that bittersweet pull.
 
@@ -422,7 +422,7 @@
 - **accent**: rose
 - **category**: 🎵 Multilingual Song Meaning, Bhaavna & Ear Curiosity
 - **title_bn**: Bengali Rock & Existential Fire: Fossils (Rupam Islam) — 'Hasnuhana' or 'Ekla Ghor'
-- **detail_bn**: Listen to how Rupam Islam fuses raw Western rock chord progressions with razor-sharp Bengali literary vocabulary in 'Ekla Ghor' ('Amar ekla akash thomke geche raater srote ভেসে'). Track how quiet arpeggiated verses explode into cathartic release.
+- **detail_bn**: Listen to how Rupam Islam fuses raw Western rock chord progressions with razor-sharp Bengali literary vocabulary in 'Ekla Ghor' ('Ei ekla ghor amar desh, amar ekla thakar obbhesh / Bhabi kichhutei bhabbo na tomar kotha, boba telephone-er pashe boshe'). Track how quiet arpeggiated verses explode into cathartic release.
 - **prompt_bn**: Gemini, play 'Ekla Ghor' by Fossils on YouTube Music.
 - **followup_prompt_bn**: Gemini, dissect the lyrical imagery and chord dynamics of 'Ekla Ghor'—how did Fossils reinvent modern Bengali songwriting?
 
@@ -1061,7 +1061,7 @@
 - **short_bn**: 🎵 Song & Bhaavna
 - **accent**: rose
 - **category**: 🎵 Multilingual Song Meaning, Bhaavna & Ear Curiosity
-- **title_bn**: Nazrul Geeti Raga Mastery: Kazi Nazrul Islam — 'Momo Chitte Niti Nritye' or 'Karar Oi Louho Kopat'
+- **title_bn**: Nazrul Geeti Raga Mastery: Kazi Nazrul Islam — 'Karar Oi Louho Kopat' (Bhangar Gaan)
 - **detail_bn**: Contrast Tagore's contemplative flow with Kazi Nazrul Islam's volcanic rhythmic pulse and classical raga ornamentation (gamak and taan)—pure Dionysian Zorba vitality in Bengali song.
 - **prompt_bn**: Gemini, play 'Karar Oi Louho Kopat' on YouTube Music.
 - **followup_prompt_bn**: Gemini, tell me the historical story behind Nazrul writing 'Karar Oi Louho Kopat' and how rhythm itself acts as liberation.

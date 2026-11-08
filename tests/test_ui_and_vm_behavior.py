@@ -1330,16 +1330,36 @@ const ctx = {
 const suite = code + `
 ;(function() {
   const catIds = JHALAK_CATEGORIES.map(c => c.id);
-  assert.deepStrictEqual(catIds, ['all', 'cbt', 'clarity', 'listening', 'music', 'science', 'zorba', 'wisdom', 'tv']);
-  assert.strictEqual(ALL_JHALAK_REELS.length, 148, 'Total Zorba pages must be 148');
+  assert.deepStrictEqual(catIds, ['all', 'songs_en', 'songs_hi', 'songs_bn', 'science', 'clarity', 'listening', 'zorba']);
+  assert.strictEqual(ALL_JHALAK_REELS.length, 76, 'Total cleaned Zorba pages must be 76');
+  assert.strictEqual(JHALAK_CATEGORY_COUNTS['songs_en'], 8, 'English Songs category must have 8 songs');
+  assert.strictEqual(JHALAK_CATEGORY_COUNTS['songs_hi'], 8, 'Hindi Songs category must have 8 songs');
+  assert.strictEqual(JHALAK_CATEGORY_COUNTS['songs_bn'], 8, 'Bengali Songs category must have 8 verified songs');
   catIds.forEach(cid => {
-    assert.ok(JHALAK_CATEGORY_COUNTS[cid] >= 16, 'Category ' + cid + ' must have at least 16 rich pages');
+    assert.ok(JHALAK_CATEGORY_COUNTS[cid] >= 8, 'Category ' + cid + ' must have at least 8 rich pages');
   });
+  const dayLabelRe = new RegExp('\\\\bDay\\\\s+\\\\d+\\\\b', 'i');
+  const bannedHallucinations = [
+    'Jeconota',
+    'shob pete naki',
+    'Megh dekhe jeno bhoole na jai',
+    'prothomobashar baranday',
+    'Amar ekla akash thomke geche',
+    'cholo sukhero sondhane',
+    'tupur tapur brishti'
+  ];
   ALL_JHALAK_REELS.forEach(r => {
     assert.ok(Array.isArray(r.sections) && r.sections.length >= 3, 'Every Zorba page must have at least 3 rich sections: ' + r.id);
     assert.ok(r.audio_url.includes('audio/zorba/reels/' + r.id + '.mp3'), 'Every Zorba page must use dedicated full-page Zorba reel audio: ' + r.id);
+    assert.strictEqual(dayLabelRe.test(r.title_bn), false, 'Zero Day X progression labels allowed in Zorba title: ' + r.id);
     r.sections.forEach(s => {
       assert.ok(!s.body_bn.includes('Open Gemini Live'), 'No raw Gemini Live prompt boilerplate in Zorba section: ' + r.id);
+      assert.strictEqual(dayLabelRe.test(s.heading_bn), false, 'Zero Day X progression labels allowed in Zorba heading: ' + r.id);
+      assert.strictEqual(dayLabelRe.test(s.body_bn), false, 'Zero Day X progression labels allowed in Zorba body: ' + r.id);
+    });
+    const serialized = JSON.stringify(r);
+    bannedHallucinations.forEach(bad => {
+      assert.ok(!serialized.includes(bad), 'Hallucinated lyric phrase "' + bad + '" must never appear in ' + r.id);
     });
     assert.ok(JHALAK_AUDIO_TIMINGS[r.id] || JHALAK_AUDIO_TIMINGS[r.audio_rel], 'Every Zorba page must have acoustic timing metadata: ' + r.id);
   });
@@ -1364,8 +1384,8 @@ const suite = code + `
   assert.strictEqual(wAbbrev.pauseTier, 0, 'Abbreviation A.R. must not be misclassified as sentence-ending pauseTier 3');
   const wQuoteOpen = computeCalibratedWordTimingWeights('explicit', '"90%', false, false);
   assert.strictEqual(wQuoteOpen.pauseTier, 1, 'Word preceding opening quote must receive prosodic pauseTier 1');
-  assert.ok(el('jhCategoryStatsBox').innerHTML.includes('148 Pages'), 'Category stats shows simple 148 Pages');
-  assert.ok(!el('jhCategoryStatsBox').innerHTML.includes('148/148'), 'No fraction in category stats');
+  assert.ok(el('jhCategoryStatsBox').innerHTML.includes('76 Pages'), 'Category stats shows simple 76 Pages');
+  assert.ok(!el('jhCategoryStatsBox').innerHTML.includes('76/76'), 'No fraction in category stats');
 
   // Play -> Pause -> Resume -> Stop lifecycle
   stopJhAudio();

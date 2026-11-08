@@ -22,7 +22,7 @@ let jhSlideLetterIdx = 0;
 let jhRevealedMap = {};
 let jhLikesMap = {};
 let jhDoneMap = {};
-let jhAdminFilterCat = 'cbt';
+let jhAdminFilterCat = (typeof JHALAK_CATEGORIES !== 'undefined' && JHALAK_CATEGORIES.length > 1) ? JHALAK_CATEGORIES[1].id : 'songs_en';
 let jhAdminSelectedItemId = '';
 let jhOutgoingCardHtml = '';
 let jhCurrentWordTimings = [];
@@ -1576,7 +1576,7 @@ function updateStickyLikeBtnUI() {
 
 /* ADMIN SETTINGS: CATEGORY-LEVEL SELECTABLE DONE & LIKES CONTROLS (NO HUGE LIST) */
 function setAdminCategoryFilter(catId) {
-  jhAdminFilterCat = catId || 'cbt';
+  jhAdminFilterCat = catId || ((typeof JHALAK_CATEGORIES !== 'undefined' && JHALAK_CATEGORIES.length > 1) ? JHALAK_CATEGORIES[1].id : 'songs_en');
   const catItems = ALL_JHALAK_REELS.filter(r =>
     jhAdminFilterCat === 'all' || r.vibe === jhAdminFilterCat
   );
@@ -1701,7 +1701,7 @@ function renderJhAdminItemsList() {
   if (!listEl) return;
 
   if (!jhAdminFilterCat || !JHALAK_CATEGORIES.some(c => c.id === jhAdminFilterCat)) {
-    jhAdminFilterCat = 'cbt';
+    jhAdminFilterCat = (typeof JHALAK_CATEGORIES !== 'undefined' && JHALAK_CATEGORIES.length > 1) ? JHALAK_CATEGORIES[1].id : 'songs_en';
   }
 
   const catOptionsHtml = JHALAK_CATEGORIES.map(c => {
