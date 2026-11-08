@@ -301,24 +301,35 @@ html, body {
   width: 100%;
   min-height: calc(100dvh - 46px - var(--jh-safe-top));
   background: var(--jh-surface-cream);
-  will-change: transform, opacity;
+  will-change: transform, opacity, border-radius, box-shadow;
   backface-visibility: hidden;
   transform-origin: center center;
 }
 
-.jh-reel-slide.jh-pull-springback {
-  transition: transform 0.34s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.jh-reel-slide.jh-sticky-tension {
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.55), 0 14px 34px rgba(15, 10, 7, 0.45);
+  border-radius: 14px;
 }
 
-/* Strong 3D Curtain-Lift & Depth-Peel vertical page transitions:
-   - Next (long pull at bottom): current scales & lifts up (0% -> -104%), next rises from bottom (+102% -> 0%)
-   - Prev (pull at top): current scales & drops down (0% -> +104%), prev glides down from top (-102% -> 0%) */
+.jh-reel-slide.jh-sticky-broken {
+  transition: transform 0.18s cubic-bezier(0.22, 1.35, 0.36, 1), border-radius 0.18s ease, box-shadow 0.18s ease;
+  border-radius: 26px;
+  box-shadow: 0 0 0 3px #34D399, 0 28px 64px rgba(0, 0, 0, 0.72);
+}
+
+.jh-reel-slide.jh-pull-springback {
+  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.28s ease, box-shadow 0.28s ease;
+}
+
+/* Sticky-Detent Tension-Snap vertical page transitions:
+   - Next (long pull past breaking point at bottom): current unsticks & launches up, next snaps in from bottom
+   - Prev (pull past breaking point at top): current unsticks & drops down, prev snaps in from top */
 .jh-slide-anim-next {
-  animation: jhProSidewaysInNext 0.5s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation: jhProSidewaysInNext 0.52s cubic-bezier(0.22, 1.12, 0.36, 1) both;
 }
 
 .jh-slide-anim-prev {
-  animation: jhProSidewaysInPrev 0.5s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation: jhProSidewaysInPrev 0.52s cubic-bezier(0.22, 1.12, 0.36, 1) both;
 }
 
 .jh-outgoing-ghost {
@@ -339,24 +350,25 @@ html, body {
 
 .jh-outgoing-ghost.out-left,
 .jh-outgoing-ghost.out-up {
-  animation: jhProSidewaysOutLeft 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation: jhProSidewaysOutLeft 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .jh-outgoing-ghost.out-right,
 .jh-outgoing-ghost.out-down {
-  animation: jhProSidewaysOutRight 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation: jhProSidewaysOutRight 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes jhProSidewaysInNext {
   0% {
-    transform: translate3d(0, 102%, 0) scale(0.95);
-    box-shadow: 0 -24px 56px rgba(15, 10, 7, 0.65), 0 -4px 0 #F59E0B;
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
+    transform: translate3d(0, 104%, 0) scale(0.92);
+    box-shadow: 0 -28px 64px rgba(15, 10, 7, 0.72), 0 -4px 0 #34D399;
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
   }
-  75% {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+  72% {
+    transform: translate3d(0, -1.2%, 0) scale(1.004);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -368,16 +380,18 @@ html, body {
 
 @keyframes jhProSidewaysOutLeft {
   0% {
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, -56px, 0) scale(0.935);
+    border-radius: 24px;
     opacity: 1;
     visibility: visible;
   }
-  92% {
-    opacity: 0.28;
+  88% {
+    opacity: 0.24;
     visibility: visible;
   }
   100% {
-    transform: translate3d(0, -104%, 0) scale(0.91);
+    transform: translate3d(0, -108%, 0) scale(0.88);
+    border-radius: 28px;
     opacity: 0;
     visibility: hidden;
   }
@@ -385,14 +399,15 @@ html, body {
 
 @keyframes jhProSidewaysInPrev {
   0% {
-    transform: translate3d(0, -102%, 0) scale(0.95);
-    box-shadow: 0 24px 56px rgba(15, 10, 7, 0.65), 0 4px 0 #F59E0B;
-    border-bottom-left-radius: 24px;
-    border-bottom-right-radius: 24px;
+    transform: translate3d(0, -104%, 0) scale(0.92);
+    box-shadow: 0 28px 64px rgba(15, 10, 7, 0.72), 0 4px 0 #34D399;
+    border-bottom-left-radius: 28px;
+    border-bottom-right-radius: 28px;
   }
-  75% {
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+  72% {
+    transform: translate3d(0, 1.2%, 0) scale(1.004);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -404,18 +419,57 @@ html, body {
 
 @keyframes jhProSidewaysOutRight {
   0% {
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 56px, 0) scale(0.935);
+    border-radius: 24px;
     opacity: 1;
     visibility: visible;
   }
-  92% {
-    opacity: 0.28;
+  88% {
+    opacity: 0.24;
     visibility: visible;
   }
   100% {
-    transform: translate3d(0, 104%, 0) scale(0.91);
+    transform: translate3d(0, 108%, 0) scale(0.88);
+    border-radius: 28px;
     opacity: 0;
     visibility: hidden;
+  }
+}
+
+/* DOUBLE-TAP VOICE PLAY/PAUSE FEEDBACK TOAST */
+.jh-dbltap-voice-toast {
+  position: fixed;
+  z-index: 95;
+  transform: translate3d(-50%, -50%, 0);
+  background: rgba(15, 23, 42, 0.92);
+  color: #FFFDF9;
+  border: 2px solid #F59E0B;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  white-space: nowrap;
+  animation: jhDblTapToastPop 0.72s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes jhDblTapToastPop {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, -40%, 0) scale(0.78);
+  }
+  22% {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0) scale(1.04);
+  }
+  75% {
+    opacity: 0.96;
+    transform: translate3d(-50%, -58%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-50%, -70%, 0) scale(0.92);
   }
 }
 

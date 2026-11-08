@@ -1269,6 +1269,13 @@ vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});
         self.assertIn('id="btnJhCategoryDropdown"', zb_html)
         self.assertIn('id="btnJhHeaderListen"', zb_html)
         self.assertIn('id="btnJhHeaderStop"', zb_html)
+        self.assertIn("jh-sticky-tension", zb_html)
+        self.assertIn("jh-sticky-broken", zb_html)
+        self.assertIn("jh-dbltap-voice-toast", zb_html)
+        refresh_py = (APP_ROOT / "scripts" / "refresh_voices.py").read_text(encoding="utf-8")
+        self.assertIn("en-gb-open-server-voicelm#star19", refresh_py)
+        self.assertIn('xml:lang="en-GB"', refresh_py)
+        self.assertNotIn("kix02", refresh_py)
 
         m = re.search(r"<script>([\s\S]*?)</script>", zb_html)
         self.assertIsNotNone(m, "Missing <script> block in zorba.html")
@@ -1370,13 +1377,45 @@ const suite = code + `
   assert.strictEqual(el('btnJhHeaderStop').style.display, 'none');
   assert.strictEqual(jhActiveWordIdx, -1);
 
-  // Elastic pull-to-turn
+  // Sticky Magnetic Detent ("stuck until breaking point") pull-to-turn + Double-tap content Play/Pause
   const beforeId = jhFilteredReels[jhCurrentIdx].id;
+  const activeSlideEl = el('jhSlide_' + jhCurrentIdx);
+  updateJhOverscrollPullUI('next', 60);
+  assert.strictEqual(activeSlideEl.classList.contains('jh-sticky-tension'), true, 'Pull below breaking point must hold page in jh-sticky-tension state');
+  assert.strictEqual(activeSlideEl.classList.contains('jh-sticky-broken'), false, 'Pull below breaking point must not break free');
+  assert.ok(activeSlideEl.style.transform.includes('scaleX(') && activeSlideEl.style.transform.includes('scaleY('), 'Stuck page must stretch elastically along pull axis');
+  assert.strictEqual(commitOrResetJhOverscrollPull(), false, 'Releasing before breaking point must spring back');
+  assert.strictEqual(activeSlideEl.classList.contains('jh-pull-springback'), true, 'Springback class applied when released before breaking point');
+
   el('jhReelsViewport').scrollTop = 300;
   updateJhOverscrollPullUI('next', 120);
+  assert.strictEqual(activeSlideEl.classList.contains('jh-sticky-broken'), true, 'Pull at/past breaking point must snap free with jh-sticky-broken class');
+  assert.strictEqual(activeSlideEl.classList.contains('jh-sticky-tension'), false);
   assert.strictEqual(commitOrResetJhOverscrollPull(), true);
   assert.notStrictEqual(jhFilteredReels[jhCurrentIdx].id, beforeId);
   assert.strictEqual(el('jhReelsViewport').scrollTop, 0);
+
+  // Double-tap anywhere on content toggles Play -> Pause -> Resume, ignoring interactive buttons
+  stopJhAudio();
+  jhLastDoubleTapToggleMs = 0;
+  assert.strictEqual(handleJhContentDoubleTap({ target: { tagName: 'BUTTON', className: 'jh-done-btn' } }, 'reel'), false, 'Double-tap on interactive button must be ignored');
+  assert.strictEqual(jhAudioPlaying, false);
+
+  jhLastDoubleTapToggleMs = 0;
+  assert.strictEqual(handleJhContentDoubleTap({ target: { tagName: 'P', className: 'jh-sec-para' }, clientX: 180, clientY: 320 }, 'reel'), true, 'Double-tap on paragraph content must start voice');
+  assert.strictEqual(jhAudioPlaying, true);
+  assert.strictEqual(jhAudioPaused, false);
+
+  jhLastDoubleTapToggleMs = 0;
+  assert.strictEqual(handleJhContentDoubleTap({ target: { tagName: 'SPAN', className: 'jh-tts-word' }, clientX: 180, clientY: 320 }, 'reel'), true, 'Second double-tap on content must pause voice');
+  assert.strictEqual(jhAudioPlaying, false);
+  assert.strictEqual(jhAudioPaused, true);
+
+  jhLastDoubleTapToggleMs = 0;
+  assert.strictEqual(handleJhContentDoubleTap({ target: { tagName: 'DIV', className: 'jh-card-stage' }, clientX: 180, clientY: 320 }, 'reel'), true, 'Third double-tap on content must resume voice');
+  assert.strictEqual(jhAudioPlaying, true);
+  assert.strictEqual(jhAudioPaused, false);
+  stopJhAudio();
 })();
 `;
 vm.runInNewContext(suite, ctx, {filename: 'zorba-bundle.js'});

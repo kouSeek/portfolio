@@ -367,9 +367,36 @@ def load_manifest(persona_id: str = DEFAULT_PERSONA_ID) -> dict[str, str]:
         return {}
 
 
-def save_manifest(hashes: dict[str, str], persona_id: str = DEFAULT_PERSONA_ID) -> None:
+def _extract_mp3_acoustic_meta(mp3_path: Path) -> dict:
+    proc = subprocess.run(
+        ["ffmpeg", "-hide_banner", "-nostats", "-i", str(mp3_path), "-af", "silencedetect=n=-32dB:d=0.12", "-f", "null", "-"],
+        capture_output=True, text=True, check=False, timeout=20,
+    )
+    out = (proc.stderr or "") + "\n" + (proc.stdout or "")
+    dur = 0.0
+    m_dur = re.search(r"Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)", out)
+    if m_dur:
+        dur = round(int(m_dur.group(1)) * 3600 + int(m_dur.group(2)) * 60 + float(m_dur.group(3)), 2)
+    silences: list[list[float]] = []
+    cur_start: float | None = None
+    for line in out.splitlines():
+        ms = re.search(r"silence_start:\s*(-?\d+(?:\.\d+)?)", line)
+        if ms:
+            cur_start = max(0.0, round(float(ms.group(1)), 3))
+            continue
+        me = re.search(r"silence_end:\s*(\d+(?:\.\d+)?)", line)
+        if me and cur_start is not None:
+            end_v = round(float(me.group(1)), 3)
+            if end_v > cur_start:
+                silences.append([cur_start, end_v])
+            cur_start = None
+    return {"dur": dur, "silences": silences}
+
+
+def save_manifest(hashes: dict[str, str], persona_id: str = DEFAULT_PERSONA_ID, updated_rels: list[str] | None = None) -> None:
     pid = normalize_persona_id(persona_id)
     mpath = get_manifest_path(pid)
+    aud_root = get_audio_root(pid)
     mpath.parent.mkdir(parents=True, exist_ok=True)
     extra_keys: dict = {}
     if mpath.is_file():
@@ -379,8 +406,17 @@ def save_manifest(hashes: dict[str, str], persona_id: str = DEFAULT_PERSONA_ID) 
                 extra_keys = {k: v for k, v in old_data.items() if k not in ("voice_model", "persona_id", "total_tracked", "hashes")}
         except Exception:
             pass
+    if updated_rels and pid in ("zorba", "jhalak", "anondo"):
+        timings = dict(extra_keys.get("audio_timings") or {})
+        valid_rels = [rel for rel in updated_rels if (aud_root / rel).is_file()]
+        with ThreadPoolExecutor(max_workers=min(16, max(1, len(valid_rels)))) as ex:
+            for rel, meta in zip(valid_rels, ex.map(lambda r: _extract_mp3_acoustic_meta(aud_root / r), valid_rels)):
+                t_key = rel.replace("reels/", "").replace(".mp3", "") if pid in ("zorba", "jhalak") else rel
+                timings[t_key] = meta
+        extra_keys["audio_timings"] = timings
+    voice_label = "en-gb-open-server-voicelm#star19 (Achird UK Male)" if pid in ("zorba", "anondo") else "gemini-v4s-tts (Aoede)"
     payload = {
-        "voice_model": "gemini-v4s-tts (Aoede)",
+        "voice_model": voice_label,
         "persona_id": pid,
         "total_tracked": len(hashes),
         "hashes": dict(sorted(hashes.items())),
@@ -438,6 +474,12 @@ service SpeechSynthesizer { rpc Synthesize(SpeechSynthesizerRequest) returns (st
 """
 
 
+_UK_MALE_VOICES = (
+    "en-gb-open-server-voicelm#star19",
+    "en-gb-open-server-voicelm#iom",
+)
+
+
 def _synthesize_voicelm_aoede(text: str, out_raw: Path, timeout_s: int = 25) -> bool:
     cleaned = re.sub(r"\s+", " ", (text or "")).strip()
     if not cleaned:
@@ -449,42 +491,42 @@ def _synthesize_voicelm_aoede(text: str, out_raw: Path, timeout_s: int = 25) -> 
         '<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" '
         'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
         'xsi:schemaLocation="http://www.w3.org/TR/speech-synthesis/synthesis.xsd '
-        'http://www.w3.org/TR/speech-synthesis/synthesis.xsd" xml:lang="en-US">'
+        'http://www.w3.org/TR/speech-synthesis/synthesis.xsd" xml:lang="en-GB">'
         f"{html.escape(cleaned, quote=False)}</speak>"
     )
-    req_proto = (
-        f"ssml: {json.dumps(ssml)} "
-        'voice { language: "en-US" gender: "female" name: "en-us-gia-server-voicelm#kix02" } '
-        "encoding: MP3_64KBPS"
-    )
-    try:
-        proc = subprocess.run(
-            [
-                "stubby", "call", "--proto2", "--noremotedb", "--ignore_serverstatus",
-                f"--protofiles={_SPEECH_PROTO_PATH}",
-                "blade:speech-tts-synthesizer-speech-synthesizer-prod",
-                "speech.SpeechSynthesizer.Synthesize",
-                req_proto,
-            ],
-            capture_output=True, text=True, timeout=timeout_s, check=False,
+    for voice_name in _UK_MALE_VOICES:
+        req_proto = (
+            f"ssml: {json.dumps(ssml)} "
+            f'voice {{ language: "en-GB" gender: "male" name: "{voice_name}" }} '
+            "encoding: MP3_64KBPS"
         )
-        if proc.returncode == 0 and proc.stdout:
-            mp3_bytes = b"".join(
-                m.group(1).encode("latin1").decode("unicode_escape").encode("latin1")
-                for m in re.finditer(r'audio:\s*"((?:[^"\\]|\\.)*)"', proc.stdout)
+        try:
+            proc = subprocess.run(
+                [
+                    "stubby", "call", "--proto2", "--noremotedb", "--ignore_serverstatus",
+                    f"--protofiles={_SPEECH_PROTO_PATH}",
+                    "blade:speech-tts-synthesizer-speech-synthesizer-prod",
+                    "speech.SpeechSynthesizer.Synthesize",
+                    req_proto,
+                ],
+                capture_output=True, text=True, timeout=timeout_s, check=False,
             )
-            if len(mp3_bytes) > 1000:
-                out_raw.write_bytes(mp3_bytes)
-                return True
-    except Exception:
-        pass
+            if proc.returncode == 0 and proc.stdout:
+                mp3_bytes = b"".join(
+                    m.group(1).encode("latin1").decode("unicode_escape").encode("latin1")
+                    for m in re.finditer(r'audio:\s*"((?:[^"\\]|\\.)*)"', proc.stdout)
+                )
+                if len(mp3_bytes) > 1000:
+                    out_raw.write_bytes(mp3_bytes)
+                    return True
+        except Exception:
+            pass
     return False
 
 
 def _synthesize_wav(text: str, out_wav: Path, model_name: str, timeout_s: int = 75) -> bool:
     if any(tag in out_wav.name for tag in ("_anondo_", "_zorba_")):
-        if _synthesize_voicelm_aoede(text, out_wav, timeout_s=min(30, timeout_s)):
-            return True
+        return _synthesize_voicelm_aoede(text, out_wav, timeout_s=min(35, timeout_s))
     try:
         proc = subprocess.run(
             [GEN_BIN, f"-timeout={timeout_s}s", f"-output={out_wav}", "tts", f"-model={model_name}", "-voice=Aoede", text],
@@ -600,6 +642,7 @@ def main() -> int:
     t0 = time.time()
     print(f"[TTS Refresh ({pid})] Regenerating {len(targets)} Gemini Aoede MP3 file(s) (scope={args.scope}, workers={args.workers})...", flush=True)
     ok_count = 0
+    updated_ok: list[str] = []
     failed: list[str] = []
 
     with ThreadPoolExecutor(max_workers=max(1, args.workers)) as ex:
@@ -608,6 +651,7 @@ def main() -> int:
             rel_path, ok = fut.result()
             if ok:
                 ok_count += 1
+                updated_ok.append(rel_path)
                 recorded[rel_path] = expected[rel_path]["hash"]
             else:
                 failed.append(rel_path)
@@ -635,7 +679,7 @@ def main() -> int:
         if orphan_keys or pruned_files:
             print(f"[TTS Prune] Cleaned {pruned_files} obsolete MP3 file(s) and {len(orphan_keys)} manifest key(s).", flush=True)
 
-    save_manifest(recorded, pid)
+    save_manifest(recorded, pid, updated_rels=updated_ok)
     print(f"[TTS Refresh ({pid})] Done: {ok_count}/{len(targets)} updated in {time.time() - t0:.1f}s.")
     if failed:
         print(f"[TTS Refresh ({pid})] Failed ({len(failed)}): {failed[:15]}", flush=True)

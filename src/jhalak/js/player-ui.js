@@ -51,6 +51,10 @@ let jhWheelLock = false;
 let jhWheelOverscrollAccum = 0;
 let jhWheelOverscrollDir = '';
 let jhWheelDecayTimer = null;
+let jhLastTapTimeMs = 0;
+let jhLastTapX = 0;
+let jhLastTapY = 0;
+let jhLastDoubleTapToggleMs = 0;
 
 const JH_NEXT_PULL_THRESHOLD = 105;
 const JH_PREV_PULL_THRESHOLD = 90;
@@ -1540,7 +1544,7 @@ function renderJhalakReelStream() {
         </div>
 
         <div class="jh-bottom-pull-cue">
-          ⬆️ পরের পাতায় যেতে নিচে পৌঁছে আরও একটু উপরে টানো • ⬇️ আগের পাতায় যেতে শুরুতে থেকে নিচে টানো
+          👆👆 পাতার যেকোনো জায়গায় দুবার ট্যাপ করলে ভয়েস চলবে/থামবে • 🧲 ব্রেকিং পয়েন্ট অবধি টানলে পাতা উল্টাবে
         </div>
       </div>
     </article>
@@ -1585,20 +1589,36 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
     jhPullThresholdReached = true;
     try {
       if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-        navigator.vibrate(16);
+        navigator.vibrate([18, 24, 12]);
       }
     } catch (e) {}
   } else if (!isReady && jhPullThresholdReached) {
     jhPullThresholdReached = false;
   }
 
-  const dampedPx = Math.min(92, Math.round(Math.pow(cleanPull, 0.8) * 1.35));
-  const scaleVal = (1 - progress * 0.025).toFixed(4);
   const slideEl = document.getElementById('jhSlide_' + jhCurrentIdx);
   if (slideEl && slideEl.style) {
-    if (slideEl.classList) slideEl.classList.remove('jh-pull-springback');
-    const signedY = dir === 'next' ? -dampedPx : dampedPx;
-    slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scale(${scaleVal})`;
+    if (slideEl.classList) {
+      slideEl.classList.remove('jh-pull-springback');
+      slideEl.classList.toggle('jh-sticky-tension', cleanPull > 6 && !isReady);
+      slideEl.classList.toggle('jh-sticky-broken', isReady);
+    }
+    if (!isReady) {
+      // Phase 1: Sticky Magnetic Resistance ("Stuck Until Breaking Point")
+      const stickyPx = Math.round(22 * (1 - Math.exp(-cleanPull / 42)));
+      const signedY = dir === 'next' ? -stickyPx : stickyPx;
+      const sx = (1 - progress * 0.012).toFixed(4);
+      const sy = (1 + progress * 0.022).toFixed(4);
+      slideEl.style.transformOrigin = dir === 'next' ? 'center bottom' : 'center top';
+      slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scaleX(${sx}) scaleY(${sy})`;
+    } else {
+      // Phase 2: Breaking Point Snap-Free (Page unsticks and detaches into floating card)
+      const overPull = Math.max(0, cleanPull - threshold);
+      const brokenPx = 56 + Math.min(48, Math.round(Math.pow(overPull, 0.72) * 1.6));
+      const signedY = dir === 'next' ? -brokenPx : brokenPx;
+      slideEl.style.transformOrigin = 'center center';
+      slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scale(0.935)`;
+    }
   }
 
   const topInd = document.getElementById('jhPullIndicatorTop');
@@ -1615,11 +1635,11 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
     const botArrow = document.getElementById('jhPullBottomArrow');
     const botText = document.getElementById('jhPullBottomText');
     const botFill = document.getElementById('jhPullBottomFill');
-    if (botArrow) botArrow.textContent = isReady ? '✨' : '⬆️';
+    if (botArrow) botArrow.textContent = isReady ? '⚡' : '🧲';
     if (botText) {
       botText.textContent = isReady
-        ? 'ছেড়ে দাও — পরের পাতার শুরুতে যাচ্ছো!'
-        : 'পরের পাতায় যেতে আরও একটু উপরে টানো...';
+        ? 'আনস্টিক হয়েছে! ছেড়ে দিলেই পরের পাতা!'
+        : 'পাতা আটকে আছে — ব্রেকিং পয়েন্ট অবধি টানো...';
     }
     if (botFill && botFill.style) botFill.style.width = Math.round(progress * 100) + '%';
   } else if (dir === 'prev') {
@@ -1634,11 +1654,11 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
     const topArrow = document.getElementById('jhPullTopArrow');
     const topText = document.getElementById('jhPullTopText');
     const topFill = document.getElementById('jhPullTopFill');
-    if (topArrow) topArrow.textContent = isReady ? '✨' : '⬇️';
+    if (topArrow) topArrow.textContent = isReady ? '⚡' : '🧲';
     if (topText) {
       topText.textContent = isReady
-        ? 'ছেড়ে দাও — আগের পাতার শুরুতে যাচ্ছো!'
-        : 'আগের পাতায় যেতে আরও একটু নিচে টানো...';
+        ? 'আনস্টিক হয়েছে! ছেড়ে দিলেই আগের পাতা!'
+        : 'পাতা আটকে আছে — ব্রেকিং পয়েন্ট অবধি টানো...';
     }
     if (topFill && topFill.style) topFill.style.width = Math.round(progress * 100) + '%';
   }
@@ -1653,11 +1673,89 @@ function resetJhOverscrollPullUI(animateSpring) {
 
   const slideEl = document.getElementById('jhSlide_' + jhCurrentIdx);
   if (slideEl && slideEl.style) {
-    if (animateSpring && slideEl.classList) {
-      slideEl.classList.add('jh-pull-springback');
+    if (slideEl.classList) {
+      slideEl.classList.remove('jh-sticky-tension');
+      slideEl.classList.remove('jh-sticky-broken');
+      if (animateSpring) {
+        slideEl.classList.add('jh-pull-springback');
+      }
     }
+    slideEl.style.transformOrigin = '';
     slideEl.style.transform = '';
   }
+}
+
+function isJhInteractiveTapTarget(target) {
+  let node = target;
+  while (node && node !== document.body) {
+    const tag = String(node.tagName || '').toUpperCase();
+    if (tag === 'BUTTON' || tag === 'A' || tag === 'SELECT' || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'LABEL') {
+      return true;
+    }
+    const cls = String(node.className || '');
+    if (
+      cls.includes('jh-curiosity-box') ||
+      cls.includes('jh-sticky-like-btn') ||
+      cls.includes('jh-done-btn') ||
+      cls.includes('jh-top-listen-btn') ||
+      cls.includes('jh-top-stop-btn') ||
+      cls.includes('jh-yt-link')
+    ) {
+      return true;
+    }
+    node = node.parentNode || node.parentElement;
+  }
+  return false;
+}
+
+function spawnDoubleTapVoiceToast(x, y, label) {
+  if (typeof document === 'undefined' || !document.body || typeof document.createElement !== 'function') return;
+  const toast = document.createElement('div');
+  toast.className = 'jh-dbltap-voice-toast';
+  toast.textContent = label;
+  const cx = Number.isFinite(x) && x > 0 ? x : ((typeof window !== 'undefined' && window.innerWidth) ? window.innerWidth * 0.5 : 195);
+  const cy = Number.isFinite(y) && y > 0 ? y : ((typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight * 0.45 : 360);
+  if (toast.style) {
+    toast.style.left = Math.max(70, Math.min(((typeof window !== 'undefined' && window.innerWidth) || 390) - 70, cx)) + 'px';
+    toast.style.top = Math.max(80, Math.min(((typeof window !== 'undefined' && window.innerHeight) || 844) - 80, cy)) + 'px';
+  }
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    if (toast.parentNode) toast.parentNode.removeChild(toast);
+  }, 760);
+}
+
+function handleJhContentDoubleTap(ev, mode) {
+  if (ev && isJhInteractiveTapTarget(ev.target)) return false;
+  const now = Date.now();
+  if (now - jhLastDoubleTapToggleMs < 320) return false;
+  jhLastDoubleTapToggleMs = now;
+  if (ev && typeof ev.preventDefault === 'function') {
+    try { ev.preventDefault(); } catch (e) {}
+  }
+
+  const letterDrawer = document.getElementById('jhLetterDrawer');
+  const isLetterOpen = mode === 'letter' || Boolean(letterDrawer && letterDrawer.classList && letterDrawer.classList.contains('open'));
+  if (isLetterOpen) {
+    playJhalakLetterAudio();
+  } else {
+    playReelAudioAtIndex(jhCurrentIdx);
+  }
+
+  let tapX = 0;
+  let tapY = 0;
+  if (ev) {
+    if (ev.changedTouches && ev.changedTouches[0]) {
+      tapX = ev.changedTouches[0].clientX;
+      tapY = ev.changedTouches[0].clientY;
+    } else if (Number.isFinite(ev.clientX)) {
+      tapX = ev.clientX;
+      tapY = ev.clientY;
+    }
+  }
+  const statusLabel = jhAudioPlaying ? '🔊 ভয়েস চলছে' : '⏸️ ভয়েস থামানো হয়েছে';
+  spawnDoubleTapVoiceToast(tapX, tapY, statusLabel);
+  return true;
 }
 
 function commitOrResetJhOverscrollPull() {
@@ -1982,8 +2080,21 @@ window.addEventListener('DOMContentLoaded', () => {
         return;
       }
       if (ev.changedTouches && ev.changedTouches[0]) {
-        const dx = ev.changedTouches[0].clientX - jhTouchStartX;
-        const dy = ev.changedTouches[0].clientY - jhTouchStartY;
+        const endX = ev.changedTouches[0].clientX;
+        const endY = ev.changedTouches[0].clientY;
+        const dx = endX - jhTouchStartX;
+        const dy = endY - jhTouchStartY;
+        if (Math.abs(dx) < 24 && Math.abs(dy) < 24 && !isJhInteractiveTapTarget(ev.target)) {
+          const now = Date.now();
+          if (now - jhLastTapTimeMs <= 320 && Math.hypot(endX - jhLastTapX, endY - jhLastTapY) <= 36) {
+            jhLastTapTimeMs = 0;
+            handleJhContentDoubleTap(ev, 'reel');
+            return;
+          }
+          jhLastTapTimeMs = now;
+          jhLastTapX = endX;
+          jhLastTapY = endY;
+        }
         const curScroll = vp.scrollTop || 0;
         const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
         const nowAtTop = maxScroll <= 12 || curScroll <= 8;
@@ -1997,6 +2108,10 @@ window.addEventListener('DOMContentLoaded', () => {
         }
       }
     }, { passive: true });
+
+    vp.addEventListener('dblclick', ev => {
+      handleJhContentDoubleTap(ev, 'reel');
+    });
 
     vp.addEventListener('touchcancel', () => {
       resetJhOverscrollPullUI(true);
@@ -2097,6 +2212,27 @@ window.addEventListener('DOMContentLoaded', () => {
         jhWheelOverscrollDir = '';
         resetJhOverscrollPullUI(false);
       }
+    }, { passive: true });
+  }
+
+  const letterModal = document.getElementById('jhLetterDrawer');
+  if (letterModal && typeof letterModal.addEventListener === 'function') {
+    letterModal.addEventListener('dblclick', ev => {
+      handleJhContentDoubleTap(ev, 'letter');
+    });
+    letterModal.addEventListener('touchend', ev => {
+      if (!ev.changedTouches || !ev.changedTouches[0] || isJhInteractiveTapTarget(ev.target)) return;
+      const endX = ev.changedTouches[0].clientX;
+      const endY = ev.changedTouches[0].clientY;
+      const now = Date.now();
+      if (now - jhLastTapTimeMs <= 320 && Math.hypot(endX - jhLastTapX, endY - jhLastTapY) <= 36) {
+        jhLastTapTimeMs = 0;
+        handleJhContentDoubleTap(ev, 'letter');
+        return;
+      }
+      jhLastTapTimeMs = now;
+      jhLastTapX = endX;
+      jhLastTapY = endY;
     }, { passive: true });
   }
 });
