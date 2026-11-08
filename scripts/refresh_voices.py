@@ -414,7 +414,7 @@ def save_manifest(hashes: dict[str, str], persona_id: str = DEFAULT_PERSONA_ID, 
                 t_key = rel.replace("reels/", "").replace(".mp3", "") if pid in ("zorba", "jhalak") else rel
                 timings[t_key] = meta
         extra_keys["audio_timings"] = timings
-    voice_label = "en-gb-open-server-voicelm#star19 (Achird UK Male)" if pid in ("zorba", "anondo") else "gemini-v4s-tts (Aoede)"
+    voice_label = "en-gb-open-server-voicelm#star55 (Sulafat Warm Soothing UK Female)" if pid in ("zorba", "anondo") else "gemini-v4s-tts (Aoede)"
     payload = {
         "voice_model": voice_label,
         "persona_id": pid,
@@ -474,9 +474,9 @@ service SpeechSynthesizer { rpc Synthesize(SpeechSynthesizerRequest) returns (st
 """
 
 
-_UK_MALE_VOICES = (
-    "en-gb-open-server-voicelm#star19",
-    "en-gb-open-server-voicelm#iom",
+_UK_FEMALE_VOICES = (
+    "en-gb-open-server-voicelm#star55",
+    "en-gb-open-server-voicelm#star01",
 )
 
 
@@ -494,10 +494,10 @@ def _synthesize_voicelm_aoede(text: str, out_raw: Path, timeout_s: int = 25) -> 
         'http://www.w3.org/TR/speech-synthesis/synthesis.xsd" xml:lang="en-GB">'
         f"{html.escape(cleaned, quote=False)}</speak>"
     )
-    for voice_name in _UK_MALE_VOICES:
+    for voice_name in _UK_FEMALE_VOICES:
         req_proto = (
             f"ssml: {json.dumps(ssml)} "
-            f'voice {{ language: "en-GB" gender: "male" name: "{voice_name}" }} '
+            f'voice {{ language: "en-GB" gender: "female" name: "{voice_name}" }} '
             "encoding: MP3_64KBPS"
         )
         try:

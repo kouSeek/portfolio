@@ -1273,7 +1273,7 @@ vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});
         self.assertIn("jh-sticky-broken", zb_html)
         self.assertIn("jh-dbltap-voice-toast", zb_html)
         refresh_py = (APP_ROOT / "scripts" / "refresh_voices.py").read_text(encoding="utf-8")
-        self.assertIn("en-gb-open-server-voicelm#star19", refresh_py)
+        self.assertIn("en-gb-open-server-voicelm#star55", refresh_py)
         self.assertIn('xml:lang="en-GB"', refresh_py)
         self.assertNotIn("kix02", refresh_py)
 

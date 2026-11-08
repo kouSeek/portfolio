@@ -45,6 +45,7 @@ let jhPullAnchorY = null;
 let jhPullDirection = '';
 let jhPullDistance = 0;
 let jhPullThresholdReached = false;
+let jhPullSnapTriggered = false;
 let jhMouseDownX = null;
 let jhMouseDownY = null;
 let jhWheelLock = false;
@@ -1603,18 +1604,26 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
       slideEl.classList.toggle('jh-sticky-broken', isReady);
     }
     if (!isReady) {
-      // Phase 1: Sticky Magnetic Resistance ("Stuck Until Breaking Point")
-      const stickyPx = Math.round(22 * (1 - Math.exp(-cleanPull / 42)));
+      // Phase 1: Pure Physics Sticky Stretch ("Stuck & Stretched Until Breaking Point")
+      const stickyPx = Math.round(38 * (1 - Math.exp(-cleanPull / 52)));
       const signedY = dir === 'next' ? -stickyPx : stickyPx;
-      const sx = (1 - progress * 0.012).toFixed(4);
-      const sy = (1 + progress * 0.022).toFixed(4);
+      const sx = (1 - progress * 0.024).toFixed(4);
+      const sy = (1 + Math.pow(progress, 1.05) * 0.105).toFixed(4);
+      if (typeof slideEl.style.setProperty === 'function') {
+        slideEl.style.setProperty('--jh-pull-px', stickyPx + 'px');
+        slideEl.style.setProperty('--jh-pull-signed', signedY + 'px');
+      }
       slideEl.style.transformOrigin = dir === 'next' ? 'center bottom' : 'center top';
       slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scaleX(${sx}) scaleY(${sy})`;
     } else {
-      // Phase 2: Breaking Point Snap-Free (Page unsticks and detaches into floating card)
+      // Phase 2: Breaking Point Reached (Instant Spring-Momentum Launch)
       const overPull = Math.max(0, cleanPull - threshold);
       const brokenPx = 56 + Math.min(48, Math.round(Math.pow(overPull, 0.72) * 1.6));
       const signedY = dir === 'next' ? -brokenPx : brokenPx;
+      if (typeof slideEl.style.setProperty === 'function') {
+        slideEl.style.setProperty('--jh-pull-px', '0px');
+        slideEl.style.setProperty('--jh-pull-signed', '0px');
+      }
       slideEl.style.transformOrigin = 'center center';
       slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scale(0.935)`;
     }
@@ -1678,6 +1687,10 @@ function resetJhOverscrollPullUI(animateSpring) {
       if (animateSpring) {
         slideEl.classList.add('jh-pull-springback');
       }
+    }
+    if ( typeof slideEl.style.setProperty === 'function') {
+      slideEl.style.setProperty('--jh-pull-px', '0px');
+      slideEl.style.setProperty('--jh-pull-signed', '0px');
     }
     slideEl.style.transformOrigin = '';
     slideEl.style.transform = '';
@@ -2061,11 +2074,12 @@ window.addEventListener('DOMContentLoaded', () => {
         jhPullDirection = '';
         jhPullDistance = 0;
         jhPullThresholdReached = false;
+        jhPullSnapTriggered = false;
       }
     }, { passive: true });
 
     vp.addEventListener('touchmove', ev => {
-      if (!ev.touches || !ev.touches[0]) return;
+      if (jhPullSnapTriggered || !ev.touches || !ev.touches[0]) return;
       const curX = ev.touches[0].clientX;
       const curY = ev.touches[0].clientY;
       const totalDx = curX - jhTouchStartX;
@@ -2084,6 +2098,10 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         const rawPull = Math.max(0, jhPullAnchorY - curY);
         updateJhOverscrollPullUI('next', rawPull);
+        if (rawPull >= JH_NEXT_PULL_THRESHOLD) {
+          jhPullSnapTriggered = true;
+          commitOrResetJhOverscrollPull();
+        }
       } else if (atTop && totalDy > 12) {
         if (jhPullDirection !== 'prev') {
           jhPullDirection = 'prev';
@@ -2091,12 +2109,20 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         const rawPull = Math.max(0, curY - jhPullAnchorY);
         updateJhOverscrollPullUI('prev', rawPull);
+        if (rawPull >= JH_PREV_PULL_THRESHOLD) {
+          jhPullSnapTriggered = true;
+          commitOrResetJhOverscrollPull();
+        }
       } else if (jhPullDirection) {
         resetJhOverscrollPullUI(false);
       }
     }, { passive: true });
 
     vp.addEventListener('touchend', ev => {
+      if (jhPullSnapTriggered) {
+        jhPullSnapTriggered = false;
+        return;
+      }
       if (jhPullDirection) {
         commitOrResetJhOverscrollPull();
         return;
@@ -2145,10 +2171,11 @@ window.addEventListener('DOMContentLoaded', () => {
       jhPullAnchorY = null;
       jhPullDirection = '';
       jhPullDistance = 0;
+      jhPullSnapTriggered = false;
     });
 
     vp.addEventListener('mousemove', ev => {
-      if (jhMouseDownY === null) return;
+      if (jhMouseDownY === null || jhPullSnapTriggered) return;
       const totalDx = ev.clientX - jhMouseDownX;
       const totalDy = ev.clientY - jhMouseDownY;
       if (Math.abs(totalDx) > Math.abs(totalDy) * 1.2) return;
@@ -2162,19 +2189,35 @@ window.addEventListener('DOMContentLoaded', () => {
           jhPullDirection = 'next';
           jhPullAnchorY = ev.clientY;
         }
-        updateJhOverscrollPullUI('next', Math.max(0, jhPullAnchorY - ev.clientY));
+        const rawPull = Math.max(0, jhPullAnchorY - ev.clientY);
+        updateJhOverscrollPullUI('next', rawPull);
+        if (rawPull >= JH_NEXT_PULL_THRESHOLD) {
+          jhPullSnapTriggered = true;
+          jhMouseDownY = null;
+          commitOrResetJhOverscrollPull();
+        }
       } else if (atTop && totalDy > 12) {
         if (jhPullDirection !== 'prev') {
           jhPullDirection = 'prev';
           jhPullAnchorY = ev.clientY;
         }
-        updateJhOverscrollPullUI('prev', Math.max(0, ev.clientY - jhPullAnchorY));
+        const rawPull = Math.max(0, ev.clientY - jhPullAnchorY);
+        updateJhOverscrollPullUI('prev', rawPull);
+        if (rawPull >= JH_PREV_PULL_THRESHOLD) {
+          jhPullSnapTriggered = true;
+          jhMouseDownY = null;
+          commitOrResetJhOverscrollPull();
+        }
       }
     });
 
     vp.addEventListener('mouseup', () => {
       jhMouseDownX = null;
       jhMouseDownY = null;
+      if (jhPullSnapTriggered) {
+        jhPullSnapTriggered = false;
+        return;
+      }
       if (jhPullDirection) {
         commitOrResetJhOverscrollPull();
       }

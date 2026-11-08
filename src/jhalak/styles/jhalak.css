@@ -307,29 +307,44 @@ html, body {
 }
 
 .jh-reel-slide.jh-sticky-tension {
-  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.55), 0 14px 34px rgba(15, 10, 7, 0.45);
-  border-radius: 14px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55);
+  border-radius: 18px;
+}
+
+.jh-reel-slide.jh-sticky-tension .jh-card-stage {
+  transform: translate3d(0, calc(var(--jh-pull-signed, 0px) * 0.35), 0);
+}
+
+.jh-reel-slide.jh-sticky-tension .jh-content-section,
+.jh-reel-slide.jh-sticky-tension .jh-curiosity-box {
+  margin-top: calc(14px + var(--jh-pull-px, 0px) * 0.22);
 }
 
 .jh-reel-slide.jh-sticky-broken {
-  transition: transform 0.18s cubic-bezier(0.22, 1.35, 0.36, 1), border-radius 0.18s ease, box-shadow 0.18s ease;
+  transition: transform 0.22s cubic-bezier(0.22, 1.45, 0.36, 1), border-radius 0.18s ease, box-shadow 0.18s ease;
   border-radius: 26px;
-  box-shadow: 0 0 0 3px #34D399, 0 28px 64px rgba(0, 0, 0, 0.72);
+  box-shadow: 0 28px 64px rgba(0, 0, 0, 0.72);
 }
 
 .jh-reel-slide.jh-pull-springback {
-  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.28s ease, box-shadow 0.28s ease;
+  transition: transform 0.48s cubic-bezier(0.28, 1.75, 0.45, 0.98), border-radius 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Sticky-Detent Tension-Snap vertical page transitions:
-   - Next (long pull past breaking point at bottom): current unsticks & launches up, next snaps in from bottom
-   - Prev (pull past breaking point at top): current unsticks & drops down, prev snaps in from top */
+.jh-reel-slide.jh-pull-springback .jh-card-stage,
+.jh-reel-slide.jh-pull-springback .jh-content-section,
+.jh-reel-slide.jh-pull-springback .jh-curiosity-box {
+  transition: transform 0.48s cubic-bezier(0.28, 1.75, 0.45, 0.98), margin-top 0.42s cubic-bezier(0.28, 1.75, 0.45, 0.98);
+}
+
+/* Pure Physics Sticky-Stretch & Spring-Momentum Page Transitions:
+   - Next (pulling up at bottom past breaking point): next page launches up with spring overshoot & bounce
+   - Prev (pulling down at top past breaking point): previous page drops in with spring overshoot & bounce */
 .jh-slide-anim-next {
-  animation: jhProSidewaysInNext 0.52s cubic-bezier(0.22, 1.12, 0.36, 1) both;
+  animation: jhProSidewaysInNext 0.58s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .jh-slide-anim-prev {
-  animation: jhProSidewaysInPrev 0.52s cubic-bezier(0.22, 1.12, 0.36, 1) both;
+  animation: jhProSidewaysInPrev 0.58s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .jh-outgoing-ghost {
@@ -350,25 +365,33 @@ html, body {
 
 .jh-outgoing-ghost.out-left,
 .jh-outgoing-ghost.out-up {
-  animation: jhProSidewaysOutLeft 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: jhProSidewaysOutLeft 0.46s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .jh-outgoing-ghost.out-right,
 .jh-outgoing-ghost.out-down {
-  animation: jhProSidewaysOutRight 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: jhProSidewaysOutRight 0.46s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes jhProSidewaysInNext {
   0% {
-    transform: translate3d(0, 104%, 0) scale(0.92);
-    box-shadow: 0 -28px 64px rgba(15, 10, 7, 0.72), 0 -4px 0 #34D399;
+    transform: translate3d(0, 96%, 0) scaleY(1.09) scaleX(0.96);
+    box-shadow: 0 -28px 64px rgba(15, 10, 7, 0.72);
     border-top-left-radius: 28px;
     border-top-right-radius: 28px;
   }
-  72% {
-    transform: translate3d(0, -1.2%, 0) scale(1.004);
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+  56% {
+    transform: translate3d(0, -3.6%, 0) scaleY(0.982) scaleX(1.006);
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+  }
+  78% {
+    transform: translate3d(0, 1.1%, 0) scaleY(1.006) scaleX(0.998);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+  92% {
+    transform: translate3d(0, -0.3%, 0) scale(1);
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -380,17 +403,17 @@ html, body {
 
 @keyframes jhProSidewaysOutLeft {
   0% {
-    transform: translate3d(0, -56px, 0) scale(0.935);
-    border-radius: 24px;
+    transform: translate3d(0, -38px, 0) scaleY(1.08) scaleX(0.97);
+    border-radius: 20px;
     opacity: 1;
     visibility: visible;
   }
-  88% {
-    opacity: 0.24;
+  85% {
+    opacity: 0.22;
     visibility: visible;
   }
   100% {
-    transform: translate3d(0, -108%, 0) scale(0.88);
+    transform: translate3d(0, -108%, 0) scaleY(0.9) scaleX(0.92);
     border-radius: 28px;
     opacity: 0;
     visibility: hidden;
@@ -399,15 +422,23 @@ html, body {
 
 @keyframes jhProSidewaysInPrev {
   0% {
-    transform: translate3d(0, -104%, 0) scale(0.92);
-    box-shadow: 0 28px 64px rgba(15, 10, 7, 0.72), 0 4px 0 #34D399;
+    transform: translate3d(0, -96%, 0) scaleY(1.09) scaleX(0.96);
+    box-shadow: 0 28px 64px rgba(15, 10, 7, 0.72);
     border-bottom-left-radius: 28px;
     border-bottom-right-radius: 28px;
   }
-  72% {
-    transform: translate3d(0, 1.2%, 0) scale(1.004);
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
+  56% {
+    transform: translate3d(0, 3.6%, 0) scaleY(0.982) scaleX(1.006);
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
+  }
+  78% {
+    transform: translate3d(0, -1.1%, 0) scaleY(1.006) scaleX(0.998);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+  }
+  92% {
+    transform: translate3d(0, 0.3%, 0) scale(1);
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -419,17 +450,17 @@ html, body {
 
 @keyframes jhProSidewaysOutRight {
   0% {
-    transform: translate3d(0, 56px, 0) scale(0.935);
-    border-radius: 24px;
+    transform: translate3d(0, 38px, 0) scaleY(1.08) scaleX(0.97);
+    border-radius: 20px;
     opacity: 1;
     visibility: visible;
   }
-  88% {
-    opacity: 0.24;
+  85% {
+    opacity: 0.22;
     visibility: visible;
   }
   100% {
-    transform: translate3d(0, 108%, 0) scale(0.88);
+    transform: translate3d(0, 108%, 0) scaleY(0.9) scaleX(0.92);
     border-radius: 28px;
     opacity: 0;
     visibility: hidden;
@@ -473,103 +504,14 @@ html, body {
   }
 }
 
-/* LIVE ELASTIC OVERSCROLL PULL-TO-TURN INDICATOR PILLS (TOP = PREV, BOTTOM = NEXT) */
-.jh-pull-indicator {
-  position: fixed;
-  left: 50%;
-  z-index: 88;
-  width: min(92vw, 420px);
-  background: rgba(24, 18, 14, 0.95);
-  color: #FFFDF9;
-  border: 2px solid #F59E0B;
-  border-radius: 18px;
-  padding: 10px 14px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.jh-pull-indicator-top {
-  top: calc(54px + var(--jh-safe-top));
-  transform: translate3d(-50%, -18px, 0) scale(0.94);
-}
-
-.jh-pull-indicator-bottom {
-  bottom: calc(14px + var(--jh-safe-bottom));
-  transform: translate3d(-50%, 18px, 0) scale(0.94);
-}
-
-.jh-pull-indicator.visible {
-  opacity: 1;
-}
-
-.jh-pull-indicator.ready {
-  background: linear-gradient(135deg, #065F46 0%, #047857 100%);
-  border-color: #34D399;
-  box-shadow: 0 14px 36px rgba(5, 150, 105, 0.48), 0 0 0 3px rgba(52, 211, 153, 0.28);
-}
-
-.jh-pull-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 0.9rem;
-  font-weight: 800;
-  text-align: center;
-}
-
-.jh-pull-arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: rgba(245, 158, 11, 0.22);
-  font-size: 0.95rem;
-  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
-}
-
-.jh-pull-indicator.ready .jh-pull-arrow {
-  background: rgba(255, 255, 255, 0.24);
-  transform: scale(1.18) rotate(180deg);
-}
-
-.jh-pull-progress-track {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.16);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.jh-pull-progress-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #FBBF24 0%, #F59E0B 100%);
-  border-radius: 999px;
-  transition: width 0.06s linear;
-}
-
-.jh-pull-indicator.ready .jh-pull-progress-fill {
-  background: linear-gradient(90deg, #6EE7B7 0%, #34D399 100%);
-}
-
+/* HIDE TEXT/PROGRESS-BAR PULL BANNERS — PURE PHYSICS STRETCH & SPRING SNAP ONLY */
+.jh-pull-indicator,
+.jh-pull-indicator.visible,
+.jh-pull-indicator.ready,
 .jh-bottom-pull-cue {
-  margin-top: 10px;
-  padding: 7px 10px;
-  border-radius: 10px;
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px dashed rgba(217, 119, 6, 0.45);
-  color: #7C2D12;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-align: center;
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 /* ============================================================================
