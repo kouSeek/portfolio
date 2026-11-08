@@ -1269,8 +1269,12 @@ vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});
         self.assertIn('id="btnJhCategoryDropdown"', zb_html)
         self.assertIn('id="btnJhHeaderListen"', zb_html)
         self.assertIn('id="btnJhHeaderStop"', zb_html)
+        self.assertIn('id="jhTopAudioProgressFill"', zb_html)
         self.assertIn("jh-pull-progress-fill", zb_html)
         self.assertIn("jh-dbltap-voice-toast", zb_html)
+        self.assertIn("body.jh-audio-playing", zb_html)
+        self.assertIn("jh-tts-sentence", zb_html)
+        self.assertNotIn("activeEl.scrollIntoView", zb_html)
         refresh_py = (APP_ROOT / "scripts" / "refresh_voices.py").read_text(encoding="utf-8")
         self.assertIn("en-gb-gia-server-voicelm-xl#kix08", refresh_py)
         self.assertIn("attempt_sentence_splitting: false", refresh_py)
@@ -1338,6 +1342,8 @@ const suite = code + `
   assert.strictEqual(getSelectedCategorySummaryLabel(), '✨ All ▾');
   assert.ok(/<h2[^>]*class="jh-hook-title"><span class="jh-vibe-badge">/.test(el('jhReelsViewport').innerHTML), 'Inline category badge at start of h2');
   assert.ok(/<h3 class="jh-sec-heading">[^<]*<span id="jhWord_/.test(el('jhReelsViewport').innerHTML), 'Section headings must be wrapped in .jh-tts-word spans');
+  assert.ok(el('jhReelsViewport').innerHTML.includes('class="jh-tts-sentence"'), 'Body paragraphs must wrap sentences in .jh-tts-sentence spans for guided reading');
+  assert.ok(el('jhReelsViewport').innerHTML.includes('jh-curiosity-box revealed'), 'Curiosity takeaway box must be open by default with zero tap-to-reveal friction');
   assert.ok(jhCurrentWordTimings.length > 60, 'Full-page Zorba reel must wrap all words on the page (title + 3 sections + curiosity Q&A)');
   assert.strictEqual(isSpokenWordToken('&'), true, 'Standalone & must be wrapped as a spoken word token ("and")');
   assert.strictEqual(isSpokenWordToken('+'), true, 'Standalone + must be wrapped as a spoken word token ("plus")');

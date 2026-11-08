@@ -55,6 +55,10 @@ let jhLastTapTimeMs = 0;
 let jhLastTapX = 0;
 let jhLastTapY = 0;
 let jhLastDoubleTapToggleMs = 0;
+let jhInitialRenderDone = false;
+let jhLastAutoScrollMs = 0;
+let jhLastUserScrollInteractionMs = 0;
+let jhPendingAutoPlayUnlock = false;
 
 const JH_NEXT_PULL_THRESHOLD = 105;
 const JH_PREV_PULL_THRESHOLD = 90;
@@ -279,10 +283,22 @@ function wrapTextWithJhTtsWords(text, state, opts) {
   const blockId = (opts && opts.blockId) || '';
   const inCuriosityA = Boolean(opts && opts.inCuriosityA);
   const addHeadingPause = Boolean(opts && opts.addHeadingPause);
+  const chunkSentences = Boolean(opts && opts.chunkSentences);
+  if (state.sentCounter === undefined) state.sentCounter = 0;
 
   let spokenCursor = 0;
-  return parts.map((part, pIdx) => {
-    if (!isSpokenWordToken(part)) return part;
+  const sentences = [];
+  let curSentTokens = [];
+  let curSentPlainLen = 0;
+  let curSentId = prefix + 'Sent_' + state.sentCounter;
+
+  for (let pIdx = 0; pIdx < parts.length; pIdx++) {
+    const part = parts[pIdx];
+    if (!isSpokenWordToken(part)) {
+      curSentTokens.push(part);
+      curSentPlainLen += part.length;
+      continue;
+    }
 
     const nextSpokenIdx = (spokenCursor + 1 < spokenPartIndices.length)
       ? spokenPartIndices[spokenCursor + 1]
@@ -317,12 +333,59 @@ function wrapTextWithJhTtsWords(text, state, opts) {
       startSec: 0,
       endSec: 0,
       blockId: blockId,
+      sentId: chunkSentences ? curSentId : '',
       inCuriosityA: inCuriosityA
     });
 
     const curAttr = inCuriosityA ? ' data-curiosity-a="1"' : '';
-    return `<span id="${prefix}_${wIdx}" class="jh-tts-word" data-widx="${wIdx}"${curAttr}>${part}</span>`;
-  }).join('');
+    const wordSpan = `<span id="${prefix}_${wIdx}" class="jh-tts-word" data-widx="${wIdx}"${curAttr}>${part}</span>`;
+    curSentTokens.push(wordSpan);
+    curSentPlainLen += part.length;
+
+    const isSentenceBoundary = pauseTier === 3 && !/^\d+\.$/.test(part.trim());
+    if (chunkSentences && isSentenceBoundary) {
+      sentences.push({
+        id: curSentId,
+        html: curSentTokens.join('').trim(),
+        len: curSentPlainLen
+      });
+      state.sentCounter += 1;
+      curSentId = prefix + 'Sent_' + state.sentCounter;
+      curSentTokens = [];
+      curSentPlainLen = 0;
+    }
+  }
+
+  if (!chunkSentences) {
+    return curSentTokens.join('');
+  }
+
+  if (curSentTokens.length > 0 && curSentTokens.join('').trim()) {
+    sentences.push({
+      id: curSentId,
+      html: curSentTokens.join('').trim(),
+      len: curSentPlainLen
+    });
+    state.sentCounter += 1;
+  }
+
+  if (!sentences.length) return '';
+
+  const paraGroups = [];
+  let currentGroup = [];
+  let currentGroupLen = 0;
+  for (let i = 0; i < sentences.length; i++) {
+    const s = sentences[i];
+    const wrappedSent = `<span id="${s.id}" class="jh-tts-sentence">${s.html}</span>`;
+    currentGroup.push(wrappedSent);
+    currentGroupLen += s.len;
+    if (currentGroupLen >= 110 || currentGroup.length >= 2 || i === sentences.length - 1) {
+      paraGroups.push(`<p class="jh-sec-para">${currentGroup.join(' ')}</p>`);
+      currentGroup = [];
+      currentGroupLen = 0;
+    }
+  }
+  return paraGroups.join('');
 }
 
 /* ACOUSTIC SILENCE-MAP & CLOSED-LOOP REGRESSION WORD TIMELINE BUILDER */
@@ -524,11 +587,74 @@ function stopJhWordHighlightLoop() {
   }
 }
 
+function updateJhTopAudioProgress(pct) {
+  const progEl = document.getElementById('jhTopAudioProgressFill');
+  if (progEl && progEl.style) {
+    const clean = Math.max(0, Math.min(100, Number(pct) || 0));
+    progEl.style.width = clean > 0 ? clean.toFixed(1) + '%' : '0%';
+  }
+}
+
+function getOffsetTopWithinContainer(el, container) {
+  let top = 0;
+  let node = el;
+  let guard = 0;
+  while (node && node !== container && guard < 16) {
+    top += (Number(node.offsetTop) || 0);
+    node = node.offsetParent;
+    guard += 1;
+  }
+  return top;
+}
+
+function scrollActiveWordIntoComfortZone(activeEl, isLetter) {
+  if (!activeEl) return;
+  if (typeof window !== 'undefined' && (window.scrollY || window.pageYOffset)) {
+    try { window.scrollTo(0, 0); } catch (e) {}
+  }
+  const now = Date.now();
+  if (now - jhLastUserScrollInteractionMs < 1400) return;
+  if (now - jhLastAutoScrollMs < 260) return;
+
+  const container = isLetter
+    ? (typeof document !== 'undefined' && document.querySelector && document.querySelector('#jhLetterDrawer .jh-drawer-sheet'))
+    : (typeof document !== 'undefined' && document.getElementById && document.getElementById('jhReelsViewport'));
+  if (!container) return;
+
+  const cHeight = Number(container.clientHeight) || 0;
+  if (!(cHeight > 40) || activeEl.offsetTop === undefined) return;
+
+  const elTopInDoc = getOffsetTopWithinContainer(activeEl, container);
+  const elHeight = Number(activeEl.offsetHeight) || 24;
+  const curScroll = Number(container.scrollTop) || 0;
+  const relTop = elTopInDoc - curScroll;
+  const relBottom = relTop + elHeight;
+
+  const upperComfort = cHeight * 0.16;
+  const lowerComfort = cHeight * 0.58;
+
+  if (relBottom > lowerComfort || (curScroll > 10 && relTop < upperComfort)) {
+    jhLastAutoScrollMs = now;
+    const maxScroll = Math.max(0, (Number(container.scrollHeight) || 0) - cHeight);
+    const targetTop = elTopInDoc < cHeight * 0.36
+      ? 0
+      : Math.max(0, Math.min(maxScroll, Math.round(elTopInDoc - cHeight * 0.30)));
+    if (typeof container.scrollTo === 'function') {
+      try {
+        container.scrollTo({ top: targetTop, behavior: 'smooth' });
+        return;
+      } catch (e) {}
+    }
+    container.scrollTop = targetTop;
+  }
+}
+
 function clearJhWordHighlight() {
   stopJhWordHighlightLoop();
   const words = jhAudioMode === 'letter' ? jhLetterWordTimings : jhCurrentWordTimings;
   const prefix = jhAudioMode === 'letter' ? 'jhLetterWord' : 'jhWord';
   const clearedBlocks = new Set();
+  const clearedSents = new Set();
 
   for (let i = 0; i < words.length; i++) {
     const el = document.getElementById(prefix + '_' + i);
@@ -542,7 +668,14 @@ function clearJhWordHighlight() {
       const bEl = document.getElementById(bId);
       if (bEl && bEl.classList) bEl.classList.remove('jh-block-active');
     }
+    const sId = words[i] && words[i].sentId;
+    if (sId && !clearedSents.has(sId)) {
+      clearedSents.add(sId);
+      const sEl = document.getElementById(sId);
+      if (sEl && sEl.classList) sEl.classList.remove('jh-sentence-active');
+    }
   }
+  updateJhTopAudioProgress(0);
   jhActiveWordIdx = -1;
 }
 
@@ -570,6 +703,9 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
     ? (baseDur / effDur)
     : 1.0;
   const targetSec = Math.max(0, Math.min(baseDur - 0.001, rawCurSec * scaleFactor));
+  if (!isLetter) {
+    updateJhTopAudioProgress((targetSec / Math.max(0.5, baseDur)) * 100);
+  }
 
   let lo = 0;
   let hi = words.length - 1;
@@ -623,6 +759,15 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
     if (curBlock && curBlock.classList) curBlock.classList.add('jh-block-active');
   }
 
+  if (prevWord && prevWord.sentId && (!curWord || prevWord.sentId !== curWord.sentId)) {
+    const prevSent = document.getElementById(prevWord.sentId);
+    if (prevSent && prevSent.classList) prevSent.classList.remove('jh-sentence-active');
+  }
+  if (curWord && curWord.sentId) {
+    const curSent = document.getElementById(curWord.sentId);
+    if (curSent && curSent.classList) curSent.classList.add('jh-sentence-active');
+  }
+
   if (!isLetter && curWord && curWord.inCuriosityA) {
     const card = jhFilteredReels[jhCurrentIdx];
     if (card && !jhRevealedMap[card.id]) {
@@ -637,11 +782,7 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
   }
 
   const activeEl = document.getElementById(prefix + '_' + foundIdx);
-  if (activeEl && typeof activeEl.scrollIntoView === 'function') {
-    try {
-      activeEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    } catch (e) {}
-  }
+  scrollActiveWordIntoComfortZone(activeEl, isLetter);
 
   jhActiveWordIdx = foundIdx;
   return foundIdx;
@@ -871,6 +1012,11 @@ function filterJhalakChannel(channelId, ev) {
   jhLastSlideDir = 'next';
   renderJhCategoryDropdownUI();
   renderJhalakReelStream();
+  const vp = document.getElementById('jhReelsViewport');
+  if (vp) vp.scrollTop = 0;
+  if (jhAutoPlayVoices && jhFilteredReels.length > 0) {
+    jhAutoAdvanceTimer = setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 220);
+  }
 }
 
 /* RANDOMIZED PAGE TRANSITION WITH 3D CURTAIN-LIFT ANIMATION */
@@ -883,9 +1029,9 @@ function captureOutgoingCardSnapshot() {
   const m = sourceHtml.match(/<div class="jh-card-stage">[\s\S]*<\/div>/);
   if (m) {
     jhOutgoingCardHtml = m[0]
-      .replace(/\sid="jh(?:Word|TitleBlock|SecBlock|CurBox|DoneBtn|StickyLikeBtn|StickyLikeCount)_[^"]*"/g, '')
+      .replace(/\sid="jh(?:WordSent|LetterWordSent|Word|TitleBlock|SecBlock|CurBox|DoneBtn|StickyLikeBtn|StickyLikeCount)_[^"]*"/g, '')
       .replace(/\sid="jh(?:StickyLikeBtn|StickyLikeCount)"/g, '')
-      .replace(/\b(?:jh-word-active|jh-word-spoken|jh-block-active)\b/g, '');
+      .replace(/\b(?:jh-word-active|jh-word-spoken|jh-block-active|jh-sentence-active)\b/g, '');
   }
 }
 
@@ -1316,6 +1462,9 @@ function toggleJhalakCuriosityBox(idx, ev) {
 function updateActiveCardPlayBtns() {
   const isReelPlaying = jhAudioPlaying && jhAudioMode === 'reel';
   const isReelPaused = jhAudioPaused && jhAudioMode === 'reel';
+  if (typeof document !== 'undefined' && document.body && document.body.classList) {
+    document.body.classList.toggle('jh-audio-playing', Boolean(isReelPlaying));
+  }
   const headerBtn = document.getElementById('btnJhHeaderListen');
   if (headerBtn) {
     headerBtn.classList.toggle('playing', isReelPlaying);
@@ -1364,6 +1513,7 @@ function playReelAudioAtIndex(idx) {
   }
 
   stopJhAudio();
+  jhPendingAutoPlayUnlock = false;
   jhCurrentIdx = targetIdx;
   if (!card.audio_url) return;
 
@@ -1395,6 +1545,7 @@ function playReelAudioAtIndex(idx) {
     playPromise.catch(() => {
       jhAudioPlaying = false;
       jhAudioPaused = false;
+      jhPendingAutoPlayUnlock = true;
       clearJhWordHighlight();
       updateActiveCardPlayBtns();
     });
@@ -1409,7 +1560,7 @@ function handleReelAudioEnded(idx) {
   if (jhAutoFlow && idx === jhCurrentIdx && jhFilteredReels.length > 1) {
     jhAutoAdvanceTimer = setTimeout(() => {
       stepJhalakReel(1, jhAutoPlayVoices);
-    }, 1500);
+    }, 1200);
   }
 }
 
@@ -1423,7 +1574,7 @@ function renderJhalakReelStream() {
     jhCurrentTotalWeight = 0;
     jhActiveWordIdx = -1;
     vp.innerHTML = `
-      <article class="jh-reel-slide jh-slide-anim-next">
+      <article class="jh-reel-slide jh-slide-anim-next jh-initial-load">
         <div class="jh-card-stage" style="text-align:center;padding:36px 22px;">
           <h2 class="jh-hook-title">🎉 Every Page in This Category Is Done!</h2>
           <p style="font-size:1.05rem;color:#94A3B8;margin-bottom:18px;">
@@ -1442,7 +1593,8 @@ function renderJhalakReelStream() {
   const idx = Math.max(0, Math.min(jhFilteredReels.length - 1, jhCurrentIdx));
   jhCurrentIdx = idx;
   const card = jhFilteredReels[idx];
-  const isRev = !!jhRevealedMap[card.id];
+  jhRevealedMap[card.id] = true;
+  const isRev = true;
   const hasYt = Boolean(card.yt_query && String(card.yt_query).trim());
   const ytUrl = hasYt
     ? 'https://www.youtube.com/results?search_query=' + encodeURIComponent(card.yt_query)
@@ -1451,7 +1603,7 @@ function renderJhalakReelStream() {
     ? `<a class="jh-yt-link" href="${ytUrl}" target="_blank" rel="noopener noreferrer">▶️ Watch on YouTube: ${card.yt_label_bn || card.title_bn} ↗</a>`
     : '';
 
-  const ttsState = { words: [], totalWeight: 0, prefix: 'jhWord' };
+  const ttsState = { words: [], totalWeight: 0, prefix: 'jhWord', sentCounter: 0 };
   const titleBlockId = 'jhTitleBlock_' + idx;
   const wrappedTitleHtml = wrapTextWithJhTtsWords(card.title_bn, ttsState, {
     blockId: titleBlockId,
@@ -1474,13 +1626,11 @@ function renderJhalakReelStream() {
     const paragraphs = String(sec.body_bn || '')
       .split(/\n+/)
       .filter(Boolean)
-      .map(p => {
-        const wrappedP = wrapTextWithJhTtsWords(p, ttsState, {
-          blockId: secBlockId,
-          addHeadingPause: false
-        });
-        return `<p class="jh-sec-para">${wrappedP}</p>`;
-      })
+      .map(p => wrapTextWithJhTtsWords(p, ttsState, {
+        blockId: secBlockId,
+        addHeadingPause: false,
+        chunkSentences: true
+      }))
       .join('');
     const toneClass = sec.tone === 'hitch' ? 'jh-sec-hitch' : (sec.tone === 'extra' ? 'jh-sec-extra' : 'jh-sec-story');
     return `
@@ -1511,7 +1661,10 @@ function renderJhalakReelStream() {
   jhCurrentTotalWeight = ttsState.totalWeight;
   jhActiveWordIdx = -1;
 
-  const animClass = jhLastSlideDir === 'prev' ? 'jh-slide-anim-prev' : 'jh-slide-anim-next';
+  const isFirstRender = !jhInitialRenderDone;
+  jhInitialRenderDone = true;
+  const baseAnimClass = jhLastSlideDir === 'prev' ? 'jh-slide-anim-prev' : 'jh-slide-anim-next';
+  const animClass = isFirstRender ? `${baseAnimClass} jh-initial-load` : baseAnimClass;
   const ghostDirClass = jhLastSlideDir === 'prev' ? 'out-right' : 'out-left';
   const ghostHtml = jhOutgoingCardHtml
     ? `<div class="jh-outgoing-ghost ${ghostDirClass}" aria-hidden="true">${jhOutgoingCardHtml}</div>`
@@ -2009,6 +2162,25 @@ window.addEventListener('DOMContentLoaded', () => {
   syncJhSettingsButtonsUI();
   renderJhalakReelStream();
 
+  if (jhAutoPlayVoices && jhFilteredReels.length > 0) {
+    jhAutoAdvanceTimer = setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 180);
+  }
+
+  const unlockPendingAutoPlay = ev => {
+    if (!jhPendingAutoPlayUnlock || !jhAutoPlayVoices || jhAudioPlaying || jhAudioPaused) return;
+    if (ev && isJhInteractiveTapTarget(ev.target)) return;
+    jhPendingAutoPlayUnlock = false;
+    playReelAudioAtIndex(jhCurrentIdx);
+  };
+  document.addEventListener('pointerdown', unlockPendingAutoPlay, { passive: true });
+  document.addEventListener('touchstart', unlockPendingAutoPlay, { passive: true });
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY || window.pageYOffset) {
+      try { window.scrollTo(0, 0); } catch (e) {}
+    }
+  }, { passive: true });
+
   document.addEventListener('click', () => {
     if (jhCategoryDropdownOpen) closeJhCategoryDropdown();
   });
@@ -2018,20 +2190,24 @@ window.addEventListener('DOMContentLoaded', () => {
       stepJhalakReel(1, jhAutoPlayVoices);
     } else if (ev.key === 'ArrowUp' || ev.key === 'PageUp' || ev.key === 'ArrowLeft') {
       stepJhalakReel(-1, jhAutoPlayVoices);
+    } else if (ev.key === ' ' && !isJhInteractiveTapTarget(ev.target)) {
+      ev.preventDefault();
+      playReelAudioAtIndex(jhCurrentIdx);
     }
   });
 
   const vp = document.getElementById('jhReelsViewport');
   if (vp && typeof vp.addEventListener === 'function') {
     vp.addEventListener('touchstart', ev => {
+      jhLastUserScrollInteractionMs = Date.now();
       if (ev.touches && ev.touches[0]) {
         jhTouchStartX = ev.touches[0].clientX;
         jhTouchStartY = ev.touches[0].clientY;
         const curScroll = vp.scrollTop || 0;
         const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
         jhTouchStartScrollTop = curScroll;
-        jhTouchStartAtTop = maxScroll <= 12 || curScroll <= 10;
-        jhTouchStartAtBottom = maxScroll <= 12 || curScroll >= maxScroll - 14;
+        jhTouchStartAtTop = maxScroll <= 8 || curScroll <= 6;
+        jhTouchStartAtBottom = maxScroll <= 8 || curScroll >= maxScroll - 10;
         jhPullAnchorY = null;
         jhPullDirection = '';
         jhPullDistance = 0;
@@ -2040,6 +2216,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
 
     vp.addEventListener('touchmove', ev => {
+      jhLastUserScrollInteractionMs = Date.now();
       if (!ev.touches || !ev.touches[0]) return;
       const curX = ev.touches[0].clientX;
       const curY = ev.touches[0].clientY;
@@ -2049,26 +2226,26 @@ window.addEventListener('DOMContentLoaded', () => {
 
       const curScroll = vp.scrollTop || 0;
       const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
-      const atTop = maxScroll <= 12 || curScroll <= 8;
-      const atBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+      const atTop = maxScroll <= 8 || curScroll <= 4;
+      const atBottom = maxScroll <= 8 || curScroll >= maxScroll - 8;
 
-      if ((jhPullDirection === 'next' || atBottom) && totalDy < -12) {
+      if ((jhPullDirection === 'next' || atBottom) && totalDy < -18) {
         if (jhPullDirection !== 'next') {
           jhPullDirection = 'next';
           jhPullAnchorY = curY;
         }
-        const rawPull = Math.max(0, jhPullAnchorY - curY);
+        const rawPull = Math.max(0, jhPullAnchorY - curY - 12);
         if (rawPull > 0) {
           updateJhOverscrollPullUI('next', rawPull);
         } else {
           resetJhOverscrollPullUI(false);
         }
-      } else if ((jhPullDirection === 'prev' || atTop) && totalDy > 12) {
+      } else if ((jhPullDirection === 'prev' || (jhTouchStartAtTop && atTop)) && totalDy > 18) {
         if (jhPullDirection !== 'prev') {
           jhPullDirection = 'prev';
           jhPullAnchorY = curY;
         }
-        const rawPull = Math.max(0, curY - jhPullAnchorY);
+        const rawPull = Math.max(0, curY - jhPullAnchorY - 12);
         if (rawPull > 0) {
           updateJhOverscrollPullUI('prev', rawPull);
         } else {
@@ -2102,8 +2279,8 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         const curScroll = vp.scrollTop || 0;
         const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
-        const nowAtTop = maxScroll <= 12 || curScroll <= 8;
-        const nowAtBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+        const nowAtTop = maxScroll <= 8 || curScroll <= 6;
+        const nowAtBottom = maxScroll <= 8 || curScroll >= maxScroll - 8;
         if (Math.abs(dy) >= JH_NEXT_PULL_THRESHOLD && Math.abs(dy) > Math.abs(dx) * 1.2) {
           if (dy < 0 && jhTouchStartAtBottom && nowAtBottom) {
             stepJhalakReel(1, jhAutoPlayVoices);
@@ -2123,6 +2300,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
 
     vp.addEventListener('mousedown', ev => {
+      if (ev.button !== 0 || isJhInteractiveTapTarget(ev.target)) return;
       jhMouseDownX = ev.clientX;
       jhMouseDownY = ev.clientY;
       jhPullAnchorY = null;
@@ -2132,31 +2310,37 @@ window.addEventListener('DOMContentLoaded', () => {
 
     vp.addEventListener('mousemove', ev => {
       if (jhMouseDownY === null) return;
+      if (!ev.buttons || (ev.buttons & 1) !== 1) {
+        jhMouseDownX = null;
+        jhMouseDownY = null;
+        if (jhPullDirection) resetJhOverscrollPullUI(true);
+        return;
+      }
       const totalDx = ev.clientX - jhMouseDownX;
       const totalDy = ev.clientY - jhMouseDownY;
       if (Math.abs(totalDx) > Math.abs(totalDy) * 1.2) return;
       const curScroll = vp.scrollTop || 0;
       const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
-      const atTop = maxScroll <= 12 || curScroll <= 8;
-      const atBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+      const atTop = maxScroll <= 8 || curScroll <= 6;
+      const atBottom = maxScroll <= 8 || curScroll >= maxScroll - 8;
 
-      if ((jhPullDirection === 'next' || atBottom) && totalDy < -12) {
+      if ((jhPullDirection === 'next' || atBottom) && totalDy < -18) {
         if (jhPullDirection !== 'next') {
           jhPullDirection = 'next';
           jhPullAnchorY = ev.clientY;
         }
-        const rawPull = Math.max(0, jhPullAnchorY - ev.clientY);
+        const rawPull = Math.max(0, jhPullAnchorY - ev.clientY - 12);
         if (rawPull > 0) {
           updateJhOverscrollPullUI('next', rawPull);
         } else {
           resetJhOverscrollPullUI(false);
         }
-      } else if ((jhPullDirection === 'prev' || atTop) && totalDy > 12) {
+      } else if ((jhPullDirection === 'prev' || atTop) && totalDy > 18) {
         if (jhPullDirection !== 'prev') {
           jhPullDirection = 'prev';
           jhPullAnchorY = ev.clientY;
         }
-        const rawPull = Math.max(0, ev.clientY - jhPullAnchorY);
+        const rawPull = Math.max(0, ev.clientY - jhPullAnchorY - 12);
         if (rawPull > 0) {
           updateJhOverscrollPullUI('prev', rawPull);
         } else {
@@ -2174,11 +2358,12 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     vp.addEventListener('wheel', ev => {
+      jhLastUserScrollInteractionMs = Date.now();
       if (jhWheelLock) return;
       const curScroll = vp.scrollTop || 0;
       const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
-      const atTop = maxScroll <= 12 || curScroll <= 8;
-      const atBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+      const atTop = maxScroll <= 8 || curScroll <= 4;
+      const atBottom = maxScroll <= 8 || curScroll >= maxScroll - 8;
 
       if (atBottom && ev.deltaY > 4 && Math.abs(ev.deltaY) >= Math.abs(ev.deltaX)) {
         if (jhWheelOverscrollDir !== 'next') {
@@ -2186,7 +2371,9 @@ window.addEventListener('DOMContentLoaded', () => {
           jhWheelOverscrollAccum = 0;
         }
         jhWheelOverscrollAccum += ev.deltaY * 0.65;
-        updateJhOverscrollPullUI('next', jhWheelOverscrollAccum);
+        if (jhWheelOverscrollAccum > 18) {
+          updateJhOverscrollPullUI('next', jhWheelOverscrollAccum - 18);
+        }
         if (jhWheelDecayTimer) clearTimeout(jhWheelDecayTimer);
         if (jhPullDistance >= JH_NEXT_PULL_THRESHOLD) {
           jhWheelLock = true;
@@ -2207,7 +2394,9 @@ window.addEventListener('DOMContentLoaded', () => {
           jhWheelOverscrollAccum = 0;
         }
         jhWheelOverscrollAccum += Math.abs(ev.deltaY) * 0.65;
-        updateJhOverscrollPullUI('prev', jhWheelOverscrollAccum);
+        if (jhWheelOverscrollAccum > 18) {
+          updateJhOverscrollPullUI('prev', jhWheelOverscrollAccum - 18);
+        }
         if (jhWheelDecayTimer) clearTimeout(jhWheelDecayTimer);
         if (jhPullDistance >= JH_PREV_PULL_THRESHOLD) {
           jhWheelLock = true;

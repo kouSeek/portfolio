@@ -637,10 +637,36 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
   }
 
   const activeEl = document.getElementById(prefix + '_' + foundIdx);
-  if (activeEl && typeof activeEl.scrollIntoView === 'function') {
-    try {
-      activeEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    } catch (e) {}
+  if (activeEl) {
+    if (typeof window !== 'undefined' && (window.scrollY || window.pageYOffset)) {
+      try { window.scrollTo(0, 0); } catch (e) {}
+    }
+    const container = isLetter
+      ? (typeof document !== 'undefined' && document.querySelector && document.querySelector('#jhLetterDrawer .jh-drawer-sheet'))
+      : (typeof document !== 'undefined' && document.getElementById && document.getElementById('jhReelsViewport'));
+    const cHeight = container ? (Number(container.clientHeight) || 0) : 0;
+    if (container && cHeight > 40 && activeEl.offsetTop !== undefined) {
+      let elTop = 0;
+      let node = activeEl;
+      let g = 0;
+      while (node && node !== container && g < 16) {
+        elTop += (Number(node.offsetTop) || 0);
+        node = node.offsetParent;
+        g += 1;
+      }
+      const curScroll = Number(container.scrollTop) || 0;
+      const relTop = elTop - curScroll;
+      const relBottom = relTop + (Number(activeEl.offsetHeight) || 24);
+      if (relBottom > cHeight * 0.58 || (curScroll > 10 && relTop < cHeight * 0.16)) {
+        const maxScroll = Math.max(0, (Number(container.scrollHeight) || 0) - cHeight);
+        const targetTop = elTop < cHeight * 0.36 ? 0 : Math.max(0, Math.min(maxScroll, Math.round(elTop - cHeight * 0.30)));
+        if (typeof container.scrollTo === 'function') {
+          try { container.scrollTo({ top: targetTop, behavior: 'smooth' }); } catch (e) { container.scrollTop = targetTop; }
+        } else {
+          container.scrollTop = targetTop;
+        }
+      }
+    }
   }
 
   jhActiveWordIdx = foundIdx;

@@ -1,36 +1,77 @@
 /* ============================================================================
-   ⚡ ZORBA — KOUSHIK'S HIGH-IQ STUDIO TYPOGRAPHY & PALETTE OVERRIDES
+   ⚡ ZORBA — ZERO-COGNITIVE-LOAD, NEURO-INCLUSIVE AUTONOMOUS READER THEME
+   Designed for effortless reading, listening, and concentration:
+   - Locked top header (`top: 0`, zero gap, live 3px audio progress bar)
+   - Warm glare-free paper surface (`#FAF8F5`) with humanist sans-serif typography
+   - Guided Focus Spotlight Mode during voice read-out (dims non-active cards,
+     softly highlights active sentence, and spotlights active spoken word with
+     zero per-word box clutter on already-spoken words)
+   - Always-open Takeaway card (zero "Tap to Reveal" friction)
    ============================================================================ */
 :root {
   --jh-bg-deep: #0F172A;
-  --jh-surface-cream: #F8FAFC;
-  --jh-surface-soft: #F1F5F9;
+  --jh-surface-cream: #FAF8F5;
+  --jh-surface-soft: #F3EFEA;
   --jh-ink-dark: #0F172A;
   --jh-ink-muted: #475569;
   --jh-gold: #F59E0B;
-  --jh-terra: #0F766E;
+  --jh-terra: #0D9488;
   --jh-emerald: #0D9488;
   --jh-rose: #E11D48;
   --jh-border-gold: rgba(245, 158, 11, 0.42);
 }
 
 html, body {
-  font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans Bengali', sans-serif;
+  background: var(--jh-surface-cream);
+  color: var(--jh-ink-dark);
 }
 
 .jh-topbar {
-  background: rgba(15, 23, 42, 0.96);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  flex: 0 0 auto;
+  z-index: 200;
+  background: #0F172A;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.14);
+}
+
+#btnJhHeaderStop {
+  display: none !important;
 }
 
 .jh-reels-viewport {
-  background: #0F172A;
+  background: var(--jh-surface-cream);
+}
+
+.jh-reel-slide,
+.jh-card-stage,
+.jh-outgoing-ghost {
+  background: var(--jh-surface-cream);
+}
+
+.jh-card-stage {
+  padding: 16px 16px calc(32px + var(--jh-safe-bottom));
 }
 
 .jh-hook-title,
 .jh-sec-heading,
 .jh-drawer-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.jh-hook-title {
+  font-size: clamp(1.2rem, 4.3vw, 1.42rem);
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.44;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+  transition: opacity 0.3s ease, background-color 0.25s ease;
 }
 
 .jh-vibe-badge {
@@ -38,17 +79,146 @@ html, body {
   color: #0F766E;
   border-color: #99F6E4;
   font-family: 'Inter', sans-serif;
+  font-weight: 700;
+}
+
+/* CALM, BREATHABLE CONCEPT CARDS (NO VISUAL CROWDING OR HEAVY BORDERS) */
+.jh-content-section {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 13px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  transition: opacity 0.32s ease, transform 0.32s ease, box-shadow 0.28s ease, border-color 0.28s ease;
 }
 
 .jh-sec-story {
-  background: #F1F5F9;
-  border-left: 4px solid #0F766E;
+  background: #FFFFFF;
+  border-left: 4px solid #0D9488;
 }
 
+.jh-sec-hitch {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-left: 4px solid #F59E0B;
+}
+
+.jh-sec-extra {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-left: 4px solid #6366F1;
+}
+
+/* LOW-PROFILE SECTION SUBTITLES (DE-EMPHASIZED SO EYES GO STRAIGHT TO THE IDEA) */
 .jh-sec-heading {
-  color: #0F172A;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748B;
+  letter-spacing: 0.01em;
+  line-height: 1.36;
+  margin-bottom: 8px;
 }
 
+/* BITE-SIZED SENTENCE CHUNKS WITH GENEROUS LINE & WORD SPACING */
 .jh-sec-para {
+  font-size: 1.05rem;
   color: #1E293B;
+  line-height: 1.76;
+  letter-spacing: 0.008em;
+  word-spacing: 0.03em;
+  margin-bottom: 11px;
+}
+
+.jh-sec-para:last-child {
+  margin-bottom: 0;
+}
+
+/* SENTENCE-LEVEL + WORD-LEVEL GUIDED READING TRACKER (ZERO SPOKEN-WORD BOX CLUTTER) */
+.jh-tts-sentence {
+  display: inline;
+  border-radius: 6px;
+  transition: background-color 0.18s ease;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.jh-tts-sentence.jh-sentence-active {
+  background-color: rgba(254, 243, 199, 0.68);
+  padding: 2px 3px;
+  margin: 0 -3px;
+}
+
+.jh-tts-word {
+  padding: 0;
+  margin: 0;
+  border-radius: 4px;
+}
+
+.jh-tts-word.jh-word-spoken {
+  color: #334155;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.jh-tts-word.jh-word-active {
+  background: #FDE68A;
+  color: #0F172A !important;
+  font-weight: 700;
+  border-radius: 5px;
+  padding: 1px 4px;
+  margin: 0 -2px;
+  box-shadow: 0 1px 5px rgba(245, 158, 11, 0.35), 0 0 0 1.5px rgba(245, 158, 11, 0.65);
+}
+
+/* GUIDED FOCUS SPOTLIGHT MODE WHILE VOICE IS PLAYING */
+body.jh-audio-playing .jh-hook-title:not(.jh-block-active) {
+  opacity: 0.55;
+}
+
+body.jh-audio-playing .jh-content-section:not(.jh-block-active),
+body.jh-audio-playing .jh-curiosity-box:not(.jh-block-active) {
+  opacity: 0.44;
+}
+
+.jh-content-section.jh-block-active,
+.jh-curiosity-box.jh-block-active {
+  opacity: 1 !important;
+  background: #FFFFFF;
+  border-color: #F59E0B;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.14), 0 0 0 2px #F59E0B;
+}
+
+/* ALWAYS-OPEN KEY TAKEAWAY CARD (ZERO "TAP TO REVEAL" FRICTION) */
+.jh-curiosity-box {
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-left: 4px solid #10B981;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  cursor: default;
+  transition: opacity 0.32s ease, box-shadow 0.28s ease;
+}
+
+.jh-curiosity-tap-hint {
+  display: none !important;
+}
+
+.jh-curiosity-q {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #065F46;
+  line-height: 1.5;
+}
+
+.jh-curiosity-a {
+  display: block !important;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(16, 185, 129, 0.2);
+  font-size: 1.02rem;
+  font-weight: 500;
+  color: #064E3B;
+  line-height: 1.72;
 }

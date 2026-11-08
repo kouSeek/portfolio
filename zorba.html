@@ -44,10 +44,17 @@
 }
 
 html, body {
+  position: fixed;
+  inset: 0;
   width: 100%;
   max-width: 100vw;
+  height: 100%;
   height: 100dvh;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   background: var(--jh-surface-cream);
   color: var(--jh-ink-dark);
   font-family: 'Noto Sans Bengali', sans-serif;
@@ -59,16 +66,38 @@ html, body {
    1. COMPACT TOP HEADER BAR: BRAND + CATEGORY DROPDOWN + LISTEN + SETTINGS
    ============================================================================ */
 .jh-topbar {
-  position: fixed;
+  position: relative;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 80;
-  background: rgba(24, 18, 14, 0.96);
+  width: 100%;
+  flex: 0 0 auto;
+  z-index: 200;
+  margin: 0;
+  background: rgba(24, 18, 14, 0.98);
   border-bottom: 1px solid rgba(245, 158, 11, 0.28);
-  padding: calc(6px + var(--jh-safe-top)) 8px 6px;
+  padding: calc(6px + var(--jh-safe-top)) 10px 6px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+
+.jh-top-audio-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: transparent;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.jh-top-audio-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #F59E0B 0%, #10B981 100%);
+  border-radius: 0 999px 999px 0;
+  transition: width 0.12s linear;
 }
 
 .jh-topbar-row1 {
@@ -304,25 +333,34 @@ html, body {
    ============================================================================ */
 .jh-reels-viewport {
   position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
-  height: 100dvh;
+  height: auto;
+  margin: 0;
+  padding: 0;
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
-  background: #18120E;
-  padding: calc(46px + var(--jh-safe-top)) 0 0;
+  background: var(--jh-surface-cream);
+  scroll-padding-top: 24px;
+  scroll-padding-bottom: 48px;
 }
 
 .jh-reel-slide {
   position: relative;
   z-index: 2;
   width: 100%;
-  min-height: calc(100dvh - 46px - var(--jh-safe-top));
+  min-height: 100%;
   background: var(--jh-surface-cream);
-  will-change: transform, opacity;
   backface-visibility: hidden;
-  transform-origin: center center;
+  transform-origin: top center;
+}
+
+.jh-reel-slide.jh-initial-load {
+  animation: none !important;
+  transform: none !important;
 }
 
 .jh-reel-slide.jh-pull-springback {
@@ -333,27 +371,26 @@ html, body {
    - Next (long pull at bottom): current scales & lifts up (0% -> -104%), next rises from bottom (+102% -> 0%)
    - Prev (pull at top): current scales & drops down (0% -> +104%), prev glides down from top (-102% -> 0%) */
 .jh-slide-anim-next {
-  animation: jhProSidewaysInNext 0.5s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation: jhProSidewaysInNext 0.44s cubic-bezier(0.19, 1, 0.22, 1) both;
 }
 
 .jh-slide-anim-prev {
-  animation: jhProSidewaysInPrev 0.5s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation: jhProSidewaysInPrev 0.44s cubic-bezier(0.19, 1, 0.22, 1) both;
 }
 
 .jh-outgoing-ghost {
-  position: fixed;
-  top: calc(46px + var(--jh-safe-top));
+  position: absolute;
+  top: 0;
   left: 0;
   right: 0;
   width: 100%;
-  height: calc(100dvh - 46px - var(--jh-safe-top));
+  height: 100%;
   overflow: hidden;
   background: var(--jh-surface-cream);
   pointer-events: none;
   z-index: 1;
-  will-change: transform, opacity;
   backface-visibility: hidden;
-  transform-origin: center center;
+  transform-origin: top center;
 }
 
 .jh-outgoing-ghost.out-left,
@@ -641,8 +678,8 @@ html, body {
 }
 
 .jh-tts-word.jh-word-spoken {
-  color: #6B3410;
-  background-color: rgba(245, 158, 11, 0.12);
+  color: #3D2B1F;
+  background-color: transparent;
 }
 
 .jh-tts-word.jh-word-active {
@@ -1163,38 +1200,79 @@ html, body {
 }
 
 /* ============================================================================
-   ⚡ ZORBA — KOUSHIK'S HIGH-IQ STUDIO TYPOGRAPHY & PALETTE OVERRIDES
+   ⚡ ZORBA — ZERO-COGNITIVE-LOAD, NEURO-INCLUSIVE AUTONOMOUS READER THEME
+   Designed for effortless reading, listening, and concentration:
+   - Locked top header (`top: 0`, zero gap, live 3px audio progress bar)
+   - Warm glare-free paper surface (`#FAF8F5`) with humanist sans-serif typography
+   - Guided Focus Spotlight Mode during voice read-out (dims non-active cards,
+     softly highlights active sentence, and spotlights active spoken word with
+     zero per-word box clutter on already-spoken words)
+   - Always-open Takeaway card (zero "Tap to Reveal" friction)
    ============================================================================ */
 :root {
   --jh-bg-deep: #0F172A;
-  --jh-surface-cream: #F8FAFC;
-  --jh-surface-soft: #F1F5F9;
+  --jh-surface-cream: #FAF8F5;
+  --jh-surface-soft: #F3EFEA;
   --jh-ink-dark: #0F172A;
   --jh-ink-muted: #475569;
   --jh-gold: #F59E0B;
-  --jh-terra: #0F766E;
+  --jh-terra: #0D9488;
   --jh-emerald: #0D9488;
   --jh-rose: #E11D48;
   --jh-border-gold: rgba(245, 158, 11, 0.42);
 }
 
 html, body {
-  font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans Bengali', sans-serif;
+  background: var(--jh-surface-cream);
+  color: var(--jh-ink-dark);
 }
 
 .jh-topbar {
-  background: rgba(15, 23, 42, 0.96);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  flex: 0 0 auto;
+  z-index: 200;
+  background: #0F172A;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.14);
+}
+
+#btnJhHeaderStop {
+  display: none !important;
 }
 
 .jh-reels-viewport {
-  background: #0F172A;
+  background: var(--jh-surface-cream);
+}
+
+.jh-reel-slide,
+.jh-card-stage,
+.jh-outgoing-ghost {
+  background: var(--jh-surface-cream);
+}
+
+.jh-card-stage {
+  padding: 16px 16px calc(32px + var(--jh-safe-bottom));
 }
 
 .jh-hook-title,
 .jh-sec-heading,
 .jh-drawer-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.jh-hook-title {
+  font-size: clamp(1.2rem, 4.3vw, 1.42rem);
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.44;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+  transition: opacity 0.3s ease, background-color 0.25s ease;
 }
 
 .jh-vibe-badge {
@@ -1202,19 +1280,148 @@ html, body {
   color: #0F766E;
   border-color: #99F6E4;
   font-family: 'Inter', sans-serif;
+  font-weight: 700;
+}
+
+/* CALM, BREATHABLE CONCEPT CARDS (NO VISUAL CROWDING OR HEAVY BORDERS) */
+.jh-content-section {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 13px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  transition: opacity 0.32s ease, transform 0.32s ease, box-shadow 0.28s ease, border-color 0.28s ease;
 }
 
 .jh-sec-story {
-  background: #F1F5F9;
-  border-left: 4px solid #0F766E;
+  background: #FFFFFF;
+  border-left: 4px solid #0D9488;
 }
 
+.jh-sec-hitch {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-left: 4px solid #F59E0B;
+}
+
+.jh-sec-extra {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-left: 4px solid #6366F1;
+}
+
+/* LOW-PROFILE SECTION SUBTITLES (DE-EMPHASIZED SO EYES GO STRAIGHT TO THE IDEA) */
 .jh-sec-heading {
-  color: #0F172A;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748B;
+  letter-spacing: 0.01em;
+  line-height: 1.36;
+  margin-bottom: 8px;
 }
 
+/* BITE-SIZED SENTENCE CHUNKS WITH GENEROUS LINE & WORD SPACING */
 .jh-sec-para {
+  font-size: 1.05rem;
   color: #1E293B;
+  line-height: 1.76;
+  letter-spacing: 0.008em;
+  word-spacing: 0.03em;
+  margin-bottom: 11px;
+}
+
+.jh-sec-para:last-child {
+  margin-bottom: 0;
+}
+
+/* SENTENCE-LEVEL + WORD-LEVEL GUIDED READING TRACKER (ZERO SPOKEN-WORD BOX CLUTTER) */
+.jh-tts-sentence {
+  display: inline;
+  border-radius: 6px;
+  transition: background-color 0.18s ease;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.jh-tts-sentence.jh-sentence-active {
+  background-color: rgba(254, 243, 199, 0.68);
+  padding: 2px 3px;
+  margin: 0 -3px;
+}
+
+.jh-tts-word {
+  padding: 0;
+  margin: 0;
+  border-radius: 4px;
+}
+
+.jh-tts-word.jh-word-spoken {
+  color: #334155;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.jh-tts-word.jh-word-active {
+  background: #FDE68A;
+  color: #0F172A !important;
+  font-weight: 700;
+  border-radius: 5px;
+  padding: 1px 4px;
+  margin: 0 -2px;
+  box-shadow: 0 1px 5px rgba(245, 158, 11, 0.35), 0 0 0 1.5px rgba(245, 158, 11, 0.65);
+}
+
+/* GUIDED FOCUS SPOTLIGHT MODE WHILE VOICE IS PLAYING */
+body.jh-audio-playing .jh-hook-title:not(.jh-block-active) {
+  opacity: 0.55;
+}
+
+body.jh-audio-playing .jh-content-section:not(.jh-block-active),
+body.jh-audio-playing .jh-curiosity-box:not(.jh-block-active) {
+  opacity: 0.44;
+}
+
+.jh-content-section.jh-block-active,
+.jh-curiosity-box.jh-block-active {
+  opacity: 1 !important;
+  background: #FFFFFF;
+  border-color: #F59E0B;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.14), 0 0 0 2px #F59E0B;
+}
+
+/* ALWAYS-OPEN KEY TAKEAWAY CARD (ZERO "TAP TO REVEAL" FRICTION) */
+.jh-curiosity-box {
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-left: 4px solid #10B981;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  cursor: default;
+  transition: opacity 0.32s ease, box-shadow 0.28s ease;
+}
+
+.jh-curiosity-tap-hint {
+  display: none !important;
+}
+
+.jh-curiosity-q {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #065F46;
+  line-height: 1.5;
+}
+
+.jh-curiosity-a {
+  display: block !important;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(16, 185, 129, 0.2);
+  font-size: 1.02rem;
+  font-weight: 500;
+  color: #064E3B;
+  line-height: 1.72;
 }
   </style>
 </head>
@@ -1246,6 +1453,9 @@ html, body {
           ⚙️
         </button>
       </div>
+    </div>
+    <div class="jh-top-audio-progress" aria-hidden="true">
+      <div id="jhTopAudioProgressFill" class="jh-top-audio-progress-fill"></div>
     </div>
   </header>
 
@@ -3036,6 +3246,10 @@ let jhLastTapTimeMs = 0;
 let jhLastTapX = 0;
 let jhLastTapY = 0;
 let jhLastDoubleTapToggleMs = 0;
+let jhInitialRenderDone = false;
+let jhLastAutoScrollMs = 0;
+let jhLastUserScrollInteractionMs = 0;
+let jhPendingAutoPlayUnlock = false;
 
 const JH_NEXT_PULL_THRESHOLD = 105;
 const JH_PREV_PULL_THRESHOLD = 90;
@@ -3260,10 +3474,22 @@ function wrapTextWithJhTtsWords(text, state, opts) {
   const blockId = (opts && opts.blockId) || '';
   const inCuriosityA = Boolean(opts && opts.inCuriosityA);
   const addHeadingPause = Boolean(opts && opts.addHeadingPause);
+  const chunkSentences = Boolean(opts && opts.chunkSentences);
+  if (state.sentCounter === undefined) state.sentCounter = 0;
 
   let spokenCursor = 0;
-  return parts.map((part, pIdx) => {
-    if (!isSpokenWordToken(part)) return part;
+  const sentences = [];
+  let curSentTokens = [];
+  let curSentPlainLen = 0;
+  let curSentId = prefix + 'Sent_' + state.sentCounter;
+
+  for (let pIdx = 0; pIdx < parts.length; pIdx++) {
+    const part = parts[pIdx];
+    if (!isSpokenWordToken(part)) {
+      curSentTokens.push(part);
+      curSentPlainLen += part.length;
+      continue;
+    }
 
     const nextSpokenIdx = (spokenCursor + 1 < spokenPartIndices.length)
       ? spokenPartIndices[spokenCursor + 1]
@@ -3298,12 +3524,59 @@ function wrapTextWithJhTtsWords(text, state, opts) {
       startSec: 0,
       endSec: 0,
       blockId: blockId,
+      sentId: chunkSentences ? curSentId : '',
       inCuriosityA: inCuriosityA
     });
 
     const curAttr = inCuriosityA ? ' data-curiosity-a="1"' : '';
-    return `<span id="${prefix}_${wIdx}" class="jh-tts-word" data-widx="${wIdx}"${curAttr}>${part}</span>`;
-  }).join('');
+    const wordSpan = `<span id="${prefix}_${wIdx}" class="jh-tts-word" data-widx="${wIdx}"${curAttr}>${part}</span>`;
+    curSentTokens.push(wordSpan);
+    curSentPlainLen += part.length;
+
+    const isSentenceBoundary = pauseTier === 3 && !/^\d+\.$/.test(part.trim());
+    if (chunkSentences && isSentenceBoundary) {
+      sentences.push({
+        id: curSentId,
+        html: curSentTokens.join('').trim(),
+        len: curSentPlainLen
+      });
+      state.sentCounter += 1;
+      curSentId = prefix + 'Sent_' + state.sentCounter;
+      curSentTokens = [];
+      curSentPlainLen = 0;
+    }
+  }
+
+  if (!chunkSentences) {
+    return curSentTokens.join('');
+  }
+
+  if (curSentTokens.length > 0 && curSentTokens.join('').trim()) {
+    sentences.push({
+      id: curSentId,
+      html: curSentTokens.join('').trim(),
+      len: curSentPlainLen
+    });
+    state.sentCounter += 1;
+  }
+
+  if (!sentences.length) return '';
+
+  const paraGroups = [];
+  let currentGroup = [];
+  let currentGroupLen = 0;
+  for (let i = 0; i < sentences.length; i++) {
+    const s = sentences[i];
+    const wrappedSent = `<span id="${s.id}" class="jh-tts-sentence">${s.html}</span>`;
+    currentGroup.push(wrappedSent);
+    currentGroupLen += s.len;
+    if (currentGroupLen >= 110 || currentGroup.length >= 2 || i === sentences.length - 1) {
+      paraGroups.push(`<p class="jh-sec-para">${currentGroup.join(' ')}</p>`);
+      currentGroup = [];
+      currentGroupLen = 0;
+    }
+  }
+  return paraGroups.join('');
 }
 
 /* ACOUSTIC SILENCE-MAP & CLOSED-LOOP REGRESSION WORD TIMELINE BUILDER */
@@ -3505,11 +3778,74 @@ function stopJhWordHighlightLoop() {
   }
 }
 
+function updateJhTopAudioProgress(pct) {
+  const progEl = document.getElementById('jhTopAudioProgressFill');
+  if (progEl && progEl.style) {
+    const clean = Math.max(0, Math.min(100, Number(pct) || 0));
+    progEl.style.width = clean > 0 ? clean.toFixed(1) + '%' : '0%';
+  }
+}
+
+function getOffsetTopWithinContainer(el, container) {
+  let top = 0;
+  let node = el;
+  let guard = 0;
+  while (node && node !== container && guard < 16) {
+    top += (Number(node.offsetTop) || 0);
+    node = node.offsetParent;
+    guard += 1;
+  }
+  return top;
+}
+
+function scrollActiveWordIntoComfortZone(activeEl, isLetter) {
+  if (!activeEl) return;
+  if (typeof window !== 'undefined' && (window.scrollY || window.pageYOffset)) {
+    try { window.scrollTo(0, 0); } catch (e) {}
+  }
+  const now = Date.now();
+  if (now - jhLastUserScrollInteractionMs < 1400) return;
+  if (now - jhLastAutoScrollMs < 260) return;
+
+  const container = isLetter
+    ? (typeof document !== 'undefined' && document.querySelector && document.querySelector('#jhLetterDrawer .jh-drawer-sheet'))
+    : (typeof document !== 'undefined' && document.getElementById && document.getElementById('jhReelsViewport'));
+  if (!container) return;
+
+  const cHeight = Number(container.clientHeight) || 0;
+  if (!(cHeight > 40) || activeEl.offsetTop === undefined) return;
+
+  const elTopInDoc = getOffsetTopWithinContainer(activeEl, container);
+  const elHeight = Number(activeEl.offsetHeight) || 24;
+  const curScroll = Number(container.scrollTop) || 0;
+  const relTop = elTopInDoc - curScroll;
+  const relBottom = relTop + elHeight;
+
+  const upperComfort = cHeight * 0.16;
+  const lowerComfort = cHeight * 0.58;
+
+  if (relBottom > lowerComfort || (curScroll > 10 && relTop < upperComfort)) {
+    jhLastAutoScrollMs = now;
+    const maxScroll = Math.max(0, (Number(container.scrollHeight) || 0) - cHeight);
+    const targetTop = elTopInDoc < cHeight * 0.36
+      ? 0
+      : Math.max(0, Math.min(maxScroll, Math.round(elTopInDoc - cHeight * 0.30)));
+    if (typeof container.scrollTo === 'function') {
+      try {
+        container.scrollTo({ top: targetTop, behavior: 'smooth' });
+        return;
+      } catch (e) {}
+    }
+    container.scrollTop = targetTop;
+  }
+}
+
 function clearJhWordHighlight() {
   stopJhWordHighlightLoop();
   const words = jhAudioMode === 'letter' ? jhLetterWordTimings : jhCurrentWordTimings;
   const prefix = jhAudioMode === 'letter' ? 'jhLetterWord' : 'jhWord';
   const clearedBlocks = new Set();
+  const clearedSents = new Set();
 
   for (let i = 0; i < words.length; i++) {
     const el = document.getElementById(prefix + '_' + i);
@@ -3523,7 +3859,14 @@ function clearJhWordHighlight() {
       const bEl = document.getElementById(bId);
       if (bEl && bEl.classList) bEl.classList.remove('jh-block-active');
     }
+    const sId = words[i] && words[i].sentId;
+    if (sId && !clearedSents.has(sId)) {
+      clearedSents.add(sId);
+      const sEl = document.getElementById(sId);
+      if (sEl && sEl.classList) sEl.classList.remove('jh-sentence-active');
+    }
   }
+  updateJhTopAudioProgress(0);
   jhActiveWordIdx = -1;
 }
 
@@ -3551,6 +3894,9 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
     ? (baseDur / effDur)
     : 1.0;
   const targetSec = Math.max(0, Math.min(baseDur - 0.001, rawCurSec * scaleFactor));
+  if (!isLetter) {
+    updateJhTopAudioProgress((targetSec / Math.max(0.5, baseDur)) * 100);
+  }
 
   let lo = 0;
   let hi = words.length - 1;
@@ -3604,6 +3950,15 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
     if (curBlock && curBlock.classList) curBlock.classList.add('jh-block-active');
   }
 
+  if (prevWord && prevWord.sentId && (!curWord || prevWord.sentId !== curWord.sentId)) {
+    const prevSent = document.getElementById(prevWord.sentId);
+    if (prevSent && prevSent.classList) prevSent.classList.remove('jh-sentence-active');
+  }
+  if (curWord && curWord.sentId) {
+    const curSent = document.getElementById(curWord.sentId);
+    if (curSent && curSent.classList) curSent.classList.add('jh-sentence-active');
+  }
+
   if (!isLetter && curWord && curWord.inCuriosityA) {
     const card = jhFilteredReels[jhCurrentIdx];
     if (card && !jhRevealedMap[card.id]) {
@@ -3618,11 +3973,7 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
   }
 
   const activeEl = document.getElementById(prefix + '_' + foundIdx);
-  if (activeEl && typeof activeEl.scrollIntoView === 'function') {
-    try {
-      activeEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    } catch (e) {}
-  }
+  scrollActiveWordIntoComfortZone(activeEl, isLetter);
 
   jhActiveWordIdx = foundIdx;
   return foundIdx;
@@ -3852,6 +4203,11 @@ function filterJhalakChannel(channelId, ev) {
   jhLastSlideDir = 'next';
   renderJhCategoryDropdownUI();
   renderJhalakReelStream();
+  const vp = document.getElementById('jhReelsViewport');
+  if (vp) vp.scrollTop = 0;
+  if (jhAutoPlayVoices && jhFilteredReels.length > 0) {
+    jhAutoAdvanceTimer = setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 220);
+  }
 }
 
 /* RANDOMIZED PAGE TRANSITION WITH 3D CURTAIN-LIFT ANIMATION */
@@ -3864,9 +4220,9 @@ function captureOutgoingCardSnapshot() {
   const m = sourceHtml.match(/<div class="jh-card-stage">[\s\S]*<\/div>/);
   if (m) {
     jhOutgoingCardHtml = m[0]
-      .replace(/\sid="jh(?:Word|TitleBlock|SecBlock|CurBox|DoneBtn|StickyLikeBtn|StickyLikeCount)_[^"]*"/g, '')
+      .replace(/\sid="jh(?:WordSent|LetterWordSent|Word|TitleBlock|SecBlock|CurBox|DoneBtn|StickyLikeBtn|StickyLikeCount)_[^"]*"/g, '')
       .replace(/\sid="jh(?:StickyLikeBtn|StickyLikeCount)"/g, '')
-      .replace(/\b(?:jh-word-active|jh-word-spoken|jh-block-active)\b/g, '');
+      .replace(/\b(?:jh-word-active|jh-word-spoken|jh-block-active|jh-sentence-active)\b/g, '');
   }
 }
 
@@ -4297,6 +4653,9 @@ function toggleJhalakCuriosityBox(idx, ev) {
 function updateActiveCardPlayBtns() {
   const isReelPlaying = jhAudioPlaying && jhAudioMode === 'reel';
   const isReelPaused = jhAudioPaused && jhAudioMode === 'reel';
+  if (typeof document !== 'undefined' && document.body && document.body.classList) {
+    document.body.classList.toggle('jh-audio-playing', Boolean(isReelPlaying));
+  }
   const headerBtn = document.getElementById('btnJhHeaderListen');
   if (headerBtn) {
     headerBtn.classList.toggle('playing', isReelPlaying);
@@ -4345,6 +4704,7 @@ function playReelAudioAtIndex(idx) {
   }
 
   stopJhAudio();
+  jhPendingAutoPlayUnlock = false;
   jhCurrentIdx = targetIdx;
   if (!card.audio_url) return;
 
@@ -4376,6 +4736,7 @@ function playReelAudioAtIndex(idx) {
     playPromise.catch(() => {
       jhAudioPlaying = false;
       jhAudioPaused = false;
+      jhPendingAutoPlayUnlock = true;
       clearJhWordHighlight();
       updateActiveCardPlayBtns();
     });
@@ -4390,7 +4751,7 @@ function handleReelAudioEnded(idx) {
   if (jhAutoFlow && idx === jhCurrentIdx && jhFilteredReels.length > 1) {
     jhAutoAdvanceTimer = setTimeout(() => {
       stepJhalakReel(1, jhAutoPlayVoices);
-    }, 1500);
+    }, 1200);
   }
 }
 
@@ -4404,7 +4765,7 @@ function renderJhalakReelStream() {
     jhCurrentTotalWeight = 0;
     jhActiveWordIdx = -1;
     vp.innerHTML = `
-      <article class="jh-reel-slide jh-slide-anim-next">
+      <article class="jh-reel-slide jh-slide-anim-next jh-initial-load">
         <div class="jh-card-stage" style="text-align:center;padding:36px 22px;">
           <h2 class="jh-hook-title">🎉 Every Page in This Category Is Done!</h2>
           <p style="font-size:1.05rem;color:#94A3B8;margin-bottom:18px;">
@@ -4423,7 +4784,8 @@ function renderJhalakReelStream() {
   const idx = Math.max(0, Math.min(jhFilteredReels.length - 1, jhCurrentIdx));
   jhCurrentIdx = idx;
   const card = jhFilteredReels[idx];
-  const isRev = !!jhRevealedMap[card.id];
+  jhRevealedMap[card.id] = true;
+  const isRev = true;
   const hasYt = Boolean(card.yt_query && String(card.yt_query).trim());
   const ytUrl = hasYt
     ? 'https://www.youtube.com/results?search_query=' + encodeURIComponent(card.yt_query)
@@ -4432,7 +4794,7 @@ function renderJhalakReelStream() {
     ? `<a class="jh-yt-link" href="${ytUrl}" target="_blank" rel="noopener noreferrer">▶️ Watch on YouTube: ${card.yt_label_bn || card.title_bn} ↗</a>`
     : '';
 
-  const ttsState = { words: [], totalWeight: 0, prefix: 'jhWord' };
+  const ttsState = { words: [], totalWeight: 0, prefix: 'jhWord', sentCounter: 0 };
   const titleBlockId = 'jhTitleBlock_' + idx;
   const wrappedTitleHtml = wrapTextWithJhTtsWords(card.title_bn, ttsState, {
     blockId: titleBlockId,
@@ -4455,13 +4817,11 @@ function renderJhalakReelStream() {
     const paragraphs = String(sec.body_bn || '')
       .split(/\n+/)
       .filter(Boolean)
-      .map(p => {
-        const wrappedP = wrapTextWithJhTtsWords(p, ttsState, {
-          blockId: secBlockId,
-          addHeadingPause: false
-        });
-        return `<p class="jh-sec-para">${wrappedP}</p>`;
-      })
+      .map(p => wrapTextWithJhTtsWords(p, ttsState, {
+        blockId: secBlockId,
+        addHeadingPause: false,
+        chunkSentences: true
+      }))
       .join('');
     const toneClass = sec.tone === 'hitch' ? 'jh-sec-hitch' : (sec.tone === 'extra' ? 'jh-sec-extra' : 'jh-sec-story');
     return `
@@ -4492,7 +4852,10 @@ function renderJhalakReelStream() {
   jhCurrentTotalWeight = ttsState.totalWeight;
   jhActiveWordIdx = -1;
 
-  const animClass = jhLastSlideDir === 'prev' ? 'jh-slide-anim-prev' : 'jh-slide-anim-next';
+  const isFirstRender = !jhInitialRenderDone;
+  jhInitialRenderDone = true;
+  const baseAnimClass = jhLastSlideDir === 'prev' ? 'jh-slide-anim-prev' : 'jh-slide-anim-next';
+  const animClass = isFirstRender ? `${baseAnimClass} jh-initial-load` : baseAnimClass;
   const ghostDirClass = jhLastSlideDir === 'prev' ? 'out-right' : 'out-left';
   const ghostHtml = jhOutgoingCardHtml
     ? `<div class="jh-outgoing-ghost ${ghostDirClass}" aria-hidden="true">${jhOutgoingCardHtml}</div>`
@@ -4990,6 +5353,25 @@ window.addEventListener('DOMContentLoaded', () => {
   syncJhSettingsButtonsUI();
   renderJhalakReelStream();
 
+  if (jhAutoPlayVoices && jhFilteredReels.length > 0) {
+    jhAutoAdvanceTimer = setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 180);
+  }
+
+  const unlockPendingAutoPlay = ev => {
+    if (!jhPendingAutoPlayUnlock || !jhAutoPlayVoices || jhAudioPlaying || jhAudioPaused) return;
+    if (ev && isJhInteractiveTapTarget(ev.target)) return;
+    jhPendingAutoPlayUnlock = false;
+    playReelAudioAtIndex(jhCurrentIdx);
+  };
+  document.addEventListener('pointerdown', unlockPendingAutoPlay, { passive: true });
+  document.addEventListener('touchstart', unlockPendingAutoPlay, { passive: true });
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY || window.pageYOffset) {
+      try { window.scrollTo(0, 0); } catch (e) {}
+    }
+  }, { passive: true });
+
   document.addEventListener('click', () => {
     if (jhCategoryDropdownOpen) closeJhCategoryDropdown();
   });
@@ -4999,20 +5381,24 @@ window.addEventListener('DOMContentLoaded', () => {
       stepJhalakReel(1, jhAutoPlayVoices);
     } else if (ev.key === 'ArrowUp' || ev.key === 'PageUp' || ev.key === 'ArrowLeft') {
       stepJhalakReel(-1, jhAutoPlayVoices);
+    } else if (ev.key === ' ' && !isJhInteractiveTapTarget(ev.target)) {
+      ev.preventDefault();
+      playReelAudioAtIndex(jhCurrentIdx);
     }
   });
 
   const vp = document.getElementById('jhReelsViewport');
   if (vp && typeof vp.addEventListener === 'function') {
     vp.addEventListener('touchstart', ev => {
+      jhLastUserScrollInteractionMs = Date.now();
       if (ev.touches && ev.touches[0]) {
         jhTouchStartX = ev.touches[0].clientX;
         jhTouchStartY = ev.touches[0].clientY;
         const curScroll = vp.scrollTop || 0;
         const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
         jhTouchStartScrollTop = curScroll;
-        jhTouchStartAtTop = maxScroll <= 12 || curScroll <= 10;
-        jhTouchStartAtBottom = maxScroll <= 12 || curScroll >= maxScroll - 14;
+        jhTouchStartAtTop = maxScroll <= 8 || curScroll <= 6;
+        jhTouchStartAtBottom = maxScroll <= 8 || curScroll >= maxScroll - 10;
         jhPullAnchorY = null;
         jhPullDirection = '';
         jhPullDistance = 0;
@@ -5021,6 +5407,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
 
     vp.addEventListener('touchmove', ev => {
+      jhLastUserScrollInteractionMs = Date.now();
       if (!ev.touches || !ev.touches[0]) return;
       const curX = ev.touches[0].clientX;
       const curY = ev.touches[0].clientY;
@@ -5030,26 +5417,26 @@ window.addEventListener('DOMContentLoaded', () => {
 
       const curScroll = vp.scrollTop || 0;
       const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
-      const atTop = maxScroll <= 12 || curScroll <= 8;
-      const atBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+      const atTop = maxScroll <= 8 || curScroll <= 4;
+      const atBottom = maxScroll <= 8 || curScroll >= maxScroll - 8;
 
-      if ((jhPullDirection === 'next' || atBottom) && totalDy < -12) {
+      if ((jhPullDirection === 'next' || atBottom) && totalDy < -18) {
         if (jhPullDirection !== 'next') {
           jhPullDirection = 'next';
           jhPullAnchorY = curY;
         }
-        const rawPull = Math.max(0, jhPullAnchorY - curY);
+        const rawPull = Math.max(0, jhPullAnchorY - curY - 12);
         if (rawPull > 0) {
           updateJhOverscrollPullUI('next', rawPull);
         } else {
           resetJhOverscrollPullUI(false);
         }
-      } else if ((jhPullDirection === 'prev' || atTop) && totalDy > 12) {
+      } else if ((jhPullDirection === 'prev' || (jhTouchStartAtTop && atTop)) && totalDy > 18) {
         if (jhPullDirection !== 'prev') {
           jhPullDirection = 'prev';
           jhPullAnchorY = curY;
         }
-        const rawPull = Math.max(0, curY - jhPullAnchorY);
+        const rawPull = Math.max(0, curY - jhPullAnchorY - 12);
         if (rawPull > 0) {
           updateJhOverscrollPullUI('prev', rawPull);
         } else {
@@ -5083,8 +5470,8 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         const curScroll = vp.scrollTop || 0;
         const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
-        const nowAtTop = maxScroll <= 12 || curScroll <= 8;
-        const nowAtBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+        const nowAtTop = maxScroll <= 8 || curScroll <= 6;
+        const nowAtBottom = maxScroll <= 8 || curScroll >= maxScroll - 8;
         if (Math.abs(dy) >= JH_NEXT_PULL_THRESHOLD && Math.abs(dy) > Math.abs(dx) * 1.2) {
           if (dy < 0 && jhTouchStartAtBottom && nowAtBottom) {
             stepJhalakReel(1, jhAutoPlayVoices);
@@ -5104,6 +5491,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
 
     vp.addEventListener('mousedown', ev => {
+      if (ev.button !== 0 || isJhInteractiveTapTarget(ev.target)) return;
       jhMouseDownX = ev.clientX;
       jhMouseDownY = ev.clientY;
       jhPullAnchorY = null;
@@ -5113,31 +5501,37 @@ window.addEventListener('DOMContentLoaded', () => {
 
     vp.addEventListener('mousemove', ev => {
       if (jhMouseDownY === null) return;
+      if (!ev.buttons || (ev.buttons & 1) !== 1) {
+        jhMouseDownX = null;
+        jhMouseDownY = null;
+        if (jhPullDirection) resetJhOverscrollPullUI(true);
+        return;
+      }
       const totalDx = ev.clientX - jhMouseDownX;
       const totalDy = ev.clientY - jhMouseDownY;
       if (Math.abs(totalDx) > Math.abs(totalDy) * 1.2) return;
       const curScroll = vp.scrollTop || 0;
       const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
-      const atTop = maxScroll <= 12 || curScroll <= 8;
-      const atBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+      const atTop = maxScroll <= 8 || curScroll <= 6;
+      const atBottom = maxScroll <= 8 || curScroll >= maxScroll - 8;
 
-      if ((jhPullDirection === 'next' || atBottom) && totalDy < -12) {
+      if ((jhPullDirection === 'next' || atBottom) && totalDy < -18) {
         if (jhPullDirection !== 'next') {
           jhPullDirection = 'next';
           jhPullAnchorY = ev.clientY;
         }
-        const rawPull = Math.max(0, jhPullAnchorY - ev.clientY);
+        const rawPull = Math.max(0, jhPullAnchorY - ev.clientY - 12);
         if (rawPull > 0) {
           updateJhOverscrollPullUI('next', rawPull);
         } else {
           resetJhOverscrollPullUI(false);
         }
-      } else if ((jhPullDirection === 'prev' || atTop) && totalDy > 12) {
+      } else if ((jhPullDirection === 'prev' || atTop) && totalDy > 18) {
         if (jhPullDirection !== 'prev') {
           jhPullDirection = 'prev';
           jhPullAnchorY = ev.clientY;
         }
-        const rawPull = Math.max(0, ev.clientY - jhPullAnchorY);
+        const rawPull = Math.max(0, ev.clientY - jhPullAnchorY - 12);
         if (rawPull > 0) {
           updateJhOverscrollPullUI('prev', rawPull);
         } else {
@@ -5155,11 +5549,12 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     vp.addEventListener('wheel', ev => {
+      jhLastUserScrollInteractionMs = Date.now();
       if (jhWheelLock) return;
       const curScroll = vp.scrollTop || 0;
       const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
-      const atTop = maxScroll <= 12 || curScroll <= 8;
-      const atBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+      const atTop = maxScroll <= 8 || curScroll <= 4;
+      const atBottom = maxScroll <= 8 || curScroll >= maxScroll - 8;
 
       if (atBottom && ev.deltaY > 4 && Math.abs(ev.deltaY) >= Math.abs(ev.deltaX)) {
         if (jhWheelOverscrollDir !== 'next') {
@@ -5167,7 +5562,9 @@ window.addEventListener('DOMContentLoaded', () => {
           jhWheelOverscrollAccum = 0;
         }
         jhWheelOverscrollAccum += ev.deltaY * 0.65;
-        updateJhOverscrollPullUI('next', jhWheelOverscrollAccum);
+        if (jhWheelOverscrollAccum > 18) {
+          updateJhOverscrollPullUI('next', jhWheelOverscrollAccum - 18);
+        }
         if (jhWheelDecayTimer) clearTimeout(jhWheelDecayTimer);
         if (jhPullDistance >= JH_NEXT_PULL_THRESHOLD) {
           jhWheelLock = true;
@@ -5188,7 +5585,9 @@ window.addEventListener('DOMContentLoaded', () => {
           jhWheelOverscrollAccum = 0;
         }
         jhWheelOverscrollAccum += Math.abs(ev.deltaY) * 0.65;
-        updateJhOverscrollPullUI('prev', jhWheelOverscrollAccum);
+        if (jhWheelOverscrollAccum > 18) {
+          updateJhOverscrollPullUI('prev', jhWheelOverscrollAccum - 18);
+        }
         if (jhWheelDecayTimer) clearTimeout(jhWheelDecayTimer);
         if (jhPullDistance >= JH_PREV_PULL_THRESHOLD) {
           jhWheelLock = true;
