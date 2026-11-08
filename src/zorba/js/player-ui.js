@@ -1572,12 +1572,10 @@ function hideJhPullIndicators() {
   if (topInd && topInd.classList) {
     topInd.classList.remove('visible');
     topInd.classList.remove('ready');
-    if (topInd.style) topInd.style.transform = '';
   }
   if (botInd && botInd.classList) {
     botInd.classList.remove('visible');
     botInd.classList.remove('ready');
-    if (botInd.style) botInd.style.transform = '';
   }
   const topFill = document.getElementById('jhPullTopFill');
   const botFill = document.getElementById('jhPullBottomFill');
@@ -1598,42 +1596,24 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
     jhPullThresholdReached = true;
     try {
       if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-        navigator.vibrate([18, 24, 12]);
+        navigator.vibrate(16);
       }
     } catch (e) {}
   } else if (!isReady && jhPullThresholdReached) {
     jhPullThresholdReached = false;
   }
 
+  const dampedPx = Math.min(92, Math.round(Math.pow(cleanPull, 0.8) * 1.35));
+  const scaleVal = (1 - progress * 0.025).toFixed(4);
   const slideEl = document.getElementById('jhSlide_' + jhCurrentIdx);
   if (slideEl && slideEl.style) {
-    if (slideEl.classList) {
-      slideEl.classList.remove('jh-pull-springback');
-      slideEl.classList.toggle('jh-sticky-tension', cleanPull > 6 && !isReady);
-      slideEl.classList.toggle('jh-sticky-broken', isReady);
-    }
-    if (!isReady) {
-      // Phase 1: Sticky Magnetic Resistance ("Stuck Until Breaking Point")
-      const stickyPx = Math.round(22 * (1 - Math.exp(-cleanPull / 42)));
-      const signedY = dir === 'next' ? -stickyPx : stickyPx;
-      const sx = (1 - progress * 0.012).toFixed(4);
-      const sy = (1 + progress * 0.022).toFixed(4);
-      slideEl.style.transformOrigin = dir === 'next' ? 'center bottom' : 'center top';
-      slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scaleX(${sx}) scaleY(${sy})`;
-    } else {
-      // Phase 2: Breaking Point Snap-Free (Page unsticks and detaches into floating card)
-      const overPull = Math.max(0, cleanPull - threshold);
-      const brokenPx = 56 + Math.min(48, Math.round(Math.pow(overPull, 0.72) * 1.6));
-      const signedY = dir === 'next' ? -brokenPx : brokenPx;
-      slideEl.style.transformOrigin = 'center center';
-      slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scale(0.935)`;
-    }
+    if (slideEl.classList) slideEl.classList.remove('jh-pull-springback');
+    const signedY = dir === 'next' ? -dampedPx : dampedPx;
+    slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scale(${scaleVal})`;
   }
 
   const topInd = document.getElementById('jhPullIndicatorTop');
   const botInd = document.getElementById('jhPullIndicatorBottom');
-  const pillShift = Math.round(progress * 10);
-  const pillScale = (0.92 + progress * 0.14).toFixed(3);
   if (dir === 'next') {
     if (topInd && topInd.classList) {
       topInd.classList.remove('visible');
@@ -1642,14 +1622,9 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
     if (botInd && botInd.classList) {
       botInd.classList.toggle('visible', cleanPull > 8);
       botInd.classList.toggle('ready', isReady);
-      if (botInd.style) {
-        botInd.style.transform = `translate3d(-50%, -${pillShift}px, 0) scale(${pillScale})`;
-      }
     }
-    const botArrow = document.getElementById('jhPullBottomArrow');
     const botText = document.getElementById('jhPullBottomText');
     const botFill = document.getElementById('jhPullBottomFill');
-    if (botArrow) botArrow.textContent = isReady ? '⚡' : '⬆️';
     if (botText) botText.textContent = '';
     if (botFill && botFill.style) botFill.style.width = Math.round(progress * 100) + '%';
   } else if (dir === 'prev') {
@@ -1660,14 +1635,9 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
     if (topInd && topInd.classList) {
       topInd.classList.toggle('visible', cleanPull > 8);
       topInd.classList.toggle('ready', isReady);
-      if (topInd.style) {
-        topInd.style.transform = `translate3d(-50%, ${pillShift}px, 0) scale(${pillScale})`;
-      }
     }
-    const topArrow = document.getElementById('jhPullTopArrow');
     const topText = document.getElementById('jhPullTopText');
     const topFill = document.getElementById('jhPullTopFill');
-    if (topArrow) topArrow.textContent = isReady ? '⚡' : '⬇️';
     if (topText) topText.textContent = '';
     if (topFill && topFill.style) topFill.style.width = Math.round(progress * 100) + '%';
   }
@@ -1682,14 +1652,9 @@ function resetJhOverscrollPullUI(animateSpring) {
 
   const slideEl = document.getElementById('jhSlide_' + jhCurrentIdx);
   if (slideEl && slideEl.style) {
-    if (slideEl.classList) {
-      slideEl.classList.remove('jh-sticky-tension');
-      slideEl.classList.remove('jh-sticky-broken');
-      if (animateSpring) {
-        slideEl.classList.add('jh-pull-springback');
-      }
+    if (animateSpring && slideEl.classList) {
+      slideEl.classList.add('jh-pull-springback');
     }
-    slideEl.style.transformOrigin = '';
     slideEl.style.transform = '';
   }
 }

@@ -320,35 +320,24 @@ html, body {
   width: 100%;
   min-height: calc(100dvh - 46px - var(--jh-safe-top));
   background: var(--jh-surface-cream);
-  will-change: transform, opacity, border-radius, box-shadow;
+  will-change: transform, opacity;
   backface-visibility: hidden;
   transform-origin: center center;
 }
 
-.jh-reel-slide.jh-sticky-tension {
-  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.55), 0 14px 34px rgba(15, 10, 7, 0.45);
-  border-radius: 16px;
-}
-
-.jh-reel-slide.jh-sticky-broken {
-  transition: transform 0.18s cubic-bezier(0.22, 1.35, 0.36, 1), border-radius 0.18s ease, box-shadow 0.18s ease;
-  border-radius: 26px;
-  box-shadow: 0 0 0 3px #34D399, 0 28px 64px rgba(0, 0, 0, 0.72);
-}
-
 .jh-reel-slide.jh-pull-springback {
-  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.28s ease, box-shadow 0.28s ease;
+  transition: transform 0.34s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Sticky-Detent Tension-Snap vertical page transitions:
-   - Next (long pull past breaking point at bottom): current unsticks & launches up, next snaps in from bottom
-   - Prev (pull past breaking point at top): current unsticks & drops down, prev snaps in from top */
+/* Strong 3D Curtain-Lift & Depth-Peel vertical page transitions:
+   - Next (long pull at bottom): current scales & lifts up (0% -> -104%), next rises from bottom (+102% -> 0%)
+   - Prev (pull at top): current scales & drops down (0% -> +104%), prev glides down from top (-102% -> 0%) */
 .jh-slide-anim-next {
-  animation: jhProSidewaysInNext 0.52s cubic-bezier(0.22, 1.12, 0.36, 1) both;
+  animation: jhProSidewaysInNext 0.5s cubic-bezier(0.19, 1, 0.22, 1) both;
 }
 
 .jh-slide-anim-prev {
-  animation: jhProSidewaysInPrev 0.52s cubic-bezier(0.22, 1.12, 0.36, 1) both;
+  animation: jhProSidewaysInPrev 0.5s cubic-bezier(0.19, 1, 0.22, 1) both;
 }
 
 .jh-outgoing-ghost {
@@ -369,25 +358,24 @@ html, body {
 
 .jh-outgoing-ghost.out-left,
 .jh-outgoing-ghost.out-up {
-  animation: jhProSidewaysOutLeft 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: jhProSidewaysOutLeft 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
 .jh-outgoing-ghost.out-right,
 .jh-outgoing-ghost.out-down {
-  animation: jhProSidewaysOutRight 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: jhProSidewaysOutRight 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
 @keyframes jhProSidewaysInNext {
   0% {
-    transform: translate3d(0, 104%, 0) scale(0.92);
-    box-shadow: 0 -28px 64px rgba(15, 10, 7, 0.72), 0 -4px 0 #34D399;
-    border-top-left-radius: 28px;
-    border-top-right-radius: 28px;
+    transform: translate3d(0, 102%, 0) scale(0.95);
+    box-shadow: 0 -24px 56px rgba(15, 10, 7, 0.65), 0 -4px 0 #F59E0B;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
   }
-  72% {
-    transform: translate3d(0, -1.2%, 0) scale(1.004);
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+  75% {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -399,18 +387,16 @@ html, body {
 
 @keyframes jhProSidewaysOutLeft {
   0% {
-    transform: translate3d(0, -56px, 0) scale(0.935);
-    border-radius: 24px;
+    transform: translate3d(0, 0, 0) scale(1);
     opacity: 1;
     visibility: visible;
   }
-  88% {
-    opacity: 0.24;
+  92% {
+    opacity: 0.28;
     visibility: visible;
   }
   100% {
-    transform: translate3d(0, -108%, 0) scale(0.88);
-    border-radius: 28px;
+    transform: translate3d(0, -104%, 0) scale(0.91);
     opacity: 0;
     visibility: hidden;
   }
@@ -418,15 +404,14 @@ html, body {
 
 @keyframes jhProSidewaysInPrev {
   0% {
-    transform: translate3d(0, -104%, 0) scale(0.92);
-    box-shadow: 0 28px 64px rgba(15, 10, 7, 0.72), 0 4px 0 #34D399;
-    border-bottom-left-radius: 28px;
-    border-bottom-right-radius: 28px;
+    transform: translate3d(0, -102%, 0) scale(0.95);
+    box-shadow: 0 24px 56px rgba(15, 10, 7, 0.65), 0 4px 0 #F59E0B;
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
   }
-  72% {
-    transform: translate3d(0, 1.2%, 0) scale(1.004);
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
+  75% {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -438,18 +423,16 @@ html, body {
 
 @keyframes jhProSidewaysOutRight {
   0% {
-    transform: translate3d(0, 56px, 0) scale(0.935);
-    border-radius: 24px;
+    transform: translate3d(0, 0, 0) scale(1);
     opacity: 1;
     visibility: visible;
   }
-  88% {
-    opacity: 0.24;
+  92% {
+    opacity: 0.28;
     visibility: visible;
   }
   100% {
-    transform: translate3d(0, 108%, 0) scale(0.88);
-    border-radius: 28px;
+    transform: translate3d(0, 104%, 0) scale(0.91);
     opacity: 0;
     visibility: hidden;
   }
@@ -492,35 +475,32 @@ html, body {
   }
 }
 
-/* COMPACT VISUAL-ONLY PHYSICS PULL CAPSULE (ZERO TEXT CLUTTER) */
+/* LIVE ELASTIC OVERSCROLL PULL-TO-TURN PROGRESS BAR ONLY (NO TEXT) */
 .jh-pull-indicator {
   position: fixed;
   left: 50%;
   z-index: 88;
-  width: 96px;
-  background: rgba(24, 18, 14, 0.92);
-  color: #FFFDF9;
+  width: min(88vw, 380px);
+  background: rgba(24, 18, 14, 0.95);
   border: 2px solid #F59E0B;
   border-radius: 999px;
-  padding: 7px 12px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+  padding: 8px 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.14s ease, border-color 0.16s ease, background-color 0.16s ease, transform 0.08s linear;
+  transition: opacity 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 5px;
 }
 
 .jh-pull-indicator-top {
-  top: calc(52px + var(--jh-safe-top));
-  transform: translate3d(-50%, -14px, 0) scale(0.88);
+  top: calc(54px + var(--jh-safe-top));
+  transform: translate3d(-50%, -18px, 0) scale(0.94);
 }
 
 .jh-pull-indicator-bottom {
-  bottom: calc(12px + var(--jh-safe-bottom));
-  transform: translate3d(-50%, 14px, 0) scale(0.88);
+  bottom: calc(14px + var(--jh-safe-bottom));
+  transform: translate3d(-50%, 18px, 0) scale(0.94);
 }
 
 .jh-pull-indicator.visible {
@@ -530,40 +510,20 @@ html, body {
 .jh-pull-indicator.ready {
   background: linear-gradient(135deg, #065F46 0%, #047857 100%);
   border-color: #34D399;
-  box-shadow: 0 14px 36px rgba(5, 150, 105, 0.55), 0 0 0 4px rgba(52, 211, 153, 0.32);
+  box-shadow: 0 14px 36px rgba(5, 150, 105, 0.48), 0 0 0 3px rgba(52, 211, 153, 0.28);
 }
 
-.jh-pull-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+.jh-pull-row,
 #jhPullTopText,
-#jhPullBottomText {
+#jhPullBottomText,
+#jhPullTopArrow,
+#jhPullBottomArrow {
   display: none !important;
-}
-
-.jh-pull-arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(245, 158, 11, 0.24);
-  font-size: 1.02rem;
-  transition: transform 0.18s cubic-bezier(0.22, 1.35, 0.36, 1), background-color 0.18s ease;
-}
-
-.jh-pull-indicator.ready .jh-pull-arrow {
-  background: rgba(255, 255, 255, 0.26);
-  transform: scale(1.22) rotate(180deg);
 }
 
 .jh-pull-progress-track {
   width: 100%;
-  height: 5px;
+  height: 8px;
   background: rgba(255, 255, 255, 0.18);
   border-radius: 999px;
   overflow: hidden;
@@ -574,7 +534,7 @@ html, body {
   width: 0%;
   background: linear-gradient(90deg, #FBBF24 0%, #F59E0B 100%);
   border-radius: 999px;
-  transition: width 0.05s linear;
+  transition: width 0.06s linear;
 }
 
 .jh-pull-indicator.ready .jh-pull-progress-fill {
@@ -3952,12 +3912,10 @@ function hideJhPullIndicators() {
   if (topInd && topInd.classList) {
     topInd.classList.remove('visible');
     topInd.classList.remove('ready');
-    if (topInd.style) topInd.style.transform = '';
   }
   if (botInd && botInd.classList) {
     botInd.classList.remove('visible');
     botInd.classList.remove('ready');
-    if (botInd.style) botInd.style.transform = '';
   }
   const topFill = document.getElementById('jhPullTopFill');
   const botFill = document.getElementById('jhPullBottomFill');
@@ -3978,42 +3936,24 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
     jhPullThresholdReached = true;
     try {
       if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-        navigator.vibrate([18, 24, 12]);
+        navigator.vibrate(16);
       }
     } catch (e) {}
   } else if (!isReady && jhPullThresholdReached) {
     jhPullThresholdReached = false;
   }
 
+  const dampedPx = Math.min(92, Math.round(Math.pow(cleanPull, 0.8) * 1.35));
+  const scaleVal = (1 - progress * 0.025).toFixed(4);
   const slideEl = document.getElementById('jhSlide_' + jhCurrentIdx);
   if (slideEl && slideEl.style) {
-    if (slideEl.classList) {
-      slideEl.classList.remove('jh-pull-springback');
-      slideEl.classList.toggle('jh-sticky-tension', cleanPull > 6 && !isReady);
-      slideEl.classList.toggle('jh-sticky-broken', isReady);
-    }
-    if (!isReady) {
-      // Phase 1: Sticky Magnetic Resistance ("Stuck Until Breaking Point")
-      const stickyPx = Math.round(22 * (1 - Math.exp(-cleanPull / 42)));
-      const signedY = dir === 'next' ? -stickyPx : stickyPx;
-      const sx = (1 - progress * 0.012).toFixed(4);
-      const sy = (1 + progress * 0.022).toFixed(4);
-      slideEl.style.transformOrigin = dir === 'next' ? 'center bottom' : 'center top';
-      slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scaleX(${sx}) scaleY(${sy})`;
-    } else {
-      // Phase 2: Breaking Point Snap-Free (Page unsticks and detaches into floating card)
-      const overPull = Math.max(0, cleanPull - threshold);
-      const brokenPx = 56 + Math.min(48, Math.round(Math.pow(overPull, 0.72) * 1.6));
-      const signedY = dir === 'next' ? -brokenPx : brokenPx;
-      slideEl.style.transformOrigin = 'center center';
-      slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scale(0.935)`;
-    }
+    if (slideEl.classList) slideEl.classList.remove('jh-pull-springback');
+    const signedY = dir === 'next' ? -dampedPx : dampedPx;
+    slideEl.style.transform = `translate3d(0, ${signedY}px, 0) scale(${scaleVal})`;
   }
 
   const topInd = document.getElementById('jhPullIndicatorTop');
   const botInd = document.getElementById('jhPullIndicatorBottom');
-  const pillShift = Math.round(progress * 10);
-  const pillScale = (0.92 + progress * 0.14).toFixed(3);
   if (dir === 'next') {
     if (topInd && topInd.classList) {
       topInd.classList.remove('visible');
@@ -4022,14 +3962,9 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
     if (botInd && botInd.classList) {
       botInd.classList.toggle('visible', cleanPull > 8);
       botInd.classList.toggle('ready', isReady);
-      if (botInd.style) {
-        botInd.style.transform = `translate3d(-50%, -${pillShift}px, 0) scale(${pillScale})`;
-      }
     }
-    const botArrow = document.getElementById('jhPullBottomArrow');
     const botText = document.getElementById('jhPullBottomText');
     const botFill = document.getElementById('jhPullBottomFill');
-    if (botArrow) botArrow.textContent = isReady ? '⚡' : '⬆️';
     if (botText) botText.textContent = '';
     if (botFill && botFill.style) botFill.style.width = Math.round(progress * 100) + '%';
   } else if (dir === 'prev') {
@@ -4040,14 +3975,9 @@ function updateJhOverscrollPullUI(dir, rawPullPx) {
     if (topInd && topInd.classList) {
       topInd.classList.toggle('visible', cleanPull > 8);
       topInd.classList.toggle('ready', isReady);
-      if (topInd.style) {
-        topInd.style.transform = `translate3d(-50%, ${pillShift}px, 0) scale(${pillScale})`;
-      }
     }
-    const topArrow = document.getElementById('jhPullTopArrow');
     const topText = document.getElementById('jhPullTopText');
     const topFill = document.getElementById('jhPullTopFill');
-    if (topArrow) topArrow.textContent = isReady ? '⚡' : '⬇️';
     if (topText) topText.textContent = '';
     if (topFill && topFill.style) topFill.style.width = Math.round(progress * 100) + '%';
   }
@@ -4062,14 +3992,9 @@ function resetJhOverscrollPullUI(animateSpring) {
 
   const slideEl = document.getElementById('jhSlide_' + jhCurrentIdx);
   if (slideEl && slideEl.style) {
-    if (slideEl.classList) {
-      slideEl.classList.remove('jh-sticky-tension');
-      slideEl.classList.remove('jh-sticky-broken');
-      if (animateSpring) {
-        slideEl.classList.add('jh-pull-springback');
-      }
+    if (animateSpring && slideEl.classList) {
+      slideEl.classList.add('jh-pull-springback');
     }
-    slideEl.style.transformOrigin = '';
     slideEl.style.transform = '';
   }
 }

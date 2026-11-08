@@ -1269,8 +1269,7 @@ vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});
         self.assertIn('id="btnJhCategoryDropdown"', zb_html)
         self.assertIn('id="btnJhHeaderListen"', zb_html)
         self.assertIn('id="btnJhHeaderStop"', zb_html)
-        self.assertIn("jh-sticky-tension", zb_html)
-        self.assertIn("jh-sticky-broken", zb_html)
+        self.assertIn("jh-pull-progress-fill", zb_html)
         self.assertIn("jh-dbltap-voice-toast", zb_html)
         refresh_py = (APP_ROOT / "scripts" / "refresh_voices.py").read_text(encoding="utf-8")
         self.assertIn("en-gb-open-server-voicelm#star55", refresh_py)
@@ -1377,20 +1376,21 @@ const suite = code + `
   assert.strictEqual(el('btnJhHeaderStop').style.display, 'none');
   assert.strictEqual(jhActiveWordIdx, -1);
 
-  // Sticky Magnetic Detent ("stuck until breaking point") pull-to-turn + Double-tap content Play/Pause
+  // Elastic overscroll swipe page progress bar (no text) + 3D Curtain-Lift transition
   const beforeId = jhFilteredReels[jhCurrentIdx].id;
   const activeSlideEl = el('jhSlide_' + jhCurrentIdx);
   updateJhOverscrollPullUI('next', 60);
-  assert.strictEqual(activeSlideEl.classList.contains('jh-sticky-tension'), true, 'Pull below breaking point must hold page in jh-sticky-tension state');
-  assert.strictEqual(activeSlideEl.classList.contains('jh-sticky-broken'), false, 'Pull below breaking point must not break free');
-  assert.ok(activeSlideEl.style.transform.includes('scaleX(') && activeSlideEl.style.transform.includes('scaleY('), 'Stuck page must stretch elastically along pull axis');
-  assert.strictEqual(commitOrResetJhOverscrollPull(), false, 'Releasing before breaking point must spring back');
-  assert.strictEqual(activeSlideEl.classList.contains('jh-pull-springback'), true, 'Springback class applied when released before breaking point');
+  assert.strictEqual(el('jhPullIndicatorBottom').classList.contains('visible'), true, 'Pull below threshold must show progress bar');
+  assert.strictEqual(el('jhPullIndicatorBottom').classList.contains('ready'), false, 'Pull below threshold must not mark progress bar ready');
+  assert.strictEqual(el('jhPullBottomText').textContent, '', 'Progress bar indicator must have no text');
+  assert.ok(activeSlideEl.style.transform.includes('translate3d(0, -') && activeSlideEl.style.transform.includes('scale('), 'Page must translate and scale smoothly with pull');
+  assert.strictEqual(commitOrResetJhOverscrollPull(), false, 'Releasing before threshold must spring back');
+  assert.strictEqual(activeSlideEl.classList.contains('jh-pull-springback'), true, 'Springback class applied when released before threshold');
 
   el('jhReelsViewport').scrollTop = 300;
   updateJhOverscrollPullUI('next', 120);
-  assert.strictEqual(activeSlideEl.classList.contains('jh-sticky-broken'), true, 'Pull at/past breaking point must snap free with jh-sticky-broken class');
-  assert.strictEqual(activeSlideEl.classList.contains('jh-sticky-tension'), false);
+  assert.strictEqual(el('jhPullIndicatorBottom').classList.contains('ready'), true, 'Pull at/past threshold must mark progress bar ready');
+  assert.strictEqual(el('jhPullBottomFill').style.width, '100%');
   assert.strictEqual(commitOrResetJhOverscrollPull(), true);
   assert.notStrictEqual(jhFilteredReels[jhCurrentIdx].id, beforeId);
   assert.strictEqual(el('jhReelsViewport').scrollTop, 0);
