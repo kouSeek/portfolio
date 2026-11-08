@@ -1278,6 +1278,8 @@ const suite = code + `
   assert.strictEqual(commitOrResetJhOverscrollPull(), true, 'Releasing past threshold must commit next-page transition');
   assert.notStrictEqual(jhFilteredReels[jhCurrentIdx].id, beforePullId, 'Long bottom pull must advance to next page');
   assert.strictEqual(el('jhReelsViewport').scrollTop, 0, 'Advancing to next page must land at the top of the next page');
+  assert.strictEqual(el('jhReelsViewport').style.overflowY, 'hidden', 'Page turn must temporarily lock overflowY to hidden to kill inertial momentum carry-over');
+  assert.ok(jhPageTurnTopLockUntil > Date.now(), 'Page turn must set active top-lock timestamp window');
 
   el('jhReelsViewport').scrollTop = 240;
   updateJhOverscrollPullUI('prev', 105);
@@ -1285,6 +1287,7 @@ const suite = code + `
   assert.strictEqual(commitOrResetJhOverscrollPull(), true, 'Releasing top pull past threshold must return to previous page');
   assert.strictEqual(jhFilteredReels[jhCurrentIdx].id, beforePullId, 'Top pull must return to previous page');
   assert.strictEqual(el('jhReelsViewport').scrollTop, 0, 'Returning to previous page must land at the top of the previous page');
+  assert.strictEqual(el('jhReelsViewport').style.overflowY, 'hidden', 'Prev page turn must also lock overflowY to hidden');
   stopJhAudio();
 })();
 `;
@@ -1490,7 +1493,9 @@ const suite = code + `
   assert.strictEqual(el('jhPullBottomFill').style.width, '100%');
   assert.strictEqual(commitOrResetJhOverscrollPull(), true);
   assert.notStrictEqual(jhFilteredReels[jhCurrentIdx].id, beforeId);
-  assert.strictEqual(el('jhReelsViewport').scrollTop, 0);
+  assert.strictEqual(el('jhReelsViewport').scrollTop, 0, 'Advancing to next page must land at scrollTop 0 so header is clearly visible at the top');
+  assert.strictEqual(el('jhReelsViewport').style.overflowY, 'hidden', 'Page turn must temporarily lock overflowY to hidden to kill inertial momentum carry-over');
+  assert.ok(jhPageTurnTopLockUntil > Date.now(), 'Page turn must set active top-lock timestamp window');
 
   // Double-tap anywhere on content toggles Play -> Pause -> Resume, ignoring interactive buttons
   stopJhAudio();
