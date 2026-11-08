@@ -63,30 +63,15 @@ html, body {
 }
 
 /* ============================================================================
-   1. COMPACT TOP HEADER BAR: BRAND + CATEGORY DROPDOWN + LISTEN + SETTINGS
+   1. FLOATING SETTINGS BUTTON & IN-SETTINGS CATEGORY DROPDOWN (NO HEADER BAR)
    ============================================================================ */
-.jh-topbar {
-  position: relative;
+.jh-top-audio-progress {
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  width: 100%;
-  flex: 0 0 auto;
-  z-index: 200;
-  margin: 0;
-  background: rgba(24, 18, 14, 0.98);
-  border-bottom: 1px solid rgba(245, 158, 11, 0.28);
-  padding: calc(6px + var(--jh-safe-top)) 10px 6px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.jh-top-audio-progress {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
   height: 3px;
+  z-index: 98;
   background: transparent;
   overflow: hidden;
   pointer-events: none;
@@ -100,58 +85,37 @@ html, body {
   transition: width 0.12s linear;
 }
 
-.jh-topbar-row1 {
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  flex-wrap: nowrap;
-}
-
-.jh-brand-cluster {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  min-width: 0;
-  flex: 1 1 auto;
-  flex-wrap: nowrap;
-}
-
 .jh-brand-logo {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   line-height: 1;
-  padding: 2px 3px;
+  margin-right: 4px;
   user-select: none;
 }
 
 .jh-cat-dropdown-wrap {
   position: relative;
-  min-width: 0;
-  flex: 0 1 auto;
+  width: 100%;
 }
 
 .jh-cat-dropdown-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  max-width: 100%;
-  min-height: 34px;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
   background: var(--jh-gold);
   color: #1F1610;
   border: 1.5px solid #FDE68A;
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.84rem;
+  font-size: 0.94rem;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 999px;
+  padding: 10px 14px;
+  border-radius: 12px;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
@@ -159,14 +123,21 @@ html, body {
 }
 
 .jh-cat-dropdown-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.98);
 }
 
-.jh-topbar-actions {
-  display: inline-flex;
+.jh-settings-voice-row {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  flex: 0 0 auto;
+  gap: 8px;
+  width: 100%;
+}
+
+.jh-settings-voice-row .jh-top-listen-btn {
+  flex: 1 1 auto;
+  min-height: 42px;
+  border-radius: 12px;
+  font-size: 0.92rem;
 }
 
 .jh-top-listen-btn {
@@ -228,38 +199,45 @@ html, body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 1.5px solid var(--jh-border-gold);
-  background: rgba(43, 31, 23, 0.95);
+  background: rgba(24, 18, 14, 0.82);
   color: #FFFBEB;
-  font-size: 1rem;
+  font-size: 1.05rem;
   cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+}
+
+.jh-floating-gear-btn {
+  position: fixed;
+  top: calc(10px + var(--jh-safe-top));
+  right: 12px;
+  z-index: 95;
 }
 
 .jh-gear-btn:active {
   transform: scale(0.92);
 }
 
-/* Mobile-first fixed-centered dropdown sheet (NO COUNTS IN DROPDOWN) */
+/* In-Settings expandable category menu (NO COUNTS IN DROPDOWN) */
 .jh-cat-dropdown-menu {
   display: none;
-  position: fixed;
-  top: calc(48px + var(--jh-safe-top));
-  left: 8px;
-  right: 8px;
-  width: auto;
-  max-width: 420px;
-  max-height: calc(100dvh - 64px - var(--jh-safe-top));
+  position: relative;
+  width: 100%;
+  max-height: 46dvh;
   overflow-y: auto;
   background: var(--jh-surface-cream);
   color: var(--jh-ink-dark);
   border: 2px solid var(--jh-gold);
-  border-radius: 16px;
+  border-radius: 14px;
   padding: 10px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
-  z-index: 110;
+  margin-top: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  z-index: 10;
 }
 
 .jh-cat-dropdown-menu.open {
@@ -531,7 +509,7 @@ html, body {
 }
 
 .jh-pull-indicator-top {
-  top: calc(54px + var(--jh-safe-top));
+  top: calc(14px + var(--jh-safe-top));
   transform: translate3d(-50%, -18px, 0) scale(0.94);
 }
 
@@ -589,11 +567,11 @@ html, body {
   position: relative;
   width: 100%;
   max-width: 720px;
-  min-height: calc(100dvh - 46px - var(--jh-safe-top));
+  min-height: 100dvh;
   margin: 0 auto;
   background: var(--jh-surface-cream);
   color: var(--jh-ink-dark);
-  padding: 12px 14px calc(22px + var(--jh-safe-bottom));
+  padding: calc(14px + var(--jh-safe-top)) 14px calc(24px + var(--jh-safe-bottom));
   display: flex;
   flex-direction: column;
 }
@@ -623,6 +601,7 @@ html, body {
   color: #1F1610;
   line-height: 1.42;
   margin-bottom: 12px;
+  padding-right: 44px;
 }
 
 .jh-content-section {
@@ -1346,17 +1325,10 @@ html, body {
   color: var(--jh-ink-dark);
 }
 
-.jh-topbar {
-  position: relative;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  flex: 0 0 auto;
-  z-index: 200;
-  background: #0F172A;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.14);
+.jh-floating-gear-btn {
+  background: rgba(15, 23, 42, 0.88);
+  color: #F8FAFC;
+  border: 1.5px solid rgba(245, 158, 11, 0.55);
 }
 
 #btnJhHeaderStop {
@@ -1374,7 +1346,8 @@ html, body {
 }
 
 .jh-card-stage {
-  padding: 16px 16px calc(32px + var(--jh-safe-bottom));
+  min-height: 100dvh;
+  padding: calc(16px + var(--jh-safe-top)) 16px calc(32px + var(--jh-safe-bottom));
 }
 
 .jh-hook-title,
@@ -1390,6 +1363,7 @@ html, body {
   line-height: 1.44;
   letter-spacing: -0.01em;
   margin-bottom: 14px;
+  padding-right: 44px;
   transition: opacity 0.3s ease, background-color 0.25s ease;
 }
 
@@ -1697,37 +1671,13 @@ body.jh-audio-playing .jh-curiosity-box:not(.jh-block-active) {
 </head>
 <body>
 
-  <!-- TOP BAR: LOGO ICON + CATEGORY DROPDOWN + PLAY/PAUSE/RESUME/STOP + SETTINGS GEAR -->
-  <header class="jh-topbar" role="banner">
-    <div class="jh-topbar-row1">
-      <div class="jh-brand-cluster">
-        <span class="jh-brand-logo" aria-label="Zorba">⚡</span>
-
-        <!-- CATEGORY SELECTION DROPDOWN -->
-        <div id="jhCategoryDropdownWrap" class="jh-cat-dropdown-wrap">
-          <button id="btnJhCategoryDropdown" type="button" class="jh-cat-dropdown-btn" onclick="toggleJhCategoryDropdown(event)" aria-haspopup="listbox">
-            ✨ All ▾
-          </button>
-          <div id="jhCategoryDropdownMenu" class="jh-cat-dropdown-menu" role="listbox" aria-label="Select Category"></div>
-        </div>
-      </div>
-
-      <div class="jh-topbar-actions">
-        <button id="btnJhHeaderListen" type="button" class="jh-top-listen-btn" onclick="playReelAudioAtIndex()" aria-label="Listen">
-          🔊 Listen
-        </button>
-        <button id="btnJhHeaderStop" type="button" class="jh-top-stop-btn" onclick="stopJhAudio()" aria-label="Stop" title="Stop" style="display:none;">
-          ⏹️ Stop
-        </button>
-        <button id="btnJhSettings" type="button" class="jh-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="Settings" title="Settings">
-          ⚙️
-        </button>
-      </div>
-    </div>
-    <div class="jh-top-audio-progress" aria-hidden="true">
-      <div id="jhTopAudioProgressFill" class="jh-top-audio-progress-fill"></div>
-    </div>
-  </header>
+  <!-- FLOATING SETTINGS BUTTON & 2PX AUDIO PROGRESS LINE (NO HEADER BAR — ENTIRE SCREEN IS CONTENT) -->
+  <div class="jh-top-audio-progress" aria-hidden="true">
+    <div id="jhTopAudioProgressFill" class="jh-top-audio-progress-fill"></div>
+  </div>
+  <button id="btnJhSettings" type="button" class="jh-gear-btn jh-floating-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="Settings" title="Settings">
+    ⚙️
+  </button>
 
   <!-- ELASTIC PULL-TO-TURN INDICATORS (TOP = PREVIOUS PAGE, BOTTOM = NEXT PAGE) -->
   <div id="jhPullIndicatorTop" class="jh-pull-indicator jh-pull-indicator-top" aria-live="polite">
@@ -1753,15 +1703,32 @@ body.jh-audio-playing .jh-curiosity-box:not(.jh-block-active) {
     </div>
   </div>
 
-  <!-- SETTINGS & ADMIN DRAWER: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY, LIKE COUNT TOGGLE, LETTER, STATS & ADMIN DONE/LIKE EDITOR -->
+  <!-- SETTINGS & ADMIN DRAWER: CATEGORY SELECTION, VOICE CONTROLS, AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY, LIKE COUNT TOGGLE, LETTER, STATS & ADMIN DONE/LIKE EDITOR -->
   <div id="jhSettingsDrawer" class="jh-drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="jhSettingsDrawerTitle">
     <div class="jh-drawer-sheet">
       <div class="jh-drawer-head">
-        <h2 id="jhSettingsDrawerTitle" class="jh-drawer-title">⚙️ Settings & Admin Control</h2>
+        <h2 id="jhSettingsDrawerTitle" class="jh-drawer-title"><span class="jh-brand-logo" aria-label="Zorba">⚡</span> Settings &amp; Categories</h2>
         <button id="btnCloseSettingsDrawer" type="button" class="jh-drawer-close" onclick="closeJhalakSettingsDrawer()">✕ Close</button>
       </div>
 
       <div class="jh-settings-list">
+        <!-- CATEGORY SELECTION DROPDOWN (INSIDE SETTINGS) -->
+        <div id="jhCategoryDropdownWrap" class="jh-cat-dropdown-wrap">
+          <button id="btnJhCategoryDropdown" type="button" class="jh-cat-dropdown-btn" onclick="toggleJhCategoryDropdown(event)" aria-haspopup="listbox">
+            ✨ All ▾
+          </button>
+          <div id="jhCategoryDropdownMenu" class="jh-cat-dropdown-menu" role="listbox" aria-label="Select Category"></div>
+        </div>
+
+        <div class="jh-settings-voice-row">
+          <button id="btnJhHeaderListen" type="button" class="jh-top-listen-btn" onclick="playReelAudioAtIndex()" aria-label="Listen">
+            🔊 Listen
+          </button>
+          <button id="btnJhHeaderStop" type="button" class="jh-top-stop-btn" onclick="stopJhAudio()" aria-label="Stop" title="Stop" style="display:none;">
+            ⏹️ Stop
+          </button>
+        </div>
+
         <button id="btnJhAutoFlow" type="button" class="jh-settings-item-btn active-flow" onclick="toggleJhAutoFlow()">
           🔄 Auto-Reels (Next Page): ON
         </button>
@@ -2991,9 +2958,11 @@ function rebuildJhFilteredPool() {
 }
 
 rebuildJhFilteredPool();
-if (jhFilteredReels.length > 0 && jhFilteredReels[jhCurrentIdx]) {
-  jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
-  jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+if (jhFilteredReels.length > 0) {
+  jhCurrentIdx = Math.floor(Math.random() * jhFilteredReels.length);
+  const initId = jhFilteredReels[jhCurrentIdx].id;
+  jhVisitedIds = new Set([initId]);
+  jhHistoryStack = [initId];
   jhHistoryPos = 0;
 }
 
@@ -4271,6 +4240,7 @@ function filterJhalakChannel(channelId, ev) {
   if (!jhMultiSelectCategories) {
     jhSelectedChannels = new Set([ch]);
     closeJhCategoryDropdown();
+    closeJhalakSettingsDrawer();
   } else {
     if (ch === 'all') {
       jhSelectedChannels = new Set(['all']);
@@ -4344,6 +4314,7 @@ function stepJhalakReel(delta, autoPlayAfter) {
     }
   } else {
     jhLastSlideDir = 'next';
+    const prevCardId = jhFilteredReels[jhCurrentIdx] ? jhFilteredReels[jhCurrentIdx].id : '';
     if (jhFilteredReels[jhCurrentIdx]) {
       if (jhHistoryPos < 0 || !jhHistoryStack.length) {
         jhHistoryStack = [jhFilteredReels[jhCurrentIdx].id];
@@ -4356,7 +4327,15 @@ function stepJhalakReel(delta, autoPlayAfter) {
       jhHistoryPos += 1;
       const nextId = jhHistoryStack[jhHistoryPos];
       const foundIdx = jhFilteredReels.findIndex(r => r.id === nextId);
-      jhCurrentIdx = foundIdx >= 0 ? foundIdx : pickRandomNextReelIndex();
+      if (foundIdx >= 0 && nextId !== prevCardId) {
+        jhCurrentIdx = foundIdx;
+      } else {
+        jhCurrentIdx = pickRandomNextReelIndex();
+        if (jhFilteredReels[jhCurrentIdx]) {
+          jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+          jhHistoryStack[jhHistoryPos] = jhFilteredReels[jhCurrentIdx].id;
+        }
+      }
     } else {
       jhCurrentIdx = pickRandomNextReelIndex();
       if (jhFilteredReels[jhCurrentIdx]) {
@@ -5441,11 +5420,17 @@ async function requestScreenWakeLock() {
   if (typeof setTimeout === 'function') setTimeout(apply, 90);
 })();
 
+let jhBooted = false;
 window.addEventListener('DOMContentLoaded', () => {
+  if (jhBooted) return;
+  jhBooted = true;
   if (jhFilteredReels.length > 0) {
-    jhCurrentIdx = Math.floor(Math.random() * jhFilteredReels.length);
-    jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
-    jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+    if (jhCurrentIdx < 0 || jhCurrentIdx >= jhFilteredReels.length) {
+      jhCurrentIdx = Math.floor(Math.random() * jhFilteredReels.length);
+    }
+    const bootId = jhFilteredReels[jhCurrentIdx].id;
+    jhVisitedIds = new Set([bootId]);
+    jhHistoryStack = [bootId];
     jhHistoryPos = 0;
   }
   syncJhSettingsButtonsUI();

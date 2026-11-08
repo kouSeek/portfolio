@@ -991,8 +991,13 @@ vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
         self.assertIn("jh-md-em", jh_html)
         self.assertIn("jh-md-strong", jh_html)
         self.assertNotIn("activeEl.scrollIntoView", jh_html)
-        self.assertIn('<span class="jh-brand-logo" aria-label="ঝলক">✨</span>', jh_html)
-        self.assertNotIn('<span class="jh-brand-title">✨ ঝলক</span>', jh_html)
+        self.assertNotIn('<header class="jh-topbar">', jh_html)
+        self.assertIn("jh-floating-gear-btn", jh_html)
+        self.assertLess(
+            jh_html.index('id="jhSettingsDrawer"'),
+            jh_html.index('id="jhCategoryDropdownWrap"'),
+            "Category dropdown must live inside the Settings drawer so the entire screen is taken by content only",
+        )
         self.assertIn("jh-page-bottom-actions", jh_html)
         self.assertIn("jh-slide-anim-next", jh_html)
         self.assertIn("jh-slide-anim-prev", jh_html)
@@ -1092,6 +1097,8 @@ const suite = code + `
   // 4. No page counts on top dropdown button + randomized next page + history back navigation + slide animations
   renderJhalakReelStream();
   syncJhSettingsButtonsUI();
+  assert.strictEqual(jhHistoryStack.length, 1, 'Initial history stack must contain exactly 1 page so first page never repeats on first swipe');
+  assert.strictEqual(jhHistoryPos, 0, 'Initial history position must be 0');
   assert.strictEqual(getSelectedCategorySummaryLabel(), '✨ সব ▾', 'Top category dropdown must not show page count');
   assert.ok(!el('jhCategoryDropdownMenu').innerHTML.includes('jh-cat-count-pill'), 'Category dropdown menu options must not display item counts');
   assert.ok(el('jhReelsViewport').innerHTML.includes('jh-page-bottom-actions'), 'Done and Like buttons must sit at the bottom of each page content');
@@ -1303,7 +1310,13 @@ vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});
         self.assertIn("favicon-zorba.ico", zb_html)
         self.assertIn("navigator.serviceWorker.register('kalyani-sw.js')", zb_html)
         self.assertIn("navigator.wakeLock.request", zb_html)
-        self.assertIn('<span class="jh-brand-logo" aria-label="Zorba">⚡</span>', zb_html)
+        self.assertNotIn('<header class="jh-topbar">', zb_html)
+        self.assertIn("jh-floating-gear-btn", zb_html)
+        self.assertLess(
+            zb_html.index('id="jhSettingsDrawer"'),
+            zb_html.index('id="jhCategoryDropdownWrap"'),
+            "Category dropdown must live inside the Settings drawer so the entire screen is taken by content only",
+        )
         self.assertIn('id="btnJhCategoryDropdown"', zb_html)
         self.assertIn('id="btnJhHeaderListen"', zb_html)
         self.assertIn('id="btnJhHeaderStop"', zb_html)
@@ -1404,6 +1417,8 @@ const suite = code + `
 
   renderJhalakReelStream();
   syncJhSettingsButtonsUI();
+  assert.strictEqual(jhHistoryStack.length, 1, 'Initial history stack must contain exactly 1 page so first page never repeats on first swipe');
+  assert.strictEqual(jhHistoryPos, 0, 'Initial history position must be 0');
   assert.strictEqual(getSelectedCategorySummaryLabel(), '✨ All ▾');
   assert.ok(/<h2[^>]*class="jh-hook-title"><span class="jh-vibe-badge">/.test(el('jhReelsViewport').innerHTML), 'Inline category badge at start of h2');
   assert.ok(/<h3 class="jh-sec-heading">[^<]*<span id="jhWord_/.test(el('jhReelsViewport').innerHTML), 'Section headings must be wrapped in .jh-tts-word spans');

@@ -22,37 +22,13 @@
 </head>
 <body>
 
-  <!-- TOP BAR: BRAND + CATEGORY DROPDOWN + LISTEN BUTTON + SETTINGS GEAR -->
-  <header class="jh-topbar" role="banner">
-    <div class="jh-topbar-row1">
-      <div class="jh-brand-cluster">
-        <span class="jh-brand-logo" aria-label="ঝলক">✨</span>
-
-        <!-- CATEGORY SELECTION DROPDOWN -->
-        <div id="jhCategoryDropdownWrap" class="jh-cat-dropdown-wrap">
-          <button id="btnJhCategoryDropdown" type="button" class="jh-cat-dropdown-btn" onclick="toggleJhCategoryDropdown(event)" aria-haspopup="listbox">
-            ✨ সব ▾
-          </button>
-          <div id="jhCategoryDropdownMenu" class="jh-cat-dropdown-menu" role="listbox" aria-label="বিভাগ নির্বাচন"></div>
-        </div>
-      </div>
-
-      <div class="jh-topbar-actions">
-        <button id="btnJhHeaderListen" type="button" class="jh-top-listen-btn" onclick="playReelAudioAtIndex()" aria-label="শোনো">
-          🔊 শোনো
-        </button>
-        <button id="btnJhHeaderStop" type="button" class="jh-top-stop-btn" onclick="stopJhAudio()" aria-label="বন্ধ করো" title="বন্ধ করো" style="display:none;">
-          ⏹️ বন্ধ
-        </button>
-        <button id="btnJhSettings" type="button" class="jh-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="সেটিংস" title="সেটিংস">
-          ⚙️
-        </button>
-      </div>
-    </div>
-    <div class="jh-top-audio-progress" aria-hidden="true">
-      <div id="jhTopAudioProgressFill" class="jh-top-audio-progress-fill"></div>
-    </div>
-  </header>
+  <!-- FLOATING SETTINGS BUTTON & 2PX AUDIO PROGRESS LINE (NO HEADER BAR — ENTIRE SCREEN IS CONTENT) -->
+  <div class="jh-top-audio-progress" aria-hidden="true">
+    <div id="jhTopAudioProgressFill" class="jh-top-audio-progress-fill"></div>
+  </div>
+  <button id="btnJhSettings" type="button" class="jh-gear-btn jh-floating-gear-btn" onclick="openJhalakSettingsDrawer()" aria-label="সেটিংস" title="সেটিংস">
+    ⚙️
+  </button>
 
   <!-- ELASTIC PULL-TO-TURN INDICATORS (TOP = PREVIOUS PAGE, BOTTOM = NEXT PAGE) -->
   <div id="jhPullIndicatorTop" class="jh-pull-indicator jh-pull-indicator-top" aria-live="polite">
@@ -78,15 +54,32 @@
     </div>
   </div>
 
-  <!-- SETTINGS & ADMIN DRAWER: AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY, LIKE COUNT TOGGLE, CHITHI, STATS & ADMIN DONE/LIKE EDITOR -->
+  <!-- SETTINGS & ADMIN DRAWER: CATEGORY SELECTION, VOICE CONTROLS, AUTO-REELS, AUTO-VOICE, SINGLE/MULTI CATEGORY, LIKE COUNT TOGGLE, CHITHI, STATS & ADMIN DONE/LIKE EDITOR -->
   <div id="jhSettingsDrawer" class="jh-drawer-backdrop" role="dialog" aria-modal="true" aria-labelledby="jhSettingsDrawerTitle">
     <div class="jh-drawer-sheet">
       <div class="jh-drawer-head">
-        <h2 id="jhSettingsDrawerTitle" class="jh-drawer-title">⚙️ সেটিংস ও অ্যাডমিন কন্ট্রোল</h2>
+        <h2 id="jhSettingsDrawerTitle" class="jh-drawer-title"><span class="jh-brand-logo" aria-label="ঝলক">✨</span> সেটিংস ও বিভাগ নির্বাচন</h2>
         <button id="btnCloseSettingsDrawer" type="button" class="jh-drawer-close" onclick="closeJhalakSettingsDrawer()">✕ বন্ধ করো</button>
       </div>
 
       <div class="jh-settings-list">
+        <!-- CATEGORY SELECTION DROPDOWN (INSIDE SETTINGS) -->
+        <div id="jhCategoryDropdownWrap" class="jh-cat-dropdown-wrap">
+          <button id="btnJhCategoryDropdown" type="button" class="jh-cat-dropdown-btn" onclick="toggleJhCategoryDropdown(event)" aria-haspopup="listbox">
+            ✨ সব ▾
+          </button>
+          <div id="jhCategoryDropdownMenu" class="jh-cat-dropdown-menu" role="listbox" aria-label="বিভাগ নির্বাচন"></div>
+        </div>
+
+        <div class="jh-settings-voice-row">
+          <button id="btnJhHeaderListen" type="button" class="jh-top-listen-btn" onclick="playReelAudioAtIndex()" aria-label="শোনো">
+            🔊 শোনো
+          </button>
+          <button id="btnJhHeaderStop" type="button" class="jh-top-stop-btn" onclick="stopJhAudio()" aria-label="বন্ধ করো" title="বন্ধ করো" style="display:none;">
+            ⏹️ বন্ধ
+          </button>
+        </div>
+
         <button id="btnJhAutoFlow" type="button" class="jh-settings-item-btn active-flow" onclick="toggleJhAutoFlow()">
           🔄 অটো-রিলস (পরের পাতা): চালু
         </button>

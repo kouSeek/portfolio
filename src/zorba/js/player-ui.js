@@ -114,9 +114,11 @@ function rebuildJhFilteredPool() {
 }
 
 rebuildJhFilteredPool();
-if (jhFilteredReels.length > 0 && jhFilteredReels[jhCurrentIdx]) {
-  jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
-  jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+if (jhFilteredReels.length > 0) {
+  jhCurrentIdx = Math.floor(Math.random() * jhFilteredReels.length);
+  const initId = jhFilteredReels[jhCurrentIdx].id;
+  jhVisitedIds = new Set([initId]);
+  jhHistoryStack = [initId];
   jhHistoryPos = 0;
 }
 
@@ -1394,6 +1396,7 @@ function filterJhalakChannel(channelId, ev) {
   if (!jhMultiSelectCategories) {
     jhSelectedChannels = new Set([ch]);
     closeJhCategoryDropdown();
+    closeJhalakSettingsDrawer();
   } else {
     if (ch === 'all') {
       jhSelectedChannels = new Set(['all']);
@@ -1467,6 +1470,7 @@ function stepJhalakReel(delta, autoPlayAfter) {
     }
   } else {
     jhLastSlideDir = 'next';
+    const prevCardId = jhFilteredReels[jhCurrentIdx] ? jhFilteredReels[jhCurrentIdx].id : '';
     if (jhFilteredReels[jhCurrentIdx]) {
       if (jhHistoryPos < 0 || !jhHistoryStack.length) {
         jhHistoryStack = [jhFilteredReels[jhCurrentIdx].id];
@@ -1479,7 +1483,15 @@ function stepJhalakReel(delta, autoPlayAfter) {
       jhHistoryPos += 1;
       const nextId = jhHistoryStack[jhHistoryPos];
       const foundIdx = jhFilteredReels.findIndex(r => r.id === nextId);
-      jhCurrentIdx = foundIdx >= 0 ? foundIdx : pickRandomNextReelIndex();
+      if (foundIdx >= 0 && nextId !== prevCardId) {
+        jhCurrentIdx = foundIdx;
+      } else {
+        jhCurrentIdx = pickRandomNextReelIndex();
+        if (jhFilteredReels[jhCurrentIdx]) {
+          jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
+          jhHistoryStack[jhHistoryPos] = jhFilteredReels[jhCurrentIdx].id;
+        }
+      }
     } else {
       jhCurrentIdx = pickRandomNextReelIndex();
       if (jhFilteredReels[jhCurrentIdx]) {
@@ -2564,11 +2576,17 @@ async function requestScreenWakeLock() {
   if (typeof setTimeout === 'function') setTimeout(apply, 90);
 })();
 
+let jhBooted = false;
 window.addEventListener('DOMContentLoaded', () => {
+  if (jhBooted) return;
+  jhBooted = true;
   if (jhFilteredReels.length > 0) {
-    jhCurrentIdx = Math.floor(Math.random() * jhFilteredReels.length);
-    jhVisitedIds.add(jhFilteredReels[jhCurrentIdx].id);
-    jhHistoryStack.push(jhFilteredReels[jhCurrentIdx].id);
+    if (jhCurrentIdx < 0 || jhCurrentIdx >= jhFilteredReels.length) {
+      jhCurrentIdx = Math.floor(Math.random() * jhFilteredReels.length);
+    }
+    const bootId = jhFilteredReels[jhCurrentIdx].id;
+    jhVisitedIds = new Set([bootId]);
+    jhHistoryStack = [bootId];
     jhHistoryPos = 0;
   }
   syncJhSettingsButtonsUI();

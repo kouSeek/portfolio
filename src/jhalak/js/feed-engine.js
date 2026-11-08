@@ -486,8 +486,7 @@ function buildAllJhalakReels() {
           title_bn: '🎵 ' + sInfo.song_name + ' — গানের গল্প ও গভীর অর্থ',
           sections: [
             { heading_bn: '🎼 গানের আসল কথা ও নেপথ্যের ইতিহাস', body_bn: sInfo.story_bn, tone: 'story' },
-            { heading_bn: '🌺 গানের কথার অপূর্ব অর্থ ও ভাবার্থ', body_bn: sInfo.meaning_bn, tone: 'hitch' },
-            { heading_bn: '💡 গানের আসল অর্থ বোঝার সঠিক প্রশ্ন', body_bn: sInfo.hook_q_bn + '\n\n' + sInfo.hook_a_bn, tone: 'extra' }
+            { heading_bn: '🌺 গানের কথার অপূর্ব অর্থ ও ভাবার্থ', body_bn: sInfo.meaning_bn, tone: 'hitch' }
           ],
           hitch_label_bn: '💡 গানের অর্থ বোঝার সঠিক প্রশ্ন',
           hitch_bn: sInfo.hook_q_bn,

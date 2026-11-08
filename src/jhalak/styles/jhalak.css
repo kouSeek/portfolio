@@ -44,30 +44,15 @@ html, body {
 }
 
 /* ============================================================================
-   1. COMPACT TOP HEADER BAR: BRAND + CATEGORY DROPDOWN + LISTEN + SETTINGS
+   1. FLOATING SETTINGS BUTTON & IN-SETTINGS CATEGORY DROPDOWN (NO HEADER BAR)
    ============================================================================ */
-.jh-topbar {
-  position: relative;
+.jh-top-audio-progress {
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  width: 100%;
-  flex: 0 0 auto;
-  z-index: 200;
-  margin: 0;
-  background: rgba(24, 18, 14, 0.98);
-  border-bottom: 1px solid rgba(245, 158, 11, 0.28);
-  padding: calc(6px + var(--jh-safe-top)) 10px 6px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.jh-top-audio-progress {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
   height: 3px;
+  z-index: 98;
   background: transparent;
   overflow: hidden;
   pointer-events: none;
@@ -81,58 +66,37 @@ html, body {
   transition: width 0.12s linear;
 }
 
-.jh-topbar-row1 {
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  flex-wrap: nowrap;
-}
-
-.jh-brand-cluster {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  min-width: 0;
-  flex: 1 1 auto;
-  flex-wrap: nowrap;
-}
-
 .jh-brand-logo {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   line-height: 1;
-  padding: 2px 3px;
+  margin-right: 4px;
   user-select: none;
 }
 
 .jh-cat-dropdown-wrap {
   position: relative;
-  min-width: 0;
-  flex: 0 1 auto;
+  width: 100%;
 }
 
 .jh-cat-dropdown-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  max-width: 100%;
-  min-height: 34px;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
   background: var(--jh-gold);
   color: #1F1610;
   border: 1.5px solid #FDE68A;
   font-family: 'Noto Sans Bengali', sans-serif;
-  font-size: 0.84rem;
+  font-size: 0.94rem;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 999px;
+  padding: 10px 14px;
+  border-radius: 12px;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
@@ -140,14 +104,21 @@ html, body {
 }
 
 .jh-cat-dropdown-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.98);
 }
 
-.jh-topbar-actions {
-  display: inline-flex;
+.jh-settings-voice-row {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  flex: 0 0 auto;
+  gap: 8px;
+  width: 100%;
+}
+
+.jh-settings-voice-row .jh-top-listen-btn {
+  flex: 1 1 auto;
+  min-height: 42px;
+  border-radius: 12px;
+  font-size: 0.92rem;
 }
 
 .jh-top-listen-btn {
@@ -209,38 +180,45 @@ html, body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 1.5px solid var(--jh-border-gold);
-  background: rgba(43, 31, 23, 0.95);
+  background: rgba(24, 18, 14, 0.82);
   color: #FFFBEB;
-  font-size: 1rem;
+  font-size: 1.05rem;
   cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+}
+
+.jh-floating-gear-btn {
+  position: fixed;
+  top: calc(10px + var(--jh-safe-top));
+  right: 12px;
+  z-index: 95;
 }
 
 .jh-gear-btn:active {
   transform: scale(0.92);
 }
 
-/* Mobile-first fixed-centered dropdown sheet (NO COUNTS IN DROPDOWN) */
+/* In-Settings expandable category menu (NO COUNTS IN DROPDOWN) */
 .jh-cat-dropdown-menu {
   display: none;
-  position: fixed;
-  top: calc(48px + var(--jh-safe-top));
-  left: 8px;
-  right: 8px;
-  width: auto;
-  max-width: 420px;
-  max-height: calc(100dvh - 64px - var(--jh-safe-top));
+  position: relative;
+  width: 100%;
+  max-height: 46dvh;
   overflow-y: auto;
   background: var(--jh-surface-cream);
   color: var(--jh-ink-dark);
   border: 2px solid var(--jh-gold);
-  border-radius: 16px;
+  border-radius: 14px;
   padding: 10px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
-  z-index: 110;
+  margin-top: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  z-index: 10;
 }
 
 .jh-cat-dropdown-menu.open {
@@ -512,7 +490,7 @@ html, body {
 }
 
 .jh-pull-indicator-top {
-  top: calc(54px + var(--jh-safe-top));
+  top: calc(14px + var(--jh-safe-top));
   transform: translate3d(-50%, -18px, 0) scale(0.94);
 }
 
@@ -570,11 +548,11 @@ html, body {
   position: relative;
   width: 100%;
   max-width: 720px;
-  min-height: calc(100dvh - 46px - var(--jh-safe-top));
+  min-height: 100dvh;
   margin: 0 auto;
   background: var(--jh-surface-cream);
   color: var(--jh-ink-dark);
-  padding: 12px 14px calc(22px + var(--jh-safe-bottom));
+  padding: calc(14px + var(--jh-safe-top)) 14px calc(24px + var(--jh-safe-bottom));
   display: flex;
   flex-direction: column;
 }
@@ -604,6 +582,7 @@ html, body {
   color: #1F1610;
   line-height: 1.42;
   margin-bottom: 12px;
+  padding-right: 44px;
 }
 
 .jh-content-section {
