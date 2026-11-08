@@ -22,7 +22,7 @@ let jhSlideLetterIdx = 0;
 let jhRevealedMap = {};
 let jhLikesMap = {};
 let jhDoneMap = {};
-let jhAdminFilterCat = 'gods';
+let jhAdminFilterCat = (typeof JHALAK_CATEGORIES !== 'undefined' && JHALAK_CATEGORIES.length > 1) ? JHALAK_CATEGORIES[1].id : 'songs_bn';
 let jhAdminSelectedItemId = '';
 let jhOutgoingCardHtml = '';
 let jhCurrentWordTimings = [];
@@ -55,6 +55,10 @@ let jhLastTapTimeMs = 0;
 let jhLastTapX = 0;
 let jhLastTapY = 0;
 let jhLastDoubleTapToggleMs = 0;
+let jhInitialRenderDone = false;
+let jhLastAutoScrollMs = 0;
+let jhLastUserScrollInteractionMs = 0;
+let jhPendingAutoPlayUnlock = false;
 
 const JH_NEXT_PULL_THRESHOLD = 105;
 const JH_PREV_PULL_THRESHOLD = 90;
@@ -386,6 +390,82 @@ function renderJhLatexInnerHtml(latex) {
   return s;
 }
 
+function humanizeLatexForJhSpeech(expr) {
+  let s = String(expr || '').trim();
+  if (!s) return '';
+  const unitMap = {
+    ms: 'milliseconds',
+    s: 'seconds',
+    Hz: 'Hertz',
+    kHz: 'kilohertz',
+    MHz: 'megahertz',
+    GHz: 'gigahertz',
+    dB: 'decibels',
+    Re: 'the real part of'
+  };
+  s = s.replace(/\\(?:left|right)\b/g, '');
+  s = s.replace(/\\\$|%%JHDL%%/g, '%%JHDL%%');
+  s = s.replace(/\\mathbb\s*\{([^{}]+)\}/g, '$1');
+  s = s.replace(/\\text\s*\{([^}]*)\}/g, (_, u) => ' ' + (unitMap[u.trim()] || u.trim()) + ' ');
+  s = s.replace(/%%JHDL%%(\d+(?:,\d{3})*(?:\.\d+)?)/g, (_, num) => {
+    const clean = num.replace(/,/g, '');
+    if (clean.startsWith('0.') && clean.length === 4) {
+      return ' ' + Math.round(parseFloat(clean) * 100) + ' cents ';
+    }
+    return ' ' + num + ' dollars ';
+  });
+  s = s.replace(/(dollars|cents)\s*\/\s*(night|day|month|year|hour)\b/g, '$1 per $2');
+  s = s.replace(/\\log_2\b/g, ' log base 2 of ');
+  s = s.replace(/\\ln\b/g, ' natural log of ');
+  const greekSpoken = [
+    ['\\theta', ' theta '], ['\\omega', ' omega '], ['\\lambda', ' lambda '],
+    ['\\mu', ' mu '], ['\\nu', ' nu '], ['\\pi', ' pi '], ['\\sigma', ' sigma '],
+    ['\\tau', ' tau '], ['\\alpha', ' alpha '], ['\\beta', ' beta '],
+    ['\\gamma', ' gamma '], ['\\delta', ' delta '], ['\\Delta', ' delta '],
+    ['\\epsilon', ' epsilon '], ['\\varepsilon', ' epsilon '], ['\\phi', ' phi '],
+    ['\\Phi', ' Phi '], ['\\psi', ' psi '], ['\\Psi', ' Psi '], ['\\rho', ' rho '],
+    ['\\eta', ' eta '], ['\\kappa', ' kappa '], ['\\chi', ' chi '], ['\\xi', ' xi '],
+    ['\\zeta', ' zeta '], ['\\Omega', ' Omega '], ['\\Sigma', ' Sigma ']
+  ];
+  for (let i = 0; i < greekSpoken.length; i++) {
+    s = s.split(greekSpoken[i][0]).join(greekSpoken[i][1]);
+  }
+  s = s.replace(/\^\s*\{\\circ\}|\^\s*\\circ|°/g, ' degrees ');
+  s = s.replace(/\^\s*\{2\}|\^\s*2\b/g, ' squared ');
+  s = s.replace(/\^\s*\{3\}|\^\s*3\b/g, ' cubed ');
+  s = s.replace(/\^\s*\{-1\}|\^\s*-1\b/g, ' inverse ');
+  s = s.replace(/\^\s*\{([^{}]+)\}/g, ' to the $1 ');
+  s = s.replace(/\^\s*([A-Za-z0-9+\-]+)/g, ' to the $1 ');
+  s = s.replace(/_\s*\{([^{}]+)\}/g, ' $1 ');
+  s = s.replace(/_\s*([A-Za-z0-9]+)/g, ' $1 ');
+  for (let pass = 0; pass < 2; pass++) {
+    s = s.replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, ' $1 over $2 ');
+    s = s.replace(/\\sqrt\s*\{([^{}]+)\}/g, ' the square root of $1 ');
+  }
+  s = s.replace(/\\exp\s*\(([^()]+)\)/g, ' e to the $1 ');
+  s = s
+    .replace(/\\infty/g, ' infinity ')
+    .replace(/\\times/g, ' times ')
+    .replace(/\\cdot/g, ' dot ')
+    .replace(/\\leftrightarrow/g, ' corresponds to ')
+    .replace(/\\rightarrow|\\to/g, ' approaches ')
+    .replace(/\\geq|\\ge/g, ' is greater than or equal to ')
+    .replace(/\\leq|\\le/g, ' is less than or equal to ')
+    .replace(/\\neq|\\ne/g, ' is not equal to ')
+    .replace(/\\approx/g, ' is approximately ')
+    .replace(/\\propto/g, ' is proportional to ')
+    .replace(/\\%/g, ' percent ')
+    .replace(/[\\{}]/g, ' ');
+  return s.replace(/\s+/g, ' ').trim();
+}
+
+function humanizeInlineCodeForJhSpeech(code) {
+  let c = String(code || '').trim();
+  c = c.replace(/^#+\s*/, '').replace(/_/g, ' ');
+  c = c.replace(/\.py\b/g, ' dot py').replace(/\.json\b/g, ' dot JSON').replace(/\.md\b/g, ' dot M D').replace(/\.js\b/g, ' dot J S');
+  return c;
+}
+
 function preprocessJhMarkdownAndMath(rawText) {
   let s = String(rawText || '');
   const atoms = [];
@@ -401,19 +481,19 @@ function preprocessJhMarkdownAndMath(rawText) {
   });
 
   s = s.replace(/`([^`\n]+)`/g, (_, code) => {
-    return pushAtom('<code class="jh-inline-code">' + escapeJhHtml(code.trim()) + '</code>', code.trim());
+    return pushAtom('<code class="jh-inline-code">' + escapeJhHtml(code.trim()) + '</code>', humanizeInlineCodeForJhSpeech(code));
   });
 
   s = s.replace(/\\\$/g, '%%JHDL%%');
   s = s.replace(/\$(\d+(?:,\d{3})*(?:\.\d+)?)(?=\s|[.,;!?)]|$)(?![^$\n]*[\\^_{}=<>/:])/g, '%%JHDLR%%$1');
   s = s.replace(/\$([^$\n]+)\$/g, (_, expr) => {
-    return pushAtom('<span class="jh-math-inline">' + renderJhLatexInnerHtml(expr) + '</span>', expr);
+    return pushAtom('<span class="jh-math-inline">' + renderJhLatexInnerHtml(expr) + '</span>', humanizeLatexForJhSpeech(expr));
   });
   s = s.replace(/%%JHDL%%/g, '$');
   s = s.replace(/%%JHDLR%%/g, '$');
 
-  s = s.replace(/<->|↔/g, () => pushAtom('<span class="jh-md-arrow">↔</span>', 'and'));
-  s = s.replace(/->|→|=>|⇒/g, () => pushAtom('<span class="jh-md-arrow">→</span>', 'to'));
+  s = s.replace(/<->|↔/g, () => pushAtom('<span class="jh-md-arrow">↔</span>', 'এবং'));
+  s = s.replace(/->|→|=>|⇒/g, () => pushAtom('<span class="jh-md-arrow">→</span>', 'থেকে'));
 
   s = s.replace(/\*\*([^*\n]+)\*\*/g, (_, inner) => {
     return inner.split(/(\s+)/).map(tok => (/^\s+$/.test(tok) || !tok) ? tok : ('%%JHBOLD%%' + tok)).join('');
@@ -460,10 +540,42 @@ function renderJhTokenHtml(token, atoms) {
   return out;
 }
 
-function wrapTextWithJhTtsWords(text, state, opts) {
-  const raw = String(text || '');
-  if (!raw) return '';
-  const { text: processedText, atoms } = preprocessJhMarkdownAndMath(raw);
+function computeJhTokenTimingWeights(rawToken, nextRawToken, atoms, isTitleOrHeading, isHeadingEnd) {
+  const cleanRaw = String(rawToken || '').replace(/%%JHBOLD%%/g, '').replace(/%%JHEM%%/g, '');
+  const cleanNext = String(nextRawToken || '').replace(/%%JHBOLD%%/g, '').replace(/%%JHEM%%/g, '');
+  if (!/%%JHATOM\d+%%/.test(cleanRaw)) {
+    return computeCalibratedWordTimingWeights(cleanRaw, cleanNext, isTitleOrHeading, isHeadingEnd);
+  }
+  const expanded = expandJhTokenForSpeech(cleanRaw, atoms);
+  const nextExpanded = expandJhTokenForSpeech(cleanNext, atoms);
+  const subWords = expanded.split(/\s+/).filter(Boolean);
+  if (subWords.length <= 1) {
+    const singleRes = computeCalibratedWordTimingWeights(expanded || cleanRaw, nextExpanded, isTitleOrHeading, isHeadingEnd);
+    const tailSingle = computeCalibratedWordTimingWeights(cleanRaw, nextExpanded, isTitleOrHeading, isHeadingEnd);
+    return {
+      syllableWeight: singleRes.syllableWeight,
+      pauseTier: Math.max(singleRes.pauseTier, tailSingle.pauseTier),
+      pauseWeight: Math.max(singleRes.pauseWeight, tailSingle.pauseWeight)
+    };
+  }
+  let totalSyllableWeight = 0;
+  for (let i = 0; i < subWords.length; i++) {
+    const sw = subWords[i];
+    const nw = (i + 1 < subWords.length) ? subWords[i + 1] : nextExpanded;
+    const wRes = computeCalibratedWordTimingWeights(sw, nw, isTitleOrHeading, false);
+    totalSyllableWeight += wRes.syllableWeight;
+  }
+  const tailRes = computeCalibratedWordTimingWeights(cleanRaw, nextExpanded, isTitleOrHeading, isHeadingEnd);
+  return {
+    syllableWeight: totalSyllableWeight,
+    pauseTier: tailRes.pauseTier,
+    pauseWeight: tailRes.pauseWeight
+  };
+}
+
+function wrapSingleBlockWithJhTtsWords(rawBlock, state, opts, isListItem, listBulletHtml) {
+  const { text: processedText, atoms } = preprocessJhMarkdownAndMath(rawBlock);
+  if (!processedText) return '';
   const parts = processedText.split(/(\s+)/);
   const spokenPartIndices = [];
   for (let i = 0; i < parts.length; i++) {
@@ -476,24 +588,35 @@ function wrapTextWithJhTtsWords(text, state, opts) {
   const blockId = (opts && opts.blockId) || '';
   const inCuriosityA = Boolean(opts && opts.inCuriosityA);
   const addHeadingPause = Boolean(opts && opts.addHeadingPause);
+  const chunkSentences = Boolean(opts && opts.chunkSentences);
+  if (state.sentCounter === undefined) state.sentCounter = 0;
 
   let spokenCursor = 0;
-  return parts.map((part, pIdx) => {
+  const sentences = [];
+  let curSentTokens = listBulletHtml ? [listBulletHtml] : [];
+  let curSentPlainLen = 0;
+  let curSentId = prefix + 'Sent_' + state.sentCounter;
+
+  for (let pIdx = 0; pIdx < parts.length; pIdx++) {
+    const part = parts[pIdx];
     const spokenForm = expandJhTokenForSpeech(part, atoms);
     if (!isSpokenWordToken(spokenForm)) {
-      return /^\s+$/.test(part) ? part : renderJhTokenHtml(part, atoms);
+      curSentTokens.push(/^\s+$/.test(part) ? part : renderJhTokenHtml(part, atoms));
+      curSentPlainLen += part.length;
+      continue;
     }
 
     const nextSpokenIdx = (spokenCursor + 1 < spokenPartIndices.length)
       ? spokenPartIndices[spokenCursor + 1]
       : -1;
-    const nextSpokenWord = nextSpokenIdx >= 0 ? expandJhTokenForSpeech(parts[nextSpokenIdx], atoms) : '';
+    const nextSpokenWord = nextSpokenIdx >= 0 ? parts[nextSpokenIdx] : '';
     spokenCursor += 1;
 
     const isHeadingEnd = addHeadingPause && pIdx === lastSpokenPartIdx;
-    const { syllableWeight, pauseTier, pauseWeight } = computeCalibratedWordTimingWeights(
-      spokenForm,
+    const { syllableWeight, pauseTier, pauseWeight } = computeJhTokenTimingWeights(
+      part,
       nextSpokenWord,
+      atoms,
       addHeadingPause,
       isHeadingEnd
     );
@@ -517,13 +640,108 @@ function wrapTextWithJhTtsWords(text, state, opts) {
       startSec: 0,
       endSec: 0,
       blockId: blockId,
+      sentId: chunkSentences ? curSentId : '',
       inCuriosityA: inCuriosityA
     });
 
     const curAttr = inCuriosityA ? ' data-curiosity-a="1"' : '';
     const renderedToken = renderJhTokenHtml(part, atoms);
-    return `<span id="${prefix}_${wIdx}" class="jh-tts-word" data-widx="${wIdx}"${curAttr}>${renderedToken}</span>`;
-  }).join('');
+    const wordSpan = `<span id="${prefix}_${wIdx}" class="jh-tts-word" data-widx="${wIdx}"${curAttr}>${renderedToken}</span>`;
+    curSentTokens.push(wordSpan);
+    curSentPlainLen += spokenForm.length;
+
+    const cleanTrimmed = part.replace(/%%JHBOLD%%/g, '').replace(/%%JHEM%%/g, '').trim();
+    const isSentenceBoundary = pauseTier === 3 && !/^[\d\u09E6-\u09EF]+\.$/.test(cleanTrimmed);
+    if (chunkSentences && isSentenceBoundary) {
+      sentences.push({
+        id: curSentId,
+        html: curSentTokens.join('').trim(),
+        len: curSentPlainLen
+      });
+      state.sentCounter += 1;
+      curSentId = prefix + 'Sent_' + state.sentCounter;
+      curSentTokens = [];
+      curSentPlainLen = 0;
+    }
+  }
+
+  if (!chunkSentences) {
+    return curSentTokens.join('');
+  }
+
+  if (curSentTokens.length > 0 && curSentTokens.join('').trim()) {
+    sentences.push({
+      id: curSentId,
+      html: curSentTokens.join('').trim(),
+      len: curSentPlainLen
+    });
+    state.sentCounter += 1;
+  }
+
+  if (!sentences.length) return '';
+
+  if (isListItem) {
+    const joinedSents = sentences
+      .map(s => `<span id="${s.id}" class="jh-tts-sentence">${s.html}</span>`)
+      .join(' ');
+    return `<div class="jh-sec-para jh-sec-list-item">${joinedSents}</div>`;
+  }
+
+  const paraGroups = [];
+  let currentGroup = [];
+  let currentGroupLen = 0;
+  for (let i = 0; i < sentences.length; i++) {
+    const s = sentences[i];
+    const wrappedSent = `<span id="${s.id}" class="jh-tts-sentence">${s.html}</span>`;
+    currentGroup.push(wrappedSent);
+    currentGroupLen += s.len;
+    if (currentGroupLen >= 110 || currentGroup.length >= 2 || i === sentences.length - 1) {
+      paraGroups.push(`<p class="jh-sec-para">${currentGroup.join(' ')}</p>`);
+      currentGroup = [];
+      currentGroupLen = 0;
+    }
+  }
+  return paraGroups.join('');
+}
+
+function renderJhInlineStaticHtml(rawText) {
+  const { text, atoms } = preprocessJhMarkdownAndMath(rawText);
+  return text
+    .split(/(\s+)/)
+    .map(p => (/^\s+$/.test(p) ? p : renderJhTokenHtml(p, atoms)))
+    .join('');
+}
+
+function formatJhPlainTitle(rawText) {
+  return renderJhInlineStaticHtml(rawText)
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+}
+
+function wrapTextWithJhTtsWords(text, state, opts) {
+  const raw = String(text || '');
+  if (!raw) return '';
+  const chunkSentences = Boolean(opts && opts.chunkSentences);
+  if (chunkSentences) {
+    const lines = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
+    return lines.map(line => {
+      if (/^[-•]\s+/.test(line)) {
+        const stripped = line.replace(/^[-•]\s+/, '');
+        return wrapSingleBlockWithJhTtsWords(
+          stripped,
+          state,
+          opts,
+          true,
+          '<span class="jh-list-bullet" aria-hidden="true">•</span> '
+        );
+      }
+      const isNumItem = /^[\d\u09E6-\u09EF]+\.\s+/.test(line);
+      return wrapSingleBlockWithJhTtsWords(line, state, opts, isNumItem, '');
+    }).join('');
+  }
+  return wrapSingleBlockWithJhTtsWords(raw, state, opts, false, '');
 }
 
 /* ACOUSTIC SILENCE-MAP & CLOSED-LOOP REGRESSION WORD TIMELINE BUILDER */
@@ -725,11 +943,74 @@ function stopJhWordHighlightLoop() {
   }
 }
 
+function updateJhTopAudioProgress(pct) {
+  const progEl = document.getElementById('jhTopAudioProgressFill');
+  if (progEl && progEl.style) {
+    const clean = Math.max(0, Math.min(100, Number(pct) || 0));
+    progEl.style.width = clean > 0 ? clean.toFixed(1) + '%' : '0%';
+  }
+}
+
+function getOffsetTopWithinContainer(el, container) {
+  let top = 0;
+  let node = el;
+  let guard = 0;
+  while (node && node !== container && guard < 16) {
+    top += (Number(node.offsetTop) || 0);
+    node = node.offsetParent;
+    guard += 1;
+  }
+  return top;
+}
+
+function scrollActiveWordIntoComfortZone(activeEl, isLetter) {
+  if (!activeEl) return;
+  if (typeof window !== 'undefined' && (window.scrollY || window.pageYOffset)) {
+    try { window.scrollTo(0, 0); } catch (e) {}
+  }
+  const now = Date.now();
+  if (now - jhLastUserScrollInteractionMs < 1400) return;
+  if (now - jhLastAutoScrollMs < 260) return;
+
+  const container = isLetter
+    ? (typeof document !== 'undefined' && document.querySelector && document.querySelector('#jhLetterDrawer .jh-drawer-sheet'))
+    : (typeof document !== 'undefined' && document.getElementById && document.getElementById('jhReelsViewport'));
+  if (!container) return;
+
+  const cHeight = Number(container.clientHeight) || 0;
+  if (!(cHeight > 40) || activeEl.offsetTop === undefined) return;
+
+  const elTopInDoc = getOffsetTopWithinContainer(activeEl, container);
+  const elHeight = Number(activeEl.offsetHeight) || 24;
+  const curScroll = Number(container.scrollTop) || 0;
+  const relTop = elTopInDoc - curScroll;
+  const relBottom = relTop + elHeight;
+
+  const upperComfort = cHeight * 0.16;
+  const lowerComfort = cHeight * 0.58;
+
+  if (relBottom > lowerComfort || (curScroll > 10 && relTop < upperComfort)) {
+    jhLastAutoScrollMs = now;
+    const maxScroll = Math.max(0, (Number(container.scrollHeight) || 0) - cHeight);
+    const targetTop = elTopInDoc < cHeight * 0.36
+      ? 0
+      : Math.max(0, Math.min(maxScroll, Math.round(elTopInDoc - cHeight * 0.30)));
+    if (typeof container.scrollTo === 'function') {
+      try {
+        container.scrollTo({ top: targetTop, behavior: 'smooth' });
+        return;
+      } catch (e) {}
+    }
+    container.scrollTop = targetTop;
+  }
+}
+
 function clearJhWordHighlight() {
   stopJhWordHighlightLoop();
   const words = jhAudioMode === 'letter' ? jhLetterWordTimings : jhCurrentWordTimings;
   const prefix = jhAudioMode === 'letter' ? 'jhLetterWord' : 'jhWord';
   const clearedBlocks = new Set();
+  const clearedSents = new Set();
 
   for (let i = 0; i < words.length; i++) {
     const el = document.getElementById(prefix + '_' + i);
@@ -743,7 +1024,14 @@ function clearJhWordHighlight() {
       const bEl = document.getElementById(bId);
       if (bEl && bEl.classList) bEl.classList.remove('jh-block-active');
     }
+    const sId = words[i] && words[i].sentId;
+    if (sId && !clearedSents.has(sId)) {
+      clearedSents.add(sId);
+      const sEl = document.getElementById(sId);
+      if (sEl && sEl.classList) sEl.classList.remove('jh-sentence-active');
+    }
   }
+  updateJhTopAudioProgress(0);
   jhActiveWordIdx = -1;
 }
 
@@ -771,6 +1059,9 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
     ? (baseDur / effDur)
     : 1.0;
   const targetSec = Math.max(0, Math.min(baseDur - 0.001, rawCurSec * scaleFactor));
+  if (!isLetter) {
+    updateJhTopAudioProgress((targetSec / Math.max(0.5, baseDur)) * 100);
+  }
 
   let lo = 0;
   let hi = words.length - 1;
@@ -824,6 +1115,15 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
     if (curBlock && curBlock.classList) curBlock.classList.add('jh-block-active');
   }
 
+  if (prevWord && prevWord.sentId && (!curWord || prevWord.sentId !== curWord.sentId)) {
+    const prevSent = document.getElementById(prevWord.sentId);
+    if (prevSent && prevSent.classList) prevSent.classList.remove('jh-sentence-active');
+  }
+  if (curWord && curWord.sentId) {
+    const curSent = document.getElementById(curWord.sentId);
+    if (curSent && curSent.classList) curSent.classList.add('jh-sentence-active');
+  }
+
   if (!isLetter && curWord && curWord.inCuriosityA) {
     const card = jhFilteredReels[jhCurrentIdx];
     if (card && !jhRevealedMap[card.id]) {
@@ -838,37 +1138,7 @@ function syncJhWordHighlightToTime(currentTimeSec, durationSec) {
   }
 
   const activeEl = document.getElementById(prefix + '_' + foundIdx);
-  if (activeEl) {
-    if (typeof window !== 'undefined' && (window.scrollY || window.pageYOffset)) {
-      try { window.scrollTo(0, 0); } catch (e) {}
-    }
-    const container = isLetter
-      ? (typeof document !== 'undefined' && document.querySelector && document.querySelector('#jhLetterDrawer .jh-drawer-sheet'))
-      : (typeof document !== 'undefined' && document.getElementById && document.getElementById('jhReelsViewport'));
-    const cHeight = container ? (Number(container.clientHeight) || 0) : 0;
-    if (container && cHeight > 40 && activeEl.offsetTop !== undefined) {
-      let elTop = 0;
-      let node = activeEl;
-      let g = 0;
-      while (node && node !== container && g < 16) {
-        elTop += (Number(node.offsetTop) || 0);
-        node = node.offsetParent;
-        g += 1;
-      }
-      const curScroll = Number(container.scrollTop) || 0;
-      const relTop = elTop - curScroll;
-      const relBottom = relTop + (Number(activeEl.offsetHeight) || 24);
-      if (relBottom > cHeight * 0.58 || (curScroll > 10 && relTop < cHeight * 0.16)) {
-        const maxScroll = Math.max(0, (Number(container.scrollHeight) || 0) - cHeight);
-        const targetTop = elTop < cHeight * 0.36 ? 0 : Math.max(0, Math.min(maxScroll, Math.round(elTop - cHeight * 0.30)));
-        if (typeof container.scrollTo === 'function') {
-          try { container.scrollTo({ top: targetTop, behavior: 'smooth' }); } catch (e) { container.scrollTop = targetTop; }
-        } else {
-          container.scrollTop = targetTop;
-        }
-      }
-    }
-  }
+  scrollActiveWordIntoComfortZone(activeEl, isLetter);
 
   jhActiveWordIdx = foundIdx;
   return foundIdx;
@@ -1099,6 +1369,11 @@ function filterJhalakChannel(channelId, ev) {
   jhLastSlideDir = 'next';
   renderJhCategoryDropdownUI();
   renderJhalakReelStream();
+  const vp = document.getElementById('jhReelsViewport');
+  if (vp) vp.scrollTop = 0;
+  if (jhAutoPlayVoices && jhFilteredReels.length > 0) {
+    jhAutoAdvanceTimer = setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 220);
+  }
 }
 
 /* RANDOMIZED PAGE TRANSITION WITH 3D CURTAIN-LIFT ANIMATION */
@@ -1111,9 +1386,9 @@ function captureOutgoingCardSnapshot() {
   const m = sourceHtml.match(/<div class="jh-card-stage">[\s\S]*<\/div>/);
   if (m) {
     jhOutgoingCardHtml = m[0]
-      .replace(/\sid="jh(?:Word|TitleBlock|SecBlock|CurBox|DoneBtn|StickyLikeBtn|StickyLikeCount)_[^"]*"/g, '')
+      .replace(/\sid="jh(?:WordSent|LetterWordSent|Word|TitleBlock|SecBlock|CurBox|DoneBtn|StickyLikeBtn|StickyLikeCount)_[^"]*"/g, '')
       .replace(/\sid="jh(?:StickyLikeBtn|StickyLikeCount)"/g, '')
-      .replace(/\b(?:jh-word-active|jh-word-spoken|jh-block-active)\b/g, '');
+      .replace(/\b(?:jh-word-active|jh-word-spoken|jh-block-active|jh-sentence-active)\b/g, '');
   }
 }
 
@@ -1247,7 +1522,7 @@ function updateStickyLikeBtnUI() {
 
 /* ADMIN SETTINGS: CATEGORY-LEVEL SELECTABLE DONE & LIKES CONTROLS (NO HUGE LIST) */
 function setAdminCategoryFilter(catId) {
-  jhAdminFilterCat = catId || 'gods';
+  jhAdminFilterCat = catId || ((typeof JHALAK_CATEGORIES !== 'undefined' && JHALAK_CATEGORIES.length > 1) ? JHALAK_CATEGORIES[1].id : 'songs_bn');
   const catItems = ALL_JHALAK_REELS.filter(r =>
     jhAdminFilterCat === 'all' || r.vibe === jhAdminFilterCat
   );
@@ -1371,9 +1646,8 @@ function renderJhAdminItemsList() {
   const listEl = document.getElementById('jhAdminItemsList');
   if (!listEl) return;
 
-  const contentCats = JHALAK_CATEGORIES.filter(c => c.id !== 'all');
   if (!jhAdminFilterCat || !JHALAK_CATEGORIES.some(c => c.id === jhAdminFilterCat)) {
-    jhAdminFilterCat = 'gods';
+    jhAdminFilterCat = (typeof JHALAK_CATEGORIES !== 'undefined' && JHALAK_CATEGORIES.length > 1) ? JHALAK_CATEGORIES[1].id : 'songs_bn';
   }
 
   const catOptionsHtml = JHALAK_CATEGORIES.map(c => {
@@ -1406,7 +1680,8 @@ function renderJhAdminItemsList() {
     const lCount = getReelLikeCount(r.id);
     const selAttr = selectedItem && r.id === selectedItem.id ? 'selected' : '';
     const statusTag = dCount > 0 ? '✅' : '📖';
-    return `<option value="${r.id}" ${selAttr}>${jhBnNum(idx + 1)}. ${statusTag} ${r.title_bn} (ডান:${jhBnNum(dCount)} · ❤️${jhBnNum(lCount)})</option>`;
+    const cleanOptTitle = escapeJhHtml(formatJhPlainTitle(r.title_bn));
+    return `<option value="${r.id}" ${selAttr}>${jhBnNum(idx + 1)}. ${statusTag} ${cleanOptTitle} (ডান:${jhBnNum(dCount)} · ❤️${jhBnNum(lCount)})</option>`;
   }).join('');
 
   const selectedRowHtml = selectedItem ? (() => {
@@ -1416,7 +1691,7 @@ function renderJhAdminItemsList() {
       <div class="jh-admin-row ${dCount > 0 ? 'is-done' : ''}">
         <div class="jh-admin-row-title">
           <span class="jh-admin-badge">${selectedItem.badge_bn}</span>
-          <span>${selectedItem.title_bn}</span>
+          <span>${renderJhInlineStaticHtml(selectedItem.title_bn)}</span>
         </div>
         <div class="jh-admin-row-controls">
           <div class="jh-admin-stepper">
@@ -1545,6 +1820,9 @@ function toggleJhalakCuriosityBox(idx, ev) {
 function updateActiveCardPlayBtns() {
   const isReelPlaying = jhAudioPlaying && jhAudioMode === 'reel';
   const isReelPaused = jhAudioPaused && jhAudioMode === 'reel';
+  if (typeof document !== 'undefined' && document.body && document.body.classList) {
+    document.body.classList.toggle('jh-audio-playing', Boolean(isReelPlaying));
+  }
   const headerBtn = document.getElementById('btnJhHeaderListen');
   if (headerBtn) {
     headerBtn.classList.toggle('playing', isReelPlaying);
@@ -1593,6 +1871,7 @@ function playReelAudioAtIndex(idx) {
   }
 
   stopJhAudio();
+  jhPendingAutoPlayUnlock = false;
   jhCurrentIdx = targetIdx;
   if (!card.audio_url) return;
 
@@ -1624,6 +1903,7 @@ function playReelAudioAtIndex(idx) {
     playPromise.catch(() => {
       jhAudioPlaying = false;
       jhAudioPaused = false;
+      jhPendingAutoPlayUnlock = true;
       clearJhWordHighlight();
       updateActiveCardPlayBtns();
     });
@@ -1638,7 +1918,7 @@ function handleReelAudioEnded(idx) {
   if (jhAutoFlow && idx === jhCurrentIdx && jhFilteredReels.length > 1) {
     jhAutoAdvanceTimer = setTimeout(() => {
       stepJhalakReel(1, jhAutoPlayVoices);
-    }, 1500);
+    }, 1200);
   }
 }
 
@@ -1652,7 +1932,7 @@ function renderJhalakReelStream() {
     jhCurrentTotalWeight = 0;
     jhActiveWordIdx = -1;
     vp.innerHTML = `
-      <article class="jh-reel-slide jh-slide-anim-next">
+      <article class="jh-reel-slide jh-slide-anim-next jh-initial-load">
         <div class="jh-card-stage" style="text-align:center;padding:36px 22px;">
           <h2 class="jh-hook-title">🎉 এই বিভাগের সব পাতা পড়া হয়ে গেছে মা!</h2>
           <p style="font-size:1.05rem;color:#5C4938;margin-bottom:18px;">
@@ -1671,7 +1951,8 @@ function renderJhalakReelStream() {
   const idx = Math.max(0, Math.min(jhFilteredReels.length - 1, jhCurrentIdx));
   jhCurrentIdx = idx;
   const card = jhFilteredReels[idx];
-  const isRev = !!jhRevealedMap[card.id];
+  jhRevealedMap[card.id] = true;
+  const isRev = true;
   const hasYt = Boolean(card.yt_query && String(card.yt_query).trim());
   const ytUrl = hasYt
     ? 'https://www.youtube.com/results?search_query=' + encodeURIComponent(card.yt_query)
@@ -1680,7 +1961,7 @@ function renderJhalakReelStream() {
     ? `<a class="jh-yt-link" href="${ytUrl}" target="_blank" rel="noopener noreferrer">▶️ ইউটিউবে দেখো: ${card.yt_label_bn || card.title_bn} ↗</a>`
     : '';
 
-  const ttsState = { words: [], totalWeight: 0, prefix: 'jhWord' };
+  const ttsState = { words: [], totalWeight: 0, prefix: 'jhWord', sentCounter: 0 };
   const titleBlockId = 'jhTitleBlock_' + idx;
   const wrappedTitleHtml = wrapTextWithJhTtsWords(card.title_bn, ttsState, {
     blockId: titleBlockId,
@@ -1703,13 +1984,11 @@ function renderJhalakReelStream() {
     const paragraphs = String(sec.body_bn || '')
       .split(/\n+/)
       .filter(Boolean)
-      .map(p => {
-        const wrappedP = wrapTextWithJhTtsWords(p, ttsState, {
-          blockId: secBlockId,
-          addHeadingPause: false
-        });
-        return `<p class="jh-sec-para">${wrappedP}</p>`;
-      })
+      .map(p => wrapTextWithJhTtsWords(p, ttsState, {
+        blockId: secBlockId,
+        addHeadingPause: false,
+        chunkSentences: true
+      }))
       .join('');
     const toneClass = sec.tone === 'hitch' ? 'jh-sec-hitch' : (sec.tone === 'extra' ? 'jh-sec-extra' : 'jh-sec-story');
     return `
@@ -1731,15 +2010,18 @@ function renderJhalakReelStream() {
     addHeadingPause: false
   });
 
-  const cardAudioMeta = (typeof JHALAK_AUDIO_TIMINGS !== 'undefined' && JHALAK_AUDIO_TIMINGS && JHALAK_AUDIO_TIMINGS[card.id])
-    ? JHALAK_AUDIO_TIMINGS[card.id]
+  const cardAudioMeta = (typeof JHALAK_AUDIO_TIMINGS !== 'undefined' && JHALAK_AUDIO_TIMINGS && (JHALAK_AUDIO_TIMINGS[card.id] || JHALAK_AUDIO_TIMINGS[card.audio_rel]))
+    ? (JHALAK_AUDIO_TIMINGS[card.id] || JHALAK_AUDIO_TIMINGS[card.audio_rel])
     : null;
   jhCurrentTimelineDur = buildAcousticWordTimeline(ttsState.words, ttsState.totalWeight, cardAudioMeta);
   jhCurrentWordTimings = ttsState.words;
   jhCurrentTotalWeight = ttsState.totalWeight;
   jhActiveWordIdx = -1;
 
-  const animClass = jhLastSlideDir === 'prev' ? 'jh-slide-anim-prev' : 'jh-slide-anim-next';
+  const isFirstRender = !jhInitialRenderDone;
+  jhInitialRenderDone = true;
+  const baseAnimClass = jhLastSlideDir === 'prev' ? 'jh-slide-anim-prev' : 'jh-slide-anim-next';
+  const animClass = isFirstRender ? `${baseAnimClass} jh-initial-load` : baseAnimClass;
   const ghostDirClass = jhLastSlideDir === 'prev' ? 'out-right' : 'out-left';
   const ghostHtml = jhOutgoingCardHtml
     ? `<div class="jh-outgoing-ghost ${ghostDirClass}" aria-hidden="true">${jhOutgoingCardHtml}</div>`
@@ -2214,6 +2496,25 @@ window.addEventListener('DOMContentLoaded', () => {
   syncJhSettingsButtonsUI();
   renderJhalakReelStream();
 
+  if (jhAutoPlayVoices && jhFilteredReels.length > 0) {
+    jhAutoAdvanceTimer = setTimeout(() => playReelAudioAtIndex(jhCurrentIdx), 180);
+  }
+
+  const unlockPendingAutoPlay = ev => {
+    if (!jhPendingAutoPlayUnlock || !jhAutoPlayVoices || jhAudioPlaying || jhAudioPaused) return;
+    if (ev && isJhInteractiveTapTarget(ev.target)) return;
+    jhPendingAutoPlayUnlock = false;
+    playReelAudioAtIndex(jhCurrentIdx);
+  };
+  document.addEventListener('pointerdown', unlockPendingAutoPlay, { passive: true });
+  document.addEventListener('touchstart', unlockPendingAutoPlay, { passive: true });
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY || window.pageYOffset) {
+      try { window.scrollTo(0, 0); } catch (e) {}
+    }
+  }, { passive: true });
+
   document.addEventListener('click', () => {
     if (jhCategoryDropdownOpen) closeJhCategoryDropdown();
   });
@@ -2223,20 +2524,24 @@ window.addEventListener('DOMContentLoaded', () => {
       stepJhalakReel(1, jhAutoPlayVoices);
     } else if (ev.key === 'ArrowUp' || ev.key === 'PageUp' || ev.key === 'ArrowLeft') {
       stepJhalakReel(-1, jhAutoPlayVoices);
+    } else if (ev.key === ' ' && !isJhInteractiveTapTarget(ev.target)) {
+      ev.preventDefault();
+      playReelAudioAtIndex(jhCurrentIdx);
     }
   });
 
   const vp = document.getElementById('jhReelsViewport');
   if (vp && typeof vp.addEventListener === 'function') {
     vp.addEventListener('touchstart', ev => {
+      jhLastUserScrollInteractionMs = Date.now();
       if (ev.touches && ev.touches[0]) {
         jhTouchStartX = ev.touches[0].clientX;
         jhTouchStartY = ev.touches[0].clientY;
         const curScroll = vp.scrollTop || 0;
         const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
         jhTouchStartScrollTop = curScroll;
-        jhTouchStartAtTop = maxScroll <= 12 || curScroll <= 10;
-        jhTouchStartAtBottom = maxScroll <= 12 || curScroll >= maxScroll - 14;
+        jhTouchStartAtTop = maxScroll <= 8 || curScroll <= 6;
+        jhTouchStartAtBottom = maxScroll <= 8 || curScroll >= maxScroll - 10;
         jhPullAnchorY = null;
         jhPullDirection = '';
         jhPullDistance = 0;
@@ -2245,6 +2550,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
 
     vp.addEventListener('touchmove', ev => {
+      jhLastUserScrollInteractionMs = Date.now();
       if (!ev.touches || !ev.touches[0]) return;
       const curX = ev.touches[0].clientX;
       const curY = ev.touches[0].clientY;
@@ -2254,26 +2560,26 @@ window.addEventListener('DOMContentLoaded', () => {
 
       const curScroll = vp.scrollTop || 0;
       const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
-      const atTop = maxScroll <= 12 || curScroll <= 8;
-      const atBottom = maxScroll <= 12 || curScroll >= maxScroll - 10;
+      const atTop = maxScroll <= 8 || curScroll <= 4;
+      const atBottom = maxScroll <= 8 || curScroll >= maxScroll - 8;
 
-      if ((jhPullDirection === 'next' || atBottom) && totalDy < -12) {
+      if ((jhPullDirection === 'next' || atBottom) && totalDy < -18) {
         if (jhPullDirection !== 'next') {
           jhPullDirection = 'next';
           jhPullAnchorY = curY;
         }
-        const rawPull = Math.max(0, jhPullAnchorY - curY);
+        const rawPull = Math.max(0, jhPullAnchorY - curY - 12);
         if (rawPull > 0) {
           updateJhOverscrollPullUI('next', rawPull);
         } else {
           resetJhOverscrollPullUI(false);
         }
-      } else if ((jhPullDirection === 'prev' || atTop) && totalDy > 12) {
+      } else if ((jhPullDirection === 'prev' || (jhTouchStartAtTop && atTop)) && totalDy > 18) {
         if (jhPullDirection !== 'prev') {
           jhPullDirection = 'prev';
           jhPullAnchorY = curY;
         }
-        const rawPull = Math.max(0, curY - jhPullAnchorY);
+        const rawPull = Math.max(0, curY - jhPullAnchorY - 12);
         if (rawPull > 0) {
           updateJhOverscrollPullUI('prev', rawPull);
         } else {

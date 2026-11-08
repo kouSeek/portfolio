@@ -278,6 +278,9 @@ const audio = getEl('audioPlayer');
   assert.ok(getEl('viewTv').className.includes('active'));
   assert.ok(getEl('tvHubStage').innerHTML.includes('উত্তম-সুচিত্রার চিরকালের বাংলা ছবি'));
   assert.ok(getEl('tvHubStage').innerHTML.includes('মান্না দে ও রবীন্দ্রসঙ্গীতের শান্ত আসর'));
+  assert.ok(getEl('tvHubStage').innerHTML.includes('স্বর্ণযুগের হিন্দি গান'));
+  assert.ok(getEl('tvHubStage').innerHTML.includes('মিষ্টি ইংরেজি গান'));
+  assert.ok(renderKalyaniInlineRichText('**সাহস**, *আদর*, [[হাসির ঝুলি|আনন্দ]]').includes('<strong class="kal-md-strong">সাহস</strong>'));
   switchView('plan');
   selectGame(0, false);
 
@@ -949,7 +952,7 @@ vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
         self.assertEqual(proc.returncode, 0, f"Kalyani weird edge-cases VM test failed: {proc.stderr}")
 
     def test_jhalak_dopamine_reels_app_and_vm_interactions(self) -> None:
-        """Verify jhalak.html (✨ ঝলক) compiles cleanly with randomized slide animations, Done & Admin controls, 9 categories, sticky multi-like, and VM checks."""
+        """Verify jhalak.html (✨ ঝলক) compiles cleanly with 11 categories (3 song sections by language), 119 pages, neuro-inclusive UX, Markdown/LaTeX rendering, and VM checks."""
         jh_path = APP_ROOT / "jhalak.html"
         self.assertTrue(jh_path.is_file(), "jhalak.html must exist")
         jh_html = jh_path.read_text(encoding="utf-8")
@@ -972,11 +975,22 @@ vm.runInNewContext(edgeCaseTestSuite, ctx, {filename: 'kalyani-edge-cases.js'});
         self.assertNotIn('id="btnJhNextPage"', jh_html)
         self.assertNotIn('id="jhPageCounterBadge"', jh_html)
         self.assertNotIn("jh-bottom-lr-nav", jh_html)
-        # 2. Category Dropdown + Header Listen button + Sideways animations + Bottom Like & Done actions + Admin section
+        # 2. Category Dropdown + Header Listen button + Neuro-Inclusive UX + Markdown/LaTeX rendering + Sideways animations
         self.assertIn('id="btnJhCategoryDropdown"', jh_html)
         self.assertIn('id="jhCategoryDropdownMenu"', jh_html)
         self.assertIn('id="btnJhHeaderListen"', jh_html)
         self.assertIn('id="btnJhHeaderStop"', jh_html)
+        self.assertIn('id="jhTopAudioProgressFill"', jh_html)
+        self.assertIn("jh-pull-progress-fill", jh_html)
+        self.assertIn("jh-dbltap-voice-toast", jh_html)
+        self.assertIn("body.jh-audio-playing", jh_html)
+        self.assertIn("jh-tts-sentence", jh_html)
+        self.assertIn("jh-math-inline", jh_html)
+        self.assertIn("jh-inline-code", jh_html)
+        self.assertIn("jh-wikilink-pill", jh_html)
+        self.assertIn("jh-md-em", jh_html)
+        self.assertIn("jh-md-strong", jh_html)
+        self.assertNotIn("activeEl.scrollIntoView", jh_html)
         self.assertIn('<span class="jh-brand-logo" aria-label="ঝলক">✨</span>', jh_html)
         self.assertNotIn('<span class="jh-brand-title">✨ ঝলক</span>', jh_html)
         self.assertIn("jh-page-bottom-actions", jh_html)
@@ -1041,23 +1055,39 @@ const ctx = {
 };
 const suite = code + `
 ;(function() {
-  // 1. All 9 categories (all + 8 content categories), each with >= 14 rich pages (152 total)
+  // 1. All 11 categories (all + 3 separate song sections by language + 7 content categories = 119 zero-filler pages)
   const catIds = JHALAK_CATEGORIES.map(c => c.id);
-  assert.deepStrictEqual(catIds, ['all', 'gods', 'laugh', 'calm', 'curiosity', 'music', 'english', 'hindi', 'tv']);
-  assert.strictEqual(ALL_JHALAK_REELS.length, 152, 'Total Jhalak pages must be 152');
+  assert.deepStrictEqual(catIds, ['all', 'songs_bn', 'songs_hi', 'songs_en', 'gods', 'laugh', 'calm', 'curiosity', 'english', 'hindi', 'tv']);
+  assert.strictEqual(ALL_JHALAK_REELS.length, 119, 'Total cleaned Jhalak pages must be 119');
+  assert.strictEqual(JHALAK_CATEGORY_COUNTS['songs_bn'], 12, 'Bengali Songs category must have 12 verified songs');
+  assert.strictEqual(JHALAK_CATEGORY_COUNTS['songs_hi'], 8, 'Hindi Songs category must have 8 verified songs');
+  assert.strictEqual(JHALAK_CATEGORY_COUNTS['songs_en'], 8, 'English Songs category must have 8 verified songs');
+  assert.strictEqual(JHALAK_CATEGORY_COUNTS['english'], 10, 'English conversation category must have 10 non-repetitive pages');
   catIds.forEach(cid => {
-    assert.ok(JHALAK_CATEGORY_COUNTS[cid] >= 14, 'Category ' + cid + ' must have at least 14 rich pages');
+    assert.ok(JHALAK_CATEGORY_COUNTS[cid] >= 8, 'Category ' + cid + ' must have at least 8 rich pages');
   });
 
-  // 2. Every page has multi-section long content and points to its dedicated full-page audio URL
+  // 2. Every page has multi-section long content, zero Day/progression burden labels, zero hallucinated lyrics, and points to its dedicated full-page audio URL
+  const bannedProgressionPhrases = ['গত সপ্তাহে', 'প্রথম সপ্তাহে', 'দিন ২-এ শেখা', 'দিন ৪-এর', 'সপ্তম দিনের শেষে', 'একুশ দিন আগে'];
   assert.ok(ALL_JHALAK_REELS.every(r => Array.isArray(r.sections) && r.sections.length >= 2), 'Every page must have rich multi-section content');
   assert.ok(ALL_JHALAK_REELS.every(r => !JSON.stringify(r.sections).includes('জেমিনি, শোনো—')), 'Must strip raw Gemini voice-assistant prompts');
   assert.ok(ALL_JHALAK_REELS.every(r => r.audio_url === 'https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/audio/jhalak/reels/' + r.id + '.mp3' && r.story_end === 0), 'Every page must point to its dedicated full-page MP3 with story_end === 0');
+  ALL_JHALAK_REELS.forEach(r => {
+    const ser = JSON.stringify(r);
+    bannedProgressionPhrases.forEach(bp => {
+      assert.ok(!ser.includes(bp), 'Progression burden phrase "' + bp + '" must not appear in Jhalak card ' + r.id);
+    });
+  });
 
-  // 3. Songs category has inspiration & right question hook for understanding song meaning
-  const musicCards = ALL_JHALAK_REELS.filter(r => r.vibe === 'music');
-  assert.strictEqual(musicCards.length, 21);
-  assert.ok(musicCards.every(m => m.sections.some(s => s.heading_bn.includes('গানের আসল অর্থ বোঝার সঠিক প্রশ্ন'))));
+  // 3. Separate Bengali, Hindi, and English song categories have verified songs and unique Q&As
+  const bnSongs = ALL_JHALAK_REELS.filter(r => r.vibe === 'songs_bn');
+  const hiSongs = ALL_JHALAK_REELS.filter(r => r.vibe === 'songs_hi');
+  const enSongs = ALL_JHALAK_REELS.filter(r => r.vibe === 'songs_en');
+  assert.strictEqual(bnSongs.length, 12);
+  assert.strictEqual(hiSongs.length, 8);
+  assert.strictEqual(enSongs.length, 8);
+  assert.ok(bnSongs.some(s => s.title_bn.includes('একদিন পাখি উড়ে যাবে') && s.sections[0].body_bn.includes('কিশোর কুমারের')));
+  assert.ok(bnSongs.some(s => s.title_bn.includes('একটা গান লিখো আমার জন্য') && s.sections[0].body_bn.includes('প্রতিমা বন্দ্যোপাধ্যায়ের')));
 
   // 4. No page counts on top dropdown button + randomized next page + history back navigation + slide animations
   renderJhalakReelStream();
@@ -1065,6 +1095,8 @@ const suite = code + `
   assert.strictEqual(getSelectedCategorySummaryLabel(), '✨ সব ▾', 'Top category dropdown must not show page count');
   assert.ok(!el('jhCategoryDropdownMenu').innerHTML.includes('jh-cat-count-pill'), 'Category dropdown menu options must not display item counts');
   assert.ok(el('jhReelsViewport').innerHTML.includes('jh-page-bottom-actions'), 'Done and Like buttons must sit at the bottom of each page content');
+  assert.ok(el('jhReelsViewport').innerHTML.includes('class="jh-tts-sentence"'), 'Body paragraphs must wrap sentences in .jh-tts-sentence spans');
+  assert.ok(el('jhReelsViewport').innerHTML.includes('jh-curiosity-box revealed'), 'Curiosity takeaway box must be open by default with zero tap-to-reveal friction');
   const startId = jhFilteredReels[jhCurrentIdx].id;
   stepJhalakReel(1, false);
   const nextId = jhFilteredReels[jhCurrentIdx].id;
@@ -1087,13 +1119,13 @@ const suite = code + `
   assert.strictEqual(getReelDoneCount(cardToDone.id), 0);
   markCurrentJhalakReelDone();
   assert.strictEqual(getReelDoneCount(cardToDone.id), 1, 'Marking done must set done count to 1');
-  assert.strictEqual(jhFilteredReels.length, 151, 'Done item must be excluded from active reels pool');
+  assert.strictEqual(jhFilteredReels.length, 118, 'Done item must be excluded from active reels pool');
   assert.ok(!jhFilteredReels.some(r => r.id === cardToDone.id), 'Done card must not appear in future reels');
 
   // Admin Settings: restore Done count to 0 and adjust Likes count
   adjustReelDoneCount(cardToDone.id, -1);
   assert.strictEqual(getReelDoneCount(cardToDone.id), 0, 'Admin control must allow decreasing Done count back to 0');
-  assert.strictEqual(jhFilteredReels.length, 152, 'Restoring Done count to 0 brings item back into reels pool');
+  assert.strictEqual(jhFilteredReels.length, 119, 'Restoring Done count to 0 brings item back into reels pool');
   adjustReelLikeCount(cardToDone.id, 5);
   assert.strictEqual(getReelLikeCount(cardToDone.id), 5, 'Admin control must allow changing Likes count');
   setReelLikeCount(cardToDone.id, 2);
@@ -1104,13 +1136,13 @@ const suite = code + `
   filterJhalakChannel('gods');
   assert.strictEqual(jhSelectedChannels.has('gods') && jhSelectedChannels.size === 1, true);
   assert.strictEqual(getSelectedCategorySummaryLabel(), '🪷 ভগবান ▾', 'Single category label has no count on top');
-  filterJhalakChannel('music');
-  assert.strictEqual(jhSelectedChannels.has('music') && jhSelectedChannels.size === 1, true, 'In Single-Select mode, choosing music replaces gods');
+  filterJhalakChannel('songs_bn');
+  assert.strictEqual(jhSelectedChannels.has('songs_bn') && jhSelectedChannels.size === 1, true, 'In Single-Select mode, choosing songs_bn replaces gods');
 
   toggleJhCategorySelectMode();
   assert.strictEqual(jhMultiSelectCategories, true, 'Settings toggle must enable Multi-Select mode');
   filterJhalakChannel('gods');
-  assert.strictEqual(jhSelectedChannels.has('music') && jhSelectedChannels.has('gods'), true, 'In Multi-Select mode, both music and gods stay active');
+  assert.strictEqual(jhSelectedChannels.has('songs_bn') && jhSelectedChannels.has('gods'), true, 'In Multi-Select mode, both songs_bn and gods stay active');
   filterJhalakChannel('all');
   assert.strictEqual(jhFilteredReels.length, ALL_JHALAK_REELS.length);
 
@@ -1126,8 +1158,8 @@ const suite = code + `
   toggleJhShowLikeCount();
   assert.strictEqual(jhShowLikeCount, false);
   assert.ok(!el('jhStickyLikeBtn').innerHTML.includes('jhStickyLikeCount'), 'When jhShowLikeCount is false, like count badge is hidden');
-  assert.ok(el('jhCategoryStatsBox').innerHTML.includes('১৫২টি পাতা'), 'Category stats must display simple ১৫২টি পাতা without ১৫২/১৫২টি fraction');
-  assert.ok(!el('jhCategoryStatsBox').innerHTML.includes('১৫২/১৫২টি পাতা'), 'Category stats must not show redundant ১৫২/১৫২টি পাতা fraction');
+  assert.ok(el('jhCategoryStatsBox').innerHTML.includes('১১৯টি পাতা'), 'Category stats must display simple ১১৯টি পাতা without ১১৯/১১৯টি fraction');
+  assert.ok(!el('jhCategoryStatsBox').innerHTML.includes('১১৯/১১৯টি পাতা'), 'Category stats must not show redundant ১১৯/১১৯টি পাতা fraction');
   assert.ok(el('jhAdminItemsList').innerHTML.includes('id="jhAdminCatSelect"'), 'Admin control must have category selector dropdown');
   assert.ok(el('jhAdminItemsList').innerHTML.includes('id="jhAdminItemSelect"'), 'Admin control must have item selector dropdown within category');
   assert.ok(!el('jhAdminItemsList').innerHTML.includes('বিভাগের ডান রিসেট'), 'Admin panel must not render the 4-button category bulk section');
@@ -1136,7 +1168,7 @@ const suite = code + `
   const adminRowMatches = el('jhAdminItemsList').innerHTML.match(/class="jh-admin-row /g) || [];
   assert.strictEqual(adminRowMatches.length, 1, 'Admin panel must render only the 1 selected item row (no huge list)');
 
-  // 8b. Listen button Play -> Pause -> Resume -> Stop lifecycle
+  // 8b. Listen button Play -> Pause -> Resume -> Stop lifecycle + Double-Tap anywhere on content
   stopJhAudio();
   assert.strictEqual(el('btnJhHeaderListen').textContent, '🔊 শোনো');
   assert.strictEqual(el('btnJhHeaderStop').style.display, 'none', 'Stop button hidden when idle');
@@ -1165,6 +1197,11 @@ const suite = code + `
   assert.strictEqual(el('btnJhHeaderStop').style.display, 'none', 'Stopping hides Stop button');
   assert.strictEqual(jhActiveWordIdx, -1, 'Stopping clears active word highlight');
 
+  jhLastDoubleTapToggleMs = 0;
+  assert.strictEqual(handleJhContentDoubleTap({ target: { tagName: 'P', className: 'jh-sec-para' }, clientX: 180, clientY: 320 }, 'reel'), true, 'Double-tap on Jhalak paragraph starts voice');
+  assert.strictEqual(jhAudioPlaying, true);
+  stopJhAudio();
+
   // 8. Category-level Done & Likes bulk controls in Admin
   setCategoryDoneState('tv', 1);
   assert.strictEqual(ALL_JHALAK_REELS.filter(r => r.vibe === 'tv').every(r => isReelDone(r.id)), true, 'setCategoryDoneState(tv, 1) must mark all TV items done');
@@ -1177,11 +1214,11 @@ const suite = code + `
 
   // 9. KORTEX-inspired real-time word-by-word read-aloud highlighting across reel pages and Chithi letter slides
   renderJhalakReelStream();
-  assert.ok(typeof JHALAK_AUDIO_TIMINGS === 'object' && Object.keys(JHALAK_AUDIO_TIMINGS).length === 152, 'All 152 Jhalak reels must have acoustic duration and silence maps');
+  assert.ok(typeof JHALAK_AUDIO_TIMINGS === 'object' && Object.keys(JHALAK_AUDIO_TIMINGS).length === 119, 'All 119 Jhalak reels must have acoustic duration and silence maps');
   assert.ok(el('jhReelsViewport').innerHTML.includes('class="jh-tts-word"'), 'Reel page must wrap spoken words in .jh-tts-word spans');
   assert.ok(jhCurrentWordTimings.length > 20, 'Each reel page must build weighted word timing spans');
   assert.ok(jhCurrentTotalWeight > 2000, 'Total word weight must be positive');
-  assert.ok(jhCurrentTimelineDur > 15, 'Acoustic timeline duration must match real MP3 length');
+  assert.ok(jhCurrentTimelineDur > 12, 'Acoustic timeline duration must match real MP3 length');
   const activeCardTimings = JHALAK_AUDIO_TIMINGS[jhFilteredReels[jhCurrentIdx].id];
   if (activeCardTimings && Array.isArray(activeCardTimings.silences) && activeCardTimings.silences.length > 1) {
     for (let wIdx = 1; wIdx < jhCurrentWordTimings.length; wIdx++) {
@@ -1200,10 +1237,10 @@ const suite = code + `
   assert.ok(el('jhWord_' + midIdx).classList.contains('jh-word-active'), 'Active word span must receive jh-word-active class');
   assert.ok(el('jhWord_0').classList.contains('jh-word-spoken'), 'Earlier word span must receive jh-word-spoken class');
 
-  // Reaching the end of the audio (curiosity answer) auto-reveals the curiosity box and highlights its answer words
+  // Reaching the end of the audio (curiosity answer) keeps the curiosity box revealed and highlights its answer words
   const endIdx = syncJhWordHighlightToTime(19.95, 20.0);
   assert.strictEqual(endIdx, jhCurrentWordTimings.length - 1, 'Near end of duration must highlight final word');
-  assert.ok(el('jhCurBox_' + jhCurrentIdx).classList.contains('revealed'), 'Reaching curiosity answer words must auto-reveal the curiosity box');
+  assert.ok(el('jhReelsViewport').innerHTML.includes('jh-curiosity-box revealed') && jhRevealedMap[jhFilteredReels[jhCurrentIdx].id] === true, 'Curiosity box remains revealed');
 
   stopJhAudio();
   assert.strictEqual(jhActiveWordIdx, -1, 'stopJhAudio must clear active word index');
@@ -1219,11 +1256,12 @@ const suite = code + `
   assert.ok(el('jhLetterWord_' + letterMidIdx).classList.contains('jh-word-active'), 'Active letter word must have jh-word-active class');
   stopJhAudio();
 
-  // 10. Elastic Overscroll Pull-to-Turn Indicators (Top = Prev, Bottom = Next) & 3D Curtain-Lift transition
+  // 10. Elastic Overscroll Pull-to-Turn Indicators (Top = Prev, Bottom = Next, Text-Free Progress Bar) & 3D Curtain-Lift transition
   const beforePullId = jhFilteredReels[jhCurrentIdx].id;
   updateJhOverscrollPullUI('next', 50);
   assert.ok(el('jhPullIndicatorBottom').classList.contains('visible'), 'Partial bottom pull must show bottom pull indicator');
   assert.ok(!el('jhPullIndicatorBottom').classList.contains('ready'), 'Partial bottom pull below threshold must not be ready');
+  assert.strictEqual(el('jhPullBottomText').textContent, '', 'Pull progress bar must have no text');
   assert.strictEqual(commitOrResetJhOverscrollPull(), false, 'Releasing below threshold must spring back without changing page');
   assert.strictEqual(jhFilteredReels[jhCurrentIdx].id, beforePullId, 'Page must remain unchanged when released below threshold');
 

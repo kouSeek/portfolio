@@ -2,6 +2,21 @@
    MODULE 3: DAILY 6-GAME VIEW CONTROLLER, SEQUENTIAL LOCK & CALENDAR GRIDS
    (🎓 আজকের খেলা — src/js/plan-view.js)
    ============================================================================ */
+function renderKalyaniInlineRichText(raw) {
+  let s = String(raw || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  s = s.replace(/`([^`]+)`/g, '<code class="kal-inline-code">$1</code>');
+  s = s.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_m, target, label) => {
+    const lbl = (label || target).trim();
+    return '<span class="kal-wikilink-pill">' + lbl + '</span>';
+  });
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong class="kal-md-strong">$1</strong>');
+  s = s.replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s).,;:!?]|$)/g, '$1<em class="kal-md-em">$2</em>');
+  return s;
+}
+
 function togglePrimaryCalendarGrid() {
   primaryCalOpen = !primaryCalOpen;
   renderPlanView();
@@ -409,7 +424,7 @@ function buildWalkieTalkieStudioHtml(d, ag, idx) {
       </div>
       <div class="vn-ai-bubble">
         <div class="vn-gemini-badge">✨ জেমিনি (কল্যাণীর ভয়েস মেসেজ উত্তর):</div>
-        <div class="vn-bubble-text">${t.reply_bn}</div>
+        <div class="vn-bubble-text">${renderKalyaniInlineRichText(t.reply_bn)}</div>
         <button id="btnVnReplyPlay_${d.day}_${idx}_${tIdx}" class="ag-btn listen vn-reply-play-btn" data-default-label="🔊 জেমিনির উত্তর শোনো" onclick="playVoiceNoteReplyAudio(${d.day}, ${idx}, ${tIdx})">
           🔊 জেমিনির উত্তর শোনো
         </button>
@@ -552,7 +567,7 @@ function buildAgendaCardHtml(d, ag, idx) {
       <div class="agenda-card-header">
         <div class="agenda-cat">${ag.category}</div>
       </div>
-      <div class="agenda-title">${ag.title_bn}</div>
+      <div class="agenda-title">${renderKalyaniInlineRichText(ag.title_bn)}</div>
       ${ytDirectBtnHtml}
       <div class="agenda-actions">
         <button id="${btnId}" class="ag-btn listen" data-default-label="🔊 শোনো" onclick="playAgendaByIdx(${d.day}, ${idx}, this)">🔊 শোনো</button>
@@ -565,7 +580,7 @@ function buildAgendaCardHtml(d, ag, idx) {
         <summary class="game-sub-summary">📖 গল্পটা পড়ো (ঐচ্ছিক) ▾</summary>
         <div class="step-section">
           <div class="agenda-step-heading">${stepHeading}</div>
-          <div class="agenda-detail">${ag.detail_bn}</div>
+          <div class="agenda-detail">${renderKalyaniInlineRichText(ag.detail_bn)}</div>
         </div>
       </details>
 
@@ -757,6 +772,20 @@ const TV_HUB_CHANNELS = [
     desc_bn: 'কফি হাউসের সেই আড্ডাটা ও মন ভালো করা রবীন্দ্রসঙ্গীতের ডালি',
     query: 'Manna Dey Rabindra Sangeet Bengali songs jukebox',
     accent: 'indigo'
+  },
+  {
+    icon: '🎼',
+    title_bn: 'স্বর্ণযুগের হিন্দি গান (লতা মঙ্গেশকর, কিশোর কুমার ও মহম্মদ রফি)',
+    desc_bn: 'লগ জা গলে, অজীব দাস্তাঁ হ্যায় ইয়ে, পল পল দিল কে পাস ও চিরসবুজ হিন্দি গান',
+    query: 'Lata Mangeshkar Kishore Kumar Mohammed Rafi golden era Hindi songs jukebox',
+    accent: 'rose'
+  },
+  {
+    icon: '🎸',
+    title_bn: 'মিষ্টি ইংরেজি গান (What a Wonderful World, Que Sera Sera)',
+    desc_bn: 'সহজ ও শান্ত সুরের বিশ্বজয়ী ইংরেজি গান যা শুনলে মন নিমেষে ফুরফুরে হয়ে যায়',
+    query: 'What a Wonderful World Que Sera Sera Edelweiss classic gentle English songs',
+    accent: 'amber'
   },
   {
     icon: '🎧',
