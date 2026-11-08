@@ -600,7 +600,10 @@ def _extract_mp3_acoustic_meta(mp3_path: Path) -> dict:
         if me and cur_start is not None:
             end_v = round(float(me.group(1)), 3)
             if end_v > cur_start:
-                silences.append([cur_start, end_v])
+                if silences and cur_start - silences[-1][1] <= 0.045:
+                    silences[-1][1] = max(silences[-1][1], end_v)
+                else:
+                    silences.append([cur_start, end_v])
             cur_start = None
     return {"dur": dur, "silences": silences}
 

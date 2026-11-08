@@ -168,7 +168,11 @@ const JH_SPOKEN_UNIT_EXTRA_MS = {
   db: 380,
   cr: 260,
   vs: 260,
-  etc: 460
+  etc: 460,
+  swe: 560,
+  eg: 380,
+  ie: 240,
+  wo: 220
 };
 
 function isSpokenWordToken(token) {
@@ -258,15 +262,13 @@ function computeCalibratedWordTimingWeights(rawWord, nextWord, isTitleOrHeading,
     pauseTier = 3;
   } else if (/[।.?!]["'”’)\]]*$/.test(w) && !JH_ABBREV_RE.test(clean)) {
     pauseTier = 3;
-  } else if (/[:;—–-]["'”’)\]]*$/.test(w)) {
+  } else if (/[:;—–]["'”’)\]]*$/.test(w)) {
     pauseTier = 2;
-  } else if (/[,،]["'”’)\]]*$/.test(w)) {
-    pauseTier = 1;
-  } else if (/["'”’)\]]+$/.test(w) || /^["'“‘(\[]+/.test(nw)) {
+  } else if (/[,،]["'”’)\]]*$/.test(w) || /^(?:e\.g\.|i\.e\.)/i.test(clean)) {
     pauseTier = 1;
   }
 
-  const pauseWeight = pauseTier === 3 ? 390 : (pauseTier === 2 ? 200 : (pauseTier === 1 ? 190 : 0));
+  const pauseWeight = pauseTier === 3 ? 520 : (pauseTier === 2 ? 340 : (pauseTier === 1 ? 260 : 0));
   return { syllableWeight, pauseTier, pauseWeight };
 }
 
@@ -633,7 +635,27 @@ function computeJhTokenTimingWeights(rawToken, nextRawToken, atoms, isTitleOrHea
 function wrapSingleBlockWithJhTtsWords(rawBlock, state, opts, isListItem, listBulletHtml) {
   const { text: processedText, atoms } = preprocessJhMarkdownAndMath(rawBlock);
   if (!processedText) return '';
-  const parts = processedText.split(/(\s+)/);
+  const rawParts = processedText.split(/(\s+)/);
+  const parts = [];
+  for (let rIdx = 0; rIdx < rawParts.length; rIdx++) {
+    const rp = rawParts[rIdx];
+    if (!rp || /^\s+$/.test(rp)) {
+      parts.push(rp);
+      continue;
+    }
+    const fmtPrefix = (rp.includes('%%JHBOLD%%') ? '%%JHBOLD%%' : '') + (rp.includes('%%JHEM%%') ? '%%JHEM%%' : '');
+    const strippedRp = rp.replace(/%%JHBOLD%%/g, '').replace(/%%JHEM%%/g, '');
+    if (/[A-Za-z\u0980-\u09FF\u0900-\u097F][—–][A-Za-z\u0980-\u09FF\u0900-\u097F]/.test(strippedRp)) {
+      const dashSegs = strippedRp
+        .replace(/([A-Za-z\u0980-\u09FF\u0900-\u097F][—–])(?=[A-Za-z\u0980-\u09FF\u0900-\u097F])/g, '$1\u0000')
+        .split('\u0000');
+      for (let dIdx = 0; dIdx < dashSegs.length; dIdx++) {
+        parts.push(fmtPrefix + dashSegs[dIdx]);
+      }
+    } else {
+      parts.push(rp);
+    }
+  }
   const spokenPartIndices = [];
   for (let i = 0; i < parts.length; i++) {
     if (isSpokenWordToken(expandJhTokenForSpeech(parts[i], atoms))) {
@@ -669,14 +691,29 @@ function wrapSingleBlockWithJhTtsWords(rawBlock, state, opts, isListItem, listBu
     const nextSpokenWord = nextSpokenIdx >= 0 ? parts[nextSpokenIdx] : '';
     spokenCursor += 1;
 
+    let hasTrailingDashToken = false;
+    const scanEnd = nextSpokenIdx >= 0 ? nextSpokenIdx : parts.length;
+    for (let k = pIdx + 1; k < scanEnd; k++) {
+      const midTok = String(parts[k] || '').replace(/%%JHBOLD%%/g, '').replace(/%%JHEM%%/g, '').trim();
+      if (/^[—–-]+$/.test(midTok)) {
+        hasTrailingDashToken = true;
+        break;
+      }
+    }
+
     const isHeadingEnd = addHeadingPause && pIdx === lastSpokenPartIdx;
-    const { syllableWeight, pauseTier, pauseWeight } = computeJhTokenTimingWeights(
+    const rawWeights = computeJhTokenTimingWeights(
       part,
       nextSpokenWord,
       atoms,
       addHeadingPause,
       isHeadingEnd
     );
+    const syllableWeight = rawWeights.syllableWeight;
+    const pauseTier = (hasTrailingDashToken && rawWeights.pauseTier < 2) ? 2 : rawWeights.pauseTier;
+    const pauseWeight = (hasTrailingDashToken && rawWeights.pauseTier < 2)
+      ? Math.max(rawWeights.pauseWeight, 340)
+      : rawWeights.pauseWeight;
     const weight = syllableWeight + pauseWeight;
 
     const wIdx = state.words.length;
@@ -826,7 +863,13 @@ function buildAcousticWordTimeline(words, totalWeight, audioMeta) {
     if (Array.isArray(pair) && pair.length >= 2) {
       const s = Math.max(0, Number(pair[0]) || 0);
       const e = Math.min(totalDur, Number(pair[1]) || 0);
-      if (e - s >= 0.12) silences.push([s, e]);
+      if (e - s >= 0.12) {
+        if (silences.length > 0 && s - silences[silences.length - 1][1] <= 0.045) {
+          silences[silences.length - 1][1] = Math.max(silences[silences.length - 1][1], e);
+        } else {
+          silences.push([s, e]);
+        }
+      }
     }
   }
 
@@ -856,11 +899,6 @@ function buildAcousticWordTimeline(words, totalWeight, audioMeta) {
       innerSils.push([s, e]);
     }
   }
-
-  const sortedSilDurs = innerSils.map(pair => pair[1] - pair[0]).sort((a, b) => a - b);
-  const medSilDur = sortedSilDurs.length ? sortedSilDurs[Math.floor(sortedSilDurs.length / 2)] : 0.22;
-  const tier3MinDur = medSilDur <= 0.30 ? 0.25 : 0.34;
-  const tier12MaxDur = medSilDur <= 0.30 ? 0.32 : 0.45;
 
   function voicedTimeAt(t) {
     const clamped = Math.max(0, Math.min(totalDur, t));
@@ -894,64 +932,248 @@ function buildAcousticWordTimeline(words, totalWeight, audioMeta) {
     return t;
   }
 
-  const anchors = [];
-  let lastTEnd = speechStart;
-  let lastWEnd = 0;
-  let lastSilIdx = -1;
+  let cumSyl = 0;
+  for (let i = 0; i < words.length; i++) {
+    words[i].cumSylStart = cumSyl;
+    cumSyl += (words[i].syllableWeight || 140);
+    words[i].cumSylEnd = cumSyl;
+  }
+  const totalSylWeight = Math.max(1.0, cumSyl);
+  const vSpeechStart = voicedTimeAt(speechStart);
+  const vSpeechEnd = Math.max(vSpeechStart + 0.2, voicedTimeAt(speechEnd));
+  const totalVoicedSpan = vSpeechEnd - vSpeechStart;
 
+  /* PASS 1: Global Interval Voiced-Time Viterbi Alignment on tier === 3 (Sentence & Heading Boundaries) */
+  const t3Nodes = [{ wordIdx: -1, word: '__START__', cumSyl: 0 }];
   for (let i = 0; i < words.length - 1; i++) {
-    const w = words[i];
-    const tier = w.pauseTier || 0;
-    if (tier === 0) continue;
+    if (words[i].pauseTier === 3) {
+      t3Nodes.push({ wordIdx: i, word: words[i].word, cumSyl: words[i].cumSylEnd });
+    }
+  }
+  t3Nodes.push({ wordIdx: words.length - 1, word: '__END__', cumSyl: totalSylWeight });
 
-    const remW = Math.max(1.0, totalWeight - lastWEnd);
-    const remT = Math.max(0.1, speechEnd - lastTEnd);
-    const wordEndW = w.wordEndWeight !== undefined ? w.wordEndWeight : (w.startWeight + (w.syllableWeight || 140));
-    const predT = lastTEnd + ((wordEndW - lastWEnd) / remW) * remT;
-    const maxTol = tier === 3 ? 1.35 : 0.95;
+  const N = t3Nodes.length;
+  const S = innerSils.length;
+  const silVStart = innerSils.map(pair => voicedTimeAt(pair[0]));
+  const silVEnd = innerSils.map(pair => voicedTimeAt(pair[1]));
+  const silDur = innerSils.map(pair => pair[1] - pair[0]);
 
-    let bestK = -1;
-    let bestCost = 999.0;
-    for (let sIdx = lastSilIdx + 1; sIdx < innerSils.length; sIdx++) {
-      const sStart = innerSils[sIdx][0];
-      const sEnd = innerSils[sIdx][1];
-      if (sStart <= lastTEnd + 0.08) continue;
-      if (sStart - predT > maxTol) break;
+  const INF = 1e9;
+  const dp = Array.from({ length: N }, () => new Float64Array(S + 2).fill(INF));
+  const prevI = Array.from({ length: N }, () => new Int32Array(S + 2).fill(-1));
+  const prevS = Array.from({ length: N }, () => new Int32Array(S + 2).fill(-1));
+  dp[0][0] = 0;
 
-      const sDur = sEnd - sStart;
-      if (tier === 3 && sDur < tier3MinDur && !/^\d+\.$/.test(w.word)) continue;
-      if ((tier === 1 || tier === 2) && sDur > tier12MaxDur) continue;
+  function nodeVStart(stIdx) {
+    if (stIdx === 0) return vSpeechStart;
+    if (stIdx === S + 1) return vSpeechEnd;
+    return silVStart[stIdx - 1];
+  }
+  function nodeVEnd(stIdx) {
+    if (stIdx === 0) return vSpeechStart;
+    if (stIdx === S + 1) return vSpeechEnd;
+    return silVEnd[stIdx - 1];
+  }
 
-      const dist = Math.abs(sStart - predT);
-      if (dist <= maxTol) {
-        const expP = (w.pauseWeight || (tier === 3 ? 390 : 195)) / 1000.0;
-        const cost = dist + 0.6 * Math.abs(sDur - expP);
-        if (cost < bestCost) {
-          bestCost = cost;
-          bestK = sIdx;
+  const SKIP_T3_PEN = 2.2;
+  for (let iCur = 1; iCur < N; iCur++) {
+    const stMin = (iCur === N - 1) ? (S + 1) : 1;
+    const stMax = (iCur === N - 1) ? (S + 1) : S;
+
+    for (let stCur = stMin; stCur <= stMax; stCur++) {
+      let pauseCost = 0;
+      if (stCur >= 1 && stCur <= S) {
+        const d = silDur[stCur - 1];
+        const wText = t3Nodes[iCur].word;
+        if (d < 0.20 && !/^[\d\u09E6-\u09EF]+\.$/.test(wText)) continue;
+        pauseCost = d >= 0.55 ? -0.45 : (d >= 0.40 ? -0.25 : (d < 0.28 ? 0.55 : 0.05));
+      }
+
+      const vCurStart = nodeVStart(stCur);
+      const globalExpV = vSpeechStart + (t3Nodes[iCur].cumSyl / totalSylWeight) * totalVoicedSpan;
+      const globalDrift = Math.abs(vCurStart - globalExpV);
+      if (stCur <= S && globalDrift > Math.max(3.8, totalVoicedSpan * 0.14)) continue;
+
+      for (let iPrev = Math.max(0, iCur - 6); iPrev < iCur; iPrev++) {
+        const skippedNodes = iCur - iPrev - 1;
+        const expVoiced = ((t3Nodes[iCur].cumSyl - t3Nodes[iPrev].cumSyl) / totalSylWeight) * totalVoicedSpan;
+        const pStMin = (iPrev === 0) ? 0 : 1;
+        const pStMax = (iPrev === 0) ? 0 : (stCur - 1);
+
+        for (let stPrev = pStMin; stPrev <= pStMax; stPrev++) {
+          if (dp[iPrev][stPrev] >= INF) continue;
+          const vPrevEnd = nodeVEnd(stPrev);
+          const actualVoiced = vCurStart - vPrevEnd;
+          if (actualVoiced < Math.max(0.12, expVoiced * 0.38)) continue;
+          if (actualVoiced > Math.max(expVoiced * 2.25, expVoiced + 3.6)) continue;
+
+          const intervalErr = Math.abs(actualVoiced - expVoiced);
+          const relErr = intervalErr / Math.max(0.8, Math.sqrt(expVoiced));
+          const transCost =
+            intervalErr * 0.70 +
+            relErr * 0.45 +
+            globalDrift * 0.15 +
+            skippedNodes * SKIP_T3_PEN +
+            pauseCost;
+          const cand = dp[iPrev][stPrev] + transCost;
+          if (cand < dp[iCur][stCur]) {
+            dp[iCur][stCur] = cand;
+            prevI[iCur][stCur] = iPrev;
+            prevS[iCur][stCur] = stPrev;
+          }
         }
       }
     }
+  }
 
-    if (bestK >= 0) {
-      const sStart = innerSils[bestK][0];
-      const sEnd = innerSils[bestK][1];
-      anchors.push({
-        endWordIdx: i,
-        endSec: sStart,
-        nextStartSec: sEnd
-      });
-      lastTEnd = sEnd;
-      lastWEnd = w.endWeight;
-      lastSilIdx = bestK;
+  const t3Matches = new Map();
+  if (dp[N - 1][S + 1] < INF) {
+    let ci = N - 1;
+    let cs = S + 1;
+    while (ci > 0 && cs >= 0) {
+      const pi = prevI[ci][cs];
+      const ps = prevS[ci][cs];
+      if (pi < 0) break;
+      if (pi > 0 && ps >= 1 && ps <= S) {
+        t3Matches.set(t3Nodes[pi].wordIdx, ps - 1);
+      }
+      ci = pi;
+      cs = ps;
+    }
+  } else {
+    let fbSilIdx = -1;
+    let fbTEnd = speechStart;
+    let fbSylEnd = 0;
+    for (let m = 1; m < N - 1; m++) {
+      const wIdx = t3Nodes[m].wordIdx;
+      const vLast = voicedTimeAt(fbTEnd);
+      const remVoiced = Math.max(0.05, vSpeechEnd - vLast);
+      const remSyl = Math.max(1.0, totalSylWeight - fbSylEnd);
+      const predT = invVoicedTime(vLast + ((t3Nodes[m].cumSyl - fbSylEnd) / remSyl) * remVoiced);
+      let bestK = -1;
+      let bestCost = 999.0;
+      for (let sIdx = fbSilIdx + 1; sIdx < S; sIdx++) {
+        const sStart = innerSils[sIdx][0];
+        const sDur = silDur[sIdx];
+        if (sStart <= fbTEnd + 0.08) continue;
+        if (sStart - predT > 1.75) break;
+        if (sDur < 0.20) continue;
+        const dist = Math.abs(sStart - predT);
+        if (dist <= 1.75) {
+          const cost = dist + 0.4 * Math.abs(sDur - 0.52);
+          if (cost < bestCost) {
+            bestCost = cost;
+            bestK = sIdx;
+          }
+        }
+      }
+      if (bestK >= 0) {
+        t3Matches.set(wIdx, bestK);
+        fbSilIdx = bestK;
+        fbTEnd = innerSils[bestK][1];
+        fbSylEnd = t3Nodes[m].cumSyl;
+      }
     }
   }
 
-  anchors.push({
+  const pass1Anchors = [];
+  for (let i = 1; i < N - 1; i++) {
+    const wIdx = t3Nodes[i].wordIdx;
+    if (t3Matches.has(wIdx)) {
+      const sIdx = t3Matches.get(wIdx);
+      pass1Anchors.push({
+        endWordIdx: wIdx,
+        silIdx: sIdx,
+        endSec: innerSils[sIdx][0],
+        nextStartSec: innerSils[sIdx][1]
+      });
+    }
+  }
+  pass1Anchors.push({
     endWordIdx: words.length - 1,
+    silIdx: S,
     endSec: speechEnd,
     nextStartSec: totalDur
   });
+
+  /* PASS 2: Intra-Sentence Voiced-Time Clause Alignment on tier === 1 & 2 */
+  const anchors = [];
+  let spanStartWord = 0;
+  let spanStartSec = speechStart;
+  let spanStartSilIdx = 0;
+
+  for (let pIdx = 0; pIdx < pass1Anchors.length; pIdx++) {
+    const p1 = pass1Anchors[pIdx];
+    const spanEndWord = p1.endWordIdx;
+    const spanEndSec = p1.endSec;
+    const spanEndSilIdx = p1.silIdx;
+
+    const vSpanStart = voicedTimeAt(spanStartSec);
+    const vSpanEnd = Math.max(vSpanStart + 0.05, voicedTimeAt(spanEndSec));
+    const spanStartSyl = spanStartWord > 0 ? words[spanStartWord - 1].cumSylEnd : 0;
+    const spanEndSyl = words[spanEndWord].cumSylEnd;
+
+    let lastSubSilIdx = spanStartSilIdx - 1;
+    let lastSubTEnd = spanStartSec;
+    let lastSubSylEnd = spanStartSyl;
+
+    for (let wIdx = spanStartWord; wIdx < spanEndWord; wIdx++) {
+      const w = words[wIdx];
+      const tier = w.pauseTier || 0;
+      if (tier === 0) continue;
+
+      const vSubLast = voicedTimeAt(lastSubTEnd);
+      const remSubVoiced = Math.max(0.03, vSpanEnd - vSubLast);
+      const remSubSyl = Math.max(1.0, spanEndSyl - lastSubSylEnd);
+      const dSyl = Math.max(0, w.cumSylEnd - lastSubSylEnd);
+      const predV = vSubLast + (dSyl / remSubSyl) * remSubVoiced;
+      const predT = invVoicedTime(predV);
+      const maxTol = 1.20;
+
+      let bestK = -1;
+      let bestCost = 999.0;
+      for (let sIdx = Math.max(spanStartSilIdx, lastSubSilIdx + 1); sIdx < spanEndSilIdx; sIdx++) {
+        const sStart = innerSils[sIdx][0];
+        const sEnd = innerSils[sIdx][1];
+        const sDur = sEnd - sStart;
+        if (sStart <= lastSubTEnd + 0.08) continue;
+        if (sEnd >= spanEndSec - 0.08) break;
+        if (sStart - predT > maxTol) break;
+        if (sDur < 0.15 && Math.abs(sStart - predT) > 0.18) continue;
+
+        const dist = Math.abs(sStart - predT);
+        if (dist <= maxTol) {
+          const expP = tier >= 2 ? 0.36 : 0.28;
+          const cost = dist + 0.35 * Math.abs(sDur - expP);
+          if (cost < bestCost) {
+            bestCost = cost;
+            bestK = sIdx;
+          }
+        }
+      }
+
+      if (bestK >= 0) {
+        anchors.push({
+          endWordIdx: wIdx,
+          endSec: innerSils[bestK][0],
+          nextStartSec: innerSils[bestK][1]
+        });
+        lastSubSilIdx = bestK;
+        lastSubTEnd = innerSils[bestK][1];
+        lastSubSylEnd = w.cumSylEnd;
+      }
+    }
+
+    anchors.push({
+      endWordIdx: spanEndWord,
+      endSec: p1.endSec,
+      nextStartSec: p1.nextStartSec
+    });
+
+    spanStartWord = spanEndWord + 1;
+    spanStartSec = p1.nextStartSec;
+    spanStartSilIdx = spanEndSilIdx + 1;
+  }
 
   let segStartWordIdx = 0;
   let segStartSec = speechStart;
@@ -966,8 +1188,8 @@ function buildAcousticWordTimeline(words, totalWeight, audioMeta) {
       const sMs = words[j].syllableWeight || 140;
       const pMs = words[j].pauseWeight !== undefined
         ? words[j].pauseWeight
-        : (words[j].pauseTier === 3 ? 390 : (words[j].pauseTier >= 1 ? 195 : 0));
-      const wEff = (j === seg.endWordIdx) ? sMs : (sMs + pMs * 0.35);
+        : (words[j].pauseTier === 3 ? 520 : (words[j].pauseTier >= 1 ? 260 : 0));
+      const wEff = (j === seg.endWordIdx) ? sMs : (sMs + pMs * 0.15);
       segWeights.push([cumW, cumW + wEff]);
       cumW += wEff;
     }

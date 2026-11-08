@@ -1435,8 +1435,17 @@ const suite = code + `
   assert.ok(wUnitMs.syllableWeight >= 650 && wUnitMs.pauseTier === 3, 'Unit ms). must expand to milliseconds weight and sentence pauseTier 3');
   const wAbbrev = computeCalibratedWordTimingWeights('A.R.', 'Rahman', true, false);
   assert.strictEqual(wAbbrev.pauseTier, 0, 'Abbreviation A.R. must not be misclassified as sentence-ending pauseTier 3');
-  const wQuoteOpen = computeCalibratedWordTimingWeights('explicit', '"90%', false, false);
-  assert.strictEqual(wQuoteOpen.pauseTier, 1, 'Word preceding opening quote must receive prosodic pauseTier 1');
+  const wEg = computeCalibratedWordTimingWeights('e.g.,', 'fast', false, false);
+  assert.strictEqual(wEg.pauseTier, 1, 'Abbreviation e.g., must receive prosodic comma pauseTier 1');
+  assert.ok(wEg.syllableWeight >= 450, 'Abbreviation e.g., must receive expanded "for example" spoken syllable weight');
+  const wParenNoPause = computeCalibratedWordTimingWeights('Breathe', '(Reprise)', false, false);
+  assert.strictEqual(wParenNoPause.pauseTier, 0, 'Word before parenthetical must not create a false pauseTier 1 that steals sentence boundaries');
+  const emState = { words: [], totalWeight: 0, prefix: 'emChk', sentCounter: 0 };
+  wrapTextWithJhTtsWords('Pink Floyd — Time and real life—real life.', emState, { chunkSentences: true });
+  const floydWord = emState.words.find(w => w.word === 'Floyd');
+  const lifeDashWord = emState.words.find(w => w.word === 'life—');
+  assert.ok(floydWord && floydWord.pauseTier === 2, 'Word followed by standalone em-dash must be promoted to pauseTier 2');
+  assert.ok(lifeDashWord && lifeDashWord.pauseTier === 2, 'Internal unspaced em-dash (life—real) must split into life— (pauseTier 2) + real');
   assert.ok(el('jhCategoryStatsBox').innerHTML.includes('76 Pages'), 'Category stats shows simple 76 Pages');
   assert.ok(!el('jhCategoryStatsBox').innerHTML.includes('76/76'), 'No fraction in category stats');
 
