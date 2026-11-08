@@ -78,7 +78,7 @@ def _collect_anondo_audio_items() -> dict[str, dict[str, str]]:
     for s in ANONDO_SLIDES:
         sid = int(s["id"])
         rel_path = f"slides/slide_{sid}.mp3"
-        txt = f"{s['title']}. {s['highlight']} {s['text']}"
+        txt = _clean_tts_text(_humanize_english_tts_text(f"{s['title']}. {s['highlight']} {s['text']}"))
         items[rel_path] = {
             "hash": sha256_text(txt),
             "scope": "slides",
@@ -90,18 +90,19 @@ def _collect_anondo_audio_items() -> dict[str, dict[str, str]]:
 
     for q_idx, q_txt in enumerate(ANONDO_QUOTES):
         rel_path = f"quotes/quote_{q_idx}.mp3"
+        q_clean = _clean_tts_text(_humanize_english_tts_text(q_txt))
         items[rel_path] = {
-            "hash": sha256_text(q_txt),
+            "hash": sha256_text(q_clean),
             "scope": "quotes",
             "part": "0",
-            "text": q_txt,
-            "part1": q_txt,
+            "text": q_clean,
+            "part1": q_clean,
             "part2": "",
         }
 
     for p_idx, p_obj in enumerate(ANONDO_PILLARS):
         rel_path = f"pillars/pillar_{p_idx}.mp3"
-        p_txt = f"{p_obj['title']}. {p_obj['detail']}"
+        p_txt = _clean_tts_text(_humanize_english_tts_text(f"{p_obj['title']}. {p_obj['detail']}"))
         items[rel_path] = {
             "hash": sha256_text(p_txt),
             "scope": "pillars",
@@ -114,7 +115,8 @@ def _collect_anondo_audio_items() -> dict[str, dict[str, str]]:
     for d in ANONDO_DAYS_21:
         day_num = int(d["day"])
         day_rel = f"days/day_{day_num}.mp3"
-        day_txt = d.get("voice_script_bn") or f"Good morning Koushik! Welcome to Day {day_num}: {d['title_bn']}."
+        raw_day_txt = d.get("voice_script_bn") or f"Good morning Koushik! Welcome to Day {day_num}: {d['title_bn']}."
+        day_txt = _clean_tts_text(_humanize_english_tts_text(raw_day_txt))
         items[day_rel] = {
             "hash": sha256_text(day_txt),
             "scope": "days",
@@ -126,9 +128,9 @@ def _collect_anondo_audio_items() -> dict[str, dict[str, str]]:
 
         for idx, ag in enumerate(d["agendas"]):
             ag_rel = f"games/day_{day_num}_ag_{idx}.mp3"
-            part1_en = f"{ag['title_bn']}. {ag['detail_bn']}"
+            part1_en = _clean_tts_text(_humanize_english_tts_text(f"{ag['title_bn']}. {ag['detail_bn']}"))
             follow_en = f" And in Turn 2, ask: {ag['followup_prompt_bn']}" if ag.get("followup_prompt_bn") else ""
-            part2_en = f"Open Gemini Live and say: {ag['prompt_bn']}{follow_en}"
+            part2_en = _clean_tts_text(_humanize_english_tts_text(f"Open Gemini Live and say: {ag['prompt_bn']}{follow_en}"))
             full_txt = f"{part1_en} {part2_en}"
             items[ag_rel] = {
                 "hash": sha256_text(full_txt),
@@ -159,9 +161,218 @@ def _find_node_bin() -> str:
     return "node"
 
 
+_LATEX_GREEK_SPOKEN: dict[str, str] = {
+    r"\theta": " theta ",
+    r"\omega": " omega ",
+    r"\lambda": " lambda ",
+    r"\mu": " mu ",
+    r"\nu": " nu ",
+    r"\pi": " pi ",
+    r"\sigma": " sigma ",
+    r"\tau": " tau ",
+    r"\alpha": " alpha ",
+    r"\beta": " beta ",
+    r"\gamma": " gamma ",
+    r"\delta": " delta ",
+    r"\Delta": " delta ",
+    r"\epsilon": " epsilon ",
+    r"\varepsilon": " epsilon ",
+    r"\phi": " phi ",
+    r"\varphi": " phi ",
+    r"\Phi": " Phi ",
+    r"\psi": " psi ",
+    r"\Psi": " Psi ",
+    r"\rho": " rho ",
+    r"\eta": " eta ",
+    r"\kappa": " kappa ",
+    r"\chi": " chi ",
+    r"\xi": " xi ",
+    r"\zeta": " zeta ",
+    r"\Omega": " Omega ",
+    r"\Sigma": " Sigma ",
+    r"\Lambda": " Lambda ",
+    r"\Theta": " Theta ",
+}
+
+_UNIT_SPOKEN: dict[str, str] = {
+    "ms": "milliseconds",
+    "s": "seconds",
+    "Hz": "Hertz",
+    "kHz": "kilohertz",
+    "MHz": "megahertz",
+    "GHz": "gigahertz",
+    "dB": "decibels",
+    "nm": "nanometres",
+    "km": "kilometres",
+    "kg": "kilograms",
+    "Re": "the real part of",
+}
+
+
+def _expand_escaped_dollar(m: re.Match[str]) -> str:
+    raw = m.group(1).replace(",", "")
+    if raw.startswith("0.") and len(raw) == 4:
+        cents = int(round(float(raw) * 100))
+        return f" {cents} cents "
+    return f" {m.group(1)} dollars "
+
+
+def _spoken_math_inner(expr: str) -> str:
+    s = str(expr or "").strip()
+    if not s:
+        return ""
+    s = re.sub(r"\\(?:left|right)\b", "", s)
+    s = re.sub(r"\\mathbb\s*\{([^{}]+)\}", r"\1", s)
+    s = re.sub(
+        r"\\text\s*\{([^}]*)\}",
+        lambda m: " " + _UNIT_SPOKEN.get(m.group(1).strip(), m.group(1).strip()) + " ",
+        s,
+    )
+    s = re.sub(r"\\\$(\d+(?:,\d{3})*(?:\.\d+)?)", _expand_escaped_dollar, s)
+    s = re.sub(r"(?:dollars|cents)\s*/\s*(night|day|month|year|hour)\b", lambda m: m.group(0).split("/")[0].strip() + " per " + m.group(1), s)
+    s = re.sub(r"\\log_2\b", " log base 2 of ", s)
+    s = re.sub(r"\\ln\b", " natural log of ", s)
+    for macro, spoken in _LATEX_GREEK_SPOKEN.items():
+        s = s.replace(macro, spoken)
+    s = re.sub(r"\^\s*\{\\circ\}|\^\s*\\circ|°", " degrees ", s)
+    s = re.sub(r"\^\s*\{\(1/2\)\}|\^\s*\(1/2\)", " to the one half ", s)
+    s = re.sub(r"\^\s*\{-5/3\}|\^\s*-5/3", " to the minus 5 over 3 ", s)
+    s = re.sub(r"\^\s*\{2/3\}|\^\s*2/3", " to the 2 over 3 ", s)
+    s = re.sub(r"\^\s*\{2\}|\^\s*2\b", " squared ", s)
+    s = re.sub(r"\^\s*\{3\}|\^\s*3\b", " cubed ", s)
+    s = re.sub(r"\^\s*\{-1\}|\^\s*-1\b", " inverse ", s)
+    s = re.sub(r"\^\s*\{([^{}]+)\}", r" to the \1 ", s)
+    s = re.sub(r"\^\s*([A-Za-z0-9+\-]+)", r" to the \1 ", s)
+    s = re.sub(r"_\s*\{([^{}]+)\}", r" \1 ", s)
+    s = re.sub(r"_\s*([A-Za-z0-9]+)", r" \1 ", s)
+    s = re.sub(r"\\frac\s*\{1\}\s*\{2\}", " one half ", s)
+    s = re.sub(r"\\frac\s*\{1\}\s*\{3\}", " one third ", s)
+    s = re.sub(r"\\frac\s*\{1\}\s*\{4\}", " one quarter ", s)
+    for _ in range(2):
+        s = re.sub(r"\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}", r" \1 over \2 ", s)
+        s = re.sub(r"\\sqrt\s*\{([^{}]+)\}", r" the square root of \1 ", s)
+    s = re.sub(r"\\exp\s*\(([^()]+)\)", r" e to the \1 ", s)
+    s = s.replace(r"\infty", " infinity ")
+    s = s.replace(r"\times", " times ")
+    s = s.replace(r"\cdot", " dot ")
+    s = s.replace(r"\leftrightarrow", " corresponds to ")
+    s = s.replace(r"\rightarrow", " approaches ")
+    s = s.replace(r"\to", " approaches ")
+    s = s.replace(r"\geq", " is greater than or equal to ")
+    s = s.replace(r"\ge", " is greater than or equal to ")
+    s = s.replace(r"\leq", " is less than or equal to ")
+    s = s.replace(r"\le", " is less than or equal to ")
+    s = s.replace(r"\neg", " not ")
+    s = s.replace(r"\lor", " or ")
+    s = s.replace(r"\land", " and ")
+    s = s.replace(r"\forall", " for all ")
+    s = s.replace(r"\exists", " there exists ")
+    s = s.replace(r"\neq", " is not equal to ")
+    s = s.replace(r"\ne", " is not equal to ")
+    s = s.replace(r"\approx", " is approximately ")
+    s = s.replace(r"\propto", " is proportional to ")
+    s = s.replace(r"\sim", " approximately ")
+    s = s.replace(r"\in", " in ")
+    s = s.replace(r"\dots", " and so on ")
+    s = s.replace(r"\ldots", " and so on ")
+    s = s.replace(r"\cdots", " and so on ")
+    s = s.replace(r"\pm", " plus or minus ")
+    s = s.replace(r"\partial", " partial ")
+    s = s.replace(r"\nabla", " del ")
+    s = s.replace(r"\int", " the integral of ")
+    s = s.replace(r"\sum", " the sum of ")
+    s = s.replace(r"\%", " percent ")
+    for uni_sym, uni_spoken in (
+        ("μ", " mu "),
+        ("π", " pi "),
+        ("θ", " theta "),
+        ("ω", " omega "),
+        ("λ", " lambda "),
+        ("σ", " sigma "),
+        ("Δ", " delta "),
+        ("∞", " infinity "),
+        ("≈", " is approximately "),
+        ("≠", " is not equal to "),
+        ("≤", " is less than or equal to "),
+        ("≥", " is greater than or equal to "),
+        ("×", " times "),
+        ("∝", " is proportional to "),
+        ("²", " squared "),
+        ("³", " cubed "),
+        ("⁻¹", " inverse "),
+    ):
+        s = s.replace(uni_sym, uni_spoken)
+    s = re.sub(r"^\s*<\s*(?=\d)", "under ", s)
+    s = re.sub(r"^\s*<\s*", "less than ", s)
+    s = re.sub(r"^\s*>\s*", "greater than ", s)
+    s = re.sub(r"\s*<\s*", " is less than ", s)
+    s = re.sub(r"\s*>\s*", " is greater than ", s)
+    s = re.sub(r"\s*=\s*", " equals ", s)
+    s = re.sub(r"\s*\+\s*", " plus ", s)
+    s = re.sub(r"(?:^|(?<=\s))-\s*(?=[A-Za-z0-9])", "minus ", s)
+    s = re.sub(r"\s+-\s+", " minus ", s)
+    s = re.sub(r"\bd\s+([A-Za-z]+)\s*/\s*d\s*([A-Za-z]+)\b", r"d \1 by d \2", s)
+    s = re.sub(r"\b([A-Za-z0-9]+)\s*/\s*([A-Za-z0-9]+)\b", r"\1 over \2", s)
+    s = re.sub(r"\b(\d+)\s*:\s*(\d+)\b", r"\1 to \2", s)
+    s = re.sub(r"[\\{}]", " ", s)
+    return " ".join(s.split())
+
+
+def _humanize_inline_code(m: re.Match[str]) -> str:
+    code = m.group(1).strip()
+    if code.upper().startswith("# NEXT"):
+        return "Next:"
+    if code == "personas/*.md":
+        return "personas markdown files"
+    if code == "wiki/*.md":
+        return "wiki markdown files"
+    code = re.sub(r"^#+\s*", "", code)
+    code = code.replace("_", " ")
+    code = re.sub(r"\.py\b", " dot py", code)
+    code = re.sub(r"\.json\b", " dot JSON", code)
+    code = re.sub(r"\.md\b", " dot M D", code)
+    code = re.sub(r"\.js\b", " dot J S", code)
+    return code
+
+
+def _humanize_english_tts_text(s: str) -> str:
+    s = str(s or "")
+    if not s:
+        return ""
+    s = re.sub(r"`([^`]+)`", _humanize_inline_code, s)
+    s = re.sub(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]", lambda m: m.group(2) or m.group(1), s)
+    s = re.sub(r"\\\$(\d+(?:,\d{3})*(?:\.\d+)?)", _expand_escaped_dollar, s)
+    s = re.sub(r"\$1,000,000\b", "1 million dollar", s)
+    s = re.sub(
+        r"\$0\.(\d\d)(?=\s|[.,;!?)]|$)(?![^$\n]*[\\^_{}=<>/:])",
+        lambda m: f"{int(m.group(1))} cents",
+        s,
+    )
+    s = re.sub(
+        r"\$(\d+(?:,\d{3})*(?:\.\d+)?)(?=\s|[.,;!?)]|$)(?![^$\n]*[\\^_{}=<>/:])",
+        r"\1 dollars",
+        s,
+    )
+    s = re.sub(r"\$([^$\n]+)\$", lambda m: " " + _spoken_math_inner(m.group(1)) + " ", s)
+    s = re.sub(r"\bAm\s*->\s*G\b", "A minor to G", s)
+    s = re.sub(r"\b([A-G])-major\b", r"\1 major", s)
+    s = re.sub(r"\b([A-G])-minor\b", r"\1 minor", s)
+    s = re.sub(r"\b([A-G])-add9\b", r"\1 add 9", s)
+    s = re.sub(r"\b([A-G])-sus4\b", r"\1 sus 4", s)
+    s = re.sub(r"\s*(?:<->|↔)\s*", " and ", s)
+    s = re.sub(r"\s*(?:->|→|=>|⇒)\s*", ", to ", s)
+    s = re.sub(r"\bL2/L3\b", "L 2 and L 3", s)
+    s = re.sub(r"\b1/f\b", "1 over f", s)
+    s = re.sub(r"\bw/o\b", "without", s)
+    s = re.sub(r"\be\.g\.,?\s*", "for example, ", s)
+    s = re.sub(r"\bi\.e\.,?\s*", "that is, ", s)
+    s = re.sub(r"\bvs\.\s*", "versus ", s)
+    return " ".join(s.split())
+
+
 def _clean_tts_text(s: str) -> str:
     s = re.sub(r"[\U00010000-\U0010ffff\u2600-\u27bf\ufe0f]", " ", str(s or ""))
-    s = re.sub(r"[•*#_`~↗]+", " ", s)
+    s = re.sub(r"[•*#_`~↗\[\]]+", " ", s)
     return " ".join(s.split())
 
 
@@ -251,17 +462,17 @@ def _collect_zorba_audio_items() -> dict[str, dict[str, str]]:
     for r in reels:
         cid = str(r["id"])
         rel_path = f"reels/{cid}.mp3"
-        title_txt = _clean_tts_text(r.get("title_bn", ""))
+        title_txt = _clean_tts_text(_humanize_english_tts_text(r.get("title_bn", "")))
         sec_blocks: list[str] = []
         for sec in r.get("sections", []):
-            h = _clean_tts_text(sec.get("heading_bn", ""))
-            b = _clean_tts_text(sec.get("body_bn", ""))
+            h = _clean_tts_text(_humanize_english_tts_text(sec.get("heading_bn", "")))
+            b = _clean_tts_text(_humanize_english_tts_text(sec.get("body_bn", "")))
             if h and b:
                 sec_blocks.append(f"{h}. {b}")
             elif b:
                 sec_blocks.append(b)
-        cur_q = _clean_tts_text(r.get("curiosity_q_bn", ""))
-        cur_a = _clean_tts_text(r.get("curiosity_a_bn", ""))
+        cur_q = _clean_tts_text(_humanize_english_tts_text(r.get("curiosity_q_bn", "")))
+        cur_a = _clean_tts_text(_humanize_english_tts_text(r.get("curiosity_a_bn", "")))
         cur_txt = f"{cur_q} {cur_a}".strip()
 
         mid = max(1, (len(sec_blocks) + 1) // 2)
@@ -593,7 +804,7 @@ def _get_uk_warm_tokens_str() -> str:
 
 
 def _prepare_expressive_uk_text(text: str) -> str:
-    s = text or ""
+    s = _humanize_english_tts_text(text or "")
     s = re.sub(r"₹\s*(\d+(?:\.\d+)?)\s*Cr\+", r"\1 Crore", s)
     s = re.sub(r"₹\s*(\d+(?:\.\d+)?)\s*Cr\b", r"\1 Crore", s)
     s = re.sub(r"₹\s*(\d+(?:\.\d+)?)\s*L\+", r"\1 Lakh", s)

@@ -1179,3 +1179,60 @@ html, body {
     padding: 18px 18px 28px;
   }
 }
+
+.jh-md-strong {
+  font-weight: 800;
+}
+
+.jh-md-em {
+  font-style: italic;
+}
+
+.jh-inline-code {
+  font-family: monospace;
+  font-size: 0.9em;
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  border-radius: 5px;
+  padding: 1px 5px;
+}
+
+.jh-wikilink-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #FEF3C7;
+  border: 1px solid #F59E0B;
+  border-radius: 5px;
+  padding: 1px 5px;
+}
+
+.jh-md-arrow {
+  display: inline-block;
+  font-weight: 700;
+  padding: 0 2px;
+}
+
+.jh-math-inline {
+  display: inline-block;
+  font-family: 'Georgia', serif;
+  background: #F8FAFC;
+  border: 1px solid #CBD5E1;
+  border-radius: 5px;
+  padding: 0 5px;
+}
+
+.jh-math-sup,
+.jh-math-sub {
+  font-size: 0.76em;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+.jh-math-sup { top: -0.45em; }
+.jh-math-sub { bottom: -0.22em; }
+.jh-math-radicand {
+  border-top: 1.2px solid currentColor;
+  padding-top: 1px;
+}

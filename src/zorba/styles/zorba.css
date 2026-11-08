@@ -222,3 +222,155 @@ body.jh-audio-playing .jh-curiosity-box:not(.jh-block-active) {
   color: #064E3B;
   line-height: 1.72;
 }
+
+/* ============================================================================
+   KORTEX STUDIO-INSPIRED MARKDOWN, CODE KEYCAPS & LATEX MATH TYPOGRAPHY
+   ============================================================================ */
+.jh-md-strong {
+  font-weight: 750;
+  color: #0F172A;
+  text-decoration: underline;
+  text-decoration-color: rgba(79, 70, 229, 0.28);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+}
+
+.jh-md-em {
+  font-family: 'Newsreader', 'Georgia', 'Cambria', serif;
+  font-style: italic;
+  font-weight: 500;
+  color: #1E293B;
+  letter-spacing: 0.01em;
+}
+
+.jh-inline-code {
+  font-family: 'Geist Mono', 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  font-size: 0.88em;
+  font-weight: 600;
+  background: #EEF2FF;
+  color: #3730A3;
+  border: 1px solid #C7D2FE;
+  box-shadow: 0 1px 0 #C7D2FE;
+  border-radius: 6px;
+  padding: 1px 6px;
+  margin: 0 1px;
+  white-space: nowrap;
+}
+
+.jh-wikilink-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.92em;
+  font-weight: 600;
+  background: #F0FDFA;
+  color: #0F766E;
+  border: 1px solid #99F6E4;
+  border-radius: 6px;
+  padding: 1px 6px;
+  margin: 0 1px;
+}
+
+.jh-wikilink-icon {
+  font-size: 0.82em;
+  opacity: 0.85;
+}
+
+.jh-md-arrow {
+  display: inline-block;
+  font-weight: 700;
+  color: #0D9488;
+  padding: 0 2px;
+}
+
+.jh-math-inline {
+  display: inline-block;
+  font-family: 'Cambria Math', 'STIX Two Math', 'Latin Modern Math', 'Georgia', serif;
+  font-size: 0.98em;
+  font-weight: 600;
+  color: #0F172A;
+  background: #F8FAFC;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  padding: 0 6px;
+  margin: 0 1px;
+  line-height: 1.38;
+  vertical-align: baseline;
+}
+
+.jh-math-sup,
+.jh-math-sub {
+  font-size: 0.76em;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+.jh-math-sup {
+  top: -0.45em;
+}
+
+.jh-math-sub {
+  bottom: -0.22em;
+}
+
+.jh-math-frac {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  font-size: 0.94em;
+}
+
+.jh-math-num {
+  font-weight: 600;
+}
+
+.jh-math-slash {
+  opacity: 0.65;
+  padding: 0 1px;
+}
+
+.jh-math-den {
+  font-weight: 600;
+}
+
+.jh-math-sqrt {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.jh-math-radicand {
+  border-top: 1.2px solid currentColor;
+  padding-top: 1px;
+  margin-left: 1px;
+}
+
+.jh-math-unit,
+.jh-math-op {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-style: normal;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.jh-tts-word.jh-word-active .jh-math-inline,
+.jh-tts-word.jh-word-active .jh-inline-code,
+.jh-tts-word.jh-word-active .jh-wikilink-pill {
+  background: transparent;
+  border-color: rgba(15, 23, 42, 0.25);
+  box-shadow: none;
+  color: #0F172A !important;
+}
+
+.jh-sec-list-item {
+  position: relative;
+  padding-left: 10px;
+  border-left: 2.5px solid #CBD5E1;
+  margin-bottom: 9px;
+}
+
+.jh-list-bullet {
+  color: #0D9488;
+  font-weight: 800;
+  margin-right: 4px;
+}

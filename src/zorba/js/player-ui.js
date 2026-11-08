@@ -268,13 +268,373 @@ function computeCalibratedWordTimingWeights(rawWord, nextWord, isTitleOrHeading,
   return { syllableWeight, pauseTier, pauseWeight };
 }
 
-function wrapTextWithJhTtsWords(text, state, opts) {
-  const raw = String(text || '');
-  if (!raw) return '';
-  const parts = raw.split(/(\s+)/);
+function escapeJhHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+const JH_LATEX_SYMBOLS = [
+  ['\\leftrightarrow', '↔'],
+  ['\\rightarrow', '→'],
+  ['\\to', '→'],
+  ['\\infty', '∞'],
+  ['\\times', '×'],
+  ['\\cdot', '·'],
+  ['\\approx', '≈'],
+  ['\\propto', '∝'],
+  ['\\sim', '∼'],
+  ['\\geq', '≥'],
+  ['\\ge', '≥'],
+  ['\\leq', '≤'],
+  ['\\le', '≤'],
+  ['\\neg', '¬'],
+  ['\\lor', '∨'],
+  ['\\land', '∧'],
+  ['\\forall', '∀'],
+  ['\\exists', '∃'],
+  ['\\neq', '≠'],
+  ['\\ne', '≠'],
+  ['\\pm', '±'],
+  ['\\in', '∈'],
+  ['\\dots', '…'],
+  ['\\ldots', '…'],
+  ['\\cdots', '⋯'],
+  ['\\partial', '∂'],
+  ['\\nabla', '∇'],
+  ['\\int', '∫'],
+  ['\\sum', '∑'],
+  ['\\prod', '∏'],
+  ['\\theta', 'θ'],
+  ['\\omega', 'ω'],
+  ['\\lambda', 'λ'],
+  ['\\mu', 'μ'],
+  ['\\nu', 'ν'],
+  ['\\pi', 'π'],
+  ['\\sigma', 'σ'],
+  ['\\tau', 'τ'],
+  ['\\alpha', 'α'],
+  ['\\beta', 'β'],
+  ['\\gamma', 'γ'],
+  ['\\delta', 'δ'],
+  ['\\Delta', 'Δ'],
+  ['\\epsilon', 'ε'],
+  ['\\varepsilon', 'ε'],
+  ['\\phi', 'φ'],
+  ['\\varphi', 'φ'],
+  ['\\Phi', 'Φ'],
+  ['\\psi', 'ψ'],
+  ['\\Psi', 'Ψ'],
+  ['\\rho', 'ρ'],
+  ['\\eta', 'η'],
+  ['\\kappa', 'κ'],
+  ['\\chi', 'χ'],
+  ['\\xi', 'ξ'],
+  ['\\zeta', 'ζ'],
+  ['\\Omega', 'Ω'],
+  ['\\Sigma', 'Σ'],
+  ['\\Lambda', 'Λ'],
+  ['\\Theta', 'Θ'],
+  ['\\%', '%']
+];
+
+function renderJhLatexInnerHtml(latex) {
+  let s = String(latex || '').trim();
+  if (!s) return '';
+
+  s = s.replace(/\\(?:left|right)\b/g, '');
+  s = s.replace(/\\\$/g, '%%JHDL%%');
+
+  const textBlocks = [];
+  s = s.replace(/\\text\s*\{([^}]*)\}/g, (_, t) => {
+    const id = textBlocks.length;
+    textBlocks.push('<span class="jh-math-unit">' + escapeJhHtml(t) + '</span>');
+    return '%%JHTXT' + id + '%%';
+  });
+
+  s = s.replace(/\\mathbb\s*\{([^{}]+)\}/g, (_, ch) => {
+    const map = { R: 'ℝ', N: 'ℕ', Z: 'ℤ', Q: 'ℚ', C: 'ℂ' };
+    return map[ch.trim()] || escapeJhHtml(ch);
+  });
+
+  const opBlocks = [];
+  s = s.replace(/\\(exp|ln|log|sin|cos|tan|min|max)(?![A-Za-z])/g, (_, fn) => {
+    const id = opBlocks.length;
+    opBlocks.push('<span class="jh-math-op">' + fn + '</span>');
+    return '%%JHOP' + id + '%%';
+  });
+
+  for (let i = 0; i < JH_LATEX_SYMBOLS.length; i++) {
+    s = s.split(JH_LATEX_SYMBOLS[i][0]).join(JH_LATEX_SYMBOLS[i][1]);
+  }
+
+  s = escapeJhHtml(s);
+  s = s.replace(/-/g, '−');
+  s = s.replace(/\^\s*\{\\circ\}|\^\s*\\circ/g, '°');
+
+  s = s.replace(/\^\s*\{([^{}]+)\}/g, '<sup class="jh-math-sup">$1</sup>');
+  s = s.replace(/_\s*\{([^{}]+)\}/g, '<sub class="jh-math-sub">$1</sub>');
+  s = s.replace(/\^\s*(\([0-9+\-−/]+\)|[a-zA-Z0-9+\-−πθωλμνσ∞]+)/g, '<sup class="jh-math-sup">$1</sup>');
+  s = s.replace(/_\s*([a-zA-Z0-9μνπθωλσ]+)/g, '<sub class="jh-math-sub">$1</sub>');
+
+  for (let pass = 0; pass < 2; pass++) {
+    s = s.replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, '<span class="jh-math-frac"><span class="jh-math-num">$1</span><span class="jh-math-slash">/</span><span class="jh-math-den">$2</span></span>');
+    s = s.replace(/\\sqrt\s*\{([^{}]+)\}/g, '<span class="jh-math-sqrt">√<span class="jh-math-radicand">$1</span></span>');
+  }
+
+  s = s.replace(/[{}]/g, '');
+  s = s.replace(/%%JHTXT(\d+)%%/g, (_, id) => textBlocks[Number(id)] || '');
+  s = s.replace(/%%JHOP(\d+)%%/g, (_, id) => opBlocks[Number(id)] || '');
+  s = s.replace(/%%JHDL%%/g, '$');
+  return s;
+}
+
+function humanizeLatexForJhSpeech(expr) {
+  let s = String(expr || '').trim();
+  if (!s) return '';
+  const unitMap = {
+    ms: 'milliseconds',
+    s: 'seconds',
+    Hz: 'Hertz',
+    kHz: 'kilohertz',
+    MHz: 'megahertz',
+    GHz: 'gigahertz',
+    dB: 'decibels',
+    Re: 'the real part of'
+  };
+  s = s.replace(/\\(?:left|right)\b/g, '');
+  s = s.replace(/\\\$|%%JHDL%%/g, '%%JHDL%%');
+  s = s.replace(/\\mathbb\s*\{([^{}]+)\}/g, '$1');
+  s = s.replace(/\\text\s*\{([^}]*)\}/g, (_, u) => ' ' + (unitMap[u.trim()] || u.trim()) + ' ');
+  s = s.replace(/%%JHDL%%(\d+(?:,\d{3})*(?:\.\d+)?)/g, (_, num) => {
+    const clean = num.replace(/,/g, '');
+    if (clean.startsWith('0.') && clean.length === 4) {
+      return ' ' + Math.round(parseFloat(clean) * 100) + ' cents ';
+    }
+    return ' ' + num + ' dollars ';
+  });
+  s = s.replace(/(dollars|cents)\s*\/\s*(night|day|month|year|hour)\b/g, '$1 per $2');
+  s = s.replace(/\\log_2\b/g, ' log base 2 of ');
+  s = s.replace(/\\ln\b/g, ' natural log of ');
+  const greekSpoken = [
+    ['\\theta', ' theta '], ['\\omega', ' omega '], ['\\lambda', ' lambda '],
+    ['\\mu', ' mu '], ['\\nu', ' nu '], ['\\pi', ' pi '], ['\\sigma', ' sigma '],
+    ['\\tau', ' tau '], ['\\alpha', ' alpha '], ['\\beta', ' beta '],
+    ['\\gamma', ' gamma '], ['\\delta', ' delta '], ['\\Delta', ' delta '],
+    ['\\epsilon', ' epsilon '], ['\\varepsilon', ' epsilon '], ['\\phi', ' phi '],
+    ['\\Phi', ' Phi '], ['\\psi', ' psi '], ['\\Psi', ' Psi '], ['\\rho', ' rho '],
+    ['\\eta', ' eta '], ['\\kappa', ' kappa '], ['\\chi', ' chi '], ['\\xi', ' xi '],
+    ['\\zeta', ' zeta '], ['\\Omega', ' Omega '], ['\\Sigma', ' Sigma ']
+  ];
+  for (let i = 0; i < greekSpoken.length; i++) {
+    s = s.split(greekSpoken[i][0]).join(greekSpoken[i][1]);
+  }
+  s = s.replace(/\^\s*\{\\circ\}|\^\s*\\circ|°/g, ' degrees ');
+  s = s.replace(/\^\s*\{\(1\/2\)\}|\^\s*\(1\/2\)/g, ' to the one half ');
+  s = s.replace(/\^\s*\{-5\/3\}|\^\s*-5\/3/g, ' to the minus 5 over 3 ');
+  s = s.replace(/\^\s*\{2\/3\}|\^\s*2\/3/g, ' to the 2 over 3 ');
+  s = s.replace(/\^\s*\{2\}|\^\s*2\b/g, ' squared ');
+  s = s.replace(/\^\s*\{3\}|\^\s*3\b/g, ' cubed ');
+  s = s.replace(/\^\s*\{-1\}|\^\s*-1\b/g, ' inverse ');
+  s = s.replace(/\^\s*\{([^{}]+)\}/g, ' to the $1 ');
+  s = s.replace(/\^\s*([A-Za-z0-9+\-]+)/g, ' to the $1 ');
+  s = s.replace(/_\s*\{([^{}]+)\}/g, ' $1 ');
+  s = s.replace(/_\s*([A-Za-z0-9]+)/g, ' $1 ');
+  s = s.replace(/\\frac\s*\{1\}\s*\{2\}/g, ' one half ');
+  s = s.replace(/\\frac\s*\{1\}\s*\{3\}/g, ' one third ');
+  s = s.replace(/\\frac\s*\{1\}\s*\{4\}/g, ' one quarter ');
+  for (let pass = 0; pass < 2; pass++) {
+    s = s.replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, ' $1 over $2 ');
+    s = s.replace(/\\sqrt\s*\{([^{}]+)\}/g, ' the square root of $1 ');
+  }
+  s = s.replace(/\\exp\s*\(([^()]+)\)/g, ' e to the $1 ');
+  s = s
+    .replace(/\\infty/g, ' infinity ')
+    .replace(/\\times/g, ' times ')
+    .replace(/\\cdot/g, ' dot ')
+    .replace(/\\leftrightarrow/g, ' corresponds to ')
+    .replace(/\\rightarrow|\\to/g, ' approaches ')
+    .replace(/\\geq|\\ge/g, ' is greater than or equal to ')
+    .replace(/\\leq|\\le/g, ' is less than or equal to ')
+    .replace(/\\neg/g, ' not ')
+    .replace(/\\lor/g, ' or ')
+    .replace(/\\land/g, ' and ')
+    .replace(/\\forall/g, ' for all ')
+    .replace(/\\exists/g, ' there exists ')
+    .replace(/\\neq|\\ne/g, ' is not equal to ')
+    .replace(/\\approx/g, ' is approximately ')
+    .replace(/\\propto/g, ' is proportional to ')
+    .replace(/\\sim/g, ' approximately ')
+    .replace(/\\in/g, ' in ')
+    .replace(/\\dots|\\ldots|\\cdots/g, ' and so on ')
+    .replace(/\\sum/g, ' the sum of ')
+    .replace(/\\%/g, ' percent ')
+    .replace(/μ/g, ' mu ')
+    .replace(/π/g, ' pi ')
+    .replace(/θ/g, ' theta ')
+    .replace(/ω/g, ' omega ')
+    .replace(/λ/g, ' lambda ')
+    .replace(/σ/g, ' sigma ')
+    .replace(/Δ/g, ' delta ')
+    .replace(/∞/g, ' infinity ')
+    .replace(/≈/g, ' is approximately ')
+    .replace(/²/g, ' squared ')
+    .replace(/³/g, ' cubed ')
+    .replace(/⁻¹/g, ' inverse ');
+  s = s.replace(/^\s*<\s*(?=\d)/, 'under ');
+  s = s.replace(/^\s*<\s*/, 'less than ');
+  s = s.replace(/^\s*>\s*/, 'greater than ');
+  s = s.replace(/\s*<\s*/g, ' is less than ');
+  s = s.replace(/\s*>\s*/g, ' is greater than ');
+  s = s.replace(/\s*=\s*/g, ' equals ');
+  s = s.replace(/\s*\+\s*/g, ' plus ');
+  s = s.replace(/(?:^|\s)-\s*(?=[A-Za-z0-9])/g, ' minus ');
+  s = s.replace(/\s+-\s+/g, ' minus ');
+  s = s.replace(/\bd\s+([A-Za-z]+)\s*\/\s*d\s*([A-Za-z]+)\b/g, 'd $1 by d $2');
+  s = s.replace(/\b([A-Za-z0-9]+)\s*\/\s*([A-Za-z0-9]+)\b/g, '$1 over $2');
+  s = s.replace(/\b(\d+)\s*:\s*(\d+)\b/g, '$1 to $2');
+  s = s.replace(/[\\{}]/g, ' ');
+  return s.replace(/\s+/g, ' ').trim();
+}
+
+function humanizeInlineCodeForJhSpeech(code) {
+  let c = String(code || '').trim();
+  if (c.toUpperCase().startsWith('# NEXT')) return 'Next:';
+  if (c === 'personas/*.md') return 'personas markdown files';
+  if (c === 'wiki/*.md') return 'wiki markdown files';
+  c = c.replace(/^#+\s*/, '').replace(/_/g, ' ');
+  c = c.replace(/\.py\b/g, ' dot py').replace(/\.json\b/g, ' dot JSON').replace(/\.md\b/g, ' dot M D').replace(/\.js\b/g, ' dot J S');
+  return c;
+}
+
+function preprocessJhMarkdownAndMath(rawText) {
+  let s = String(rawText || '');
+  const atoms = [];
+  function pushAtom(html, spoken) {
+    const id = atoms.length;
+    atoms.push({ html, spoken: spoken || 'word' });
+    return '%%JHATOM' + id + '%%';
+  }
+
+  s = s.replace(/`?\[\[([^\]|\n]+)(?:\|([^\]\n]+))?\]\]`?/g, (_, target, alias) => {
+    const label = (alias || target || '').trim();
+    return pushAtom(
+      '<span class="jh-wikilink-pill"><span class="jh-wikilink-icon" aria-hidden="true">🔗</span>' + escapeJhHtml(label) + '</span>',
+      label
+    );
+  });
+
+  s = s.replace(/`([^`\n]+)`/g, (_, code) => {
+    return pushAtom(
+      '<code class="jh-inline-code">' + escapeJhHtml(code.trim()) + '</code>',
+      humanizeInlineCodeForJhSpeech(code)
+    );
+  });
+
+  s = s.replace(/\\\$/g, '%%JHDL%%');
+  s = s.replace(/\$1,000,000\b/g, '%%JHDLR%%1,000,000');
+  s = s.replace(/\$0\.(\d\d)(?=\s|[.,;!?)]|$)(?![^$\n]*[\\^_{}=<>/:])/g, '%%JHDLR%%0.$1');
+  s = s.replace(/\$(\d+(?:,\d{3})*(?:\.\d+)?)(?=\s|[.,;!?)]|$)(?![^$\n]*[\\^_{}=<>/:])/g, '%%JHDLR%%$1');
+
+  s = s.replace(/\$([^$\n]+)\$/g, (_, expr) => {
+    return pushAtom(
+      '<span class="jh-math-inline">' + renderJhLatexInnerHtml(expr) + '</span>',
+      humanizeLatexForJhSpeech(expr)
+    );
+  });
+
+  s = s.replace(/%%JHDL%%/g, '$');
+  s = s.replace(/%%JHDLR%%/g, '$');
+
+  s = s.replace(/<->|↔/g, () => pushAtom('<span class="jh-md-arrow">↔</span>', 'and'));
+  s = s.replace(/->|→|=>|⇒/g, () => pushAtom('<span class="jh-md-arrow">→</span>', 'to'));
+
+  s = s.replace(/\*\*([^*\n]+)\*\*/g, (_, inner) => {
+    return inner.split(/(\s+)/).map(tok => (/^\s+$/.test(tok) || !tok) ? tok : ('%%JHBOLD%%' + tok)).join('');
+  });
+  s = s.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, (_, inner) => {
+    return inner.split(/(\s+)/).map(tok => (/^\s+$/.test(tok) || !tok) ? tok : ('%%JHEM%%' + tok)).join('');
+  });
+
+  return { text: s, atoms };
+}
+
+function expandJhTokenForSpeech(token, atoms) {
+  if (!token) return '';
+  return String(token)
+    .replace(/%%JHBOLD%%/g, '')
+    .replace(/%%JHEM%%/g, '')
+    .replace(/%%JHATOM(\d+)%%/g, (_, id) => {
+      const a = atoms && atoms[Number(id)];
+      return a ? (' ' + a.spoken + ' ') : '';
+    })
+    .trim();
+}
+
+function renderJhTokenHtml(token, atoms) {
+  let t = String(token || '');
+  const isBold = t.includes('%%JHBOLD%%');
+  const isEm = t.includes('%%JHEM%%');
+  t = t.replace(/%%JHBOLD%%/g, '').replace(/%%JHEM%%/g, '');
+
+  const segments = t.split(/(%%JHATOM\d+%%)/g);
+  let out = '';
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+    const m = /^%%JHATOM(\d+)%%$/.exec(seg);
+    if (m) {
+      const a = atoms[Number(m[1])];
+      out += a ? a.html : '';
+    } else if (seg) {
+      out += escapeJhHtml(seg);
+    }
+  }
+  if (isEm) out = '<em class="jh-md-em">' + out + '</em>';
+  if (isBold) out = '<strong class="jh-md-strong">' + out + '</strong>';
+  return out;
+}
+
+function computeJhTokenTimingWeights(rawToken, nextRawToken, atoms, isTitleOrHeading, isHeadingEnd) {
+  const cleanRaw = String(rawToken || '').replace(/%%JHBOLD%%/g, '').replace(/%%JHEM%%/g, '');
+  const cleanNext = String(nextRawToken || '').replace(/%%JHBOLD%%/g, '').replace(/%%JHEM%%/g, '');
+  if (!/%%JHATOM\d+%%/.test(cleanRaw)) {
+    return computeCalibratedWordTimingWeights(cleanRaw, cleanNext, isTitleOrHeading, isHeadingEnd);
+  }
+  const expanded = expandJhTokenForSpeech(cleanRaw, atoms);
+  const nextExpanded = expandJhTokenForSpeech(cleanNext, atoms);
+  const subWords = expanded.split(/\s+/).filter(Boolean);
+  if (subWords.length <= 1) {
+    const singleRes = computeCalibratedWordTimingWeights(expanded || cleanRaw, nextExpanded, isTitleOrHeading, isHeadingEnd);
+    const tailSingle = computeCalibratedWordTimingWeights(cleanRaw, nextExpanded, isTitleOrHeading, isHeadingEnd);
+    return {
+      syllableWeight: singleRes.syllableWeight,
+      pauseTier: Math.max(singleRes.pauseTier, tailSingle.pauseTier),
+      pauseWeight: Math.max(singleRes.pauseWeight, tailSingle.pauseWeight)
+    };
+  }
+  let totalSyllableWeight = 0;
+  for (let i = 0; i < subWords.length; i++) {
+    const sw = subWords[i];
+    const nw = (i + 1 < subWords.length) ? subWords[i + 1] : nextExpanded;
+    const wRes = computeCalibratedWordTimingWeights(sw, nw, isTitleOrHeading, false);
+    totalSyllableWeight += wRes.syllableWeight;
+  }
+  const tailRes = computeCalibratedWordTimingWeights(cleanRaw, nextExpanded, isTitleOrHeading, isHeadingEnd);
+  return {
+    syllableWeight: totalSyllableWeight,
+    pauseTier: tailRes.pauseTier,
+    pauseWeight: tailRes.pauseWeight
+  };
+}
+
+function wrapSingleBlockWithJhTtsWords(rawBlock, state, opts, isListItem, listBulletHtml) {
+  const { text: processedText, atoms } = preprocessJhMarkdownAndMath(rawBlock);
+  if (!processedText) return '';
+  const parts = processedText.split(/(\s+)/);
   const spokenPartIndices = [];
   for (let i = 0; i < parts.length; i++) {
-    if (isSpokenWordToken(parts[i])) {
+    if (isSpokenWordToken(expandJhTokenForSpeech(parts[i], atoms))) {
       spokenPartIndices.push(i);
     }
   }
@@ -288,14 +648,15 @@ function wrapTextWithJhTtsWords(text, state, opts) {
 
   let spokenCursor = 0;
   const sentences = [];
-  let curSentTokens = [];
+  let curSentTokens = listBulletHtml ? [listBulletHtml] : [];
   let curSentPlainLen = 0;
   let curSentId = prefix + 'Sent_' + state.sentCounter;
 
   for (let pIdx = 0; pIdx < parts.length; pIdx++) {
     const part = parts[pIdx];
-    if (!isSpokenWordToken(part)) {
-      curSentTokens.push(part);
+    const spokenForm = expandJhTokenForSpeech(part, atoms);
+    if (!isSpokenWordToken(spokenForm)) {
+      curSentTokens.push(/^\s+$/.test(part) ? part : renderJhTokenHtml(part, atoms));
       curSentPlainLen += part.length;
       continue;
     }
@@ -307,9 +668,10 @@ function wrapTextWithJhTtsWords(text, state, opts) {
     spokenCursor += 1;
 
     const isHeadingEnd = addHeadingPause && pIdx === lastSpokenPartIdx;
-    const { syllableWeight, pauseTier, pauseWeight } = computeCalibratedWordTimingWeights(
+    const { syllableWeight, pauseTier, pauseWeight } = computeJhTokenTimingWeights(
       part,
       nextSpokenWord,
+      atoms,
       addHeadingPause,
       isHeadingEnd
     );
@@ -322,7 +684,7 @@ function wrapTextWithJhTtsWords(text, state, opts) {
     state.totalWeight = endWeight;
     state.words.push({
       idx: wIdx,
-      word: part,
+      word: spokenForm,
       syllableWeight: syllableWeight,
       pauseWeight: pauseWeight,
       pauseTier: pauseTier,
@@ -338,11 +700,13 @@ function wrapTextWithJhTtsWords(text, state, opts) {
     });
 
     const curAttr = inCuriosityA ? ' data-curiosity-a="1"' : '';
-    const wordSpan = `<span id="${prefix}_${wIdx}" class="jh-tts-word" data-widx="${wIdx}"${curAttr}>${part}</span>`;
+    const renderedToken = renderJhTokenHtml(part, atoms);
+    const wordSpan = `<span id="${prefix}_${wIdx}" class="jh-tts-word" data-widx="${wIdx}"${curAttr}>${renderedToken}</span>`;
     curSentTokens.push(wordSpan);
-    curSentPlainLen += part.length;
+    curSentPlainLen += spokenForm.length;
 
-    const isSentenceBoundary = pauseTier === 3 && !/^\d+\.$/.test(part.trim());
+    const cleanTrimmed = part.replace(/%%JHBOLD%%/g, '').replace(/%%JHEM%%/g, '').trim();
+    const isSentenceBoundary = pauseTier === 3 && !/^\d+\.$/.test(cleanTrimmed);
     if (chunkSentences && isSentenceBoundary) {
       sentences.push({
         id: curSentId,
@@ -371,6 +735,13 @@ function wrapTextWithJhTtsWords(text, state, opts) {
 
   if (!sentences.length) return '';
 
+  if (isListItem) {
+    const joinedSents = sentences
+      .map(s => `<span id="${s.id}" class="jh-tts-sentence">${s.html}</span>`)
+      .join(' ');
+    return `<div class="jh-sec-para jh-sec-list-item">${joinedSents}</div>`;
+  }
+
   const paraGroups = [];
   let currentGroup = [];
   let currentGroupLen = 0;
@@ -386,6 +757,46 @@ function wrapTextWithJhTtsWords(text, state, opts) {
     }
   }
   return paraGroups.join('');
+}
+
+function renderJhInlineStaticHtml(rawText) {
+  const { text, atoms } = preprocessJhMarkdownAndMath(rawText);
+  return text
+    .split(/(\s+)/)
+    .map(p => (/^\s+$/.test(p) ? p : renderJhTokenHtml(p, atoms)))
+    .join('');
+}
+
+function formatJhPlainTitle(rawText) {
+  return renderJhInlineStaticHtml(rawText)
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+}
+
+function wrapTextWithJhTtsWords(text, state, opts) {
+  const raw = String(text || '');
+  if (!raw) return '';
+  const chunkSentences = Boolean(opts && opts.chunkSentences);
+  if (chunkSentences) {
+    const lines = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
+    return lines.map(line => {
+      if (/^[-•]\s+/.test(line)) {
+        const stripped = line.replace(/^[-•]\s+/, '');
+        return wrapSingleBlockWithJhTtsWords(
+          stripped,
+          state,
+          opts,
+          true,
+          '<span class="jh-list-bullet" aria-hidden="true">•</span> '
+        );
+      }
+      const isNumItem = /^\d+\.\s+/.test(line);
+      return wrapSingleBlockWithJhTtsWords(line, state, opts, isNumItem, '');
+    }).join('');
+  }
+  return wrapSingleBlockWithJhTtsWords(raw, state, opts, false, '');
 }
 
 /* ACOUSTIC SILENCE-MAP & CLOSED-LOOP REGRESSION WORD TIMELINE BUILDER */
@@ -1323,7 +1734,8 @@ function renderJhAdminItemsList() {
     const lCount = getReelLikeCount(r.id);
     const selAttr = selectedItem && r.id === selectedItem.id ? 'selected' : '';
     const statusTag = dCount > 0 ? '✅' : '📖';
-    return `<option value="${r.id}" ${selAttr}>${idx + 1}. ${statusTag} ${r.title_bn} (Done:${dCount} · ❤️${lCount})</option>`;
+    const cleanOptTitle = escapeJhHtml(formatJhPlainTitle(r.title_bn));
+    return `<option value="${r.id}" ${selAttr}>${idx + 1}. ${statusTag} ${cleanOptTitle} (Done:${dCount} · ❤️${lCount})</option>`;
   }).join('');
 
   const selectedRowHtml = selectedItem ? (() => {
@@ -1333,7 +1745,7 @@ function renderJhAdminItemsList() {
       <div class="jh-admin-row ${dCount > 0 ? 'is-done' : ''}">
         <div class="jh-admin-row-title">
           <span class="jh-admin-badge">${selectedItem.badge_bn}</span>
-          <span>${selectedItem.title_bn}</span>
+          <span>${renderJhInlineStaticHtml(selectedItem.title_bn)}</span>
         </div>
         <div class="jh-admin-row-controls">
           <div class="jh-admin-stepper">

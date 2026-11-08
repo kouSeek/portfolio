@@ -1274,12 +1274,19 @@ vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});
         self.assertIn("jh-dbltap-voice-toast", zb_html)
         self.assertIn("body.jh-audio-playing", zb_html)
         self.assertIn("jh-tts-sentence", zb_html)
+        self.assertIn("jh-math-inline", zb_html)
+        self.assertIn("jh-inline-code", zb_html)
+        self.assertIn("jh-wikilink-pill", zb_html)
+        self.assertIn("jh-md-em", zb_html)
+        self.assertIn("jh-md-strong", zb_html)
         self.assertNotIn("activeEl.scrollIntoView", zb_html)
         refresh_py = (APP_ROOT / "scripts" / "refresh_voices.py").read_text(encoding="utf-8")
         self.assertIn("en-gb-gia-server-voicelm-xl#kix08", refresh_py)
         self.assertIn("attempt_sentence_splitting: false", refresh_py)
         self.assertIn("speaker_prompt_tokens", refresh_py)
         self.assertIn("uk_warm_female_prompt.json", refresh_py)
+        self.assertIn("_humanize_english_tts_text", refresh_py)
+        self.assertIn("_spoken_math_inner", refresh_py)
         self.assertNotIn("kix02", refresh_py)
 
         m = re.search(r"<script>([\s\S]*?)</script>", zb_html)
@@ -1424,6 +1431,42 @@ const suite = code + `
   assert.strictEqual(jhAudioPlaying, true);
   assert.strictEqual(jhAudioPaused, false);
   stopJhAudio();
+
+  // KORTEX-inspired Markdown & LaTeX visual rendering across all 148 Zorba reels (zero raw syntax leaks)
+  const bt = String.fromCharCode(96);
+  const sampleMathState = { words: [], totalWeight: 0, prefix: 'testM', sentCounter: 0 };
+  const sampleHtml = wrapTextWithJhTtsWords(
+    'Gravity ($R_{\\\\mu\\\\nu} u^\\\\mu u^\\\\nu \\\\ge 0$), $\\\\sqrt{2} \\\\approx 1.414$, $\\\\exp(-\\\\frac{1}{2} D_M^2)$, ' + bt + '< 350ms' + bt + ' in ' + bt + 'build_app.py' + bt + ', [[kortex-graph|KORTEX Graph]], **Bold Focus**, *Italic Bhaavna*, and Am -> G ($15 vs $0.30).',
+    sampleMathState,
+    { blockId: 'secTest', addHeadingPause: false, chunkSentences: true }
+  );
+  assert.ok(sampleHtml.includes('class="jh-math-inline"'), 'Inline LaTeX must render inside .jh-math-inline badge');
+  assert.ok(sampleHtml.includes('<sub class="jh-math-sub">μν</sub>'), 'LaTeX subscripts must render inside .jh-math-sub');
+  assert.ok(sampleHtml.includes('<sup class="jh-math-sup">μ</sup>'), 'LaTeX superscripts must render inside .jh-math-sup');
+  assert.ok(sampleHtml.includes('class="jh-math-sqrt"'), 'LaTeX \\sqrt must render .jh-math-sqrt');
+  assert.ok(sampleHtml.includes('class="jh-math-frac"'), 'LaTeX \\frac must render .jh-math-frac');
+  assert.ok(sampleHtml.includes('class="jh-inline-code"'), 'Backtick code must render .jh-inline-code keycap');
+  assert.ok(sampleHtml.includes('class="jh-wikilink-pill"'), 'Wikilinks [[...]] must render .jh-wikilink-pill');
+  assert.ok(sampleHtml.includes('class="jh-md-strong"'), 'Markdown **bold** must render .jh-md-strong');
+  assert.ok(sampleHtml.includes('class="jh-md-em"'), 'Markdown *italic* must render .jh-md-em');
+  assert.ok(sampleHtml.includes('class="jh-md-arrow"'), 'ASCII arrows -> must render .jh-md-arrow');
+  assert.ok(sampleHtml.includes('$15') && sampleHtml.includes('$0.30'), 'USD currency must remain intact outside math spans');
+
+  ALL_JHALAK_REELS.forEach(r => {
+    const st = { words: [], totalWeight: 0, prefix: 'chk', sentCounter: 0 };
+    const chunks = [
+      wrapTextWithJhTtsWords(r.title_bn, st, { addHeadingPause: true }),
+      wrapTextWithJhTtsWords(r.curiosity_q_bn, st, { addHeadingPause: true }),
+      wrapTextWithJhTtsWords(r.curiosity_a_bn, st, { inCuriosityA: true })
+    ];
+    r.sections.forEach(sec => {
+      chunks.push(wrapTextWithJhTtsWords(sec.heading_bn, st, { addHeadingPause: true }));
+      chunks.push(wrapTextWithJhTtsWords(sec.body_bn, st, { chunkSentences: true }));
+    });
+    const plainVisible = chunks.join(' ').replace(new RegExp('<code class="jh-inline-code">[^<]*</code>', 'g'), 'CODE_PILL').replace(new RegExp('<[^>]+>', 'g'), '');
+    const leakRe = new RegExp('[\\\\\\\\*' + bt + ']|(?:\\\\[\\\\[)|(?:\\\\]\\\\])|->|<->|%%JH');
+    assert.strictEqual(leakRe.test(plainVisible), false, 'Zero raw LaTeX/Markdown leaks allowed in rendered reel ' + r.id + ': ' + plainVisible);
+  });
 })();
 `;
 vm.runInNewContext(suite, ctx, {filename: 'zorba-bundle.js'});
