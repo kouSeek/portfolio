@@ -11,6 +11,7 @@ CRITICAL GOVERNANCE RULE (defined in GEMINI.md):
 from __future__ import annotations
 
 import argparse
+import base64
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 import html
@@ -414,7 +415,7 @@ def save_manifest(hashes: dict[str, str], persona_id: str = DEFAULT_PERSONA_ID, 
                 t_key = rel.replace("reels/", "").replace(".mp3", "") if pid in ("zorba", "jhalak") else rel
                 timings[t_key] = meta
         extra_keys["audio_timings"] = timings
-    voice_label = "en-gb-open-server-voicelm#star55 (Sulafat Warm Soothing UK Female)" if pid in ("zorba", "anondo") else "gemini-v4s-tts (Aoede)"
+    voice_label = "en-gb-gia-server-voicelm-xl#kix08 (Expressive Warm Caring UK Female)" if pid in ("zorba", "anondo") else "gemini-v4s-tts (Aoede)"
     payload = {
         "voice_model": voice_label,
         "persona_id": pid,
@@ -461,72 +462,262 @@ def get_stale_or_missing_files(
     return stale, expected, recorded
 
 
-_SPEECH_PROTO_PATH = Path("/tmp/aicomp_speech_synth.proto")
+_SPEECH_PROTO_PATH = Path("/tmp/aicomp_speech_lucid_prompt.proto")
 _SPEECH_PROTO_TEXT = """syntax = "proto2";
 package speech;
-message Voice { required string language = 1; optional string gender = 2; optional string name = 3; }
-message AudioEncoding { enum Encoding { ANY = 0; LINEAR_16BIT = 1; MP3 = 4; MP3_64KBPS = 10; } }
-message SpeechSynthesizerRequest { required string ssml = 1; optional Voice voice = 2; optional AudioEncoding.Encoding encoding = 3; }
-message SpeechSynthesizerEvent { optional int32 type = 1; optional bytes audio = 2; }
-message SpeechSynthesizerResponse { optional string info = 1; }
-message SpeechSynthesizerSynthesizeMixedResult { optional SpeechSynthesizerEvent stream_message = 1; optional SpeechSynthesizerResponse result_message = 2; }
-service SpeechSynthesizer { rpc Synthesize(SpeechSynthesizerRequest) returns (stream SpeechSynthesizerSynthesizeMixedResult); }
+
+message VoiceSelection {
+  optional string canonical_voice_name = 2;
+  optional string voice_alias = 3;
+}
+
+message SoundStreamTokens {
+  repeated float tokens = 1 [packed = true];
+}
+
+message Prompt {
+  optional SoundStreamTokens speaker_prompt_tokens = 5;
+}
+
+message Annotation {
+  optional VoiceSelection voice_selection = 7;
+  optional Prompt prompt = 9;
+}
+
+message LucidPiece {
+  optional int32 own_index = 1;
+  optional string input_text = 2;
+}
+
+message LucidUtterance {
+  repeated LucidPiece pieces = 1;
+  optional Annotation annotation = 2;
+  optional bool attempt_sentence_splitting = 4;
+}
+
+message LucidMarkup {
+  message Content {
+    optional int32 own_index = 1;
+    optional LucidUtterance utterance = 2;
+  }
+  repeated Content contents = 1;
+  optional Annotation annotation = 2;
+}
+
+message Text {
+  optional LucidMarkup lucid = 2;
+  extensions 128 to max;
+}
+
+message TtsServiceRequestParams {
+  extend Text {
+    optional TtsServiceRequestParams tts_service_request_params = 131098250;
+  }
+  optional string voice_language = 1;
+  optional string voice_name = 2;
+  optional int32 voice_sample_rate = 3;
+  optional string voice_gender = 8;
+  optional bool lucid_voice_selection_ran = 14;
+}
+
+message PattsRequest {
+  optional Text tts_markup = 4;
+}
+
+message SynthesisEngineSpecificRequest {
+  extensions 1000 to max;
+}
+
+extend SynthesisEngineSpecificRequest {
+  optional PattsRequest patts_request = 26855169;
+}
+
+message Voice {
+  required string language = 1;
+  optional string gender = 2;
+  optional string name = 3;
+  optional int32 sample_rate = 4;
+}
+
+message AudioEncoding {
+  enum Encoding {
+    ANY = 0;
+    LINEAR_16BIT = 1;
+    MP3 = 4;
+    MP3_64KBPS = 10;
+  }
+}
+
+message SpeechSynthesizerRequest {
+  required string ssml = 1;
+  optional Voice voice = 2;
+  optional AudioEncoding.Encoding encoding = 3;
+  optional SynthesisEngineSpecificRequest engine_specific = 5;
+  optional bool enable_timepoints = 8;
+  optional int32 timepoint_level = 12;
+}
+
+message SpeechSynthesizerEvent {
+  optional int32 type = 1;
+  optional bytes audio = 2;
+}
+
+message SpeechSynthesizerResponse {
+  optional string info = 1;
+}
+
+message SpeechSynthesizerSynthesizeMixedResult {
+  optional SpeechSynthesizerEvent stream_message = 1;
+  optional SpeechSynthesizerResponse result_message = 2;
+}
+
+service SpeechSynthesizer {
+  rpc Synthesize(SpeechSynthesizerRequest) returns (stream SpeechSynthesizerSynthesizeMixedResult);
+}
 """
 
-
 _UK_FEMALE_VOICES = (
-    "en-gb-open-server-voicelm#star55",
-    "en-gb-open-server-voicelm#star01",
+    "en-gb-gia-server-voicelm-xl#kix08",
+    "en-gb-gia-server-voicelm-xl#kix04",
 )
+_UK_WARM_PROMPT_PATH = Path(__file__).resolve().parent / "uk_warm_female_prompt.json"
+_CACHED_UK_TOKENS_STR: str | None = None
 
 
-def _synthesize_voicelm_aoede(text: str, out_raw: Path, timeout_s: int = 25) -> bool:
-    cleaned = re.sub(r"\s+", " ", (text or "")).strip()
+def _get_uk_warm_tokens_str() -> str:
+    global _CACHED_UK_TOKENS_STR
+    if _CACHED_UK_TOKENS_STR is None:
+        data = json.loads(_UK_WARM_PROMPT_PATH.read_text(encoding="utf-8"))
+        _CACHED_UK_TOKENS_STR = ", ".join(f"{float(t):.6f}" for t in data["tokens"])
+    return _CACHED_UK_TOKENS_STR
+
+
+def _prepare_expressive_uk_text(text: str) -> str:
+    s = text or ""
+    s = re.sub(r"₹\s*(\d+(?:\.\d+)?)\s*Cr\+", r"\1 Crore", s)
+    s = re.sub(r"₹\s*(\d+(?:\.\d+)?)\s*Cr\b", r"\1 Crore", s)
+    s = re.sub(r"₹\s*(\d+(?:\.\d+)?)\s*L\+", r"\1 Lakh", s)
+    s = re.sub(r"₹\s*(\d+(?:\.\d+)?)\s*L\b", r"\1 Lakh", s)
+    s = re.sub(r"₹\s*(\d[\d,]*)", r"\1 Rupees", s)
+    s = re.sub(r"\b(19\d\d|20\d\d)\s*[–—-]\s*(19\d\d|20\d\d)\b", r"\1 to \2", s)
+    s = re.sub(r"\b(\d+)\s*[–—-]\s*(\d+)\b", r"\1 to \2", s)
+    s = re.sub(r"\b(\d+)-(Second|Minute|Hour|Day|Slot|Year-Old)\b", lambda m: f"{m.group(1)} {m.group(2).lower().replace('-', ' ')}", s, flags=re.IGNORECASE)
+    s = re.sub(r"\s*[—–]\s*", ", ", s)
+    s = re.sub(r"\bDidi\b", "Deedee", s)
+    s = re.sub(r"\bKORTEX\b", "Kortex", s)
+    s = re.sub(r"\bANANDO\b", "Anondo", s)
+    s = re.sub(r"\bZORBA\b", "Zorba", s)
+    s = re.sub(r"\bSWE\b", "Software Engineer", s)
+    s = re.sub(r"&", " and ", s)
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def _split_into_expressive_clauses(text: str, max_chars: int = 300) -> list[str]:
+    sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
+    merged: list[str] = []
+    i = 0
+    while i < len(sentences):
+        if len(sentences[i]) < 55 and i + 1 < len(sentences):
+            merged.append(sentences[i] + " " + sentences[i + 1])
+            i += 2
+        else:
+            merged.append(sentences[i])
+            i += 1
+    chunks: list[str] = []
+    cur: list[str] = []
+    cur_len = 0
+    for sent in merged:
+        if len(sent) > max_chars:
+            parts = re.split(r"(?<=[,:;])\s+", sent)
+            sub_cur: list[str] = []
+            sub_len = 0
+            for p in parts:
+                if sub_cur and sub_len + 1 + len(p) > max_chars:
+                    if cur:
+                        chunks.append(" ".join(cur))
+                        cur, cur_len = [], 0
+                    chunks.append(" ".join(sub_cur))
+                    sub_cur = [p]
+                    sub_len = len(p)
+                else:
+                    sub_cur.append(p)
+                    sub_len += (1 + len(p) if sub_len else len(p))
+            if sub_cur:
+                sent = " ".join(sub_cur)
+            else:
+                continue
+        if cur and (cur_len + 1 + len(sent) > max_chars):
+            chunks.append(" ".join(cur))
+            cur = [sent]
+            cur_len = len(sent)
+        else:
+            cur.append(sent)
+            cur_len += (1 + len(sent) if cur_len else len(sent))
+    if cur:
+        chunks.append(" ".join(cur))
+    return chunks
+
+
+def _synthesize_voicelm_aoede(text: str, out_raw: Path, timeout_s: int = 45) -> bool:
+    cleaned = _prepare_expressive_uk_text(text)
     if not cleaned:
         return False
-    if not _SPEECH_PROTO_PATH.is_file() or _SPEECH_PROTO_PATH.stat().st_size < 100:
+    if not _SPEECH_PROTO_PATH.is_file() or _SPEECH_PROTO_PATH.stat().st_size < 200:
         _SPEECH_PROTO_PATH.write_text(_SPEECH_PROTO_TEXT, encoding="utf-8")
-    ssml = (
-        '<?xml version="1.0"?> '
-        '<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" '
-        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
-        'xsi:schemaLocation="http://www.w3.org/TR/speech-synthesis/synthesis.xsd '
-        'http://www.w3.org/TR/speech-synthesis/synthesis.xsd" xml:lang="en-GB">'
-        f"{html.escape(cleaned, quote=False)}</speak>"
+    clauses = _split_into_expressive_clauses(cleaned, max_chars=300)
+    if not clauses:
+        return False
+    tokens_str = _get_uk_warm_tokens_str()
+    contents_pb = "".join(
+        f" contents {{ own_index: {idx} utterance {{ pieces {{ own_index: 0 input_text: {json.dumps(clause)} }} attempt_sentence_splitting: false }} }}"
+        for idx, clause in enumerate(clauses)
     )
-    for voice_name in _UK_FEMALE_VOICES:
-        req_proto = (
-            f"ssml: {json.dumps(ssml)} "
-            f'voice {{ language: "en-GB" gender: "female" name: "{voice_name}" }} '
-            "encoding: MP3_64KBPS"
-        )
-        try:
+    req_file = Path(f"/tmp/aicomp_req_{os.getpid()}_{out_raw.stem}.txtpb")
+    try:
+        for voice_name in _UK_FEMALE_VOICES:
+            req_proto = (
+                'ssml: "placeholder" '
+                f'voice {{ language: "en-GB" name: "{voice_name}" sample_rate: 24000 }} '
+                "encoding: MP3_64KBPS "
+                "engine_specific { [speech.patts_request] { tts_markup { "
+                "lucid { annotation { "
+                f'voice_selection {{ canonical_voice_name: "{voice_name}" }} '
+                f"prompt {{ speaker_prompt_tokens {{ tokens: [{tokens_str}] }} }} "
+                f"}} {contents_pb} }} "
+                "[speech.TtsServiceRequestParams.tts_service_request_params] { "
+                f'voice_language: "en-GB" voice_name: "{voice_name}" voice_sample_rate: 24000 lucid_voice_selection_ran: true '
+                "} } } }\n"
+            )
+            req_file.write_text(req_proto, encoding="utf-8")
             proc = subprocess.run(
                 [
                     "stubby", "call", "--proto2", "--noremotedb", "--ignore_serverstatus",
                     f"--protofiles={_SPEECH_PROTO_PATH}",
+                    f"--infile={req_file}",
+                    "--output_json",
                     "blade:speech-tts-synthesizer-speech-synthesizer-prod",
                     "speech.SpeechSynthesizer.Synthesize",
-                    req_proto,
                 ],
                 capture_output=True, text=True, timeout=timeout_s, check=False,
             )
             if proc.returncode == 0 and proc.stdout:
                 mp3_bytes = b"".join(
-                    m.group(1).encode("latin1").decode("unicode_escape").encode("latin1")
-                    for m in re.finditer(r'audio:\s*"((?:[^"\\]|\\.)*)"', proc.stdout)
+                    base64.b64decode(m.group(1))
+                    for m in re.finditer(r'"audio"\s*:\s*"([^"]+)"', proc.stdout)
                 )
                 if len(mp3_bytes) > 1000:
                     out_raw.write_bytes(mp3_bytes)
                     return True
-        except Exception:
-            pass
+    except Exception:
+        pass
+    finally:
+        req_file.unlink(missing_ok=True)
     return False
 
 
 def _synthesize_wav(text: str, out_wav: Path, model_name: str, timeout_s: int = 75) -> bool:
     if any(tag in out_wav.name for tag in ("_anondo_", "_zorba_")):
-        return _synthesize_voicelm_aoede(text, out_wav, timeout_s=min(35, timeout_s))
+        return _synthesize_voicelm_aoede(text, out_wav, timeout_s=min(60, timeout_s))
     try:
         proc = subprocess.run(
             [GEN_BIN, f"-timeout={timeout_s}s", f"-output={out_wav}", "tts", f"-model={model_name}", "-voice=Aoede", text],
@@ -541,7 +732,14 @@ def _synthesize_wav(text: str, out_wav: Path, model_name: str, timeout_s: int = 
 
 def _wav_to_mp3(wav_paths: list[Path], out_mp3: Path) -> bool:
     out_mp3.parent.mkdir(parents=True, exist_ok=True)
-    if len(wav_paths) == 1:
+    is_uk_voicelm = bool(wav_paths) and any(tag in wav_paths[0].name for tag in ("_anondo_", "_zorba_"))
+    if len(wav_paths) == 1 and is_uk_voicelm:
+        cmd = [
+            "ffmpeg", "-y", "-i", str(wav_paths[0]),
+            "-ar", "24000", "-ac", "1", "-b:a", "64k",
+            str(out_mp3),
+        ]
+    elif len(wav_paths) == 1:
         cmd = [
             "ffmpeg", "-y", "-i", str(wav_paths[0]),
             "-af", "loudnorm=I=-16:TP=-1.5:LRA=11",

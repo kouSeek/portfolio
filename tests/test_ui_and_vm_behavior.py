@@ -1272,8 +1272,10 @@ vm.runInNewContext(suite, ctx, {filename: 'jhalak-bundle.js'});
         self.assertIn("jh-pull-progress-fill", zb_html)
         self.assertIn("jh-dbltap-voice-toast", zb_html)
         refresh_py = (APP_ROOT / "scripts" / "refresh_voices.py").read_text(encoding="utf-8")
-        self.assertIn("en-gb-open-server-voicelm#star55", refresh_py)
-        self.assertIn('xml:lang="en-GB"', refresh_py)
+        self.assertIn("en-gb-gia-server-voicelm-xl#kix08", refresh_py)
+        self.assertIn("attempt_sentence_splitting: false", refresh_py)
+        self.assertIn("speaker_prompt_tokens", refresh_py)
+        self.assertIn("uk_warm_female_prompt.json", refresh_py)
         self.assertNotIn("kix02", refresh_py)
 
         m = re.search(r"<script>([\s\S]*?)</script>", zb_html)
