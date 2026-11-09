@@ -1,13 +1,18 @@
 {
   "manifest_version": 3,
   "name": "MacBook Smart Read Aloud & Movie Mode (Dead-Noun Converter)",
-  "version": "1.2.0",
-  "description": "Zero-drag article selection (⌥Space), 1.0x Read Aloud (⌥R), and Movie Mode (⌥M) converting corporate dead nouns into visual actions.",
+  "version": "1.3.0",
+  "description": "Zero-drag article selection (⌥Space), 1.0x Read Aloud (⌥R), and Gemini AI Movie Mode (⌥M) converting corporate dead nouns into visual actions.",
   "permissions": [
     "activeTab",
     "contextMenus",
     "scripting",
-    "storage"
+    "storage",
+    "tts"
+  ],
+  "host_permissions": [
+    "https://generativelanguage.googleapis.com/*",
+    "https://raw.githubusercontent.com/*"
   ],
   "background": {
     "service_worker": "src/background.js"

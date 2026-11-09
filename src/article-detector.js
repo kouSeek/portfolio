@@ -65,11 +65,10 @@
     "script",
     "style",
     "noscript",
-    "svg",
-    "form"
+    "svg"
   ].join(", ");
 
-  const READABLE_BLOCK_SELECTOR = "h1, h2, h3, h4, h5, h6, p, li, blockquote, dd, figcaption";
+  const READABLE_BLOCK_SELECTOR = "h1, h2, h3, h4, h5, h6, p, li, blockquote, dd, figcaption, label, td";
 
   function normalizeText(raw) {
     return String(raw || "").replace(/\s+/g, " ").trim();
@@ -210,10 +209,25 @@
       const isHeading = /^H[1-6]$/.test(tag);
 
       if (!text) continue;
-      if (!isHeading && text.length < 12) continue;
+      if (!isHeading && text.length < 8) continue;
       if (!isHeading && countLinkDensity(node) > 0.78 && text.length < 140) continue;
 
       filtered.push(node);
+    }
+
+    // Fallback for web apps / quiz pages where prose sits inside leaf <div> elements
+    if (filtered.length < 2 && typeof container.querySelectorAll === "function") {
+      const divNodes = Array.from(container.querySelectorAll("div"));
+      for (let i = 0; i < divNodes.length; i++) {
+        const d = divNodes[i];
+        if (!isElementVisible(d, win) || isInsideNoiseContainer(d, container)) continue;
+        // Only pick leaf-like divs that don't wrap other block divs/p/li
+        if (d.querySelector && d.querySelector("div, p, li, h1, h2, h3, h4, h5, h6, table")) continue;
+        const t = normalizeText(d.textContent);
+        if (t.length >= 15 && countLinkDensity(d) <= 0.75 && !filtered.includes(d)) {
+          filtered.push(d);
+        }
+      }
     }
 
     if (filtered.length === 0 && normalizeText(container.textContent).length > 0) {

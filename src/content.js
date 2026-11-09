@@ -111,8 +111,11 @@
         "daniel",
         "samantha"
       ];
+      // Prefer macOS local system voices (`localService !== false`) over Chrome network voices
+      // which often stall or fail silently inside Manifest V3 content scripts on macOS.
       const enVoices = voices.filter(v => !v.lang || v.lang.toLowerCase().startsWith("en"));
-      const pool = enVoices.length > 0 ? enVoices : voices;
+      const localEnVoices = enVoices.filter(v => v.localService !== false);
+      const pool = localEnVoices.length > 0 ? localEnVoices : (enVoices.length > 0 ? enVoices : voices);
       for (let i = 0; i < preferredOrder.length; i++) {
         const key = preferredOrder[i];
         const hit = pool.find(v => String(v.name || "").toLowerCase().includes(key));
@@ -164,13 +167,28 @@
       return res;
     }
 
+    function hasChromeRuntimeTts() {
+      return Boolean(
+        root &&
+        root.chrome &&
+        root.chrome.runtime &&
+        typeof root.chrome.runtime.sendMessage === "function"
+      );
+    }
+
     function stopSpeaking(showNotification = false) {
       state.sessionId++;
       state.speaking = false;
       state.paused = false;
       state.activeBlocks = [];
       state.currentBlockIdx = 0;
+      state.activeUtterance = null;
       clearActiveParagraphHighlight();
+      if (hasChromeRuntimeTts()) {
+        try {
+          root.chrome.runtime.sendMessage({ action: "tts-stop" }, () => {});
+        } catch (_e) {}
+      }
       if (win && win.speechSynthesis) {
         try {
           win.speechSynthesis.cancel();
@@ -182,19 +200,33 @@
     }
 
     function togglePauseSpeaking() {
-      if (!state.speaking || !win || !win.speechSynthesis) return false;
+      if (!state.speaking) return false;
       if (!state.paused) {
         state.paused = true;
-        try {
-          win.speechSynthesis.pause();
-        } catch (_e) {}
+        if (hasChromeRuntimeTts()) {
+          try {
+            root.chrome.runtime.sendMessage({ action: "tts-pause" }, () => {});
+          } catch (_e) {}
+        }
+        if (win && win.speechSynthesis) {
+          try {
+            win.speechSynthesis.pause();
+          } catch (_e) {}
+        }
         showToast("⏸ Paused Read Aloud", "Press Space to resume • Click any paragraph to skip • Esc to stop", 2000);
         return true;
       }
       state.paused = false;
-      try {
-        win.speechSynthesis.resume();
-      } catch (_e) {}
+      if (hasChromeRuntimeTts()) {
+        try {
+          root.chrome.runtime.sendMessage({ action: "tts-resume" }, () => {});
+        } catch (_e) {}
+      }
+      if (win && win.speechSynthesis) {
+        try {
+          win.speechSynthesis.resume();
+        } catch (_e) {}
+      }
       showToast("▶️ Resumed Read Aloud", "Space = Pause • Click any paragraph to skip", 1600);
       return false;
     }
@@ -213,8 +245,11 @@
     }
 
     function speakFromBlockIndex(startIdx, blocksToRead) {
-      if (!win || !win.speechSynthesis || typeof win.SpeechSynthesisUtterance !== "function") {
-        // Fallback: if speechSynthesis is unavailable, select the range for macOS Option+Esc
+      const canUseChromeTts = hasChromeRuntimeTts();
+      const canUseWebSpeech = Boolean(
+        win && win.speechSynthesis && typeof win.SpeechSynthesisUtterance === "function"
+      );
+      if (!canUseChromeTts && !canUseWebSpeech) {
         if (blocksToRead && blocksToRead.length > 0) {
           detector.applyDomSelectionRange(doc, blocksToRead[startIdx], blocksToRead[blocksToRead.length - 1]);
         }
@@ -227,11 +262,13 @@
       state.speaking = true;
       state.paused = false;
 
-      try {
-        win.speechSynthesis.cancel();
-      } catch (_e) {}
+      if (canUseWebSpeech) {
+        try {
+          win.speechSynthesis.cancel();
+        } catch (_e) {}
+      }
 
-      const voice = pickPreferredMacVoice();
+      const voice = canUseWebSpeech ? pickPreferredMacVoice() : null;
 
       function speakStep() {
         if (mySession !== state.sessionId || !state.speaking) return;
@@ -246,8 +283,6 @@
         if (block && block.classList) {
           block.classList.add("mac-speak-active-paragraph");
         }
-        // Also select the active paragraph through the end of the article in native DOM Selection
-        // so the user always sees where they are and can use macOS native controls at any moment
         detector.applyDomSelectionRange(doc, block, state.activeBlocks[state.activeBlocks.length - 1]);
         scrollBlockSafelyIntoView(block);
 
@@ -261,7 +296,45 @@
           return;
         }
 
+        state.advanceSpeechStep = () => {
+          if (mySession !== state.sessionId || !state.speaking) return;
+          state.currentBlockIdx++;
+          speakStep();
+        };
+
+        // Primary path inside Chrome Extension: use background service worker's `chrome.tts`
+        // (immune to webpage autoplay blocks and popup-closing focus shifts).
+        if (canUseChromeTts) {
+          try {
+            root.chrome.runtime.sendMessage(
+              {
+                action: "tts-speak",
+                text,
+                rate: 1.0,
+                sessionId: mySession
+              },
+              resp => {
+                if (
+                  (root.chrome.runtime && root.chrome.runtime.lastError) ||
+                  !resp ||
+                  !resp.ok
+                ) {
+                  speakWithWebSpeechFallback(text);
+                }
+              }
+            );
+            return;
+          } catch (_e) {}
+        }
+
+        speakWithWebSpeechFallback(text);
+      }
+
+      function speakWithWebSpeechFallback(text) {
+        if (!canUseWebSpeech || mySession !== state.sessionId || !state.speaking) return;
         const utter = new win.SpeechSynthesisUtterance(text);
+        // Pin utterance on `state` so Chrome V8 GC never collects it mid-sentence
+        state.activeUtterance = utter;
         if (voice) utter.voice = voice;
         utter.rate = 1.0;
 
@@ -271,13 +344,18 @@
           speakStep();
         };
 
-        utter.onerror = (ev) => {
+        utter.onerror = ev => {
           if (mySession !== state.sessionId || !state.speaking) return;
           if (ev && (ev.error === "canceled" || ev.error === "interrupted")) return;
           state.currentBlockIdx++;
           speakStep();
         };
 
+        try {
+          if (typeof win.speechSynthesis.resume === "function") {
+            win.speechSynthesis.resume();
+          }
+        } catch (_e) {}
         win.speechSynthesis.speak(utter);
       }
 
@@ -326,13 +404,52 @@
         return { ok: false, reason: "no-converter" };
       }
       if (!state.movieModeActive) {
+        // Step 1 (<2ms): Instant local Dead-Noun -> Action-Verb dictionary rewrite
         const count = deadNounConverter.convertElementInPlace(doc.body, state.originalTextStore);
         state.movieModeActive = true;
         showToast(
-          `🎬 Movie Mode ON (${count} dead-noun phrase${count === 1 ? "" : "s"} flipped to visual actions)`,
-          "Press ⌥M again to restore original corporate text",
+          `🎬 Movie Mode ON (${count} phrase${count === 1 ? "" : "s"} flipped instantly)`,
+          "Checking Gemini 2.5 Flash for deeper 3D visual action rewrites...",
           3200
         );
+
+        // Step 2 (~1.2s): If Gemini API Key is saved, rewrite visible blocks via Gemini 2.5 Flash directly from MacBook!
+        if (hasChromeRuntimeTts() && detector) {
+          try {
+            const articleRoot = detector.findMainArticleContainer(doc);
+            const blocks = detector.collectReadableBlocks(doc, articleRoot).slice(0, 14);
+            const targetBlocks = blocks.filter(b => b && b.childNodes && b.childNodes.length === 1 && b.childNodes[0].nodeType === 3);
+            const sentences = targetBlocks.map(b => detector.normalizeText(b.textContent));
+            if (sentences.length > 0) {
+              root.chrome.runtime.sendMessage(
+                { action: "gemini-movie-rewrite", sentences },
+                res => {
+                  if (!state.movieModeActive || !res || !res.ok || !Array.isArray(res.rewritten)) return;
+                  let aiCount = 0;
+                  for (let i = 0; i < targetBlocks.length; i++) {
+                    const textNode = targetBlocks[i].childNodes[0];
+                    const newText = String(res.rewritten[i] || "").trim();
+                    if (textNode && newText && newText !== textNode.nodeValue) {
+                      if (state.originalTextStore && !state.originalTextStore.has(textNode)) {
+                        state.originalTextStore.set(textNode, textNode.nodeValue);
+                      }
+                      textNode.nodeValue = newText;
+                      aiCount++;
+                    }
+                  }
+                  if (aiCount > 0) {
+                    showToast(
+                      `✨ Gemini 2.5 Flash rewrote ${aiCount} paragraph${aiCount === 1 ? "" : "s"} into 3D Visual Actions!`,
+                      "Press ⌥M anytime to restore original text",
+                      3200
+                    );
+                  }
+                }
+              );
+            }
+          } catch (_e) {}
+        }
+
         return { ok: true, active: true, convertedCount: count };
       } else {
         const restored = deadNounConverter.restoreElementOriginalText(doc.body, state.originalTextStore);
@@ -488,6 +605,13 @@
       } else if (msg.action === "toggle-movie-mode") {
         const r = toggleMovieMode();
         if (typeof sendResponse === "function") sendResponse(r);
+      } else if (msg.action === "tts-bg-event") {
+        if (msg.sessionId === state.sessionId && state.speaking) {
+          if (msg.eventType === "end" && typeof state.advanceSpeechStep === "function") {
+            state.advanceSpeechStep();
+          }
+        }
+        if (typeof sendResponse === "function") sendResponse({ ok: true });
       }
     }
 

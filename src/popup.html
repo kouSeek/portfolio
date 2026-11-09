@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>MacBook Smart Read Aloud</title>
+  <title>MacBook Smart Read Aloud &amp; Movie Mode</title>
   <style>
     :root {
       color-scheme: dark;
@@ -10,7 +10,7 @@
     body {
       margin: 0;
       padding: 14px;
-      width: 310px;
+      width: 325px;
       background: #0f1117;
       color: #e2e8f0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -23,13 +23,18 @@
       color: #ffffff;
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: space-between;
+    }
+    .status-pill {
+      font-size: 11px;
+      font-weight: 500;
+      color: #a5b4fc;
     }
     .btn-stack {
       display: flex;
       flex-direction: column;
       gap: 7px;
-      margin-bottom: 12px;
+      margin-bottom: 11px;
     }
     button {
       display: flex;
@@ -64,9 +69,46 @@
       font-size: 11px;
       color: #cbd5e1;
     }
-    .tips {
+    .api-box {
       border-top: 1px solid #1e2330;
       padding-top: 9px;
+      margin-bottom: 9px;
+    }
+    .api-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+    }
+    .api-label a {
+      color: #818cf8;
+      text-decoration: none;
+      font-size: 11px;
+    }
+    .api-row {
+      display: flex;
+      gap: 6px;
+    }
+    .api-row input {
+      flex: 1;
+      background: #0b0d12;
+      border: 1px solid #262b38;
+      border-radius: 6px;
+      padding: 6px 8px;
+      color: #f1f5f9;
+      font-size: 11.5px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .api-row button {
+      width: auto;
+      padding: 6px 10px;
+      font-size: 11.5px;
+    }
+    .tips {
+      border-top: 1px solid #1e2330;
+      padding-top: 8px;
       font-size: 11.5px;
       color: #94a3b8;
       line-height: 1.45;
@@ -77,9 +119,20 @@
   </style>
 </head>
 <body>
-  <h1>🔊 MacBook Smart Read Aloud</h1>
+  <h1>
+    <span>🔊🎬 Smart Read &amp; Movie Mode</span>
+    <span class="status-pill" id="popup-status">v1.3</span>
+  </h1>
   <div class="btn-stack">
-    <button type="button" class="primary" id="btn-select-from-here">
+    <button type="button" class="primary" id="btn-speak-from-here">
+      <span>🔊 Read Aloud from Here (1.0x)</span>
+      <kbd>⌥ R</kbd>
+    </button>
+    <button type="button" id="btn-movie-mode">
+      <span>🎬 Movie Mode (Kill Dead Nouns)</span>
+      <kbd>⌥ M</kbd>
+    </button>
+    <button type="button" id="btn-select-from-here">
       <span>📖 Select from Here to End</span>
       <kbd>⌥ Space</kbd>
     </button>
@@ -87,23 +140,26 @@
       <span>📄 Select Entire Article</span>
       <kbd>⌥ A</kbd>
     </button>
-    <button type="button" id="btn-speak-from-here">
-      <span>🔊 Read Aloud from Here</span>
-      <kbd>⌥ R</kbd>
-    </button>
-    <button type="button" id="btn-movie-mode">
-      <span>🎬 Movie Mode (Kill Dead Nouns)</span>
-      <kbd>⌥ M</kbd>
-    </button>
     <button type="button" id="btn-sync-cloud">
       <span id="sync-cloud-label">☁️ Sync Latest Cloud Rules</span>
       <kbd>OTA</kbd>
     </button>
   </div>
+
+  <div class="api-box">
+    <div class="api-label">
+      <span>🔑 Gemini API Key (Direct Mac → Cloud AI)</span>
+      <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer">Get Key ↗</a>
+    </div>
+    <div class="api-row">
+      <input type="password" id="gemini-api-key-input" placeholder="AIza... (optional for AI rewrite)" autocomplete="off" />
+      <button type="button" id="btn-save-api-key">Save</button>
+    </div>
+  </div>
+
   <div class="tips">
-    <div>• <strong><kbd>⌥ M</kbd> (Movie Mode)</strong>: Rewrites corporate "dead nouns" (e.g. <em>"Supervision of a rollout"</em> → <em>"When you watch new code go live"</em>) in-place on any page!</div>
-    <div>• <strong>Hover + <kbd>⌥ Space</kbd></strong> (or <strong><kbd>⌥ Click</kbd></strong> any paragraph): Selects from that paragraph to the end of the article.</div>
-    <div>• During <kbd>⌥ R</kbd> Read Aloud: press <strong><kbd>Space</kbd></strong> to Play/Pause, or click any paragraph to skip.</div>
+    <div>• <strong><kbd>⌥ M</kbd> (Movie Mode)</strong>: Instant built-in engine flips 100+ dead nouns in <code>0ms</code> + calls <code>gemini-2.5-flash</code> directly from your Mac if key is set!</div>
+    <div>• <strong><kbd>⌥ R</kbd> (Read Aloud)</strong>: Speaks via Chrome native macOS TTS (`Space` = Pause, click paragraph = Skip, `Esc` = Stop).</div>
   </div>
   <script src="popup.js"></script>
 </body>

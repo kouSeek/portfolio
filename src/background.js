@@ -1,11 +1,15 @@
 /* ==========================================================================
-   MacBook Smart Read Aloud & Auto-Select — Background Service Worker
+   MacBook Smart Read Aloud & Movie Mode — Background Service Worker
    (`src/background.js`)
-   - Wires Chrome keyboard commands (`Alt+Space`, `Alt+R`, `Alt+A`, `Alt+M`)
-     and Right-Click Context Menu items to the active tab's content script.
-   - Automatically syncs the latest `cloud-rules.json` Dead-Noun -> Action-Movie
-     dictionary from GitHub Cloud (`kouSeek/portfolio@mac-speak-chrome-ext`)
-     into `chrome.storage.local` on startup, every 30 minutes, and on demand.
+   - Auto-injects content scripts (`article-detector.js`, `dead-noun-converter.js`,
+     `content.js`, `content.css`) into already-open tabs when clicked from Popup,
+     Context Menu, or Keyboard Shortcut (`Alt+Space`, `Alt+R`, `Alt+A`, `Alt+M`).
+   - Speaks audio reliably via Chrome's native `chrome.tts` engine (never blocked
+     by webpage autoplay policies or popup closing).
+   - Calls `gemini-2.5-flash` (`https://generativelanguage.googleapis.com/...`)
+     directly from the user's MacBook over HTTPS (zero Cloudtop needed!) to
+     rewrite complex corporate "dead nouns" into vivid 3D visual-action sentences.
+   - Syncs `cloud-rules.json` Over-The-Air (`OTA`) from GitHub Cloud.
    ========================================================================== */
 "use strict";
 
@@ -13,6 +17,9 @@ const CLOUD_RULES_URLS = [
   "https://raw.githubusercontent.com/kouSeek/portfolio/mac-speak-chrome-ext/cloud-rules.json",
   "http://koushikchak.c.googlers.com:9500/api/mac-speak/cloud-rules.json"
 ];
+
+const GEMINI_FLASH_ENDPOINT =
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
 async function syncCloudRulesNow() {
   for (let i = 0; i < CLOUD_RULES_URLS.length; i++) {
@@ -35,6 +42,73 @@ async function syncCloudRulesNow() {
     } catch (_e) {}
   }
   return { ok: false, reason: "offline-or-unreachable" };
+}
+
+function getStoredGeminiApiKey() {
+  return new Promise(resolve => {
+    if (typeof chrome === "undefined" || !chrome.storage || !chrome.storage.local) {
+      resolve("");
+      return;
+    }
+    chrome.storage.local.get(["geminiApiKey"], items => {
+      resolve(String((items && items.geminiApiKey) || "").trim());
+    });
+  });
+}
+
+/**
+ * Calls Google's public Cloud Gemini 2.5 Flash API directly from the user's
+ * MacBook over HTTPS (`generativelanguage.googleapis.com`) to convert an array
+ * of corporate/abstract sentences into vivid "Who-Does-What" visual actions.
+ */
+async function rewriteSentencesWithGeminiFlash(sentences, explicitApiKey) {
+  const apiKey = String(explicitApiKey || (await getStoredGeminiApiKey()) || "").trim();
+  if (!apiKey) {
+    return { ok: false, reason: "missing-api-key" };
+  }
+  if (!Array.isArray(sentences) || sentences.length === 0) {
+    return { ok: false, reason: "empty-input" };
+  }
+
+  const prompt = [
+    "You are a Dead-Noun -> 3D Visual Action Movie translator for a visual-spatial engineer.",
+    "Corporate English uses frozen abstract nouns (nominalizations like 'Supervision of a rollout includes oversight of...') which have no actor and no motion.",
+    "Rewrite each numbered item in the JSON array below into plain, vivid, effortless 'Who-Does-What' everyday English using living actors ('you', 'your server', 'a human', 'auto-alarms') and moving action verbs ('watch', 'spot', 'push live', 'check').",
+    "Rules:",
+    "1. Preserve the exact meaning and keep each item concise (1 sentence).",
+    "2. Return ONLY a valid JSON array of strings with the exact same length and order as the input array. Do not wrap in markdown fences.",
+    "",
+    "Input JSON array:",
+    JSON.stringify(sentences)
+  ].join("\n");
+
+  try {
+    const resp = await fetch(`${GEMINI_FLASH_ENDPOINT}?key=${encodeURIComponent(apiKey)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.2,
+          responseMimeType: "application/json"
+        }
+      })
+    });
+    if (!resp.ok) {
+      return { ok: false, reason: `http-${resp.status}` };
+    }
+    const data = await resp.json();
+    const rawText =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    const cleaned = String(rawText).replace(/^```(?:json)?\s*|\s*```$/gi, "").trim();
+    const parsed = JSON.parse(cleaned);
+    if (Array.isArray(parsed) && parsed.length === sentences.length) {
+      return { ok: true, rewritten: parsed };
+    }
+    return { ok: false, reason: "length-mismatch" };
+  } catch (err) {
+    return { ok: false, reason: String((err && err.message) || "network-error") };
+  }
 }
 
 const MENU_ITEMS = [
@@ -60,26 +134,82 @@ const MENU_ITEMS = [
   }
 ];
 
-function sendToActiveTab(tabId, payload) {
-  if (!tabId || !chrome.tabs || typeof chrome.tabs.sendMessage !== "function") return;
-  chrome.tabs.sendMessage(tabId, payload, () => {
+function sendToActiveTab(tabId, payload, doneCallback) {
+  if (!tabId || !chrome.tabs || typeof chrome.tabs.sendMessage !== "function") {
+    if (typeof doneCallback === "function") doneCallback({ ok: false, reason: "no-tab" });
+    return;
+  }
+  chrome.tabs.sendMessage(tabId, payload, response => {
     if (chrome.runtime && chrome.runtime.lastError) {
-      // If content script wasn't injected yet (e.g., tab was open before extension install), inject on the fly
+      // Tab was already open before extension loaded/updated -> inject CSS + JS on the fly!
       if (chrome.scripting && typeof chrome.scripting.executeScript === "function") {
+        if (typeof chrome.scripting.insertCSS === "function") {
+          chrome.scripting.insertCSS({ target: { tabId }, files: ["src/content.css"] }, () => {});
+        }
         chrome.scripting.executeScript(
           {
             target: { tabId },
             files: ["src/article-detector.js", "src/dead-noun-converter.js", "src/content.js"]
           },
           () => {
-            if (!chrome.runtime.lastError) {
-              chrome.tabs.sendMessage(tabId, payload);
+            if (chrome.runtime && chrome.runtime.lastError) {
+              if (typeof doneCallback === "function") {
+                doneCallback({
+                  ok: false,
+                  reason: chrome.runtime.lastError.message || "cannot-inject"
+                });
+              }
+              return;
             }
+            chrome.tabs.sendMessage(tabId, payload, retryResp => {
+              if (typeof doneCallback === "function") doneCallback(retryResp || { ok: true });
+            });
+          }
+        );
+      } else if (typeof doneCallback === "function") {
+        doneCallback({ ok: false, reason: "no-scripting-api" });
+      }
+    } else if (typeof doneCallback === "function") {
+      doneCallback(response || { ok: true });
+    }
+  });
+}
+
+function speakViaChromeTts(tabId, text, rate, sessionId) {
+  if (typeof chrome === "undefined" || !chrome.tts || typeof chrome.tts.speak !== "function") {
+    return false;
+  }
+  try {
+    chrome.tts.stop();
+  } catch (_e) {}
+
+  chrome.tts.speak(String(text || ""), {
+    rate: Number(rate) || 1.0,
+    enqueue: false,
+    onEvent(event) {
+      if (!event || !tabId) return;
+      if (
+        event.type === "end" ||
+        event.type === "error" ||
+        event.type === "cancelled" ||
+        event.type === "interrupted"
+      ) {
+        chrome.tabs.sendMessage(
+          tabId,
+          {
+            action: "tts-bg-event",
+            eventType: event.type,
+            sessionId
+          },
+          () => {
+            // Ignore lastError if tab closed
+            void (chrome.runtime && chrome.runtime.lastError);
           }
         );
       }
     }
   });
+  return true;
 }
 
 if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onInstalled) {
@@ -101,21 +231,72 @@ if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onStartup)
 }
 
 if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage) {
-  chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-    if (msg && msg.action === "sync-cloud-rules") {
+  chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (!msg || typeof msg !== "object") return false;
+
+    // 1. Popup button dispatch -> finds active tab, auto-injects if needed, and runs action
+    if (msg.action === "popup-dispatch" && msg.targetAction) {
+      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        const activeTab = tabs && tabs[0];
+        if (!activeTab || !activeTab.id) {
+          if (typeof sendResponse === "function") sendResponse({ ok: false, reason: "no-active-tab" });
+          return;
+        }
+        sendToActiveTab(activeTab.id, { action: msg.targetAction }, res => {
+          if (typeof sendResponse === "function") sendResponse(res);
+        });
+      });
+      return true;
+    }
+
+    // 2. Native Chrome TTS engine commands from content script
+    if (msg.action === "tts-speak") {
+      const tabId = sender && sender.tab && sender.tab.id;
+      const ok = speakViaChromeTts(tabId, msg.text, msg.rate || 1.0, msg.sessionId);
+      if (typeof sendResponse === "function") sendResponse({ ok });
+      return false;
+    }
+    if (msg.action === "tts-pause") {
+      if (chrome.tts && typeof chrome.tts.pause === "function") {
+        try { chrome.tts.pause(); } catch (_e) {}
+      }
+      if (typeof sendResponse === "function") sendResponse({ ok: true });
+      return false;
+    }
+    if (msg.action === "tts-resume") {
+      if (chrome.tts && typeof chrome.tts.resume === "function") {
+        try { chrome.tts.resume(); } catch (_e) {}
+      }
+      if (typeof sendResponse === "function") sendResponse({ ok: true });
+      return false;
+    }
+    if (msg.action === "tts-stop") {
+      if (chrome.tts && typeof chrome.tts.stop === "function") {
+        try { chrome.tts.stop(); } catch (_e) {}
+      }
+      if (typeof sendResponse === "function") sendResponse({ ok: true });
+      return false;
+    }
+
+    // 3. Direct Gemini 2.5 Flash Movie Rewrite from MacBook over HTTPS
+    if (msg.action === "gemini-movie-rewrite") {
+      rewriteSentencesWithGeminiFlash(msg.sentences, msg.apiKey).then(res => {
+        if (typeof sendResponse === "function") sendResponse(res);
+      });
+      return true;
+    }
+
+    // 4. OTA Cloud Rule Sync
+    if (msg.action === "sync-cloud-rules") {
       syncCloudRulesNow().then(res => {
         if (typeof sendResponse === "function") sendResponse(res);
       });
       return true;
     }
+
     return false;
   });
 }
-
-// Periodic background cloud sync every 30 minutes
-setInterval(() => {
-  syncCloudRulesNow();
-}, 30 * 60 * 1000);
 
 if (typeof chrome !== "undefined" && chrome.contextMenus && chrome.contextMenus.onClicked) {
   chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -149,3 +330,8 @@ if (typeof chrome !== "undefined" && chrome.commands && chrome.commands.onComman
     });
   });
 }
+
+// Periodic background cloud sync every 30 minutes
+setInterval(() => {
+  syncCloudRulesNow();
+}, 30 * 60 * 1000);
