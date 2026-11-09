@@ -1,0 +1,61 @@
+{
+  "manifest_version": 3,
+  "name": "MacBook Smart Read Aloud & Movie Mode (Dead-Noun Converter)",
+  "version": "1.2.0",
+  "description": "Zero-drag article selection (⌥Space), 1.0x Read Aloud (⌥R), and Movie Mode (⌥M) converting corporate dead nouns into visual actions.",
+  "permissions": [
+    "activeTab",
+    "contextMenus",
+    "scripting",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "action": {
+    "default_title": "MacBook Smart Read Aloud & Auto-Select",
+    "default_popup": "src/popup.html"
+  },
+  "commands": {
+    "select-from-here": {
+      "suggested_key": {
+        "default": "Alt+Space",
+        "mac": "Alt+Space"
+      },
+      "description": "Auto-select from hovered/visible paragraph to end of article (for macOS Speak Selection)"
+    },
+    "speak-from-here": {
+      "suggested_key": {
+        "default": "Alt+R",
+        "mac": "Alt+R"
+      },
+      "description": "Auto-select & Read Aloud from hovered/visible paragraph (Space = Play/Pause)"
+    },
+    "select-full-article": {
+      "suggested_key": {
+        "default": "Alt+A",
+        "mac": "Alt+A"
+      },
+      "description": "Auto-select entire clean article from start to finish"
+    },
+    "toggle-movie-mode": {
+      "suggested_key": {
+        "default": "Alt+M",
+        "mac": "Alt+M"
+      },
+      "description": "Toggle Movie Mode: convert corporate 'Dead Nouns' into living 'Who-Does-What' visual action verbs"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["src/content.css"],
+      "js": [
+        "src/article-detector.js",
+        "src/dead-noun-converter.js",
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "version": "1.2.0",
+  "updatedAt": "2026-11-09T10:12:00Z",
+  "description": "Cloud-synced Dead-Noun -> Visual Action Movie rules for MacBook Smart Read Aloud & Movie Mode",
+  "phraseRules": [
+    [
+      "\\bsupervision of a rollout includes the following\\b",
+      "When you watch new code go live, you do these things"
+    ],
+    [
+      "\\bsupervision of a rollout\\b",
+      "watching new code go live"
+    ],
+    [
+      "\\bmust detect material changes in the behavior of the service,\\s*including performance,\\s*resource consumption,\\s*and error rates\\b",
+      "You must spot any big changes in how the server behaves—like slowing down, eating too much CPU/RAM, or throwing errors"
+    ],
+    [
+      "\\bmust include oversight of a service['’]s critical metrics and those of its most important clients\\/customers\\b",
+      "You must watch your service's main health graphs and check that your biggest customers aren't breaking"
+    ],
+    [
+      "\\bmust be a manual effort\\b",
+      "A human must do all the watching by hand"
+    ],
+    [
+      "\\bmay be accomplished by some combination of manual and automation effort\\b",
+      "You can do this using a mix of human checks and automatic bots/alarms"
+    ]
+  ],
+  "deadNounOfMap": {
+    "supervision": "watching",
+    "oversight": "watching over",
+    "implementation": "building and turning on",
+    "utilization": "using",
+    "verification": "checking",
+    "validation": "testing and checking",
+    "mitigation": "stopping the damage of",
+    "remediation": "fixing",
+    "escalation": "paging the next team for",
+    "provisioning": "spinning up",
+    "deprecation": "phasing out",
+    "decommissioning": "shutting down",
+    "authorization": "approving",
+    "authentication": "verifying who logs into",
+    "prioritization": "ranking what comes first in",
+    "optimization": "speeding up",
+    "initiation": "starting",
+    "termination": "stopping",
+    "modification": "changing",
+    "configuration": "setting up",
+    "investigation": "digging into",
+    "determination": "deciding",
+    "assessment": "checking",
+    "evaluation": "testing and scoring",
+    "deployment": "pushing live",
+    "rollout": "pushing out",
+    "monitoring": "watching the health of",
+    "execution": "running",
+    "documentation": "writing down",
+    "notification": "alerting",
+    "identification": "spotting",
+    "detection": "spotting",
+    "resolution": "solving",
+    "prevention": "blocking",
+    "allocation": "handing out",
+    "acquisition": "getting",
+    "distribution": "sending out",
+    "maintenance": "keeping up",
+    "restoration": "bringing back online",
+    "recovery": "recovering",
+    "integration": "connecting",
+    "migration": "moving",
+    "replication": "copying",
+    "synchronization": "syncing",
+    "elimination": "removing",
+    "removal": "removing",
+    "reduction": "cutting down",
+    "submission": "sending in",
+    "completion": "finishing",
+    "review": "checking",
+    "administration": "managing",
+    "facilitation": "helping run",
+    "enforcement": "enforcing",
+    "observation": "watching",
+    "measurement": "measuring",
+    "transmission": "sending",
+    "retrieval": "fetching",
+    "ingestion": "loading in",
+    "extraction": "pulling out",
+    "transformation": "converting",
+    "aggregation": "combining",
+    "orchestration": "coordinating",
+    "consolidation": "merging"
+  }
+}

@@ -1,0 +1,56 @@
+/* ==========================================================================
+   MacBook Smart Read Aloud & Auto-Select — Calm Minimalist Overlay Styles
+   (`src/content.css`)
+   ========================================================================== */
+
+.mac-speak-hover-anchor {
+  box-shadow: -3px 0 0 0 #6366f1 !important;
+  background-color: rgba(99, 102, 241, 0.06) !important;
+  border-radius: 3px !important;
+  cursor: pointer !important;
+  transition: background-color 0.12s ease, box-shadow 0.12s ease !important;
+}
+
+.mac-speak-active-paragraph {
+  box-shadow: -3px 0 0 0 #4f46e5 !important;
+  background-color: rgba(79, 70, 229, 0.08) !important;
+  border-radius: 4px !important;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+#mac-speak-status-toast {
+  position: fixed !important;
+  top: 16px !important;
+  right: 16px !important;
+  z-index: 2147483647 !important;
+  max-width: 420px !important;
+  padding: 10px 14px !important;
+  border-radius: 10px !important;
+  background: rgba(17, 20, 28, 0.95) !important;
+  color: #f1f5f9 !important;
+  border: 1px solid rgba(148, 163, 184, 0.28) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  transform: translateY(-6px) !important;
+  transition: opacity 0.16s ease, transform 0.16s ease !important;
+}
+
+#mac-speak-status-toast.visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+#mac-speak-status-toast .mac-speak-toast-title {
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  margin-bottom: 2px !important;
+}
+
+#mac-speak-status-toast .mac-speak-toast-sub {
+  font-size: 11.5px !important;
+  color: #cbd5e1 !important;
+}
