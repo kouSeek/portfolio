@@ -409,11 +409,11 @@
         state.movieModeActive = true;
         showToast(
           `🎬 Movie Mode ON (${count} phrase${count === 1 ? "" : "s"} flipped instantly)`,
-          "Checking Gemini 2.5 Flash for deeper 3D visual action rewrites...",
+          "Checking Gemini 3.8 Flash for deeper 3D visual action rewrites...",
           3200
         );
 
-        // Step 2 (~1.2s): If Gemini API Key is saved, rewrite visible blocks via Gemini 2.5 Flash directly from MacBook!
+        // Step 2 (~1.2s): If Gemini API Key is saved, rewrite visible blocks via Gemini 3.8 Flash directly from MacBook!
         if (hasChromeRuntimeTts() && detector) {
           try {
             const articleRoot = detector.findMainArticleContainer(doc);
@@ -439,7 +439,7 @@
                   }
                   if (aiCount > 0) {
                     showToast(
-                      `✨ Gemini 2.5 Flash rewrote ${aiCount} paragraph${aiCount === 1 ? "" : "s"} into 3D Visual Actions!`,
+                      `✨ Gemini 3.8 Flash rewrote ${aiCount} paragraph${aiCount === 1 ? "" : "s"} into 3D Visual Actions!`,
                       "Press ⌥M anytime to restore original text",
                       3200
                     );

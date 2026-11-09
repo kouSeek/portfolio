@@ -18,8 +18,11 @@ const CLOUD_RULES_URLS = [
   "http://koushikchak.c.googlers.com:9500/api/mac-speak/cloud-rules.json"
 ];
 
-const GEMINI_FLASH_ENDPOINT =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+const GEMINI_FLASH_MODELS = [
+  "gemini-3.8-flash",
+  "gemini-3-flash-preview"
+];
+const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
 async function syncCloudRulesNow() {
   for (let i = 0; i < CLOUD_RULES_URLS.length; i++) {
@@ -82,33 +85,40 @@ async function rewriteSentencesWithGeminiFlash(sentences, explicitApiKey) {
     JSON.stringify(sentences)
   ].join("\n");
 
-  try {
-    const resp = await fetch(`${GEMINI_FLASH_ENDPOINT}?key=${encodeURIComponent(apiKey)}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.2,
-          responseMimeType: "application/json"
-        }
-      })
-    });
-    if (!resp.ok) {
-      return { ok: false, reason: `http-${resp.status}` };
+  let lastReason = "network-error";
+  for (let i = 0; i < GEMINI_FLASH_MODELS.length; i++) {
+    const modelId = GEMINI_FLASH_MODELS[i];
+    const url = `${GEMINI_API_BASE}/${modelId}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    try {
+      const resp = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.2,
+            responseMimeType: "application/json"
+          }
+        })
+      });
+      if (!resp.ok) {
+        lastReason = `http-${resp.status}`;
+        continue;
+      }
+      const data = await resp.json();
+      const rawText =
+        data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      const cleaned = String(rawText).replace(/^```(?:json)?\s*|\s*```$/gi, "").trim();
+      const parsed = JSON.parse(cleaned);
+      if (Array.isArray(parsed) && parsed.length === sentences.length) {
+        return { ok: true, model: modelId, rewritten: parsed };
+      }
+      lastReason = "length-mismatch";
+    } catch (err) {
+      lastReason = String((err && err.message) || "network-error");
     }
-    const data = await resp.json();
-    const rawText =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    const cleaned = String(rawText).replace(/^```(?:json)?\s*|\s*```$/gi, "").trim();
-    const parsed = JSON.parse(cleaned);
-    if (Array.isArray(parsed) && parsed.length === sentences.length) {
-      return { ok: true, rewritten: parsed };
-    }
-    return { ok: false, reason: "length-mismatch" };
-  } catch (err) {
-    return { ok: false, reason: String((err && err.message) || "network-error") };
   }
+  return { ok: false, reason: lastReason };
 }
 
 const MENU_ITEMS = [
