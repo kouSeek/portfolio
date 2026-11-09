@@ -48,6 +48,8 @@ class TestMacSpeakChromeExtension(unittest.TestCase):
         self.assertIn("speak-from-here", manifest["commands"])
         self.assertIn("select-full-article", manifest["commands"])
         self.assertIn("toggle-movie-mode", manifest["commands"])
+        # Corp Chrome policy (go/blocked-extension-permission-corp) blocks "tts" in permissions
+        self.assertNotIn("tts", manifest.get("permissions", []))
 
         for rel in (
             "src/article-detector.js",

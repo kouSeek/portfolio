@@ -167,15 +167,6 @@
       return res;
     }
 
-    function hasChromeRuntimeTts() {
-      return Boolean(
-        root &&
-        root.chrome &&
-        root.chrome.runtime &&
-        typeof root.chrome.runtime.sendMessage === "function"
-      );
-    }
-
     function stopSpeaking(showNotification = false) {
       state.sessionId++;
       state.speaking = false;
@@ -184,11 +175,6 @@
       state.currentBlockIdx = 0;
       state.activeUtterance = null;
       clearActiveParagraphHighlight();
-      if (hasChromeRuntimeTts()) {
-        try {
-          root.chrome.runtime.sendMessage({ action: "tts-stop" }, () => {});
-        } catch (_e) {}
-      }
       if (win && win.speechSynthesis) {
         try {
           win.speechSynthesis.cancel();
@@ -203,11 +189,6 @@
       if (!state.speaking) return false;
       if (!state.paused) {
         state.paused = true;
-        if (hasChromeRuntimeTts()) {
-          try {
-            root.chrome.runtime.sendMessage({ action: "tts-pause" }, () => {});
-          } catch (_e) {}
-        }
         if (win && win.speechSynthesis) {
           try {
             win.speechSynthesis.pause();
@@ -217,11 +198,6 @@
         return true;
       }
       state.paused = false;
-      if (hasChromeRuntimeTts()) {
-        try {
-          root.chrome.runtime.sendMessage({ action: "tts-resume" }, () => {});
-        } catch (_e) {}
-      }
       if (win && win.speechSynthesis) {
         try {
           win.speechSynthesis.resume();
@@ -245,11 +221,10 @@
     }
 
     function speakFromBlockIndex(startIdx, blocksToRead) {
-      const canUseChromeTts = hasChromeRuntimeTts();
       const canUseWebSpeech = Boolean(
         win && win.speechSynthesis && typeof win.SpeechSynthesisUtterance === "function"
       );
-      if (!canUseChromeTts && !canUseWebSpeech) {
+      if (!canUseWebSpeech) {
         if (blocksToRead && blocksToRead.length > 0) {
           detector.applyDomSelectionRange(doc, blocksToRead[startIdx], blocksToRead[blocksToRead.length - 1]);
         }
@@ -262,13 +237,11 @@
       state.speaking = true;
       state.paused = false;
 
-      if (canUseWebSpeech) {
-        try {
-          win.speechSynthesis.cancel();
-        } catch (_e) {}
-      }
+      try {
+        win.speechSynthesis.cancel();
+      } catch (_e) {}
 
-      const voice = canUseWebSpeech ? pickPreferredMacVoice() : null;
+      const voice = pickPreferredMacVoice();
 
       function speakStep() {
         if (mySession !== state.sessionId || !state.speaking) return;
@@ -296,45 +269,12 @@
           return;
         }
 
-        state.advanceSpeechStep = () => {
-          if (mySession !== state.sessionId || !state.speaking) return;
-          state.currentBlockIdx++;
-          speakStep();
-        };
-
-        // Primary path inside Chrome Extension: use background service worker's `chrome.tts`
-        // (immune to webpage autoplay blocks and popup-closing focus shifts).
-        if (canUseChromeTts) {
-          try {
-            root.chrome.runtime.sendMessage(
-              {
-                action: "tts-speak",
-                text,
-                rate: 1.0,
-                sessionId: mySession
-              },
-              resp => {
-                if (
-                  (root.chrome.runtime && root.chrome.runtime.lastError) ||
-                  !resp ||
-                  !resp.ok
-                ) {
-                  speakWithWebSpeechFallback(text);
-                }
-              }
-            );
-            return;
-          } catch (_e) {}
-        }
-
-        speakWithWebSpeechFallback(text);
-      }
-
-      function speakWithWebSpeechFallback(text) {
-        if (!canUseWebSpeech || mySession !== state.sessionId || !state.speaking) return;
         const utter = new win.SpeechSynthesisUtterance(text);
-        // Pin utterance on `state` so Chrome V8 GC never collects it mid-sentence
+        // Pin utterance on `state` and `win` so Chrome V8 GC never collects it mid-sentence
         state.activeUtterance = utter;
+        if (win) {
+          win.__macSpeakActiveUtterance = utter;
+        }
         if (voice) utter.voice = voice;
         utter.rate = 1.0;
 
@@ -605,13 +545,6 @@
       } else if (msg.action === "toggle-movie-mode") {
         const r = toggleMovieMode();
         if (typeof sendResponse === "function") sendResponse(r);
-      } else if (msg.action === "tts-bg-event") {
-        if (msg.sessionId === state.sessionId && state.speaking) {
-          if (msg.eventType === "end" && typeof state.advanceSpeechStep === "function") {
-            state.advanceSpeechStep();
-          }
-        }
-        if (typeof sendResponse === "function") sendResponse({ ok: true });
       }
     }
 

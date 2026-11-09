@@ -185,43 +185,6 @@ function sendToActiveTab(tabId, payload, doneCallback) {
   });
 }
 
-function speakViaChromeTts(tabId, text, rate, sessionId) {
-  if (typeof chrome === "undefined" || !chrome.tts || typeof chrome.tts.speak !== "function") {
-    return false;
-  }
-  try {
-    chrome.tts.stop();
-  } catch (_e) {}
-
-  chrome.tts.speak(String(text || ""), {
-    rate: Number(rate) || 1.0,
-    enqueue: false,
-    onEvent(event) {
-      if (!event || !tabId) return;
-      if (
-        event.type === "end" ||
-        event.type === "error" ||
-        event.type === "cancelled" ||
-        event.type === "interrupted"
-      ) {
-        chrome.tabs.sendMessage(
-          tabId,
-          {
-            action: "tts-bg-event",
-            eventType: event.type,
-            sessionId
-          },
-          () => {
-            // Ignore lastError if tab closed
-            void (chrome.runtime && chrome.runtime.lastError);
-          }
-        );
-      }
-    }
-  });
-  return true;
-}
-
 if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onInstalled) {
   chrome.runtime.onInstalled.addListener(() => {
     syncCloudRulesNow();
@@ -259,36 +222,7 @@ if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage)
       return true;
     }
 
-    // 2. Native Chrome TTS engine commands from content script
-    if (msg.action === "tts-speak") {
-      const tabId = sender && sender.tab && sender.tab.id;
-      const ok = speakViaChromeTts(tabId, msg.text, msg.rate || 1.0, msg.sessionId);
-      if (typeof sendResponse === "function") sendResponse({ ok });
-      return false;
-    }
-    if (msg.action === "tts-pause") {
-      if (chrome.tts && typeof chrome.tts.pause === "function") {
-        try { chrome.tts.pause(); } catch (_e) {}
-      }
-      if (typeof sendResponse === "function") sendResponse({ ok: true });
-      return false;
-    }
-    if (msg.action === "tts-resume") {
-      if (chrome.tts && typeof chrome.tts.resume === "function") {
-        try { chrome.tts.resume(); } catch (_e) {}
-      }
-      if (typeof sendResponse === "function") sendResponse({ ok: true });
-      return false;
-    }
-    if (msg.action === "tts-stop") {
-      if (chrome.tts && typeof chrome.tts.stop === "function") {
-        try { chrome.tts.stop(); } catch (_e) {}
-      }
-      if (typeof sendResponse === "function") sendResponse({ ok: true });
-      return false;
-    }
-
-    // 3. Direct Gemini 2.5 Flash Movie Rewrite from MacBook over HTTPS
+    // 2. Direct Gemini 3.8 Flash Movie Rewrite from MacBook over HTTPS
     if (msg.action === "gemini-movie-rewrite") {
       rewriteSentencesWithGeminiFlash(msg.sentences, msg.apiKey).then(res => {
         if (typeof sendResponse === "function") sendResponse(res);
