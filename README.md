@@ -55,14 +55,14 @@ Built specifically for **Visual-Spatial / 3D Movie-Simulator thinkers** and MacB
 
 ## ☁️ Installation & Cloud Auto-Sync Options
 
-### Option 1: 1-Command Cloud Installer for MacBook (Auto-Syncs via Git + OTA)
-Run this single command in your MacBook Terminal:
+## 📦 One-Shot Installation & Update on MacBook (Zero Background Jobs)
+
+Run this single command in your MacBook Terminal whenever you want to install or update `~/Downloads/mac-speak-chrome-ext`:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/kouSeek/portfolio/mac-speak-chrome-ext/macos/install_from_cloud.sh | bash
 ```
-1. Clones the cloud branch into `~/.mac-speak-chrome-ext`.
-2. Installs a lightweight macOS `launchd` agent (`com.koushik.macspeak.cloudsync`) that pulls cloud updates every 15 minutes automatically, paired with the extension's built-in 30-minute OTA `cloud-rules.json` sync.
-3. Opens `chrome://extensions` — enable **Developer mode** (top-right), click **Load unpacked**, and select `~/.mac-speak-chrome-ext` (press `Cmd + Shift + .` in the Mac file dialog to reveal hidden dot-folders).
+1. Downloads and extracts the latest extension directly into `~/Downloads/mac-speak-chrome-ext` (no background daemon, no `launchd` runner, and no auto-git sync).
+2. In `chrome://extensions`, enable **Developer mode** (top-right) and click **Load unpacked** -> select `~/Downloads/mac-speak-chrome-ext` (or click **🔄 Reload** if already loaded).
 
 ### Option 2: Publishing to Google's Internal Chrome Web Store (`@google.com` Domain)
 Google provides an internal Chrome Web Store for Googlers (`https://chrome.google.com/webstore/a/google.com/` — see `go/publish-extensions-as-a-googler` and `go/cws-vebs`). To publish this extension to the internal `@google.com` store for 1-click cloud installation across all your corp machines:

@@ -1,71 +1,46 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# MacBook Smart Read Aloud & Movie Mode (Dead-Noun Converter) — Cloud Installer
-# Clones the cloud repository into `~/.mac-speak-chrome-ext` and installs a
-# background macOS LaunchAgent (`com.koushik.macspeak.cloudsync`) that keeps
-# the local extension folder 100% synced with the cloud repo automatically.
-#
-# Run once on MacBook:
-#   curl -fsSL https://raw.githubusercontent.com/kouSeek/portfolio/mac-speak-chrome-ext/macos/install_from_cloud.sh | bash
+# MacBook Smart Read Aloud & Movie Mode (Dead-Noun Converter) — One-Shot Installer
+# Downloads the latest extension into ~/Downloads/mac-speak-chrome-ext with
+# ZERO background runners, ZERO LaunchAgents, and ZERO auto-git sync jobs.
 # ==============================================================================
 set -euo pipefail
 
-REPO_URL="https://github.com/kouSeek/portfolio.git"
-BRANCH="mac-speak-chrome-ext"
-INSTALL_DIR="${HOME}/.mac-speak-chrome-ext"
-PLIST_DIR="${HOME}/Library/LaunchAgents"
-PLIST_PATH="${PLIST_DIR}/com.koushik.macspeak.cloudsync.plist"
+TARBALL_URL="https://github.com/kouSeek/portfolio/archive/refs/heads/mac-speak-chrome-ext.tar.gz"
+INSTALL_DIR="${1:-${HOME}/Downloads/mac-speak-chrome-ext}"
+OLD_PLIST="${HOME}/Library/LaunchAgents/com.koushik.macspeak.cloudsync.plist"
 
-echo "☁️ Installing MacBook Smart Read Aloud & Movie Mode from Cloud..."
-
-if [ -d "${INSTALL_DIR}/.git" ]; then
-  echo "🔄 Updating existing installation at ${INSTALL_DIR}..."
-  git -C "${INSTALL_DIR}" fetch origin "${BRANCH}" --depth=1
-  git -C "${INSTALL_DIR}" reset --hard "origin/${BRANCH}"
-else
-  rm -rf "${INSTALL_DIR}"
-  git clone --branch "${BRANCH}" --single-branch --depth=1 "${REPO_URL}" "${INSTALL_DIR}"
+# 1. Remove any old background LaunchAgent if previously installed
+if [ -f "${OLD_PLIST}" ]; then
+  launchctl unload "${OLD_PLIST}" 2>/dev/null || true
+  rm -f "${OLD_PLIST}"
+  echo "🧹 Removed old background LaunchAgent (${OLD_PLIST})."
 fi
 
-# Set up macOS LaunchAgent to auto-pull cloud updates every 15 minutes
-if [ "$(uname -s)" = "Darwin" ]; then
-  mkdir -p "${PLIST_DIR}"
-  cat > "${PLIST_PATH}" <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>
-  <string>com.koushik.macspeak.cloudsync</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>/bin/bash</string>
-    <string>-c</string>
-    <string>cd "${INSTALL_DIR}" &amp;&amp; /usr/bin/git fetch origin "${BRANCH}" --depth=1 &amp;&amp; /usr/bin/git reset --hard "origin/${BRANCH}"</string>
-  </array>
-  <key>StartInterval</key>
-  <integer>900</integer>
-  <key>RunAtLoad</key>
-  <true/>
-  <key>StandardOutPath</key>
-  <string>/tmp/macspeak-cloudsync.log</string>
-  <key>StandardErrorPath</key>
-  <string>/tmp/macspeak-cloudsync.err</string>
-</dict>
-</plist>
-EOF
-  launchctl unload "${PLIST_PATH}" 2>/dev/null || true
-  launchctl load "${PLIST_PATH}" 2>/dev/null || true
-  echo "✅ Installed background macOS Cloud Auto-Sync daemon (pulls cloud updates every 15m + OTA rule sync)."
-  open -a "Google Chrome" "chrome://extensions" 2>/dev/null || true
+# 2. Download and extract latest extension files (one-shot, no git daemon)
+echo "📦 Installing latest MacBook Smart Read Aloud & Movie Mode into ${INSTALL_DIR}..."
+mkdir -p "${INSTALL_DIR}"
+curl -fsSL "${TARBALL_URL}" | tar -xz -C "${INSTALL_DIR}" --strip-components=1
+
+# 3. If CORP_EXT_KEY is provided, inject it into manifest.json for Corp Chrome allowlisting
+if [ -n "${CORP_EXT_KEY:-}" ]; then
+  INSTALL_DIR="${INSTALL_DIR}" CORP_EXT_KEY="${CORP_EXT_KEY}" python3 - <<'PY'
+import json, os
+from pathlib import Path
+p = Path(os.environ["INSTALL_DIR"]) / "manifest.json"
+m = json.loads(p.read_text(encoding="utf-8"))
+m["key"] = os.environ["CORP_EXT_KEY"]
+p.write_text(json.dumps(m, indent=2) + "\n", encoding="utf-8")
+PY
+  echo "🔑 Applied Google Corp Chrome developer key (ID: pbnaomcgbfiofkfobmlhmdobjchjkphi)."
 fi
 
 echo ""
 echo "======================================================================"
-echo "✅ Cloud Installation Ready at: ${INSTALL_DIR}"
+echo "✅ Installed at: ${INSTALL_DIR} (zero background jobs)"
 echo "----------------------------------------------------------------------"
-echo "One-time Chrome setup:"
-echo "  1. In Chrome (chrome://extensions), turn ON 'Developer mode' (top-right)."
-echo "  2. Click 'Load unpacked' and select: ${INSTALL_DIR}"
-echo "     (Press Cmd + Shift + . in the Mac file picker to show hidden dot-folders!)"
+echo "In Chrome (chrome://extensions):"
+echo "  1. Enable 'Developer mode' (top-right)."
+echo "  2. Click 'Load unpacked' -> select ${INSTALL_DIR}"
+echo "     (or click 🔄 Reload on the card if already added)."
 echo "======================================================================"

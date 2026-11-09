@@ -187,19 +187,12 @@ function sendToActiveTab(tabId, payload, doneCallback) {
 
 if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onInstalled) {
   chrome.runtime.onInstalled.addListener(() => {
-    syncCloudRulesNow();
     if (!chrome.contextMenus) return;
     chrome.contextMenus.removeAll(() => {
       MENU_ITEMS.forEach(item => {
         chrome.contextMenus.create(item);
       });
     });
-  });
-}
-
-if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onStartup) {
-  chrome.runtime.onStartup.addListener(() => {
-    syncCloudRulesNow();
   });
 }
 
@@ -275,7 +268,3 @@ if (typeof chrome !== "undefined" && chrome.commands && chrome.commands.onComman
   });
 }
 
-// Periodic background cloud sync every 30 minutes
-setInterval(() => {
-  syncCloudRulesNow();
-}, 30 * 60 * 1000);
