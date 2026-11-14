@@ -308,8 +308,59 @@ def generate_books_html() -> None:
       padding: 12px 14px;
       transition: all 0.2s ease;
     }}
-    .category-collapsible.collapsed .category-pills {{
+    .category-collapsible.collapsed .category-pills,
+    .category-collapsible.collapsed .in-progress-bar {{
       display: none;
+    }}
+    .in-progress-bar {{
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 14px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-subtle);
+    }}
+    .in-progress-list {{
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+    }}
+    .in-progress-chip {{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s ease, transform 0.12s ease;
+      max-width: 100%;
+    }}
+    .in-progress-chip:hover {{
+      border-color: var(--accent);
+    }}
+    .in-progress-chip-title {{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+    }}
+    .in-progress-chip-step {{
+      color: var(--ink-muted);
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }}
+    .in-progress-empty {{
+      color: var(--ink-muted);
+      font-size: 0.78rem;
     }}
     .filter-chip {{
       white-space: nowrap;
@@ -1112,12 +1163,18 @@ def generate_books_html() -> None:
             </div>
             <span class="category-chevron" id="categoryChevron">▼</span>
           </div>
-          <div class="category-pills" id="categoryPills">
-            <button class="filter-chip active" data-cat="all">All Books <span class="filter-chip-count">{total_books}</span></button>
+          <div class="category-pills" id="categoryPills" role="group" aria-label="Multi-select book pillars">
+            <button class="filter-chip active" data-cat="all">🌐 All Books <span class="filter-chip-count">{total_books}</span></button>
             <button class="filter-chip" data-cat="Science & Cosmos">🧬 Science & Cosmos <span class="filter-chip-count">{cat_counts.get('Science & Cosmos', 0)}</span></button>
             <button class="filter-chip" data-cat="Mind & Consciousness">🧠 Mind & Consciousness <span class="filter-chip-count">{cat_counts.get('Mind & Consciousness', 0)}</span></button>
             <button class="filter-chip" data-cat="Power & Philosophy">⚔️ Power & Philosophy <span class="filter-chip-count">{cat_counts.get('Power & Philosophy', 0)}</span></button>
             <button class="filter-chip" data-cat="Imagination & Wonder">🪄 Imagination & Wonder <span class="filter-chip-count">{cat_counts.get('Imagination & Wonder', 0)}</span></button>
+          </div>
+          <div class="in-progress-bar" id="inProgressBar">
+            <button class="filter-chip" id="inProgressFilterChip" data-cat="in-progress">🔖 In-Progress <span class="filter-chip-count" id="inProgressCountBadge">0</span></button>
+            <div class="in-progress-list" id="inProgressList">
+              <span class="in-progress-empty">Start any chapter to keep active reads here</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1352,6 +1409,8 @@ def generate_books_html() -> None:
     let currentTrackType = "adhd";
     let currentItemIndex = 1;
     let activeCategory = "all";
+    const selectedCategories = new Set();
+    let inProgressOnly = false;
     let activeSearchQuery = "";
     let readerFontSize = 1.05;
     let isDownloading = false;
@@ -1360,6 +1419,71 @@ def generate_books_html() -> None:
     let currentChapterTotalWeight = 0;
     let activeWordIdx = -1;
     let karaokeActive = false;
+    const PROGRESS_STORAGE_KEY = "kortex_mobile_books_progress_v1";
+
+    function loadMobileProgressMap() {{
+      try {{
+        if (typeof localStorage === "undefined") return {{}};
+        const raw = localStorage.getItem(PROGRESS_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : {{}};
+        return (parsed && typeof parsed === "object") ? parsed : {{}};
+      }} catch (_e) {{
+        return {{}};
+      }}
+    }}
+
+    function saveMobileBookProgress(book, stepLabel, chapterHref) {{
+      try {{
+        if (!book || typeof localStorage === "undefined") return;
+        const key = book.slug || book.filename || book.title;
+        if (!key) return;
+        const pMap = loadMobileProgressMap();
+        pMap[key] = {{
+          slug: book.slug || book.filename,
+          title: book.title,
+          emoji: book.cover_emoji || "📖",
+          stepLabel: stepLabel || "Step 1",
+          href: chapterHref || "",
+          updatedAt: Date.now()
+        }};
+        localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(pMap));
+        renderInProgressBar();
+      }} catch (_e) {{}}
+    }}
+
+    function renderInProgressBar() {{
+      const pMap = loadMobileProgressMap();
+      const entries = Object.values(pMap).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+      const countEl = document.getElementById("inProgressCountBadge");
+      if (countEl) countEl.textContent = String(entries.length);
+      const chipBtn = document.getElementById("inProgressFilterChip");
+      if (chipBtn) {{
+        if (inProgressOnly) chipBtn.classList.add("active");
+        else chipBtn.classList.remove("active");
+      }}
+      const listEl = document.getElementById("inProgressList");
+      if (!listEl) return;
+      if (entries.length === 0) {{
+        listEl.innerHTML = `<span class="in-progress-empty">Start any chapter to keep active reads here</span>`;
+        return;
+      }}
+      listEl.innerHTML = entries.map(item => {{
+        const shortStep = String(item.stepLabel || "Resume").slice(0, 28);
+        return `
+          <button type="button" class="in-progress-chip" data-resume-slug="${{escapeHtml(item.slug || "")}}" data-resume-href="${{escapeHtml(item.href || "")}}">
+            <span>${{escapeHtml(item.emoji || "📖")}}</span>
+            <span class="in-progress-chip-title">${{escapeHtml(item.title || "")}}</span>
+            <span class="in-progress-chip-step">${{escapeHtml(shortStep)}} ▸</span>
+          </button>
+        `;
+      }}).join("");
+      listEl.querySelectorAll(".in-progress-chip").forEach(btn => {{
+        btn.addEventListener("click", () => {{
+          const slug = btn.getAttribute("data-resume-slug");
+          if (slug) openBookDetail(slug);
+        }});
+      }});
+    }}
 
     const audioEl = document.getElementById("audioElement");
 
@@ -1836,31 +1960,59 @@ def generate_books_html() -> None:
       }}
     }}
 
+    function bookMatchesCategoryLabel(b, aCatRaw) {{
+      const cat = (b.wing_category || b.category || "").toLowerCase();
+      const aCat = String(aCatRaw || "").toLowerCase();
+      if (!aCat || aCat === "all") return true;
+      if (aCat.includes("science")) {{
+        return cat.includes("science") || cat.includes("space") || cat.includes("frontier") || cat.includes("cosmos");
+      }}
+      if (aCat.includes("mind")) {{
+        return cat.includes("mind") || cat.includes("psychology") || cat.includes("consciousness");
+      }}
+      if (aCat.includes("power") || aCat.includes("philosophy")) {{
+        return cat.includes("power") || cat.includes("philosophy") || cat.includes("warfare");
+      }}
+      if (aCat.includes("imagination") || aCat.includes("wonder")) {{
+        return cat.includes("imagination") || cat.includes("wonder") || cat.includes("wizarding") || cat.includes("fantasy") || cat.includes("classics") || cat.includes("literature");
+      }}
+      return cat.includes(aCat);
+    }}
+
     function renderBooksGrid() {{
       const grid = document.getElementById("booksGrid");
       grid.innerHTML = "";
+      const pMap = loadMobileProgressMap();
 
       const filtered = BOOKS_DATA.filter(b => {{
-        const cat = (b.category || "").toLowerCase();
-        const aCat = activeCategory.toLowerCase();
-        let matchesCat = activeCategory === "all";
-        if (!matchesCat) {{
-          if (aCat.includes("science")) {{
-            matchesCat = cat.includes("science") || cat.includes("space") || cat.includes("frontier") || cat.includes("cosmos");
-          }} else if (aCat.includes("mind")) {{
-            matchesCat = cat.includes("mind") || cat.includes("psychology") || cat.includes("consciousness");
-          }} else if (aCat.includes("power") || aCat.includes("philosophy")) {{
-            matchesCat = cat.includes("power") || cat.includes("philosophy") || cat.includes("warfare");
-          }} else if (aCat.includes("imagination") || aCat.includes("wonder")) {{
-            matchesCat = cat.includes("imagination") || cat.includes("wonder") || cat.includes("wizarding") || cat.includes("fantasy") || cat.includes("classics") || cat.includes("literature");
-          }} else {{
-            matchesCat = cat.includes(aCat);
-          }}
+        if (inProgressOnly) {{
+          const key = b.slug || b.filename || b.title;
+          if (!pMap[key]) return false;
+        }}
+        let matchesCat = true;
+        if (selectedCategories.size > 0) {{
+          matchesCat = Array.from(selectedCategories).some(selCat => bookMatchesCategoryLabel(b, selCat));
+        }} else if (activeCategory !== "all" && activeCategory !== "in-progress") {{
+          matchesCat = bookMatchesCategoryLabel(b, activeCategory);
         }}
         const q = activeSearchQuery.toLowerCase().trim();
         const matchesSearch = !q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) || (b.description || "").toLowerCase().includes(q);
         return matchesCat && matchesSearch;
       }});
+
+      const badge = document.getElementById("activeCategoryBadge");
+      if (badge) {{
+        if (selectedCategories.size === 0 && !inProgressOnly) {{
+          badge.textContent = `All Books (${{BOOKS_DATA.length}})`;
+        }} else if (inProgressOnly && selectedCategories.size === 0) {{
+          badge.textContent = `🔖 In-Progress (${{filtered.length}})`;
+        }} else if (selectedCategories.size === 1) {{
+          const onlyCat = Array.from(selectedCategories)[0];
+          badge.textContent = `${{onlyCat}}${{inProgressOnly ? " · 🔖" : ""}} (${{filtered.length}})`;
+        }} else {{
+          badge.textContent = `${{selectedCategories.size}} Pillars${{inProgressOnly ? " · 🔖" : ""}} (${{filtered.length}})`;
+        }}
+      }}
 
       if (filtered.length === 0) {{
         grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--ink-muted);">No books found matching "${{activeSearchQuery}}".</div>`;
@@ -2624,17 +2776,46 @@ def generate_books_html() -> None:
       renderBooksGrid();
     }});
 
+    function syncPillarChipsUI() {{
+      const allChip = document.querySelector('.filter-chip[data-cat="all"]');
+      if (allChip) {{
+        if (selectedCategories.size === 0 && !inProgressOnly) allChip.classList.add("active");
+        else allChip.classList.remove("active");
+      }}
+      document.querySelectorAll('.category-pills .filter-chip:not([data-cat="all"])').forEach(c => {{
+        const cName = c.getAttribute("data-cat");
+        if (selectedCategories.has(cName)) c.classList.add("active");
+        else c.classList.remove("active");
+      }});
+      const ipChip = document.getElementById("inProgressFilterChip");
+      if (ipChip) {{
+        if (inProgressOnly) ipChip.classList.add("active");
+        else ipChip.classList.remove("active");
+      }}
+    }}
+
     document.querySelectorAll(".filter-chip").forEach(chip => {{
       chip.addEventListener("click", () => {{
-        document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
-        chip.classList.add("active");
-        const cat = chip.getAttribute("data-cat");
-        activeCategory = cat;
-        const matchingCount = (cat === "all") ? BOOKS_DATA.length : (BOOKS_DATA.filter(b => (b.wing_category || b.category) === cat).length);
-        const badge = document.getElementById("activeCategoryBadge");
-        if (badge) {{
-          badge.textContent = (cat === "all") ? `All Books (${{matchingCount}})` : `${{cat}} (${{matchingCount}})`;
+        const cat = chip.getAttribute("data-cat") || "all";
+        if (cat === "all") {{
+          selectedCategories.clear();
+          inProgressOnly = false;
+          activeCategory = "all";
+        }} else if (cat === "in-progress") {{
+          inProgressOnly = !inProgressOnly;
+          activeCategory = inProgressOnly ? "in-progress" : (Array.from(selectedCategories)[0] || "all");
+        }} else {{
+          if (selectedCategories.has(cat)) {{
+            selectedCategories.delete(cat);
+          }} else {{
+            selectedCategories.add(cat);
+          }}
+          if (selectedCategories.size >= 4) {{
+            selectedCategories.clear();
+          }}
+          activeCategory = Array.from(selectedCategories)[0] || (inProgressOnly ? "in-progress" : "all");
         }}
+        syncPillarChipsUI();
         renderBooksGrid();
       }});
     }});
@@ -2771,6 +2952,8 @@ def generate_books_html() -> None:
     OUTPUT_PATH.write_text(html_content, encoding="utf-8")
     print(f"Generated self-contained {OUTPUT_PATH} ({OUTPUT_PATH.stat().st_size:,} bytes)")
 
+
+main = generate_books_html
 
 if __name__ == "__main__":
     generate_books_html()

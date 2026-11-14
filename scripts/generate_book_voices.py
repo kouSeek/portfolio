@@ -21,6 +21,8 @@ APP_ROOT = Path(__file__).resolve().parent.parent
 WIKI_ROOT = Path("/usr/local/google/home/koushikchak/koushik-wiki")
 LIBERATION_LIB_DIR = Path.home() / "Downloads" / "Liberation_Library"
 AUDIO_BOOKS_DIR = APP_ROOT / "audio" / "books"
+CATALOG_PATH = APP_ROOT / "assets" / "books_catalog.json"
+TEXT_VAULT_PATH = APP_ROOT / "assets" / "books_text_vault.json"
 
 sys.path.insert(0, str(WIKI_ROOT / "scripts"))
 sys.path.insert(0, str(APP_ROOT / "scripts"))
@@ -37,6 +39,20 @@ from calibrate_books_audio_sync import (
     extract_mp3_silences,
     calibrate_all_audio_timings,
 )
+from build_books_offline_manifest import build_audio_index
+
+
+def get_clean_slug(b: dict) -> str:
+    title = b.get("title", "")
+    slug = b.get("slug", "")
+    if "gene" in title.lower():
+        return "the-gene"
+    if "code book" in title.lower():
+        return "the-code-book"
+    clean = re.sub(r"^\d+[a-z]?_", "", slug.lower())
+    clean = re.sub(r"_+", "-", clean)
+    clean = re.sub(r"[^\w\-]", "", clean).strip("-")
+    return clean or slug.lower()
 
 
 def clean_markdown_for_speech(raw_text: str) -> str:
@@ -109,18 +125,45 @@ def generate_book_audio(
     track_types: list[str] = ("adhd", "author"),
     max_steps_per_track: int | None = None,
     overwrite: bool = False,
+    book_meta: dict | None = None,
 ) -> dict[str, object]:
     """Generate audio files for all steps and chapters of a book."""
     pdf_path = LIBERATION_LIB_DIR / book_filename
-    if not pdf_path.is_file():
-        raise FileNotFoundError(f"Book PDF not found: {pdf_path}")
 
-    meta = LIBERATION_LIBRARY_CATALOG.get(book_filename, {})
-    title = meta.get("title", pdf_path.stem)
+    meta = book_meta or LIBERATION_LIBRARY_CATALOG.get(book_filename, {})
+    title = meta.get("title", slug)
     author = meta.get("author", "")
 
     book_out_dir = AUDIO_BOOKS_DIR / slug
     book_out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Load text vault
+    vault = {}
+    if TEXT_VAULT_PATH.is_file():
+        try:
+            vault = json.loads(TEXT_VAULT_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            vault = {}
+
+    vault_keys_to_try = [
+        (meta.get("slug") or "").lower(),
+        book_filename.replace(".pdf", "").replace(".PDF", "").lower(),
+        slug.lower(),
+        slug.replace("-", "_").lower(),
+    ]
+    book_text_data = {}
+    for vk_cand in vault_keys_to_try:
+        if vk_cand and vk_cand in vault:
+            book_text_data = vault[vk_cand]
+            break
+
+    if not book_text_data:
+        norm_slug = re.sub(r"[_\-]", "", slug.lower())
+        for vk, vd in vault.items():
+            norm_vk = re.sub(r"[_\-]", "", vk.lower())
+            if norm_slug in norm_vk or norm_vk in norm_slug:
+                book_text_data = vd
+                break
 
     manifest_file = book_out_dir / "manifest.json"
     manifest: dict[str, object] = {
@@ -144,6 +187,7 @@ def generate_book_audio(
         if max_steps_per_track:
             raw_items = raw_items[:max_steps_per_track]
 
+        vault_track = book_text_data.get(t_type, {})
         track_entries: list[dict[str, object]] = []
         track_label = "⚡ Core Steps" if t_type == "adhd" else "📖 Full Book Chapters"
         print(f"\n--- Track: {track_label} ({len(raw_items)} items) ---")
@@ -171,11 +215,20 @@ def generate_book_audio(
                 })
                 continue
 
-            print(f"  [{idx}/{len(raw_items)}] 🎙️ Synthesizing {fname}: {label[:45]} (pages {pages})...")
-            # Extract text
-            res = extract_readable_book_markdown(pdf_path, pages_spec=pages, track=t_type, step_index=idx)
-            raw_content = res.get("content", "")
+            # Extract text from text vault first
+            v_item = vault_track.get(str(idx), {})
+            raw_content = v_item.get("content", "")
+            if not raw_content and pdf_path.is_file():
+                res = extract_readable_book_markdown(pdf_path, pages_spec=pages, track=t_type, step_index=idx)
+                raw_content = res.get("content", "")
+
+            if not raw_content:
+                print(f"  [{idx}/{len(raw_items)}] ⚠️ No text content found for {label}")
+                continue
+
             clean_speech = clean_markdown_for_speech(raw_content)
+            word_count = len(clean_speech.split())
+            print(f"  [{idx}/{len(raw_items)}] 🎙️ Synthesizing {fname}: {label[:45]} ({word_count} words)...")
 
             # Synthesize MP3
             t0 = time.time()
@@ -210,33 +263,70 @@ def generate_book_audio(
 
 def main():
     parser = argparse.ArgumentParser(description="Generate Aoede UK Female audio for Liberation Library books.")
-    parser.add_argument("--book", choices=("gene", "code-book", "both"), default="both", help="Which book to generate voices for")
-    parser.add_argument("--track", choices=("adhd", "author", "all"), default="all", help="Tracks to generate")
+    parser.add_argument("--book", default="new", help="Which book to generate voices for ('new', 'all', 'gene', 'code-book', or slug/number)")
+    parser.add_argument("--track", choices=("adhd", "author", "all"), default="adhd", help="Tracks to generate")
     parser.add_argument("--overwrite", action="store_true", help="Overwrite existing audio files")
     args = parser.parse_args()
 
     AUDIO_BOOKS_DIR.mkdir(parents=True, exist_ok=True)
     tracks = ("adhd", "author") if args.track == "all" else (args.track,)
 
-    if args.book in ("gene", "both"):
+    catalog = []
+    if CATALOG_PATH.is_file():
+        try:
+            catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            catalog = []
+
+    target_books = []
+    if args.book == "new":
+        target_books = catalog[29:]
+    elif args.book == "all":
+        target_books = catalog
+    elif args.book == "gene":
+        target_books = [b for b in catalog if "gene" in b.get("title", "").lower()]
+    elif args.book in ("code-book", "code"):
+        target_books = [b for b in catalog if "code book" in b.get("title", "").lower()]
+    else:
+        target_books = [
+            b for b in catalog
+            if args.book.lower() in (b.get("slug") or "").lower() or args.book.lower() in (b.get("title") or "").lower()
+        ]
+
+    if not target_books:
+        print(f"No books matched criteria '{args.book}'")
+        return
+
+    print(f"Targeting {len(target_books)} book(s) for audio generation (tracks: {tracks})")
+    for b in target_books:
+        fn = b.get("filename", "")
+        slug = get_clean_slug(b)
         generate_book_audio(
-            book_filename="01_The_Gene_An_Intimate_History_Siddhartha_Mukherjee_COMPLETE.pdf",
-            slug="the-gene",
+            book_filename=fn,
+            slug=slug,
             track_types=list(tracks),
             overwrite=args.overwrite,
+            book_meta=b,
         )
 
-    if args.book in ("code-book", "both"):
-        generate_book_audio(
-            book_filename="14_The_Code_Book_Simon_Singh.pdf",
-            slug="the-code-book",
-            track_types=list(tracks),
-            overwrite=args.overwrite,
-        )
+    # Rebuild offline audio index & update catalog
+    print("\n--- Updating books_audio_index.json & books_catalog.json ---")
+    build_audio_index()
 
-    # Automatically calibrate acoustic silence maps and update books_audio_index.json
+    # Automatically calibrate acoustic silence maps
+    print("\n--- Calibrating acoustic silence maps ---")
     calibrate_all_audio_timings()
+
+    # Rebuild chapter pages and books.html
+    print("\n--- Rebuilding chapter pages and books.html ---")
+    import build_chapter_pages
+    build_chapter_pages.main()
+    import build_books_html
+    build_books_html.main()
+
+    print("\n🎉 All requested book audio and calibrated chapters updated successfully!")
 
 
 if __name__ == "__main__":
     main()
+
