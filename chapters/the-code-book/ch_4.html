@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">The Code Book</div>
       <h1 class="hero-chapter-title">Ch. 3: The Mechanization of Secrecy</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 172-214</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 4 of 8)</span>
+        <span class="meta-chip">📄 Pages 172-214 (43p · 6.2% vol)</span>
+        <span class="meta-chip effort">⏱️ ~64m effort (1h 04m)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>43 pages (6.2% of book)</strong></span>
+          <span>Full Book: <strong>695 pages (17h 22m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 14%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> Radio warfare, the Zimmermann telegram, and the birth of rotor machines.</div>
 
       
@@ -434,8 +504,8 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">3:</span> <span class="k-word" data-word-idx="2" id="w_2">The</span> <span class="k-word" data-word-idx="3" id="w_3">Mechanization</span> <span class="k-word" data-word-idx="4" id="w_4">of</span> <span class="k-word" data-word-idx="5" id="w_5">Secrecy</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">3:</span> <span class="k-word" data-word-idx="2" id="w_2">The</span> <span class="k-word" data-word-idx="3" id="w_3">Mechanization</span> <span class="k-word" data-word-idx="4" id="w_4">of</span> <span class="k-word" data-word-idx="5" id="w_5">Secrecy</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="6" id="w_6">Radio</span> <span class="k-word" data-word-idx="7" id="w_7">warfare,</span> <span class="k-word" data-word-idx="8" id="w_8">the</span> <span class="k-word" data-word-idx="9" id="w_9">Zimmermann</span> <span class="k-word" data-word-idx="10" id="w_10">telegram,</span> <span class="k-word" data-word-idx="11" id="w_11">and</span> <span class="k-word" data-word-idx="12" id="w_12">the</span> <span class="k-word" data-word-idx="13" id="w_13">birth</span> <span class="k-word" data-word-idx="14" id="w_14">of</span> <span class="k-word" data-word-idx="15" id="w_15">rotor</span> <span class="k-word" data-word-idx="16" id="w_16">machines.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="17" id="w_17">3</span> <span class="k-word" data-word-idx="18" id="w_18">The</span> <span class="k-word" data-word-idx="19" id="w_19">Mechanization</span> <span class="k-word" data-word-idx="20" id="w_20">of</span> <span class="k-word" data-word-idx="21" id="w_21">Secrecy</span></p>
@@ -589,7 +659,7 @@
 <p><span class="k-word" data-word-idx="868" id="w_868">one</span> <span class="k-word" data-word-idx="869" id="w_869">by</span></p>
 <p><span class="k-word" data-word-idx="870" id="w_870">one</span> <span class="k-word" data-word-idx="871" id="w_871">they</span> <span class="k-word" data-word-idx="872" id="w_872">were</span> <span class="k-word" data-word-idx="873" id="w_873">broken.</span></p>
 <p><span class="k-word" data-word-idx="874" id="w_874">One</span> <span class="k-word" data-word-idx="875" id="w_875">of</span> <span class="k-word" data-word-idx="876" id="w_876">the</span> <span class="k-word" data-word-idx="877" id="w_877">most</span> <span class="k-word" data-word-idx="878" id="w_878">famous</span> <span class="k-word" data-word-idx="879" id="w_879">wartime</span> <span class="k-word" data-word-idx="880" id="w_880">ciphers</span> <span class="k-word" data-word-idx="881" id="w_881">was</span> <span class="k-word" data-word-idx="882" id="w_882">the</span> <span class="k-word" data-word-idx="883" id="w_883">German</span></p>
-<h3><span class="k-word" data-word-idx="884" id="w_884">ADFGVX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="884" id="w_884">ADFGVX</span></h3>
 <p><span class="k-word" data-word-idx="885" id="w_885">cipher,</span> <span class="k-word" data-word-idx="886" id="w_886">introduced</span> <span class="k-word" data-word-idx="887" id="w_887">on</span> <span class="k-word" data-word-idx="888" id="w_888">March</span> <span class="k-word" data-word-idx="889" id="w_889">5,</span> <span class="k-word" data-word-idx="890" id="w_890">1918,</span> <span class="k-word" data-word-idx="891" id="w_891">just</span> <span class="k-word" data-word-idx="892" id="w_892">before</span> <span class="k-word" data-word-idx="893" id="w_893">the</span> <span class="k-word" data-word-idx="894" id="w_894">major</span></p>
 <p><span class="k-word" data-word-idx="895" id="w_895">German</span> <span class="k-word" data-word-idx="896" id="w_896">offensive</span></p>
 <p><span class="k-word" data-word-idx="897" id="w_897">that</span> <span class="k-word" data-word-idx="898" id="w_898">began</span> <span class="k-word" data-word-idx="899" id="w_899">on</span> <span class="k-word" data-word-idx="900" id="w_900">March</span> <span class="k-word" data-word-idx="901" id="w_901">21.</span> <span class="k-word" data-word-idx="902" id="w_902">Like</span> <span class="k-word" data-word-idx="903" id="w_903">any</span> <span class="k-word" data-word-idx="904" id="w_904">attack,</span> <span class="k-word" data-word-idx="905" id="w_905">the</span> <span class="k-word" data-word-idx="906" id="w_906">German</span> <span class="k-word" data-word-idx="907" id="w_907">thrust</span></p>
@@ -998,8 +1068,8 @@
 <p><span class="k-word" data-word-idx="3226" id="w_3226">aj*</span></p>
 <p><span class="k-word" data-word-idx="3227" id="w_3227">via</span> <span class="k-word" data-word-idx="3228" id="w_3228">Galvi-stor.</span> <span class="k-word" data-word-idx="3229" id="w_3229">&#x27;</span></p>
 <p><span class="k-word" data-word-idx="3230" id="w_3230">*s</span></p>
-<h3><span class="k-word" data-word-idx="3231" id="w_3231">CEPMAN</span> <span class="k-word" data-word-idx="3232" id="w_3232">I,EG*TKH</span></h3>
-<h3><span class="k-word" data-word-idx="3233" id="w_3233">MEXICO</span> <span class="k-word" data-word-idx="3234" id="w_3234">«T</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="3231" id="w_3231">CEPMAN</span> <span class="k-word" data-word-idx="3232" id="w_3232">I,EG*TKH</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="3233" id="w_3233">MEXICO</span> <span class="k-word" data-word-idx="3234" id="w_3234">«T</span></h3>
 <p><span class="k-word" data-word-idx="3235" id="w_3235">I</span></p>
 <p><span class="k-word" data-word-idx="3236" id="w_3236">s</span></p>
 <p><span class="k-word" data-word-idx="3237" id="w_3237">15217</span> <span class="k-word" data-word-idx="3238" id="w_3238">2280117138</span></p>
@@ -1008,7 +1078,7 @@
 <p><span class="k-word" data-word-idx="3244" id="w_3244">39689</span> <span class="k-word" data-word-idx="3245" id="w_3245">1373S2</span> <span class="k-word" data-word-idx="3246" id="w_3246">20667</span></p>
 <p><span class="k-word" data-word-idx="3247" id="w_3247">1195682895</span></p>
 <p><span class="k-word" data-word-idx="3248" id="w_3248">13O42</span> <span class="k-word" data-word-idx="3249" id="w_3249">13401</span> <span class="k-word" data-word-idx="3250" id="w_3250">85C1</span> <span class="k-word" data-word-idx="3251" id="w_3251">115</span> <span class="k-word" data-word-idx="3252" id="w_3252">3528</span> <span class="k-word" data-word-idx="3253" id="w_3253">41«</span> <span class="k-word" data-word-idx="3254" id="w_3254">17214</span> <span class="k-word" data-word-idx="3255" id="w_3255">8491</span> <span class="k-word" data-word-idx="3256" id="w_3256">11310</span></p>
-<h3><span class="k-word" data-word-idx="3257" id="w_3257">18ZE2</span> <span class="k-word" data-word-idx="3258" id="w_3258">215*0</span> <span class="k-word" data-word-idx="3259" id="w_3259">10247</span> <span class="k-word" data-word-idx="3260" id="w_3260">11518</span> <span class="k-word" data-word-idx="3261" id="w_3261">23677</span> <span class="k-word" data-word-idx="3262" id="w_3262">1360S</span> <span class="k-word" data-word-idx="3263" id="w_3263">3494</span> <span class="k-word" data-word-idx="3264" id="w_3264">1493«</span> <span class="k-word" data-word-idx="3265" id="w_3265">59C5</span> <span class="k-word" data-word-idx="3266" id="w_3266">J151J</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="3257" id="w_3257">18ZE2</span> <span class="k-word" data-word-idx="3258" id="w_3258">215*0</span> <span class="k-word" data-word-idx="3259" id="w_3259">10247</span> <span class="k-word" data-word-idx="3260" id="w_3260">11518</span> <span class="k-word" data-word-idx="3261" id="w_3261">23677</span> <span class="k-word" data-word-idx="3262" id="w_3262">1360S</span> <span class="k-word" data-word-idx="3263" id="w_3263">3494</span> <span class="k-word" data-word-idx="3264" id="w_3264">1493«</span> <span class="k-word" data-word-idx="3265" id="w_3265">59C5</span> <span class="k-word" data-word-idx="3266" id="w_3266">J151J</span></h3>
 <p><span class="k-word" data-word-idx="3267" id="w_3267">1C39J</span> <span class="k-word" data-word-idx="3268" id="w_3268">10371</span> <span class="k-word" data-word-idx="3269" id="w_3269">0302</span> <span class="k-word" data-word-idx="3270" id="w_3270">21290</span> <span class="k-word" data-word-idx="3271" id="w_3271">5161</span> <span class="k-word" data-word-idx="3272" id="w_3272">39995</span></p>
 <p><span class="k-word" data-word-idx="3273" id="w_3273">17504</span> <span class="k-word" data-word-idx="3274" id="w_3274">112TO</span> <span class="k-word" data-word-idx="3275" id="w_3275">16271!</span> <span class="k-word" data-word-idx="3276" id="w_3276">18101</span> <span class="k-word" data-word-idx="3277" id="w_3277">0317</span> <span class="k-word" data-word-idx="3278" id="w_3278">0228</span> <span class="k-word" data-word-idx="3279" id="w_3279">17694</span> <span class="k-word" data-word-idx="3280" id="w_3280">4473</span></p>
 <p><span class="k-word" data-word-idx="3281" id="w_3281">22200</span> <span class="k-word" data-word-idx="3282" id="w_3282">194S2</span> <span class="k-word" data-word-idx="3283" id="w_3283">21589</span> <span class="k-word" data-word-idx="3284" id="w_3284">87893</span> <span class="k-word" data-word-idx="3285" id="w_3285">5569</span> <span class="k-word" data-word-idx="3286" id="w_3286">13918</span> <span class="k-word" data-word-idx="3287" id="w_3287">8958</span> <span class="k-word" data-word-idx="3288" id="w_3288">12137</span></p>
@@ -1050,16 +1120,16 @@
 <p><span class="k-word" data-word-idx="3355" id="w_3355">224P4</span> <span class="k-word" data-word-idx="3356" id="w_3356">i&lt;-127</span> <span class="k-word" data-word-idx="3357" id="w_3357">17142</span></p>
 <p><span class="k-word" data-word-idx="3358" id="w_3358">13339</span></p>
 <p><span class="k-word" data-word-idx="3359" id="w_3359">16102</span></p>
-<blockquote>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="3360" id="w_3360">»!7VJ</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="3361" id="w_3361">9407</span></p>
 <p><span class="k-word" data-word-idx="3362" id="w_3362">204J»</span> <span class="k-word" data-word-idx="3363" id="w_3363">2L-019</span></p>
 <p><span class="k-word" data-word-idx="3364" id="w_3364">7C32</span> <span class="k-word" data-word-idx="3365" id="w_3365">7357</span> <span class="k-word" data-word-idx="3366" id="w_3366">6928</span> <span class="k-word" data-word-idx="3367" id="w_3367">52262</span> <span class="k-word" data-word-idx="3368" id="w_3368">1126&#x27;!&#x27;</span></p>
-<h3><span class="k-word" data-word-idx="3369" id="w_3369">15874</span> <span class="k-word" data-word-idx="3370" id="w_3370">18SC2</span> <span class="k-word" data-word-idx="3371" id="w_3371">18SOO</span> <span class="k-word" data-word-idx="3372" id="w_3372">15857</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="3369" id="w_3369">15874</span> <span class="k-word" data-word-idx="3370" id="w_3370">18SC2</span> <span class="k-word" data-word-idx="3371" id="w_3371">18SOO</span> <span class="k-word" data-word-idx="3372" id="w_3372">15857</span></h3>
 <p><span class="k-word" data-word-idx="3373" id="w_3373">134»«</span> <span class="k-word" data-word-idx="3374" id="w_3374">935C</span> <span class="k-word" data-word-idx="3375" id="w_3375">922C</span> <span class="k-word" data-word-idx="3376" id="w_3376">76036</span> <span class="k-word" data-word-idx="3377" id="w_3377">14219</span></p>
 <p><span class="k-word" data-word-idx="3378" id="w_3378">11164</span> <span class="k-word" data-word-idx="3379" id="w_3379">7867</span> <span class="k-word" data-word-idx="3380" id="w_3380">7V62</span> <span class="k-word" data-word-idx="3381" id="w_3381">15099</span> <span class="k-word" data-word-idx="3382" id="w_3382">9110</span></p>
-<h3><span class="k-word" data-word-idx="3383" id="w_3383">975S6</span> <span class="k-word" data-word-idx="3384" id="w_3384">3&amp;CS</span> <span class="k-word" data-word-idx="3385" id="w_3385">3C7C</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="3383" id="w_3383">975S6</span> <span class="k-word" data-word-idx="3384" id="w_3384">3&amp;CS</span> <span class="k-word" data-word-idx="3385" id="w_3385">3C7C</span></h3>
 <p><span class="k-word" data-word-idx="3386" id="w_3386">SB»MSH&gt;f&gt;«,</span> <span class="k-word" data-word-idx="3387" id="w_3387">Ambassador</span> <span class="k-word" data-word-idx="3388" id="w_3388">in</span> <span class="k-word" data-word-idx="3389" id="w_3389">Washington,</span> <span class="k-word" data-word-idx="3390" id="w_3390">to</span> <span class="k-word" data-word-idx="3391" id="w_3391">Eckhardt,</span> <span class="k-word" data-word-idx="3392" id="w_3392">the</span> <span class="k-word" data-word-idx="3393" id="w_3393">German</span></p>
 <p><span class="k-word" data-word-idx="3394" id="w_3394">Ambassador</span> <span class="k-word" data-word-idx="3395" id="w_3395">in</span> <span class="k-word" data-word-idx="3396" id="w_3396">Mexico</span> <span class="k-word" data-word-idx="3397" id="w_3397">City.</span></p>
 <p><span class="k-word" data-word-idx="3398" id="w_3398">The</span> <span class="k-word" data-word-idx="3399" id="w_3399">Mechanization</span> <span class="k-word" data-word-idx="3400" id="w_3400">of</span> <span class="k-word" data-word-idx="3401" id="w_3401">Secrecy</span> <span class="k-word" data-word-idx="3402" id="w_3402">\\\</span></p>
@@ -1090,10 +1160,10 @@
 <p><span class="k-word" data-word-idx="3483" id="w_3483">4</span></p>
 <p><span class="k-word" data-word-idx="3484" id="w_3484">s</span></p>
 <p><span class="k-word" data-word-idx="3485" id="w_3485">MAM</span> <span class="k-word" data-word-idx="3486" id="w_3486">LEaATJOH</span> <span class="k-word" data-word-idx="3487" id="w_3487">\ri</span> <span class="k-word" data-word-idx="3488" id="w_3488">~^-</span> <span class="k-word" data-word-idx="3489" id="w_3489">.#*</span></p>
-<h3><span class="k-word" data-word-idx="3490" id="w_3490">.MEXICO</span> <span class="k-word" data-word-idx="3491" id="w_3491">CITY</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="3490" id="w_3490">.MEXICO</span> <span class="k-word" data-word-idx="3491" id="w_3491">CITY</span></h3>
 <p><span class="k-word" data-word-idx="3492" id="w_3492">13042</span> <span class="k-word" data-word-idx="3493" id="w_3493">13401</span> <span class="k-word" data-word-idx="3494" id="w_3494">SftCl</span> <span class="k-word" data-word-idx="3495" id="w_3495">115</span> <span class="k-word" data-word-idx="3496" id="w_3496">3528</span> <span class="k-word" data-word-idx="3497" id="w_3497">41«</span> <span class="k-word" data-word-idx="3498" id="w_3498">17214</span> <span class="k-word" data-word-idx="3499" id="w_3499">8491</span> <span class="k-word" data-word-idx="3500" id="w_3500">11310</span></p>
 <p><span class="k-word" data-word-idx="3501" id="w_3501">18222</span> <span class="k-word" data-word-idx="3502" id="w_3502">215*0</span> <span class="k-word" data-word-idx="3503" id="w_3503">10247</span> <span class="k-word" data-word-idx="3504" id="w_3504">11M8</span> <span class="k-word" data-word-idx="3505" id="w_3505">2367?</span> <span class="k-word" data-word-idx="3506" id="w_3506">13«Q5</span> <span class="k-word" data-word-idx="3507" id="w_3507">5494</span> <span class="k-word" data-word-idx="3508" id="w_3508">1493«</span> <span class="k-word" data-word-idx="3509" id="w_3509">59C5</span> <span class="k-word" data-word-idx="3510" id="w_3510">11311</span></p>
-<h3><span class="k-word" data-word-idx="3511" id="w_3511">ICS98</span> <span class="k-word" data-word-idx="3512" id="w_3512">10371</span> <span class="k-word" data-word-idx="3513" id="w_3513">0302</span> <span class="k-word" data-word-idx="3514" id="w_3514">21E90</span> <span class="k-word" data-word-idx="3515" id="w_3515">5181</span> <span class="k-word" data-word-idx="3516" id="w_3516">39685</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="3511" id="w_3511">ICS98</span> <span class="k-word" data-word-idx="3512" id="w_3512">10371</span> <span class="k-word" data-word-idx="3513" id="w_3513">0302</span> <span class="k-word" data-word-idx="3514" id="w_3514">21E90</span> <span class="k-word" data-word-idx="3515" id="w_3515">5181</span> <span class="k-word" data-word-idx="3516" id="w_3516">39685</span></h3>
 <p><span class="k-word" data-word-idx="3517" id="w_3517">17504</span> <span class="k-word" data-word-idx="3518" id="w_3518">112P9</span> <span class="k-word" data-word-idx="3519" id="w_3519">I827&lt;!</span> <span class="k-word" data-word-idx="3520" id="w_3520">18101</span> <span class="k-word" data-word-idx="3521" id="w_3521">031?</span> <span class="k-word" data-word-idx="3522" id="w_3522">0228</span> <span class="k-word" data-word-idx="3523" id="w_3523">17694</span> <span class="k-word" data-word-idx="3524" id="w_3524">4473</span></p>
 <p><span class="k-word" data-word-idx="3525" id="w_3525">28800</span> <span class="k-word" data-word-idx="3526" id="w_3526">19462</span> <span class="k-word" data-word-idx="3527" id="w_3527">21589</span> <span class="k-word" data-word-idx="3528" id="w_3528">67893</span> <span class="k-word" data-word-idx="3529" id="w_3529">5569</span> <span class="k-word" data-word-idx="3530" id="w_3530">139Jt</span> <span class="k-word" data-word-idx="3531" id="w_3531">8958</span> <span class="k-word" data-word-idx="3532" id="w_3532">J8131?</span></p>
 <p><span class="k-word" data-word-idx="3533" id="w_3533">4725</span> <span class="k-word" data-word-idx="3534" id="w_3534">4458</span> <span class="k-word" data-word-idx="3535" id="w_3535">59C5</span> <span class="k-word" data-word-idx="3536" id="w_3536">17166</span> <span class="k-word" data-word-idx="3537" id="w_3537">J5851</span> <span class="k-word" data-word-idx="3538" id="w_3538">4458</span> <span class="k-word" data-word-idx="3539" id="w_3539">17149</span> <span class="k-word" data-word-idx="3540" id="w_3540">14471</span> <span class="k-word" data-word-idx="3541" id="w_3541">6706</span></p>
@@ -1175,7 +1245,7 @@
 <p><span class="k-word" data-word-idx="3716" id="w_3716">Montgomery</span> <span class="k-word" data-word-idx="3717" id="w_3717">spotted</span></p>
 <p><span class="k-word" data-word-idx="3718" id="w_3718">the</span> <span class="k-word" data-word-idx="3719" id="w_3719">postcard&#x27;s</span> <span class="k-word" data-word-idx="3720" id="w_3720">cryptic</span> <span class="k-word" data-word-idx="3721" id="w_3721">message.</span> <span class="k-word" data-word-idx="3722" id="w_3722">The</span> <span class="k-word" data-word-idx="3723" id="w_3723">address</span> <span class="k-word" data-word-idx="3724" id="w_3724">alluded</span> <span class="k-word" data-word-idx="3725" id="w_3725">to</span> <span class="k-word" data-word-idx="3726" id="w_3726">the</span></p>
 <p><span class="k-word" data-word-idx="3727" id="w_3727">Bible,</span> <span class="k-word" data-word-idx="3728" id="w_3728">First</span></p>
-<h3><span class="k-word" data-word-idx="3729" id="w_3729">Book</span> <span class="k-word" data-word-idx="3730" id="w_3730">of</span> <span class="k-word" data-word-idx="3731" id="w_3731">Kings,</span> <span class="k-word" data-word-idx="3732" id="w_3732">Chapter</span> <span class="k-word" data-word-idx="3733" id="w_3733">18,</span> <span class="k-word" data-word-idx="3734" id="w_3734">Verse</span> <span class="k-word" data-word-idx="3735" id="w_3735">4:</span> <span class="k-word" data-word-idx="3736" id="w_3736">&quot;Obadiah</span> <span class="k-word" data-word-idx="3737" id="w_3737">took</span> <span class="k-word" data-word-idx="3738" id="w_3738">a</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="3729" id="w_3729">Book</span> <span class="k-word" data-word-idx="3730" id="w_3730">of</span> <span class="k-word" data-word-idx="3731" id="w_3731">Kings,</span> <span class="k-word" data-word-idx="3732" id="w_3732">Chapter</span> <span class="k-word" data-word-idx="3733" id="w_3733">18,</span> <span class="k-word" data-word-idx="3734" id="w_3734">Verse</span> <span class="k-word" data-word-idx="3735" id="w_3735">4:</span> <span class="k-word" data-word-idx="3736" id="w_3736">&quot;Obadiah</span> <span class="k-word" data-word-idx="3737" id="w_3737">took</span> <span class="k-word" data-word-idx="3738" id="w_3738">a</span></h3>
 <p><span class="k-word" data-word-idx="3739" id="w_3739">hundred</span> <span class="k-word" data-word-idx="3740" id="w_3740">prophets,</span></p>
 <p><span class="k-word" data-word-idx="3741" id="w_3741">and</span> <span class="k-word" data-word-idx="3742" id="w_3742">hid</span> <span class="k-word" data-word-idx="3743" id="w_3743">them</span> <span class="k-word" data-word-idx="3744" id="w_3744">fifty</span> <span class="k-word" data-word-idx="3745" id="w_3745">in</span> <span class="k-word" data-word-idx="3746" id="w_3746">a</span> <span class="k-word" data-word-idx="3747" id="w_3747">cave,</span> <span class="k-word" data-word-idx="3748" id="w_3748">and</span> <span class="k-word" data-word-idx="3749" id="w_3749">fed</span> <span class="k-word" data-word-idx="3750" id="w_3750">them</span> <span class="k-word" data-word-idx="3751" id="w_3751">with</span> <span class="k-word" data-word-idx="3752" id="w_3752">bread</span> <span class="k-word" data-word-idx="3753" id="w_3753">and</span></p>
 <p><span class="k-word" data-word-idx="3754" id="w_3754">water.&quot;</span> <span class="k-word" data-word-idx="3755" id="w_3755">Sir</span></p>
@@ -1304,7 +1374,7 @@
 <p><span class="k-word" data-word-idx="4469" id="w_4469">called</span> <span class="k-word" data-word-idx="4470" id="w_4470">it,</span> <span class="k-word" data-word-idx="4471" id="w_4471">P</span></p>
 <p><span class="k-word" data-word-idx="4472" id="w_4472">the</span> <span class="k-word" data-word-idx="4473" id="w_4473">&quot;eloquent</span> <span class="k-word" data-word-idx="4474" id="w_4474">ev.de,,^^^</span> <span class="k-word" data-word-idx="4475" id="w_4475">Mt</span></p>
 <p><span class="k-word" data-word-idx="4476" id="w_4476">-rsr-s.--^</span> <span class="k-word" data-word-idx="4477" id="w_4477">:---;;r</span></p>
-<h3><span class="k-word" data-word-idx="4478" id="w_4478">=S^SS5==S=</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4478" id="w_4478">=S^SS5==S=</span></h3>
 <p><span class="k-word" data-word-idx="4479" id="w_4479">S£2:=-=;-&#x27;&quot;&#x27;^</span></p>
 <p><span class="k-word" data-word-idx="4480" id="w_4480">»*pu»8&quot;«ri:</span> <span class="k-word" data-word-idx="4481" id="w_4481">-~&quot;&#x27;^^!!!1</span></p>
 <p><span class="k-word" data-word-idx="4482" id="w_4482">:sei</span> <span class="k-word" data-word-idx="4483" id="w_4483">i^^L------</span></p>
@@ -1442,7 +1512,7 @@
 <p><span class="k-word" data-word-idx="5288" id="w_5288">worth</span> <span class="k-word" data-word-idx="5289" id="w_5289">further</span> <span class="k-word" data-word-idx="5290" id="w_5290">investigation.</span> <span class="k-word" data-word-idx="5291" id="w_5291">If</span> <span class="k-word" data-word-idx="5292" id="w_5292">YPT</span> <span class="k-word" data-word-idx="5293" id="w_5293">really</span> <span class="k-word" data-word-idx="5294" id="w_5294">were</span> <span class="k-word" data-word-idx="5295" id="w_5295">part</span> <span class="k-word" data-word-idx="5296" id="w_5296">of</span></p>
 <p><span class="k-word" data-word-idx="5297" id="w_5297">the</span> <span class="k-word" data-word-idx="5298" id="w_5298">key,</span> <span class="k-word" data-word-idx="5299" id="w_5299">it</span> <span class="k-word" data-word-idx="5300" id="w_5300">would</span> <span class="k-word" data-word-idx="5301" id="w_5301">be</span></p>
 <p><span class="k-word" data-word-idx="5302" id="w_5302">within</span> <span class="k-word" data-word-idx="5303" id="w_5303">a</span> <span class="k-word" data-word-idx="5304" id="w_5304">larger</span> <span class="k-word" data-word-idx="5305" id="w_5305">word,</span> <span class="k-word" data-word-idx="5306" id="w_5306">the</span> <span class="k-word" data-word-idx="5307" id="w_5307">only</span> <span class="k-word" data-word-idx="5308" id="w_5308">possibilities</span> <span class="k-word" data-word-idx="5309" id="w_5309">being</span></p>
-<h3><span class="k-word" data-word-idx="5310" id="w_5310">APOCALYPTIC,</span> <span class="k-word" data-word-idx="5311" id="w_5311">CRYPT</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5310" id="w_5310">APOCALYPTIC,</span> <span class="k-word" data-word-idx="5311" id="w_5311">CRYPT</span></h3>
 <p><span class="k-word" data-word-idx="5312" id="w_5312">and</span> <span class="k-word" data-word-idx="5313" id="w_5313">EGYPT,</span> <span class="k-word" data-word-idx="5314" id="w_5314">and</span> <span class="k-word" data-word-idx="5315" id="w_5315">derivatives</span> <span class="k-word" data-word-idx="5316" id="w_5316">of</span> <span class="k-word" data-word-idx="5317" id="w_5317">these</span> <span class="k-word" data-word-idx="5318" id="w_5318">words.</span> <span class="k-word" data-word-idx="5319" id="w_5319">How</span> <span class="k-word" data-word-idx="5320" id="w_5320">can</span> <span class="k-word" data-word-idx="5321" id="w_5321">we</span> <span class="k-word" data-word-idx="5322" id="w_5322">find</span></p>
 <p><span class="k-word" data-word-idx="5323" id="w_5323">out</span> <span class="k-word" data-word-idx="5324" id="w_5324">if</span> <span class="k-word" data-word-idx="5325" id="w_5325">one</span> <span class="k-word" data-word-idx="5326" id="w_5326">of</span></p>
 <p><span class="k-word" data-word-idx="5327" id="w_5327">these</span> <span class="k-word" data-word-idx="5328" id="w_5328">words</span> <span class="k-word" data-word-idx="5329" id="w_5329">is</span> <span class="k-word" data-word-idx="5330" id="w_5330">part</span> <span class="k-word" data-word-idx="5331" id="w_5331">of</span> <span class="k-word" data-word-idx="5332" id="w_5332">the</span> <span class="k-word" data-word-idx="5333" id="w_5333">key?</span> <span class="k-word" data-word-idx="5334" id="w_5334">We</span> <span class="k-word" data-word-idx="5335" id="w_5335">can</span> <span class="k-word" data-word-idx="5336" id="w_5336">test</span> <span class="k-word" data-word-idx="5337" id="w_5337">each</span></p>
@@ -1511,7 +1581,7 @@
 <p><span class="k-word" data-word-idx="5701" id="w_5701">of</span> <span class="k-word" data-word-idx="5702" id="w_5702">the</span> <span class="k-word" data-word-idx="5703" id="w_5703">key</span> <span class="k-word" data-word-idx="5704" id="w_5704">is</span> <span class="k-word" data-word-idx="5705" id="w_5705">CUBA:</span></p>
 <p><span class="k-word" data-word-idx="5706" id="w_5706">1</span> <span class="k-word" data-word-idx="5707" id="w_5707">jceyCANADABRAZ</span> <span class="k-word" data-word-idx="5708" id="w_5708">I</span> <span class="k-word" data-word-idx="5709" id="w_5709">LEGYPTCUBA</span></p>
 <p><span class="k-word" data-word-idx="5710" id="w_5710">&#x27;</span> <span class="k-word" data-word-idx="5711" id="w_5711">Plaintext</span> <span class="k-word" data-word-idx="5712" id="w_5712">themeet</span> <span class="k-word" data-word-idx="5713" id="w_5713">i</span> <span class="k-word" data-word-idx="5714" id="w_5714">ng</span> <span class="k-word" data-word-idx="5715" id="w_5715">i</span> <span class="k-word" data-word-idx="5716" id="w_5716">sat</span> <span class="k-word" data-word-idx="5717" id="w_5717">thedock</span> <span class="k-word" data-word-idx="5718" id="w_5718">1</span> <span class="k-word" data-word-idx="5719" id="w_5719">Ciphertext</span></p>
-<h3><span class="k-word" data-word-idx="5720" id="w_5720">VHRMHEUZNFQDEZRWXF</span> <span class="k-word" data-word-idx="5721" id="w_5721">IDK</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5720" id="w_5720">VHRMHEUZNFQDEZRWXF</span> <span class="k-word" data-word-idx="5721" id="w_5721">IDK</span></h3>
 <p><span class="k-word" data-word-idx="5722" id="w_5722">;</span> <span class="k-word" data-word-idx="5723" id="w_5723">Table</span> <span class="k-word" data-word-idx="5724" id="w_5724">9</span> <span class="k-word" data-word-idx="5725" id="w_5725">Vigenere</span> <span class="k-word" data-word-idx="5726" id="w_5726">square.</span></p>
 <p><span class="k-word" data-word-idx="5727" id="w_5727">---</span></p>
 <p><span class="k-word" data-word-idx="5728" id="w_5728">[⏮</span> <span class="k-word" data-word-idx="5729" id="w_5729">Previous</span> <span class="k-word" data-word-idx="5730" id="w_5730">Pages</span> <span class="k-word" data-word-idx="5731" id="w_5731">(142–171)](#listen-file:/usr/local/google/home/koushikchak/Downloads/Liberation_Library/14_The_Code_Book_Simon_Singh.pdf?pages=142-171&amp;track=author)</span> <span class="k-word" data-word-idx="5732" id="w_5732">·</span> <span class="k-word" data-word-idx="5733" id="w_5733">[⏭</span> <span class="k-word" data-word-idx="5734" id="w_5734">Next</span> <span class="k-word" data-word-idx="5735" id="w_5735">Pages</span> <span class="k-word" data-word-idx="5736" id="w_5736">(202–231)](#listen-file:/usr/local/google/home/koushikchak/Downloads/Liberation_Library/14_The_Code_Book_Simon_Singh.pdf?pages=202-231&amp;track=author)</span></p>

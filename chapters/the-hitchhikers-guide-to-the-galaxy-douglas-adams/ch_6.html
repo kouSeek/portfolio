@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">The Hitchhiker&#x27;s Guide to the Galaxy</div>
       <h1 class="hero-chapter-title">Ch. 29–35: The Mice, Brains &amp; The Restaurant at the End of the Universe</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 228-257</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 6 of 6)</span>
+        <span class="meta-chip">📄 Pages 228-257 (30p · 11.7% vol)</span>
+        <span class="meta-chip effort">⏱️ ~45m effort (45 min)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>30 pages (11.7% of book)</strong></span>
+          <span>Full Book: <strong>257 pages (6h 26m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 26%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> White mice demanding Arthur&#x27;s brain and escaping toward the Restaurant at the End of the Universe.</div>
 
       
@@ -434,8 +504,8 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">29–35:</span> <span class="k-word" data-word-idx="2" id="w_2">The</span> <span class="k-word" data-word-idx="3" id="w_3">Mice,</span> <span class="k-word" data-word-idx="4" id="w_4">Brains</span> <span class="k-word" data-word-idx="5" id="w_5">&amp;</span> <span class="k-word" data-word-idx="6" id="w_6">The</span> <span class="k-word" data-word-idx="7" id="w_7">Restaurant</span> <span class="k-word" data-word-idx="8" id="w_8">at</span> <span class="k-word" data-word-idx="9" id="w_9">the</span> <span class="k-word" data-word-idx="10" id="w_10">End</span> <span class="k-word" data-word-idx="11" id="w_11">of</span> <span class="k-word" data-word-idx="12" id="w_12">the</span> <span class="k-word" data-word-idx="13" id="w_13">Universe</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">29–35:</span> <span class="k-word" data-word-idx="2" id="w_2">The</span> <span class="k-word" data-word-idx="3" id="w_3">Mice,</span> <span class="k-word" data-word-idx="4" id="w_4">Brains</span> <span class="k-word" data-word-idx="5" id="w_5">&amp;</span> <span class="k-word" data-word-idx="6" id="w_6">The</span> <span class="k-word" data-word-idx="7" id="w_7">Restaurant</span> <span class="k-word" data-word-idx="8" id="w_8">at</span> <span class="k-word" data-word-idx="9" id="w_9">the</span> <span class="k-word" data-word-idx="10" id="w_10">End</span> <span class="k-word" data-word-idx="11" id="w_11">of</span> <span class="k-word" data-word-idx="12" id="w_12">the</span> <span class="k-word" data-word-idx="13" id="w_13">Universe</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="14" id="w_14">White</span> <span class="k-word" data-word-idx="15" id="w_15">mice</span> <span class="k-word" data-word-idx="16" id="w_16">demanding</span> <span class="k-word" data-word-idx="17" id="w_17">Arthur&#x27;s</span> <span class="k-word" data-word-idx="18" id="w_18">brain</span> <span class="k-word" data-word-idx="19" id="w_19">and</span> <span class="k-word" data-word-idx="20" id="w_20">escaping</span> <span class="k-word" data-word-idx="21" id="w_21">toward</span> <span class="k-word" data-word-idx="22" id="w_22">the</span> <span class="k-word" data-word-idx="23" id="w_23">Restaurant</span> <span class="k-word" data-word-idx="24" id="w_24">at</span> <span class="k-word" data-word-idx="25" id="w_25">the</span> <span class="k-word" data-word-idx="26" id="w_26">End</span> <span class="k-word" data-word-idx="27" id="w_27">of</span> <span class="k-word" data-word-idx="28" id="w_28">the</span> <span class="k-word" data-word-idx="29" id="w_29">Universe.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="30" id="w_30">Zaphod</span> <span class="k-word" data-word-idx="31" id="w_31">shrugged.</span></p>

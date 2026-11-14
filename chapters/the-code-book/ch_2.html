@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">The Code Book</div>
       <h1 class="hero-chapter-title">Ch. 1: The Cipher of Mary Queen of Scots</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 15-81</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 2 of 8)</span>
+        <span class="meta-chip">📄 Pages 15-81 (67p · 9.6% vol)</span>
+        <span class="meta-chip effort">⏱️ ~100m effort (1h 40m)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>67 pages (9.6% of book)</strong></span>
+          <span>Full Book: <strong>695 pages (17h 22m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 21%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> Caesar shifts, Al-Kindi&#x27;s frequency analysis, and Babington&#x27;s plot.</div>
 
       
@@ -434,8 +504,8 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">1:</span> <span class="k-word" data-word-idx="2" id="w_2">The</span> <span class="k-word" data-word-idx="3" id="w_3">Cipher</span> <span class="k-word" data-word-idx="4" id="w_4">of</span> <span class="k-word" data-word-idx="5" id="w_5">Mary</span> <span class="k-word" data-word-idx="6" id="w_6">Queen</span> <span class="k-word" data-word-idx="7" id="w_7">of</span> <span class="k-word" data-word-idx="8" id="w_8">Scots</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">1:</span> <span class="k-word" data-word-idx="2" id="w_2">The</span> <span class="k-word" data-word-idx="3" id="w_3">Cipher</span> <span class="k-word" data-word-idx="4" id="w_4">of</span> <span class="k-word" data-word-idx="5" id="w_5">Mary</span> <span class="k-word" data-word-idx="6" id="w_6">Queen</span> <span class="k-word" data-word-idx="7" id="w_7">of</span> <span class="k-word" data-word-idx="8" id="w_8">Scots</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="9" id="w_9">Caesar</span> <span class="k-word" data-word-idx="10" id="w_10">shifts,</span> <span class="k-word" data-word-idx="11" id="w_11">Al-Kindi&#x27;s</span> <span class="k-word" data-word-idx="12" id="w_12">frequency</span> <span class="k-word" data-word-idx="13" id="w_13">analysis,</span> <span class="k-word" data-word-idx="14" id="w_14">and</span> <span class="k-word" data-word-idx="15" id="w_15">Babington&#x27;s</span> <span class="k-word" data-word-idx="16" id="w_16">plot.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="17" id="w_17">seat,</span> <span class="k-word" data-word-idx="18" id="w_18">a</span> <span class="k-word" data-word-idx="19" id="w_19">crimson</span> <span class="k-word" data-word-idx="20" id="w_20">velvet</span> <span class="k-word" data-word-idx="21" id="w_21">chair.</span></p>
@@ -685,13 +755,13 @@
 <p><span class="k-word" data-word-idx="1456" id="w_1456">line</span> <span class="k-word" data-word-idx="1457" id="w_1457">is</span> <span class="k-word" data-word-idx="1458" id="w_1458">then</span> <span class="k-word" data-word-idx="1459" id="w_1459">tagged</span> <span class="k-word" data-word-idx="1460" id="w_1460">on</span> <span class="k-word" data-word-idx="1461" id="w_1461">at</span> <span class="k-word" data-word-idx="1462" id="w_1462">the</span> <span class="k-word" data-word-idx="1463" id="w_1463">end</span> <span class="k-word" data-word-idx="1464" id="w_1464">of</span> <span class="k-word" data-word-idx="1465" id="w_1465">the</span> <span class="k-word" data-word-idx="1466" id="w_1466">sequence</span> <span class="k-word" data-word-idx="1467" id="w_1467">on</span> <span class="k-word" data-word-idx="1468" id="w_1468">the</span></p>
 <p><span class="k-word" data-word-idx="1469" id="w_1469">upper</span> <span class="k-word" data-word-idx="1470" id="w_1470">line</span> <span class="k-word" data-word-idx="1471" id="w_1471">to</span></p>
 <p><span class="k-word" data-word-idx="1472" id="w_1472">create</span> <span class="k-word" data-word-idx="1473" id="w_1473">the</span> <span class="k-word" data-word-idx="1474" id="w_1474">final</span> <span class="k-word" data-word-idx="1475" id="w_1475">encrypted</span> <span class="k-word" data-word-idx="1476" id="w_1476">message.</span> <span class="k-word" data-word-idx="1477" id="w_1477">For</span> <span class="k-word" data-word-idx="1478" id="w_1478">example:</span></p>
-<h3><span class="k-word" data-word-idx="1479" id="w_1479">THY</span> <span class="k-word" data-word-idx="1480" id="w_1480">SECRET</span> <span class="k-word" data-word-idx="1481" id="w_1481">IS</span> <span class="k-word" data-word-idx="1482" id="w_1482">THY</span> <span class="k-word" data-word-idx="1483" id="w_1483">PRISONER;</span> <span class="k-word" data-word-idx="1484" id="w_1484">IF</span> <span class="k-word" data-word-idx="1485" id="w_1485">THOU</span> <span class="k-word" data-word-idx="1486" id="w_1486">LET</span> <span class="k-word" data-word-idx="1487" id="w_1487">IT</span> <span class="k-word" data-word-idx="1488" id="w_1488">GO,</span> <span class="k-word" data-word-idx="1489" id="w_1489">THOU</span> <span class="k-word" data-word-idx="1490" id="w_1490">ART</span> <span class="k-word" data-word-idx="1491" id="w_1491">A</span></h3>
-<h3><span class="k-word" data-word-idx="1492" id="w_1492">PRISONER</span> <span class="k-word" data-word-idx="1493" id="w_1493">TO</span> <span class="k-word" data-word-idx="1494" id="w_1494">IT</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="1479" id="w_1479">THY</span> <span class="k-word" data-word-idx="1480" id="w_1480">SECRET</span> <span class="k-word" data-word-idx="1481" id="w_1481">IS</span> <span class="k-word" data-word-idx="1482" id="w_1482">THY</span> <span class="k-word" data-word-idx="1483" id="w_1483">PRISONER;</span> <span class="k-word" data-word-idx="1484" id="w_1484">IF</span> <span class="k-word" data-word-idx="1485" id="w_1485">THOU</span> <span class="k-word" data-word-idx="1486" id="w_1486">LET</span> <span class="k-word" data-word-idx="1487" id="w_1487">IT</span> <span class="k-word" data-word-idx="1488" id="w_1488">GO,</span> <span class="k-word" data-word-idx="1489" id="w_1489">THOU</span> <span class="k-word" data-word-idx="1490" id="w_1490">ART</span> <span class="k-word" data-word-idx="1491" id="w_1491">A</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="1492" id="w_1492">PRISONER</span> <span class="k-word" data-word-idx="1493" id="w_1493">TO</span> <span class="k-word" data-word-idx="1494" id="w_1494">IT</span></h3>
 <p><span class="k-word" data-word-idx="1495" id="w_1495">1</span></p>
-<h3><span class="k-word" data-word-idx="1496" id="w_1496">TYERTSHPIO</span> <span class="k-word" data-word-idx="1497" id="w_1497">EITO</span> <span class="k-word" data-word-idx="1498" id="w_1498">LTTOH</span> <span class="k-word" data-word-idx="1499" id="w_1499">URARS</span> <span class="k-word" data-word-idx="1500" id="w_1500">NROT</span></h3>
-<h3><span class="k-word" data-word-idx="1501" id="w_1501">HSCEITYRS</span> <span class="k-word" data-word-idx="1502" id="w_1502">NRFH</span> <span class="k-word" data-word-idx="1503" id="w_1503">UEIGTOATPIO</span> <span class="k-word" data-word-idx="1504" id="w_1504">ETI</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="1496" id="w_1496">TYERTSHPIO</span> <span class="k-word" data-word-idx="1497" id="w_1497">EITO</span> <span class="k-word" data-word-idx="1498" id="w_1498">LTTOH</span> <span class="k-word" data-word-idx="1499" id="w_1499">URARS</span> <span class="k-word" data-word-idx="1500" id="w_1500">NROT</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="1501" id="w_1501">HSCEITYRS</span> <span class="k-word" data-word-idx="1502" id="w_1502">NRFH</span> <span class="k-word" data-word-idx="1503" id="w_1503">UEIGTOATPIO</span> <span class="k-word" data-word-idx="1504" id="w_1504">ETI</span></h3>
 <p><span class="k-word" data-word-idx="1505" id="w_1505">I</span></p>
-<h3><span class="k-word" data-word-idx="1506" id="w_1506">TYERTSHPIOEITOLTTOHURARSNROTHSCEITYRSNRFHUEIGTOATPIOETI</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="1506" id="w_1506">TYERTSHPIOEITOLTTOHURARSNROTHSCEITYRSNRFHUEIGTOATPIOETI</span></h3>
 <p><span class="k-word" data-word-idx="1507" id="w_1507">The</span> <span class="k-word" data-word-idx="1508" id="w_1508">receiver</span> <span class="k-word" data-word-idx="1509" id="w_1509">can</span> <span class="k-word" data-word-idx="1510" id="w_1510">recover</span> <span class="k-word" data-word-idx="1511" id="w_1511">the</span> <span class="k-word" data-word-idx="1512" id="w_1512">message</span> <span class="k-word" data-word-idx="1513" id="w_1513">by</span> <span class="k-word" data-word-idx="1514" id="w_1514">simply</span> <span class="k-word" data-word-idx="1515" id="w_1515">reversing</span></p>
 <p><span class="k-word" data-word-idx="1516" id="w_1516">the</span> <span class="k-word" data-word-idx="1517" id="w_1517">process.</span></p>
 <p><span class="k-word" data-word-idx="1518" id="w_1518">There</span> <span class="k-word" data-word-idx="1519" id="w_1519">are</span> <span class="k-word" data-word-idx="1520" id="w_1520">various</span> <span class="k-word" data-word-idx="1521" id="w_1521">other</span> <span class="k-word" data-word-idx="1522" id="w_1522">forms</span> <span class="k-word" data-word-idx="1523" id="w_1523">of</span> <span class="k-word" data-word-idx="1524" id="w_1524">systematic</span> <span class="k-word" data-word-idx="1525" id="w_1525">transposition,</span></p>
@@ -792,7 +862,7 @@
 <p><span class="k-word" data-word-idx="1991" id="w_1991">t</span> <span class="k-word" data-word-idx="1992" id="w_1992">t</span></p>
 <p><span class="k-word" data-word-idx="1993" id="w_1993">P</span> <span class="k-word" data-word-idx="1994" id="w_1994">T</span></p>
 <p><span class="k-word" data-word-idx="1995" id="w_1995">Then,</span> <span class="k-word" data-word-idx="1996" id="w_1996">instead</span> <span class="k-word" data-word-idx="1997" id="w_1997">of</span> <span class="k-word" data-word-idx="1998" id="w_1998">meet</span> <span class="k-word" data-word-idx="1999" id="w_1999">at</span> <span class="k-word" data-word-idx="2000" id="w_2000">midnight,</span> <span class="k-word" data-word-idx="2001" id="w_2001">the</span> <span class="k-word" data-word-idx="2002" id="w_2002">sender</span> <span class="k-word" data-word-idx="2003" id="w_2003">would</span> <span class="k-word" data-word-idx="2004" id="w_2004">write</span></p>
-<h3><span class="k-word" data-word-idx="2005" id="w_2005">CUUZ</span> <span class="k-word" data-word-idx="2006" id="w_2006">VZ</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="2005" id="w_2005">CUUZ</span> <span class="k-word" data-word-idx="2006" id="w_2006">VZ</span></h3>
 <p><span class="k-word" data-word-idx="2007" id="w_2007">CGXSGIBZ.</span> <span class="k-word" data-word-idx="2008" id="w_2008">This</span> <span class="k-word" data-word-idx="2009" id="w_2009">form</span> <span class="k-word" data-word-idx="2010" id="w_2010">of</span> <span class="k-word" data-word-idx="2011" id="w_2011">secret</span> <span class="k-word" data-word-idx="2012" id="w_2012">writing</span> <span class="k-word" data-word-idx="2013" id="w_2013">is</span> <span class="k-word" data-word-idx="2014" id="w_2014">called</span> <span class="k-word" data-word-idx="2015" id="w_2015">a</span></p>
 <p><span class="k-word" data-word-idx="2016" id="w_2016">substitution</span> <span class="k-word" data-word-idx="2017" id="w_2017">cipher</span></p>
 <p><span class="k-word" data-word-idx="2018" id="w_2018">because</span> <span class="k-word" data-word-idx="2019" id="w_2019">each</span> <span class="k-word" data-word-idx="2020" id="w_2020">letter</span> <span class="k-word" data-word-idx="2021" id="w_2021">in</span> <span class="k-word" data-word-idx="2022" id="w_2022">the</span> <span class="k-word" data-word-idx="2023" id="w_2023">plaintext</span> <span class="k-word" data-word-idx="2024" id="w_2024">is</span> <span class="k-word" data-word-idx="2025" id="w_2025">substituted</span> <span class="k-word" data-word-idx="2026" id="w_2026">for</span> <span class="k-word" data-word-idx="2027" id="w_2027">a</span></p>
@@ -1119,7 +1189,7 @@
 <p><span class="k-word" data-word-idx="3943" id="w_3943">is</span> <span class="k-word" data-word-idx="3944" id="w_3944">P,</span></p>
 <p><span class="k-word" data-word-idx="3945" id="w_3945">hnique,</span></p>
 <p><span class="k-word" data-word-idx="3946" id="w_3946">;ach</span> <span class="k-word" data-word-idx="3947" id="w_3947">of</span></p>
-<blockquote>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="3948" id="w_3948">ntents</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="3949" id="w_3949">:harac</span></p>
@@ -1369,14 +1439,14 @@
 <p><span class="k-word" data-word-idx="4855" id="w_4855">that</span> <span class="k-word" data-word-idx="4856" id="w_4856">it</span> <span class="k-word" data-word-idx="4857" id="w_4857">also</span></p>
 <p><span class="k-word" data-word-idx="4858" id="w_4858">demands</span> <span class="k-word" data-word-idx="4859" id="w_4859">guile,</span> <span class="k-word" data-word-idx="4860" id="w_4860">intuition,</span> <span class="k-word" data-word-idx="4861" id="w_4861">flexibility</span> <span class="k-word" data-word-idx="4862" id="w_4862">and</span> <span class="k-word" data-word-idx="4863" id="w_4863">guesswork.</span></p>
 <p><span class="k-word" data-word-idx="4864" id="w_4864">Cryptanalyzing</span> <span class="k-word" data-word-idx="4865" id="w_4865">a</span> <span class="k-word" data-word-idx="4866" id="w_4866">Ciphertext</span></p>
-<h3><span class="k-word" data-word-idx="4867" id="w_4867">PCQ</span> <span class="k-word" data-word-idx="4868" id="w_4868">VMJYPD</span> <span class="k-word" data-word-idx="4869" id="w_4869">LBYK</span> <span class="k-word" data-word-idx="4870" id="w_4870">LYSO</span> <span class="k-word" data-word-idx="4871" id="w_4871">KBXBJXWXV</span> <span class="k-word" data-word-idx="4872" id="w_4872">BXV</span> <span class="k-word" data-word-idx="4873" id="w_4873">ZCJPO</span> <span class="k-word" data-word-idx="4874" id="w_4874">EYPD</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4867" id="w_4867">PCQ</span> <span class="k-word" data-word-idx="4868" id="w_4868">VMJYPD</span> <span class="k-word" data-word-idx="4869" id="w_4869">LBYK</span> <span class="k-word" data-word-idx="4870" id="w_4870">LYSO</span> <span class="k-word" data-word-idx="4871" id="w_4871">KBXBJXWXV</span> <span class="k-word" data-word-idx="4872" id="w_4872">BXV</span> <span class="k-word" data-word-idx="4873" id="w_4873">ZCJPO</span> <span class="k-word" data-word-idx="4874" id="w_4874">EYPD</span></h3>
 <p><span class="k-word" data-word-idx="4875" id="w_4875">KBXBJYUXJ</span> <span class="k-word" data-word-idx="4876" id="w_4876">LBJOO</span> <span class="k-word" data-word-idx="4877" id="w_4877">KCPK.</span> <span class="k-word" data-word-idx="4878" id="w_4878">CP</span> <span class="k-word" data-word-idx="4879" id="w_4879">LBO</span> <span class="k-word" data-word-idx="4880" id="w_4880">LBCMKXPV</span> <span class="k-word" data-word-idx="4881" id="w_4881">XPV</span> <span class="k-word" data-word-idx="4882" id="w_4882">IYJKL</span> <span class="k-word" data-word-idx="4883" id="w_4883">PYDBL,</span></p>
 <p><span class="k-word" data-word-idx="4884" id="w_4884">QBOP</span> <span class="k-word" data-word-idx="4885" id="w_4885">KBO</span> <span class="k-word" data-word-idx="4886" id="w_4886">BXV</span> <span class="k-word" data-word-idx="4887" id="w_4887">OPVOV</span> <span class="k-word" data-word-idx="4888" id="w_4888">LBO</span> <span class="k-word" data-word-idx="4889" id="w_4889">LXRO</span> <span class="k-word" data-word-idx="4890" id="w_4890">Cl</span> <span class="k-word" data-word-idx="4891" id="w_4891">SX&#x27;XJMI,</span> <span class="k-word" data-word-idx="4892" id="w_4892">KBO</span> <span class="k-word" data-word-idx="4893" id="w_4893">JCKO</span> <span class="k-word" data-word-idx="4894" id="w_4894">XPV</span></p>
-<h3><span class="k-word" data-word-idx="4895" id="w_4895">EYKKOV</span> <span class="k-word" data-word-idx="4896" id="w_4896">LBO</span> <span class="k-word" data-word-idx="4897" id="w_4897">DJCMPV</span> <span class="k-word" data-word-idx="4898" id="w_4898">ZOICJO</span> <span class="k-word" data-word-idx="4899" id="w_4899">BYS,</span> <span class="k-word" data-word-idx="4900" id="w_4900">KXUYPD:</span> <span class="k-word" data-word-idx="4901" id="w_4901">&quot;DJOXL</span> <span class="k-word" data-word-idx="4902" id="w_4902">EYPD,</span> <span class="k-word" data-word-idx="4903" id="w_4903">ICJ</span> <span class="k-word" data-word-idx="4904" id="w_4904">X</span></h3>
-<h3><span class="k-word" data-word-idx="4905" id="w_4905">LBCMKXPV</span> <span class="k-word" data-word-idx="4906" id="w_4906">XPV</span> <span class="k-word" data-word-idx="4907" id="w_4907">CPO</span> <span class="k-word" data-word-idx="4908" id="w_4908">PYDBLK</span> <span class="k-word" data-word-idx="4909" id="w_4909">Y</span> <span class="k-word" data-word-idx="4910" id="w_4910">BXNO</span> <span class="k-word" data-word-idx="4911" id="w_4911">ZOOP</span> <span class="k-word" data-word-idx="4912" id="w_4912">JOACMPLYPD</span> <span class="k-word" data-word-idx="4913" id="w_4913">LC</span> <span class="k-word" data-word-idx="4914" id="w_4914">UCM</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4895" id="w_4895">EYKKOV</span> <span class="k-word" data-word-idx="4896" id="w_4896">LBO</span> <span class="k-word" data-word-idx="4897" id="w_4897">DJCMPV</span> <span class="k-word" data-word-idx="4898" id="w_4898">ZOICJO</span> <span class="k-word" data-word-idx="4899" id="w_4899">BYS,</span> <span class="k-word" data-word-idx="4900" id="w_4900">KXUYPD:</span> <span class="k-word" data-word-idx="4901" id="w_4901">&quot;DJOXL</span> <span class="k-word" data-word-idx="4902" id="w_4902">EYPD,</span> <span class="k-word" data-word-idx="4903" id="w_4903">ICJ</span> <span class="k-word" data-word-idx="4904" id="w_4904">X</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4905" id="w_4905">LBCMKXPV</span> <span class="k-word" data-word-idx="4906" id="w_4906">XPV</span> <span class="k-word" data-word-idx="4907" id="w_4907">CPO</span> <span class="k-word" data-word-idx="4908" id="w_4908">PYDBLK</span> <span class="k-word" data-word-idx="4909" id="w_4909">Y</span> <span class="k-word" data-word-idx="4910" id="w_4910">BXNO</span> <span class="k-word" data-word-idx="4911" id="w_4911">ZOOP</span> <span class="k-word" data-word-idx="4912" id="w_4912">JOACMPLYPD</span> <span class="k-word" data-word-idx="4913" id="w_4913">LC</span> <span class="k-word" data-word-idx="4914" id="w_4914">UCM</span></h3>
 <p><span class="k-word" data-word-idx="4915" id="w_4915">LBO</span> <span class="k-word" data-word-idx="4916" id="w_4916">IXZROK</span> <span class="k-word" data-word-idx="4917" id="w_4917">Cl</span> <span class="k-word" data-word-idx="4918" id="w_4918">FXKL</span> <span class="k-word" data-word-idx="4919" id="w_4919">XDOK</span> <span class="k-word" data-word-idx="4920" id="w_4920">XPV</span> <span class="k-word" data-word-idx="4921" id="w_4921">LBO</span> <span class="k-word" data-word-idx="4922" id="w_4922">RODOPVK</span> <span class="k-word" data-word-idx="4923" id="w_4923">Cl</span> <span class="k-word" data-word-idx="4924" id="w_4924">XPAYOPL</span> <span class="k-word" data-word-idx="4925" id="w_4925">EYPDK.</span></p>
 <p><span class="k-word" data-word-idx="4926" id="w_4926">SXU</span> <span class="k-word" data-word-idx="4927" id="w_4927">Y</span> <span class="k-word" data-word-idx="4928" id="w_4928">SXEO</span> <span class="k-word" data-word-idx="4929" id="w_4929">KC</span> <span class="k-word" data-word-idx="4930" id="w_4930">ZCRV</span> <span class="k-word" data-word-idx="4931" id="w_4931">XK</span> <span class="k-word" data-word-idx="4932" id="w_4932">LC</span> <span class="k-word" data-word-idx="4933" id="w_4933">AJXNO</span> <span class="k-word" data-word-idx="4934" id="w_4934">X</span> <span class="k-word" data-word-idx="4935" id="w_4935">IXNCMJ</span> <span class="k-word" data-word-idx="4936" id="w_4936">Cl</span> <span class="k-word" data-word-idx="4937" id="w_4937">UCMJ</span> <span class="k-word" data-word-idx="4938" id="w_4938">SXGOKLU?&quot;</span></p>
-<h3><span class="k-word" data-word-idx="4939" id="w_4939">OFYRCDMO,</span> <span class="k-word" data-word-idx="4940" id="w_4940">LXROK</span> <span class="k-word" data-word-idx="4941" id="w_4941">IJCS</span> <span class="k-word" data-word-idx="4942" id="w_4942">LBO</span> <span class="k-word" data-word-idx="4943" id="w_4943">LBCMKXPV</span> <span class="k-word" data-word-idx="4944" id="w_4944">XPV</span> <span class="k-word" data-word-idx="4945" id="w_4945">CPO</span> <span class="k-word" data-word-idx="4946" id="w_4946">PYDBLK</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4939" id="w_4939">OFYRCDMO,</span> <span class="k-word" data-word-idx="4940" id="w_4940">LXROK</span> <span class="k-word" data-word-idx="4941" id="w_4941">IJCS</span> <span class="k-word" data-word-idx="4942" id="w_4942">LBO</span> <span class="k-word" data-word-idx="4943" id="w_4943">LBCMKXPV</span> <span class="k-word" data-word-idx="4944" id="w_4944">XPV</span> <span class="k-word" data-word-idx="4945" id="w_4945">CPO</span> <span class="k-word" data-word-idx="4946" id="w_4946">PYDBLK</span></h3>
 <p><span class="k-word" data-word-idx="4947" id="w_4947">Imagine</span> <span class="k-word" data-word-idx="4948" id="w_4948">that</span> <span class="k-word" data-word-idx="4949" id="w_4949">we</span> <span class="k-word" data-word-idx="4950" id="w_4950">have</span> <span class="k-word" data-word-idx="4951" id="w_4951">intercepted</span> <span class="k-word" data-word-idx="4952" id="w_4952">this</span> <span class="k-word" data-word-idx="4953" id="w_4953">scrambled</span> <span class="k-word" data-word-idx="4954" id="w_4954">message.</span></p>
 <p><span class="k-word" data-word-idx="4955" id="w_4955">The</span> <span class="k-word" data-word-idx="4956" id="w_4956">challenge</span></p>
 <p><span class="k-word" data-word-idx="4957" id="w_4957">is</span> <span class="k-word" data-word-idx="4958" id="w_4958">to</span> <span class="k-word" data-word-idx="4959" id="w_4959">decipher</span> <span class="k-word" data-word-idx="4960" id="w_4960">it.</span> <span class="k-word" data-word-idx="4961" id="w_4961">We</span> <span class="k-word" data-word-idx="4962" id="w_4962">know</span> <span class="k-word" data-word-idx="4963" id="w_4963">that</span> <span class="k-word" data-word-idx="4964" id="w_4964">the</span> <span class="k-word" data-word-idx="4965" id="w_4965">text</span> <span class="k-word" data-word-idx="4966" id="w_4966">is</span> <span class="k-word" data-word-idx="4967" id="w_4967">in</span> <span class="k-word" data-word-idx="4968" id="w_4968">English,</span></p>

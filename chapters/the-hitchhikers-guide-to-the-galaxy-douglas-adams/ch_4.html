@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">The Hitchhiker&#x27;s Guide to the Galaxy</div>
       <h1 class="hero-chapter-title">Ch. 15–20: Magrathea, Slartibartfast &amp; Designing Coastlines</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 140-177</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 4 of 6)</span>
+        <span class="meta-chip">📄 Pages 140-177 (38p · 14.8% vol)</span>
+        <span class="meta-chip effort">⏱️ ~57m effort (57 min)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>38 pages (14.8% of book)</strong></span>
+          <span>Full Book: <strong>257 pages (6h 26m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 33%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> Landing on the legendary planet-building world and meeting Slartibartfast who won an award for Norway&#x27;s fjords.</div>
 
       
@@ -434,15 +504,15 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">15–20:</span> <span class="k-word" data-word-idx="2" id="w_2">Magrathea,</span> <span class="k-word" data-word-idx="3" id="w_3">Slartibartfast</span> <span class="k-word" data-word-idx="4" id="w_4">&amp;</span> <span class="k-word" data-word-idx="5" id="w_5">Designing</span> <span class="k-word" data-word-idx="6" id="w_6">Coastlines</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">15–20:</span> <span class="k-word" data-word-idx="2" id="w_2">Magrathea,</span> <span class="k-word" data-word-idx="3" id="w_3">Slartibartfast</span> <span class="k-word" data-word-idx="4" id="w_4">&amp;</span> <span class="k-word" data-word-idx="5" id="w_5">Designing</span> <span class="k-word" data-word-idx="6" id="w_6">Coastlines</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="7" id="w_7">Landing</span> <span class="k-word" data-word-idx="8" id="w_8">on</span> <span class="k-word" data-word-idx="9" id="w_9">the</span> <span class="k-word" data-word-idx="10" id="w_10">legendary</span> <span class="k-word" data-word-idx="11" id="w_11">planet-building</span> <span class="k-word" data-word-idx="12" id="w_12">world</span> <span class="k-word" data-word-idx="13" id="w_13">and</span> <span class="k-word" data-word-idx="14" id="w_14">meeting</span> <span class="k-word" data-word-idx="15" id="w_15">Slartibartfast</span> <span class="k-word" data-word-idx="16" id="w_16">who</span> <span class="k-word" data-word-idx="17" id="w_17">won</span> <span class="k-word" data-word-idx="18" id="w_18">an</span> <span class="k-word" data-word-idx="19" id="w_19">award</span> <span class="k-word" data-word-idx="20" id="w_20">for</span> <span class="k-word" data-word-idx="21" id="w_21">Norway&#x27;s</span> <span class="k-word" data-word-idx="22" id="w_22">fjords.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="23" id="w_23">&quot;That...&quot;</span> <span class="k-word" data-word-idx="24" id="w_24">said</span> <span class="k-word" data-word-idx="25" id="w_25">Zaphod,</span> <span class="k-word" data-word-idx="26" id="w_26">&quot;is</span>  <span class="k-word" data-word-idx="27" id="w_27">the</span>  <span class="k-word" data-word-idx="28" id="w_28">most</span>  <span class="k-word" data-word-idx="29" id="w_29">improbable</span>  <span class="k-word" data-word-idx="30" id="w_30">planet</span>  <span class="k-word" data-word-idx="31" id="w_31">that</span>  <span class="k-word" data-word-idx="32" id="w_32">ever</span></p>
 <p><span class="k-word" data-word-idx="33" id="w_33">existed.&quot;</span></p>
 <p><span class="k-word" data-word-idx="34" id="w_34">15</span></p>
 <p><span class="k-word" data-word-idx="35" id="w_35">(Excerpt</span> <span class="k-word" data-word-idx="36" id="w_36">from</span> <span class="k-word" data-word-idx="37" id="w_37">The</span> <span class="k-word" data-word-idx="38" id="w_38">Hitch</span> <span class="k-word" data-word-idx="39" id="w_39">Hiker&#x27;s</span> <span class="k-word" data-word-idx="40" id="w_40">Guide</span> <span class="k-word" data-word-idx="41" id="w_41">to</span>  <span class="k-word" data-word-idx="42" id="w_42">the</span>  <span class="k-word" data-word-idx="43" id="w_43">Galaxy,</span>  <span class="k-word" data-word-idx="44" id="w_44">Page</span> <span class="k-word" data-word-idx="45" id="w_45">634784,</span></p>
-<h3><span class="k-word" data-word-idx="46" id="w_46">Section</span> <span class="k-word" data-word-idx="47" id="w_47">5a,</span> <span class="k-word" data-word-idx="48" id="w_48">Entry:</span> <span class="k-word" data-word-idx="49" id="w_49">Magrathea)</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="46" id="w_46">Section</span> <span class="k-word" data-word-idx="47" id="w_47">5a,</span> <span class="k-word" data-word-idx="48" id="w_48">Entry:</span> <span class="k-word" data-word-idx="49" id="w_49">Magrathea)</span></h3>
 <p><span class="k-word" data-word-idx="50" id="w_50">Far</span> <span class="k-word" data-word-idx="51" id="w_51">back</span> <span class="k-word" data-word-idx="52" id="w_52">in</span> <span class="k-word" data-word-idx="53" id="w_53">the</span> <span class="k-word" data-word-idx="54" id="w_54">mists</span> <span class="k-word" data-word-idx="55" id="w_55">of</span> <span class="k-word" data-word-idx="56" id="w_56">ancient</span> <span class="k-word" data-word-idx="57" id="w_57">time,</span> <span class="k-word" data-word-idx="58" id="w_58">in</span> <span class="k-word" data-word-idx="59" id="w_59">the</span> <span class="k-word" data-word-idx="60" id="w_60">great</span> <span class="k-word" data-word-idx="61" id="w_61">and</span> <span class="k-word" data-word-idx="62" id="w_62">glorious</span> <span class="k-word" data-word-idx="63" id="w_63">days</span></p>
 <p><span class="k-word" data-word-idx="64" id="w_64">of</span> <span class="k-word" data-word-idx="65" id="w_65">the</span> <span class="k-word" data-word-idx="66" id="w_66">former</span> <span class="k-word" data-word-idx="67" id="w_67">Galactic</span> <span class="k-word" data-word-idx="68" id="w_68">Empire,</span> <span class="k-word" data-word-idx="69" id="w_69">life</span> <span class="k-word" data-word-idx="70" id="w_70">was</span> <span class="k-word" data-word-idx="71" id="w_71">wild,</span> <span class="k-word" data-word-idx="72" id="w_72">rich</span> <span class="k-word" data-word-idx="73" id="w_73">and</span> <span class="k-word" data-word-idx="74" id="w_74">largely</span> <span class="k-word" data-word-idx="75" id="w_75">tax</span> <span class="k-word" data-word-idx="76" id="w_76">free.</span></p>
 <p><span class="k-word" data-word-idx="77" id="w_77">Mighty</span>  <span class="k-word" data-word-idx="78" id="w_78">starships</span>  <span class="k-word" data-word-idx="79" id="w_79">plied</span>  <span class="k-word" data-word-idx="80" id="w_80">their</span>  <span class="k-word" data-word-idx="81" id="w_81">way</span>  <span class="k-word" data-word-idx="82" id="w_82">between</span>  <span class="k-word" data-word-idx="83" id="w_83">exotic</span>  <span class="k-word" data-word-idx="84" id="w_84">suns,</span>  <span class="k-word" data-word-idx="85" id="w_85">seeking</span></p>

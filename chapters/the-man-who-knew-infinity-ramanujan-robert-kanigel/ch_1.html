@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">The Man Who Knew Infinity</div>
       <h1 class="hero-chapter-title">Prologue</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 13-20</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 1 of 9)</span>
+        <span class="meta-chip">📄 Pages 13-20 (8p · 1.7% vol)</span>
+        <span class="meta-chip effort">⏱️ ~12m effort (12 min)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>8 pages (1.7% of book)</strong></span>
+          <span>Full Book: <strong>468 pages (11h 42m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 4%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> Mahalanobis in Cambridge and the legend of Srinivasa Ramanujan&#x27;s leap from South India to Trinity College.</div>
 
       
@@ -434,8 +504,8 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Prologue</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Prologue</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="1" id="w_1">Mahalanobis</span> <span class="k-word" data-word-idx="2" id="w_2">in</span> <span class="k-word" data-word-idx="3" id="w_3">Cambridge</span> <span class="k-word" data-word-idx="4" id="w_4">and</span> <span class="k-word" data-word-idx="5" id="w_5">the</span> <span class="k-word" data-word-idx="6" id="w_6">legend</span> <span class="k-word" data-word-idx="7" id="w_7">of</span> <span class="k-word" data-word-idx="8" id="w_8">Srinivasa</span> <span class="k-word" data-word-idx="9" id="w_9">Ramanujan&#x27;s</span> <span class="k-word" data-word-idx="10" id="w_10">leap</span> <span class="k-word" data-word-idx="11" id="w_11">from</span> <span class="k-word" data-word-idx="12" id="w_12">South</span> <span class="k-word" data-word-idx="13" id="w_13">India</span> <span class="k-word" data-word-idx="14" id="w_14">to</span> <span class="k-word" data-word-idx="15" id="w_15">Trinity</span> <span class="k-word" data-word-idx="16" id="w_16">College.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="17" id="w_17">One</span> <span class="k-word" data-word-idx="18" id="w_18">day</span> <span class="k-word" data-word-idx="19" id="w_19">in</span> <span class="k-word" data-word-idx="20" id="w_20">the</span> <span class="k-word" data-word-idx="21" id="w_21">summer</span> <span class="k-word" data-word-idx="22" id="w_22">of</span> <span class="k-word" data-word-idx="23" id="w_23">1913,</span> <span class="k-word" data-word-idx="24" id="w_24">a</span> <span class="k-word" data-word-idx="25" id="w_25">twenty-year-old</span> <span class="k-word" data-word-idx="26" id="w_26">Bengali</span> <span class="k-word" data-word-idx="27" id="w_27">from</span> <span class="k-word" data-word-idx="28" id="w_28">an</span> <span class="k-word" data-word-idx="29" id="w_29">old</span> <span class="k-word" data-word-idx="30" id="w_30">and</span> <span class="k-word" data-word-idx="31" id="w_31">prosperous</span> <span class="k-word" data-word-idx="32" id="w_32">Calcutta</span> <span class="k-word" data-word-idx="33" id="w_33">family</span> <span class="k-word" data-word-idx="34" id="w_34">stood</span> <span class="k-word" data-word-idx="35" id="w_35">in</span> <span class="k-word" data-word-idx="36" id="w_36">the</span> <span class="k-word" data-word-idx="37" id="w_37">chapel</span> <span class="k-word" data-word-idx="38" id="w_38">of</span> <span class="k-word" data-word-idx="39" id="w_39">King&#x27;s</span> <span class="k-word" data-word-idx="40" id="w_40">College</span> <span class="k-word" data-word-idx="41" id="w_41">in</span> <span class="k-word" data-word-idx="42" id="w_42">the</span> <span class="k-word" data-word-idx="43" id="w_43">medieval</span> <span class="k-word" data-word-idx="44" id="w_44">university</span> <span class="k-word" data-word-idx="45" id="w_45">town</span> <span class="k-word" data-word-idx="46" id="w_46">of</span> <span class="k-word" data-word-idx="47" id="w_47">Cambridge,</span> <span class="k-word" data-word-idx="48" id="w_48">England.</span> <span class="k-word" data-word-idx="49" id="w_49">A</span> <span class="k-word" data-word-idx="50" id="w_50">glorious,</span> <span class="k-word" data-word-idx="51" id="w_51">grandly</span> <span class="k-word" data-word-idx="52" id="w_52">proportioned</span> <span class="k-word" data-word-idx="53" id="w_53">place,</span> <span class="k-word" data-word-idx="54" id="w_54">more</span> <span class="k-word" data-word-idx="55" id="w_55">cathedral</span> <span class="k-word" data-word-idx="56" id="w_56">than</span> <span class="k-word" data-word-idx="57" id="w_57">chapel,</span> <span class="k-word" data-word-idx="58" id="w_58">it</span> <span class="k-word" data-word-idx="59" id="w_59">was</span> <span class="k-word" data-word-idx="60" id="w_60">the</span> <span class="k-word" data-word-idx="61" id="w_61">work</span> <span class="k-word" data-word-idx="62" id="w_62">of</span> <span class="k-word" data-word-idx="63" id="w_63">three</span> <span class="k-word" data-word-idx="64" id="w_64">kings</span> <span class="k-word" data-word-idx="65" id="w_65">of</span> <span class="k-word" data-word-idx="66" id="w_66">England</span> <span class="k-word" data-word-idx="67" id="w_67">going</span> <span class="k-word" data-word-idx="68" id="w_68">back</span> <span class="k-word" data-word-idx="69" id="w_69">to</span> <span class="k-word" data-word-idx="70" id="w_70">1446.</span> <span class="k-word" data-word-idx="71" id="w_71">Light</span> <span class="k-word" data-word-idx="72" id="w_72">streamed</span> <span class="k-word" data-word-idx="73" id="w_73">in</span> <span class="k-word" data-word-idx="74" id="w_74">through</span> <span class="k-word" data-word-idx="75" id="w_75">stained</span> <span class="k-word" data-word-idx="76" id="w_76">glass</span> <span class="k-word" data-word-idx="77" id="w_77">panels</span> <span class="k-word" data-word-idx="78" id="w_78">ranging</span> <span class="k-word" data-word-idx="79" id="w_79">across</span> <span class="k-word" data-word-idx="80" id="w_80">the</span> <span class="k-word" data-word-idx="81" id="w_81">south</span> <span class="k-word" data-word-idx="82" id="w_82">wall.</span> <span class="k-word" data-word-idx="83" id="w_83">Great</span> <span class="k-word" data-word-idx="84" id="w_84">fluted</span> <span class="k-word" data-word-idx="85" id="w_85">columns</span> <span class="k-word" data-word-idx="86" id="w_86">reached</span> <span class="k-word" data-word-idx="87" id="w_87">heavenward,</span> <span class="k-word" data-word-idx="88" id="w_88">flaring</span> <span class="k-word" data-word-idx="89" id="w_89">out</span> <span class="k-word" data-word-idx="90" id="w_90">into</span> <span class="k-word" data-word-idx="91" id="w_91">the</span> <span class="k-word" data-word-idx="92" id="w_92">massive</span> <span class="k-word" data-word-idx="93" id="w_93">splayed</span> <span class="k-word" data-word-idx="94" id="w_94">vault</span> <span class="k-word" data-word-idx="95" id="w_95">of</span> <span class="k-word" data-word-idx="96" id="w_96">the</span> <span class="k-word" data-word-idx="97" id="w_97">roof.</span></p>

@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">The Code Book</div>
       <h1 class="hero-chapter-title">Ch. 8: A Quantum Leap into the Future</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 541-610</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 8 of 8)</span>
+        <span class="meta-chip">📄 Pages 541-610 (70p · 10.1% vol)</span>
+        <span class="meta-chip effort">⏱️ ~105m effort (1h 45m)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>70 pages (10.1% of book)</strong></span>
+          <span>Full Book: <strong>695 pages (17h 22m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 22%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> Quantum computers, Shor&#x27;s algorithm, and photon polarization cryptography.</div>
 
       
@@ -434,8 +504,8 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">8:</span> <span class="k-word" data-word-idx="2" id="w_2">A</span> <span class="k-word" data-word-idx="3" id="w_3">Quantum</span> <span class="k-word" data-word-idx="4" id="w_4">Leap</span> <span class="k-word" data-word-idx="5" id="w_5">into</span> <span class="k-word" data-word-idx="6" id="w_6">the</span> <span class="k-word" data-word-idx="7" id="w_7">Future</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">8:</span> <span class="k-word" data-word-idx="2" id="w_2">A</span> <span class="k-word" data-word-idx="3" id="w_3">Quantum</span> <span class="k-word" data-word-idx="4" id="w_4">Leap</span> <span class="k-word" data-word-idx="5" id="w_5">into</span> <span class="k-word" data-word-idx="6" id="w_6">the</span> <span class="k-word" data-word-idx="7" id="w_7">Future</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="8" id="w_8">Quantum</span> <span class="k-word" data-word-idx="9" id="w_9">computers,</span> <span class="k-word" data-word-idx="10" id="w_10">Shor&#x27;s</span> <span class="k-word" data-word-idx="11" id="w_11">algorithm,</span> <span class="k-word" data-word-idx="12" id="w_12">and</span> <span class="k-word" data-word-idx="13" id="w_13">photon</span> <span class="k-word" data-word-idx="14" id="w_14">polarization</span> <span class="k-word" data-word-idx="15" id="w_15">cryptography.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="16" id="w_16">childhood</span> <span class="k-word" data-word-idx="17" id="w_17">enthusiasm</span> <span class="k-word" data-word-idx="18" id="w_18">for</span> <span class="k-word" data-word-idx="19" id="w_19">the</span> <span class="k-word" data-word-idx="20" id="w_20">subject</span> <span class="k-word" data-word-idx="21" id="w_21">was</span> <span class="k-word" data-word-idx="22" id="w_22">not</span> <span class="k-word" data-word-idx="23" id="w_23">lost</span> <span class="k-word" data-word-idx="24" id="w_24">on</span> <span class="k-word" data-word-idx="25" id="w_25">his</span></p>
@@ -676,7 +746,7 @@
 <p><span class="k-word" data-word-idx="1448" id="w_1448">the</span> <span class="k-word" data-word-idx="1449" id="w_1449">first</span> <span class="k-word" data-word-idx="1450" id="w_1450">photon</span> <span class="k-word" data-word-idx="1451" id="w_1451">was</span> <span class="k-word" data-word-idx="1452" id="w_1452">sent</span> <span class="k-word" data-word-idx="1453" id="w_1453">using</span> <span class="k-word" data-word-idx="1454" id="w_1454">the</span> <span class="k-word" data-word-idx="1455" id="w_1455">rectilinear</span> <span class="k-word" data-word-idx="1456" id="w_1456">scheme,</span></p>
 <p><span class="k-word" data-word-idx="1457" id="w_1457">but</span> <span class="k-word" data-word-idx="1458" id="w_1458">she</span> <span class="k-word" data-word-idx="1459" id="w_1459">will</span> <span class="k-word" data-word-idx="1460" id="w_1460">not</span></p>
 <p><span class="k-word" data-word-idx="1461" id="w_1461">sender</span></p>
-<h3><span class="k-word" data-word-idx="1462" id="w_1462">ALICE</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="1462" id="w_1462">ALICE</span></h3>
 <p><span class="k-word" data-word-idx="1463" id="w_1463">diagonal</span></p>
 <p><span class="k-word" data-word-idx="1464" id="w_1464">polarization</span> <span class="k-word" data-word-idx="1465" id="w_1465">filters</span></p>
 <p><span class="k-word" data-word-idx="1466" id="w_1466">rectilinear</span></p>
@@ -1248,65 +1318,65 @@
 <p><span class="k-word" data-word-idx="4725" id="w_4725">is</span></p>
 <p><span class="k-word" data-word-idx="4726" id="w_4726">The</span> <span class="k-word" data-word-idx="4727" id="w_4727">Cipher</span> <span class="k-word" data-word-idx="4728" id="w_4728">Challenge</span> <span class="k-word" data-word-idx="4729" id="w_4729">353</span> <span class="k-word" data-word-idx="4730" id="w_4730">Stage</span> <span class="k-word" data-word-idx="4731" id="w_4731">1:</span> <span class="k-word" data-word-idx="4732" id="w_4732">Simple</span> <span class="k-word" data-word-idx="4733" id="w_4733">Monoalphabetic</span></p>
 <p><span class="k-word" data-word-idx="4734" id="w_4734">Substitution</span> <span class="k-word" data-word-idx="4735" id="w_4735">Cipher</span></p>
-<h3><span class="k-word" data-word-idx="4736" id="w_4736">BT</span> <span class="k-word" data-word-idx="4737" id="w_4737">JPX</span> <span class="k-word" data-word-idx="4738" id="w_4738">RMLX</span> <span class="k-word" data-word-idx="4739" id="w_4739">PCUV</span> <span class="k-word" data-word-idx="4740" id="w_4740">AMLX</span> <span class="k-word" data-word-idx="4741" id="w_4741">ICVJP</span> <span class="k-word" data-word-idx="4742" id="w_4742">IBTWXVR</span> <span class="k-word" data-word-idx="4743" id="w_4743">CI</span> <span class="k-word" data-word-idx="4744" id="w_4744">M</span> <span class="k-word" data-word-idx="4745" id="w_4745">LMT&#x27;</span> <span class="k-word" data-word-idx="4746" id="w_4746">R</span> <span class="k-word" data-word-idx="4747" id="w_4747">PMTN,</span> <span class="k-word" data-word-idx="4748" id="w_4748">MTN</span></h3>
-<h3><span class="k-word" data-word-idx="4749" id="w_4749">YVCJX</span> <span class="k-word" data-word-idx="4750" id="w_4750">CDXV</span> <span class="k-word" data-word-idx="4751" id="w_4751">MWMBTRJ</span> <span class="k-word" data-word-idx="4752" id="w_4752">JPX</span> <span class="k-word" data-word-idx="4753" id="w_4753">AMTNGXRJBAH</span> <span class="k-word" data-word-idx="4754" id="w_4754">UQCT</span> <span class="k-word" data-word-idx="4755" id="w_4755">JPX</span> <span class="k-word" data-word-idx="4756" id="w_4756">QGMRJXV</span> <span class="k-word" data-word-idx="4757" id="w_4757">CI</span> <span class="k-word" data-word-idx="4758" id="w_4758">JPX</span></h3>
-<h3><span class="k-word" data-word-idx="4759" id="w_4759">YMGG</span> <span class="k-word" data-word-idx="4760" id="w_4760">CI</span> <span class="k-word" data-word-idx="4761" id="w_4761">JPX</span> <span class="k-word" data-word-idx="4762" id="w_4762">HBTW&#x27;R</span> <span class="k-word" data-word-idx="4763" id="w_4763">QMGMAX;</span> <span class="k-word" data-word-idx="4764" id="w_4764">MTN</span> <span class="k-word" data-word-idx="4765" id="w_4765">JPX</span> <span class="k-word" data-word-idx="4766" id="w_4766">HBTW</span> <span class="k-word" data-word-idx="4767" id="w_4767">RMY</span> <span class="k-word" data-word-idx="4768" id="w_4768">JPX</span> <span class="k-word" data-word-idx="4769" id="w_4769">QMVJ</span> <span class="k-word" data-word-idx="4770" id="w_4770">CI</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4736" id="w_4736">BT</span> <span class="k-word" data-word-idx="4737" id="w_4737">JPX</span> <span class="k-word" data-word-idx="4738" id="w_4738">RMLX</span> <span class="k-word" data-word-idx="4739" id="w_4739">PCUV</span> <span class="k-word" data-word-idx="4740" id="w_4740">AMLX</span> <span class="k-word" data-word-idx="4741" id="w_4741">ICVJP</span> <span class="k-word" data-word-idx="4742" id="w_4742">IBTWXVR</span> <span class="k-word" data-word-idx="4743" id="w_4743">CI</span> <span class="k-word" data-word-idx="4744" id="w_4744">M</span> <span class="k-word" data-word-idx="4745" id="w_4745">LMT&#x27;</span> <span class="k-word" data-word-idx="4746" id="w_4746">R</span> <span class="k-word" data-word-idx="4747" id="w_4747">PMTN,</span> <span class="k-word" data-word-idx="4748" id="w_4748">MTN</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4749" id="w_4749">YVCJX</span> <span class="k-word" data-word-idx="4750" id="w_4750">CDXV</span> <span class="k-word" data-word-idx="4751" id="w_4751">MWMBTRJ</span> <span class="k-word" data-word-idx="4752" id="w_4752">JPX</span> <span class="k-word" data-word-idx="4753" id="w_4753">AMTNGXRJBAH</span> <span class="k-word" data-word-idx="4754" id="w_4754">UQCT</span> <span class="k-word" data-word-idx="4755" id="w_4755">JPX</span> <span class="k-word" data-word-idx="4756" id="w_4756">QGMRJXV</span> <span class="k-word" data-word-idx="4757" id="w_4757">CI</span> <span class="k-word" data-word-idx="4758" id="w_4758">JPX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4759" id="w_4759">YMGG</span> <span class="k-word" data-word-idx="4760" id="w_4760">CI</span> <span class="k-word" data-word-idx="4761" id="w_4761">JPX</span> <span class="k-word" data-word-idx="4762" id="w_4762">HBTW&#x27;R</span> <span class="k-word" data-word-idx="4763" id="w_4763">QMGMAX;</span> <span class="k-word" data-word-idx="4764" id="w_4764">MTN</span> <span class="k-word" data-word-idx="4765" id="w_4765">JPX</span> <span class="k-word" data-word-idx="4766" id="w_4766">HBTW</span> <span class="k-word" data-word-idx="4767" id="w_4767">RMY</span> <span class="k-word" data-word-idx="4768" id="w_4768">JPX</span> <span class="k-word" data-word-idx="4769" id="w_4769">QMVJ</span> <span class="k-word" data-word-idx="4770" id="w_4770">CI</span></h3>
 <p><span class="k-word" data-word-idx="4771" id="w_4771">JPX</span></p>
 <p><span class="k-word" data-word-idx="4772" id="w_4772">PMTN</span> <span class="k-word" data-word-idx="4773" id="w_4773">JPMJ</span> <span class="k-word" data-word-idx="4774" id="w_4774">YVCJX.</span> <span class="k-word" data-word-idx="4775" id="w_4775">JPXT</span> <span class="k-word" data-word-idx="4776" id="w_4776">JPX</span> <span class="k-word" data-word-idx="4777" id="w_4777">HBTW&#x27;R</span> <span class="k-word" data-word-idx="4778" id="w_4778">ACUTJXTMTAX</span> <span class="k-word" data-word-idx="4779" id="w_4779">YMR</span> <span class="k-word" data-word-idx="4780" id="w_4780">APMTWXN,</span></p>
-<h3><span class="k-word" data-word-idx="4781" id="w_4781">MTN</span> <span class="k-word" data-word-idx="4782" id="w_4782">PER</span> <span class="k-word" data-word-idx="4783" id="w_4783">JPCUWPJR</span> <span class="k-word" data-word-idx="4784" id="w_4784">JVCUFGXN</span> <span class="k-word" data-word-idx="4785" id="w_4785">PEL,</span> <span class="k-word" data-word-idx="4786" id="w_4786">RC</span> <span class="k-word" data-word-idx="4787" id="w_4787">JPMJ</span> <span class="k-word" data-word-idx="4788" id="w_4788">JPX</span> <span class="k-word" data-word-idx="4789" id="w_4789">SCBTJR</span> <span class="k-word" data-word-idx="4790" id="w_4790">CI</span> <span class="k-word" data-word-idx="4791" id="w_4791">PER</span></h3>
-<h3><span class="k-word" data-word-idx="4792" id="w_4792">GCBTR</span> <span class="k-word" data-word-idx="4793" id="w_4793">YXVX</span> <span class="k-word" data-word-idx="4794" id="w_4794">GCCRXN,</span> <span class="k-word" data-word-idx="4795" id="w_4795">MTN</span> <span class="k-word" data-word-idx="4796" id="w_4796">PER</span> <span class="k-word" data-word-idx="4797" id="w_4797">HTXXR</span> <span class="k-word" data-word-idx="4798" id="w_4798">RLCJX</span> <span class="k-word" data-word-idx="4799" id="w_4799">CTX</span> <span class="k-word" data-word-idx="4800" id="w_4800">MWMBTRJ</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4781" id="w_4781">MTN</span> <span class="k-word" data-word-idx="4782" id="w_4782">PER</span> <span class="k-word" data-word-idx="4783" id="w_4783">JPCUWPJR</span> <span class="k-word" data-word-idx="4784" id="w_4784">JVCUFGXN</span> <span class="k-word" data-word-idx="4785" id="w_4785">PEL,</span> <span class="k-word" data-word-idx="4786" id="w_4786">RC</span> <span class="k-word" data-word-idx="4787" id="w_4787">JPMJ</span> <span class="k-word" data-word-idx="4788" id="w_4788">JPX</span> <span class="k-word" data-word-idx="4789" id="w_4789">SCBTJR</span> <span class="k-word" data-word-idx="4790" id="w_4790">CI</span> <span class="k-word" data-word-idx="4791" id="w_4791">PER</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4792" id="w_4792">GCBTR</span> <span class="k-word" data-word-idx="4793" id="w_4793">YXVX</span> <span class="k-word" data-word-idx="4794" id="w_4794">GCCRXN,</span> <span class="k-word" data-word-idx="4795" id="w_4795">MTN</span> <span class="k-word" data-word-idx="4796" id="w_4796">PER</span> <span class="k-word" data-word-idx="4797" id="w_4797">HTXXR</span> <span class="k-word" data-word-idx="4798" id="w_4798">RLCJX</span> <span class="k-word" data-word-idx="4799" id="w_4799">CTX</span> <span class="k-word" data-word-idx="4800" id="w_4800">MWMBTRJ</span></h3>
 <p><span class="k-word" data-word-idx="4801" id="w_4801">MTCJPXV.</span> <span class="k-word" data-word-idx="4802" id="w_4802">JPX</span> <span class="k-word" data-word-idx="4803" id="w_4803">HBTW</span> <span class="k-word" data-word-idx="4804" id="w_4804">AVBXN</span> <span class="k-word" data-word-idx="4805" id="w_4805">MGCUN</span> <span class="k-word" data-word-idx="4806" id="w_4806">JC</span> <span class="k-word" data-word-idx="4807" id="w_4807">FVBTW</span> <span class="k-word" data-word-idx="4808" id="w_4808">BT</span> <span class="k-word" data-word-idx="4809" id="w_4809">JPX</span> <span class="k-word" data-word-idx="4810" id="w_4810">MRJVCGCWXVR,</span></p>
 <p><span class="k-word" data-word-idx="4811" id="w_4811">JPX</span> <span class="k-word" data-word-idx="4812" id="w_4812">APMGNXMTR,</span> <span class="k-word" data-word-idx="4813" id="w_4813">MTN</span> <span class="k-word" data-word-idx="4814" id="w_4814">JPX</span> <span class="k-word" data-word-idx="4815" id="w_4815">RCCJPRMEXVR.</span> <span class="k-word" data-word-idx="4816" id="w_4816">MTN</span> <span class="k-word" data-word-idx="4817" id="w_4817">JPX</span> <span class="k-word" data-word-idx="4818" id="w_4818">HBTW</span> <span class="k-word" data-word-idx="4819" id="w_4819">RQMHX,</span></p>
-<h3><span class="k-word" data-word-idx="4820" id="w_4820">MTN</span> <span class="k-word" data-word-idx="4821" id="w_4821">RMBN</span> <span class="k-word" data-word-idx="4822" id="w_4822">JC</span> <span class="k-word" data-word-idx="4823" id="w_4823">JPX</span> <span class="k-word" data-word-idx="4824" id="w_4824">YBRX</span> <span class="k-word" data-word-idx="4825" id="w_4825">LXT</span> <span class="k-word" data-word-idx="4826" id="w_4826">CI</span> <span class="k-word" data-word-idx="4827" id="w_4827">FMFEGCT,</span> <span class="k-word" data-word-idx="4828" id="w_4828">YPCRCXDXV</span> <span class="k-word" data-word-idx="4829" id="w_4829">RPMGG</span> <span class="k-word" data-word-idx="4830" id="w_4830">VXMN</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4820" id="w_4820">MTN</span> <span class="k-word" data-word-idx="4821" id="w_4821">RMBN</span> <span class="k-word" data-word-idx="4822" id="w_4822">JC</span> <span class="k-word" data-word-idx="4823" id="w_4823">JPX</span> <span class="k-word" data-word-idx="4824" id="w_4824">YBRX</span> <span class="k-word" data-word-idx="4825" id="w_4825">LXT</span> <span class="k-word" data-word-idx="4826" id="w_4826">CI</span> <span class="k-word" data-word-idx="4827" id="w_4827">FMFEGCT,</span> <span class="k-word" data-word-idx="4828" id="w_4828">YPCRCXDXV</span> <span class="k-word" data-word-idx="4829" id="w_4829">RPMGG</span> <span class="k-word" data-word-idx="4830" id="w_4830">VXMN</span></h3>
 <p><span class="k-word" data-word-idx="4831" id="w_4831">JPBR</span> <span class="k-word" data-word-idx="4832" id="w_4832">YVBJBTW,</span> <span class="k-word" data-word-idx="4833" id="w_4833">MTN</span> <span class="k-word" data-word-idx="4834" id="w_4834">RPCY</span> <span class="k-word" data-word-idx="4835" id="w_4835">LX</span> <span class="k-word" data-word-idx="4836" id="w_4836">JPX</span> <span class="k-word" data-word-idx="4837" id="w_4837">BTJXVQVXJMJBCT</span> <span class="k-word" data-word-idx="4838" id="w_4838">JPXVXCI,</span></p>
-<h3><span class="k-word" data-word-idx="4839" id="w_4839">RPMGG</span> <span class="k-word" data-word-idx="4840" id="w_4840">FX</span> <span class="k-word" data-word-idx="4841" id="w_4841">AGCJPXN</span> <span class="k-word" data-word-idx="4842" id="w_4842">YBJP</span> <span class="k-word" data-word-idx="4843" id="w_4843">RAMVGXJ,</span> <span class="k-word" data-word-idx="4844" id="w_4844">MTN</span> <span class="k-word" data-word-idx="4845" id="w_4845">PMDX</span> <span class="k-word" data-word-idx="4846" id="w_4846">M</span> <span class="k-word" data-word-idx="4847" id="w_4847">APMBT</span> <span class="k-word" data-word-idx="4848" id="w_4848">CI</span> <span class="k-word" data-word-idx="4849" id="w_4849">WCGN</span></h3>
-<h3><span class="k-word" data-word-idx="4850" id="w_4850">MFCDJ</span> <span class="k-word" data-word-idx="4851" id="w_4851">PER</span> <span class="k-word" data-word-idx="4852" id="w_4852">TXAH,</span> <span class="k-word" data-word-idx="4853" id="w_4853">MTN</span> <span class="k-word" data-word-idx="4854" id="w_4854">RPMGG</span> <span class="k-word" data-word-idx="4855" id="w_4855">FX</span> <span class="k-word" data-word-idx="4856" id="w_4856">JPX</span> <span class="k-word" data-word-idx="4857" id="w_4857">JPBVN</span> <span class="k-word" data-word-idx="4858" id="w_4858">VUGXV</span> <span class="k-word" data-word-idx="4859" id="w_4859">BT</span> <span class="k-word" data-word-idx="4860" id="w_4860">JPX</span></h3>
-<h3><span class="k-word" data-word-idx="4861" id="w_4861">HBTWNCL.</span> <span class="k-word" data-word-idx="4862" id="w_4862">JPXT</span> <span class="k-word" data-word-idx="4863" id="w_4863">AMLX</span> <span class="k-word" data-word-idx="4864" id="w_4864">BT</span> <span class="k-word" data-word-idx="4865" id="w_4865">MGG</span> <span class="k-word" data-word-idx="4866" id="w_4866">JPX</span> <span class="k-word" data-word-idx="4867" id="w_4867">HBTW&#x27;R</span> <span class="k-word" data-word-idx="4868" id="w_4868">YBRX</span> <span class="k-word" data-word-idx="4869" id="w_4869">LXT;</span> <span class="k-word" data-word-idx="4870" id="w_4870">FUJ</span> <span class="k-word" data-word-idx="4871" id="w_4871">JPXE</span></h3>
-<h3><span class="k-word" data-word-idx="4872" id="w_4872">ACUGN</span> <span class="k-word" data-word-idx="4873" id="w_4873">TCJ</span> <span class="k-word" data-word-idx="4874" id="w_4874">VXMN</span> <span class="k-word" data-word-idx="4875" id="w_4875">JPX</span> <span class="k-word" data-word-idx="4876" id="w_4876">YVBJBTW,</span> <span class="k-word" data-word-idx="4877" id="w_4877">TCV</span> <span class="k-word" data-word-idx="4878" id="w_4878">LMHX</span> <span class="k-word" data-word-idx="4879" id="w_4879">HTCYT</span> <span class="k-word" data-word-idx="4880" id="w_4880">JC</span> <span class="k-word" data-word-idx="4881" id="w_4881">JPX</span> <span class="k-word" data-word-idx="4882" id="w_4882">HBTW</span> <span class="k-word" data-word-idx="4883" id="w_4883">JPX</span></h3>
-<h3><span class="k-word" data-word-idx="4884" id="w_4884">BTJXVQVXJMJBCT</span> <span class="k-word" data-word-idx="4885" id="w_4885">JPXVXCI.</span> <span class="k-word" data-word-idx="4886" id="w_4886">JPXT</span> <span class="k-word" data-word-idx="4887" id="w_4887">YMR</span> <span class="k-word" data-word-idx="4888" id="w_4888">HBTW</span> <span class="k-word" data-word-idx="4889" id="w_4889">FXGRPMOOMV</span> <span class="k-word" data-word-idx="4890" id="w_4890">WVXMJGE</span></h3>
-<h3><span class="k-word" data-word-idx="4891" id="w_4891">JVCUFGXN,</span> <span class="k-word" data-word-idx="4892" id="w_4892">MTN</span> <span class="k-word" data-word-idx="4893" id="w_4893">PER</span> <span class="k-word" data-word-idx="4894" id="w_4894">ACUTJXTMTAX</span> <span class="k-word" data-word-idx="4895" id="w_4895">YMR</span> <span class="k-word" data-word-idx="4896" id="w_4896">APMTWXN</span> <span class="k-word" data-word-idx="4897" id="w_4897">BT</span> <span class="k-word" data-word-idx="4898" id="w_4898">PEL,</span> <span class="k-word" data-word-idx="4899" id="w_4899">MTN</span> <span class="k-word" data-word-idx="4900" id="w_4900">PER</span></h3>
-<h3><span class="k-word" data-word-idx="4901" id="w_4901">GCVNR</span> <span class="k-word" data-word-idx="4902" id="w_4902">YXVX</span> <span class="k-word" data-word-idx="4903" id="w_4903">MRJCTBRPXN.</span> <span class="k-word" data-word-idx="4904" id="w_4904">TCY</span> <span class="k-word" data-word-idx="4905" id="w_4905">JPX</span> <span class="k-word" data-word-idx="4906" id="w_4906">KUXXT,</span> <span class="k-word" data-word-idx="4907" id="w_4907">FE</span> <span class="k-word" data-word-idx="4908" id="w_4908">VXMRCT</span> <span class="k-word" data-word-idx="4909" id="w_4909">CI</span> <span class="k-word" data-word-idx="4910" id="w_4910">JPX</span></h3>
-<h3><span class="k-word" data-word-idx="4911" id="w_4911">YCVNR</span> <span class="k-word" data-word-idx="4912" id="w_4912">CI</span> <span class="k-word" data-word-idx="4913" id="w_4913">JPX</span> <span class="k-word" data-word-idx="4914" id="w_4914">HBTW</span> <span class="k-word" data-word-idx="4915" id="w_4915">MTN</span> <span class="k-word" data-word-idx="4916" id="w_4916">PER</span> <span class="k-word" data-word-idx="4917" id="w_4917">GCVNR,</span> <span class="k-word" data-word-idx="4918" id="w_4918">AMLX</span> <span class="k-word" data-word-idx="4919" id="w_4919">BTJC</span> <span class="k-word" data-word-idx="4920" id="w_4920">JPX</span> <span class="k-word" data-word-idx="4921" id="w_4921">FMTKUXJ</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4839" id="w_4839">RPMGG</span> <span class="k-word" data-word-idx="4840" id="w_4840">FX</span> <span class="k-word" data-word-idx="4841" id="w_4841">AGCJPXN</span> <span class="k-word" data-word-idx="4842" id="w_4842">YBJP</span> <span class="k-word" data-word-idx="4843" id="w_4843">RAMVGXJ,</span> <span class="k-word" data-word-idx="4844" id="w_4844">MTN</span> <span class="k-word" data-word-idx="4845" id="w_4845">PMDX</span> <span class="k-word" data-word-idx="4846" id="w_4846">M</span> <span class="k-word" data-word-idx="4847" id="w_4847">APMBT</span> <span class="k-word" data-word-idx="4848" id="w_4848">CI</span> <span class="k-word" data-word-idx="4849" id="w_4849">WCGN</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4850" id="w_4850">MFCDJ</span> <span class="k-word" data-word-idx="4851" id="w_4851">PER</span> <span class="k-word" data-word-idx="4852" id="w_4852">TXAH,</span> <span class="k-word" data-word-idx="4853" id="w_4853">MTN</span> <span class="k-word" data-word-idx="4854" id="w_4854">RPMGG</span> <span class="k-word" data-word-idx="4855" id="w_4855">FX</span> <span class="k-word" data-word-idx="4856" id="w_4856">JPX</span> <span class="k-word" data-word-idx="4857" id="w_4857">JPBVN</span> <span class="k-word" data-word-idx="4858" id="w_4858">VUGXV</span> <span class="k-word" data-word-idx="4859" id="w_4859">BT</span> <span class="k-word" data-word-idx="4860" id="w_4860">JPX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4861" id="w_4861">HBTWNCL.</span> <span class="k-word" data-word-idx="4862" id="w_4862">JPXT</span> <span class="k-word" data-word-idx="4863" id="w_4863">AMLX</span> <span class="k-word" data-word-idx="4864" id="w_4864">BT</span> <span class="k-word" data-word-idx="4865" id="w_4865">MGG</span> <span class="k-word" data-word-idx="4866" id="w_4866">JPX</span> <span class="k-word" data-word-idx="4867" id="w_4867">HBTW&#x27;R</span> <span class="k-word" data-word-idx="4868" id="w_4868">YBRX</span> <span class="k-word" data-word-idx="4869" id="w_4869">LXT;</span> <span class="k-word" data-word-idx="4870" id="w_4870">FUJ</span> <span class="k-word" data-word-idx="4871" id="w_4871">JPXE</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4872" id="w_4872">ACUGN</span> <span class="k-word" data-word-idx="4873" id="w_4873">TCJ</span> <span class="k-word" data-word-idx="4874" id="w_4874">VXMN</span> <span class="k-word" data-word-idx="4875" id="w_4875">JPX</span> <span class="k-word" data-word-idx="4876" id="w_4876">YVBJBTW,</span> <span class="k-word" data-word-idx="4877" id="w_4877">TCV</span> <span class="k-word" data-word-idx="4878" id="w_4878">LMHX</span> <span class="k-word" data-word-idx="4879" id="w_4879">HTCYT</span> <span class="k-word" data-word-idx="4880" id="w_4880">JC</span> <span class="k-word" data-word-idx="4881" id="w_4881">JPX</span> <span class="k-word" data-word-idx="4882" id="w_4882">HBTW</span> <span class="k-word" data-word-idx="4883" id="w_4883">JPX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4884" id="w_4884">BTJXVQVXJMJBCT</span> <span class="k-word" data-word-idx="4885" id="w_4885">JPXVXCI.</span> <span class="k-word" data-word-idx="4886" id="w_4886">JPXT</span> <span class="k-word" data-word-idx="4887" id="w_4887">YMR</span> <span class="k-word" data-word-idx="4888" id="w_4888">HBTW</span> <span class="k-word" data-word-idx="4889" id="w_4889">FXGRPMOOMV</span> <span class="k-word" data-word-idx="4890" id="w_4890">WVXMJGE</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4891" id="w_4891">JVCUFGXN,</span> <span class="k-word" data-word-idx="4892" id="w_4892">MTN</span> <span class="k-word" data-word-idx="4893" id="w_4893">PER</span> <span class="k-word" data-word-idx="4894" id="w_4894">ACUTJXTMTAX</span> <span class="k-word" data-word-idx="4895" id="w_4895">YMR</span> <span class="k-word" data-word-idx="4896" id="w_4896">APMTWXN</span> <span class="k-word" data-word-idx="4897" id="w_4897">BT</span> <span class="k-word" data-word-idx="4898" id="w_4898">PEL,</span> <span class="k-word" data-word-idx="4899" id="w_4899">MTN</span> <span class="k-word" data-word-idx="4900" id="w_4900">PER</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4901" id="w_4901">GCVNR</span> <span class="k-word" data-word-idx="4902" id="w_4902">YXVX</span> <span class="k-word" data-word-idx="4903" id="w_4903">MRJCTBRPXN.</span> <span class="k-word" data-word-idx="4904" id="w_4904">TCY</span> <span class="k-word" data-word-idx="4905" id="w_4905">JPX</span> <span class="k-word" data-word-idx="4906" id="w_4906">KUXXT,</span> <span class="k-word" data-word-idx="4907" id="w_4907">FE</span> <span class="k-word" data-word-idx="4908" id="w_4908">VXMRCT</span> <span class="k-word" data-word-idx="4909" id="w_4909">CI</span> <span class="k-word" data-word-idx="4910" id="w_4910">JPX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4911" id="w_4911">YCVNR</span> <span class="k-word" data-word-idx="4912" id="w_4912">CI</span> <span class="k-word" data-word-idx="4913" id="w_4913">JPX</span> <span class="k-word" data-word-idx="4914" id="w_4914">HBTW</span> <span class="k-word" data-word-idx="4915" id="w_4915">MTN</span> <span class="k-word" data-word-idx="4916" id="w_4916">PER</span> <span class="k-word" data-word-idx="4917" id="w_4917">GCVNR,</span> <span class="k-word" data-word-idx="4918" id="w_4918">AMLX</span> <span class="k-word" data-word-idx="4919" id="w_4919">BTJC</span> <span class="k-word" data-word-idx="4920" id="w_4920">JPX</span> <span class="k-word" data-word-idx="4921" id="w_4921">FMTKUXJ</span></h3>
 <p><span class="k-word" data-word-idx="4922" id="w_4922">PCURX;</span> <span class="k-word" data-word-idx="4923" id="w_4923">MTN</span> <span class="k-word" data-word-idx="4924" id="w_4924">JPX</span> <span class="k-word" data-word-idx="4925" id="w_4925">KUXXT</span> <span class="k-word" data-word-idx="4926" id="w_4926">RQMHX</span> <span class="k-word" data-word-idx="4927" id="w_4927">MTN</span> <span class="k-word" data-word-idx="4928" id="w_4928">RMBN,</span> <span class="k-word" data-word-idx="4929" id="w_4929">C</span> <span class="k-word" data-word-idx="4930" id="w_4930">HBTW,</span> <span class="k-word" data-word-idx="4931" id="w_4931">GBDX</span> <span class="k-word" data-word-idx="4932" id="w_4932">ICVXDXV;</span></p>
-<h3><span class="k-word" data-word-idx="4933" id="w_4933">GXJ</span> <span class="k-word" data-word-idx="4934" id="w_4934">TCJ</span> <span class="k-word" data-word-idx="4935" id="w_4935">JPE</span> <span class="k-word" data-word-idx="4936" id="w_4936">JPCUWPJR</span> <span class="k-word" data-word-idx="4937" id="w_4937">JVCUFGX</span> <span class="k-word" data-word-idx="4938" id="w_4938">JPXX,</span> <span class="k-word" data-word-idx="4939" id="w_4939">TCV</span> <span class="k-word" data-word-idx="4940" id="w_4940">GXJ</span> <span class="k-word" data-word-idx="4941" id="w_4941">JPE</span> <span class="k-word" data-word-idx="4942" id="w_4942">ACUTJXTMTAX</span></h3>
-<h3><span class="k-word" data-word-idx="4943" id="w_4943">FX</span> <span class="k-word" data-word-idx="4944" id="w_4944">APMTWXN;</span> <span class="k-word" data-word-idx="4945" id="w_4945">JPXVX</span> <span class="k-word" data-word-idx="4946" id="w_4946">BR</span> <span class="k-word" data-word-idx="4947" id="w_4947">M</span> <span class="k-word" data-word-idx="4948" id="w_4948">LMT</span> <span class="k-word" data-word-idx="4949" id="w_4949">BT</span> <span class="k-word" data-word-idx="4950" id="w_4950">JPE</span> <span class="k-word" data-word-idx="4951" id="w_4951">HBTWNCL,</span> <span class="k-word" data-word-idx="4952" id="w_4952">BT</span> <span class="k-word" data-word-idx="4953" id="w_4953">YPCL</span> <span class="k-word" data-word-idx="4954" id="w_4954">BR</span> <span class="k-word" data-word-idx="4955" id="w_4955">JPX</span></h3>
-<h3><span class="k-word" data-word-idx="4956" id="w_4956">RQBVBJ</span> <span class="k-word" data-word-idx="4957" id="w_4957">CI</span> <span class="k-word" data-word-idx="4958" id="w_4958">JPX</span> <span class="k-word" data-word-idx="4959" id="w_4959">PCGE</span> <span class="k-word" data-word-idx="4960" id="w_4960">WCNR;</span> <span class="k-word" data-word-idx="4961" id="w_4961">MTN</span> <span class="k-word" data-word-idx="4962" id="w_4962">BT</span> <span class="k-word" data-word-idx="4963" id="w_4963">JPX</span> <span class="k-word" data-word-idx="4964" id="w_4964">NMER</span> <span class="k-word" data-word-idx="4965" id="w_4965">CI</span> <span class="k-word" data-word-idx="4966" id="w_4966">JPE</span> <span class="k-word" data-word-idx="4967" id="w_4967">IMJPXV</span></h3>
-<h3><span class="k-word" data-word-idx="4968" id="w_4968">GBWPJ</span> <span class="k-word" data-word-idx="4969" id="w_4969">MTN</span> <span class="k-word" data-word-idx="4970" id="w_4970">UTNXVRJMTNBTW</span> <span class="k-word" data-word-idx="4971" id="w_4971">MTN</span> <span class="k-word" data-word-idx="4972" id="w_4972">YBRNCL,</span> <span class="k-word" data-word-idx="4973" id="w_4973">GBHX</span> <span class="k-word" data-word-idx="4974" id="w_4974">JPX</span> <span class="k-word" data-word-idx="4975" id="w_4975">YBRNCL</span> <span class="k-word" data-word-idx="4976" id="w_4976">CI</span> <span class="k-word" data-word-idx="4977" id="w_4977">JPX</span></h3>
-<h3><span class="k-word" data-word-idx="4978" id="w_4978">WCNR,</span> <span class="k-word" data-word-idx="4979" id="w_4979">YMR</span> <span class="k-word" data-word-idx="4980" id="w_4980">ICUTN</span> <span class="k-word" data-word-idx="4981" id="w_4981">BT</span> <span class="k-word" data-word-idx="4982" id="w_4982">PEL;</span> <span class="k-word" data-word-idx="4983" id="w_4983">YPCL</span> <span class="k-word" data-word-idx="4984" id="w_4984">JPX</span> <span class="k-word" data-word-idx="4985" id="w_4985">HBTW</span> <span class="k-word" data-word-idx="4986" id="w_4986">TXFUAPMNTXOOMV</span> <span class="k-word" data-word-idx="4987" id="w_4987">JPE</span></h3>
-<h3><span class="k-word" data-word-idx="4988" id="w_4988">IMJPXV,</span> <span class="k-word" data-word-idx="4989" id="w_4989">JPX</span> <span class="k-word" data-word-idx="4990" id="w_4990">HBTW,</span> <span class="k-word" data-word-idx="4991" id="w_4991">B</span> <span class="k-word" data-word-idx="4992" id="w_4992">RME,</span> <span class="k-word" data-word-idx="4993" id="w_4993">JPE</span> <span class="k-word" data-word-idx="4994" id="w_4994">IMJPXV,</span> <span class="k-word" data-word-idx="4995" id="w_4995">LMNX</span> <span class="k-word" data-word-idx="4996" id="w_4996">LMRJXV</span> <span class="k-word" data-word-idx="4997" id="w_4997">CI</span> <span class="k-word" data-word-idx="4998" id="w_4998">JPX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4933" id="w_4933">GXJ</span> <span class="k-word" data-word-idx="4934" id="w_4934">TCJ</span> <span class="k-word" data-word-idx="4935" id="w_4935">JPE</span> <span class="k-word" data-word-idx="4936" id="w_4936">JPCUWPJR</span> <span class="k-word" data-word-idx="4937" id="w_4937">JVCUFGX</span> <span class="k-word" data-word-idx="4938" id="w_4938">JPXX,</span> <span class="k-word" data-word-idx="4939" id="w_4939">TCV</span> <span class="k-word" data-word-idx="4940" id="w_4940">GXJ</span> <span class="k-word" data-word-idx="4941" id="w_4941">JPE</span> <span class="k-word" data-word-idx="4942" id="w_4942">ACUTJXTMTAX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4943" id="w_4943">FX</span> <span class="k-word" data-word-idx="4944" id="w_4944">APMTWXN;</span> <span class="k-word" data-word-idx="4945" id="w_4945">JPXVX</span> <span class="k-word" data-word-idx="4946" id="w_4946">BR</span> <span class="k-word" data-word-idx="4947" id="w_4947">M</span> <span class="k-word" data-word-idx="4948" id="w_4948">LMT</span> <span class="k-word" data-word-idx="4949" id="w_4949">BT</span> <span class="k-word" data-word-idx="4950" id="w_4950">JPE</span> <span class="k-word" data-word-idx="4951" id="w_4951">HBTWNCL,</span> <span class="k-word" data-word-idx="4952" id="w_4952">BT</span> <span class="k-word" data-word-idx="4953" id="w_4953">YPCL</span> <span class="k-word" data-word-idx="4954" id="w_4954">BR</span> <span class="k-word" data-word-idx="4955" id="w_4955">JPX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4956" id="w_4956">RQBVBJ</span> <span class="k-word" data-word-idx="4957" id="w_4957">CI</span> <span class="k-word" data-word-idx="4958" id="w_4958">JPX</span> <span class="k-word" data-word-idx="4959" id="w_4959">PCGE</span> <span class="k-word" data-word-idx="4960" id="w_4960">WCNR;</span> <span class="k-word" data-word-idx="4961" id="w_4961">MTN</span> <span class="k-word" data-word-idx="4962" id="w_4962">BT</span> <span class="k-word" data-word-idx="4963" id="w_4963">JPX</span> <span class="k-word" data-word-idx="4964" id="w_4964">NMER</span> <span class="k-word" data-word-idx="4965" id="w_4965">CI</span> <span class="k-word" data-word-idx="4966" id="w_4966">JPE</span> <span class="k-word" data-word-idx="4967" id="w_4967">IMJPXV</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4968" id="w_4968">GBWPJ</span> <span class="k-word" data-word-idx="4969" id="w_4969">MTN</span> <span class="k-word" data-word-idx="4970" id="w_4970">UTNXVRJMTNBTW</span> <span class="k-word" data-word-idx="4971" id="w_4971">MTN</span> <span class="k-word" data-word-idx="4972" id="w_4972">YBRNCL,</span> <span class="k-word" data-word-idx="4973" id="w_4973">GBHX</span> <span class="k-word" data-word-idx="4974" id="w_4974">JPX</span> <span class="k-word" data-word-idx="4975" id="w_4975">YBRNCL</span> <span class="k-word" data-word-idx="4976" id="w_4976">CI</span> <span class="k-word" data-word-idx="4977" id="w_4977">JPX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4978" id="w_4978">WCNR,</span> <span class="k-word" data-word-idx="4979" id="w_4979">YMR</span> <span class="k-word" data-word-idx="4980" id="w_4980">ICUTN</span> <span class="k-word" data-word-idx="4981" id="w_4981">BT</span> <span class="k-word" data-word-idx="4982" id="w_4982">PEL;</span> <span class="k-word" data-word-idx="4983" id="w_4983">YPCL</span> <span class="k-word" data-word-idx="4984" id="w_4984">JPX</span> <span class="k-word" data-word-idx="4985" id="w_4985">HBTW</span> <span class="k-word" data-word-idx="4986" id="w_4986">TXFUAPMNTXOOMV</span> <span class="k-word" data-word-idx="4987" id="w_4987">JPE</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4988" id="w_4988">IMJPXV,</span> <span class="k-word" data-word-idx="4989" id="w_4989">JPX</span> <span class="k-word" data-word-idx="4990" id="w_4990">HBTW,</span> <span class="k-word" data-word-idx="4991" id="w_4991">B</span> <span class="k-word" data-word-idx="4992" id="w_4992">RME,</span> <span class="k-word" data-word-idx="4993" id="w_4993">JPE</span> <span class="k-word" data-word-idx="4994" id="w_4994">IMJPXV,</span> <span class="k-word" data-word-idx="4995" id="w_4995">LMNX</span> <span class="k-word" data-word-idx="4996" id="w_4996">LMRJXV</span> <span class="k-word" data-word-idx="4997" id="w_4997">CI</span> <span class="k-word" data-word-idx="4998" id="w_4998">JPX</span></h3>
 <p><span class="k-word" data-word-idx="4999" id="w_4999">LMWBABMTR,</span> <span class="k-word" data-word-idx="5000" id="w_5000">MRJVCGCWXVR,</span> <span class="k-word" data-word-idx="5001" id="w_5001">APMGNXMTR,</span> <span class="k-word" data-word-idx="5002" id="w_5002">MTN</span> <span class="k-word" data-word-idx="5003" id="w_5003">RCCJPRMEXVR;</span></p>
-<h3><span class="k-word" data-word-idx="5004" id="w_5004">ICVMRLUAP</span> <span class="k-word" data-word-idx="5005" id="w_5005">MR</span> <span class="k-word" data-word-idx="5006" id="w_5006">MT</span> <span class="k-word" data-word-idx="5007" id="w_5007">XZAXGGXTJ</span> <span class="k-word" data-word-idx="5008" id="w_5008">RQBVBJ,</span> <span class="k-word" data-word-idx="5009" id="w_5009">MTN</span> <span class="k-word" data-word-idx="5010" id="w_5010">HTCYGXNWX,</span> <span class="k-word" data-word-idx="5011" id="w_5011">MTN</span></h3>
-<h3><span class="k-word" data-word-idx="5012" id="w_5012">UTNXVRJMTNBTW,</span> <span class="k-word" data-word-idx="5013" id="w_5013">BTJXVQVXJBTW</span> <span class="k-word" data-word-idx="5014" id="w_5014">CI</span> <span class="k-word" data-word-idx="5015" id="w_5015">NVXMLR,</span> <span class="k-word" data-word-idx="5016" id="w_5016">MTN</span> <span class="k-word" data-word-idx="5017" id="w_5017">RPCYBTW</span> <span class="k-word" data-word-idx="5018" id="w_5018">CI</span> <span class="k-word" data-word-idx="5019" id="w_5019">PMVN</span></h3>
-<h3><span class="k-word" data-word-idx="5020" id="w_5020">RXTJXTAXR,</span> <span class="k-word" data-word-idx="5021" id="w_5021">MTN</span> <span class="k-word" data-word-idx="5022" id="w_5022">NBRRCGDBTW</span> <span class="k-word" data-word-idx="5023" id="w_5023">CI</span> <span class="k-word" data-word-idx="5024" id="w_5024">NCUFJR,</span> <span class="k-word" data-word-idx="5025" id="w_5025">YXVX</span> <span class="k-word" data-word-idx="5026" id="w_5026">ICUTN</span> <span class="k-word" data-word-idx="5027" id="w_5027">BT</span> <span class="k-word" data-word-idx="5028" id="w_5028">JPX</span></h3>
-<h3><span class="k-word" data-word-idx="5029" id="w_5029">RMLX</span> <span class="k-word" data-word-idx="5030" id="w_5030">NMTBXG,</span> <span class="k-word" data-word-idx="5031" id="w_5031">YPCL</span> <span class="k-word" data-word-idx="5032" id="w_5032">JPX</span> <span class="k-word" data-word-idx="5033" id="w_5033">HBTW</span> <span class="k-word" data-word-idx="5034" id="w_5034">TMLXN</span> <span class="k-word" data-word-idx="5035" id="w_5035">FXGJXRPMOOMV;</span> <span class="k-word" data-word-idx="5036" id="w_5036">TCY</span> <span class="k-word" data-word-idx="5037" id="w_5037">GXJ</span></h3>
-<h3><span class="k-word" data-word-idx="5038" id="w_5038">NMTBXG</span> <span class="k-word" data-word-idx="5039" id="w_5039">FX</span> <span class="k-word" data-word-idx="5040" id="w_5040">AMGGXN,</span> <span class="k-word" data-word-idx="5041" id="w_5041">MTN</span> <span class="k-word" data-word-idx="5042" id="w_5042">PX</span> <span class="k-word" data-word-idx="5043" id="w_5043">YBGG</span> <span class="k-word" data-word-idx="5044" id="w_5044">RPCY</span> <span class="k-word" data-word-idx="5045" id="w_5045">JPX</span> <span class="k-word" data-word-idx="5046" id="w_5046">BTJXVQVXJMJBCT.</span> <span class="k-word" data-word-idx="5047" id="w_5047">JPX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5004" id="w_5004">ICVMRLUAP</span> <span class="k-word" data-word-idx="5005" id="w_5005">MR</span> <span class="k-word" data-word-idx="5006" id="w_5006">MT</span> <span class="k-word" data-word-idx="5007" id="w_5007">XZAXGGXTJ</span> <span class="k-word" data-word-idx="5008" id="w_5008">RQBVBJ,</span> <span class="k-word" data-word-idx="5009" id="w_5009">MTN</span> <span class="k-word" data-word-idx="5010" id="w_5010">HTCYGXNWX,</span> <span class="k-word" data-word-idx="5011" id="w_5011">MTN</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5012" id="w_5012">UTNXVRJMTNBTW,</span> <span class="k-word" data-word-idx="5013" id="w_5013">BTJXVQVXJBTW</span> <span class="k-word" data-word-idx="5014" id="w_5014">CI</span> <span class="k-word" data-word-idx="5015" id="w_5015">NVXMLR,</span> <span class="k-word" data-word-idx="5016" id="w_5016">MTN</span> <span class="k-word" data-word-idx="5017" id="w_5017">RPCYBTW</span> <span class="k-word" data-word-idx="5018" id="w_5018">CI</span> <span class="k-word" data-word-idx="5019" id="w_5019">PMVN</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5020" id="w_5020">RXTJXTAXR,</span> <span class="k-word" data-word-idx="5021" id="w_5021">MTN</span> <span class="k-word" data-word-idx="5022" id="w_5022">NBRRCGDBTW</span> <span class="k-word" data-word-idx="5023" id="w_5023">CI</span> <span class="k-word" data-word-idx="5024" id="w_5024">NCUFJR,</span> <span class="k-word" data-word-idx="5025" id="w_5025">YXVX</span> <span class="k-word" data-word-idx="5026" id="w_5026">ICUTN</span> <span class="k-word" data-word-idx="5027" id="w_5027">BT</span> <span class="k-word" data-word-idx="5028" id="w_5028">JPX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5029" id="w_5029">RMLX</span> <span class="k-word" data-word-idx="5030" id="w_5030">NMTBXG,</span> <span class="k-word" data-word-idx="5031" id="w_5031">YPCL</span> <span class="k-word" data-word-idx="5032" id="w_5032">JPX</span> <span class="k-word" data-word-idx="5033" id="w_5033">HBTW</span> <span class="k-word" data-word-idx="5034" id="w_5034">TMLXN</span> <span class="k-word" data-word-idx="5035" id="w_5035">FXGJXRPMOOMV;</span> <span class="k-word" data-word-idx="5036" id="w_5036">TCY</span> <span class="k-word" data-word-idx="5037" id="w_5037">GXJ</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5038" id="w_5038">NMTBXG</span> <span class="k-word" data-word-idx="5039" id="w_5039">FX</span> <span class="k-word" data-word-idx="5040" id="w_5040">AMGGXN,</span> <span class="k-word" data-word-idx="5041" id="w_5041">MTN</span> <span class="k-word" data-word-idx="5042" id="w_5042">PX</span> <span class="k-word" data-word-idx="5043" id="w_5043">YBGG</span> <span class="k-word" data-word-idx="5044" id="w_5044">RPCY</span> <span class="k-word" data-word-idx="5045" id="w_5045">JPX</span> <span class="k-word" data-word-idx="5046" id="w_5046">BTJXVQVXJMJBCT.</span> <span class="k-word" data-word-idx="5047" id="w_5047">JPX</span></h3>
 <p><span class="k-word" data-word-idx="5048" id="w_5048">IBVRJ</span> <span class="k-word" data-word-idx="5049" id="w_5049">ACNXYCVN</span> <span class="k-word" data-word-idx="5050" id="w_5050">BR</span> <span class="k-word" data-word-idx="5051" id="w_5051">CJPXGGC.</span></p>
 <p><span class="k-word" data-word-idx="5052" id="w_5052">354</span> <span class="k-word" data-word-idx="5053" id="w_5053">The</span> <span class="k-word" data-word-idx="5054" id="w_5054">Code</span> <span class="k-word" data-word-idx="5055" id="w_5055">Book</span></p>
 <p><span class="k-word" data-word-idx="5056" id="w_5056">Stage</span> <span class="k-word" data-word-idx="5057" id="w_5057">2:</span> <span class="k-word" data-word-idx="5058" id="w_5058">Caesar</span> <span class="k-word" data-word-idx="5059" id="w_5059">Shift</span> <span class="k-word" data-word-idx="5060" id="w_5060">Cipher</span></p>
-<h3><span class="k-word" data-word-idx="5061" id="w_5061">MHILY</span> <span class="k-word" data-word-idx="5062" id="w_5062">LZA</span> <span class="k-word" data-word-idx="5063" id="w_5063">ZBHL</span> <span class="k-word" data-word-idx="5064" id="w_5064">XBPZXBL</span> <span class="k-word" data-word-idx="5065" id="w_5065">MVYABUHL</span> <span class="k-word" data-word-idx="5066" id="w_5066">HWWPBZ</span> <span class="k-word" data-word-idx="5067" id="w_5067">JSHBKPBZ</span> <span class="k-word" data-word-idx="5068" id="w_5068">JHLJBZ</span></h3>
-<h3><span class="k-word" data-word-idx="5069" id="w_5069">KPJABT</span> <span class="k-word" data-word-idx="5070" id="w_5070">HYJHUBT</span> <span class="k-word" data-word-idx="5071" id="w_5071">LZA</span> <span class="k-word" data-word-idx="5072" id="w_5072">ULBAYVU</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5061" id="w_5061">MHILY</span> <span class="k-word" data-word-idx="5062" id="w_5062">LZA</span> <span class="k-word" data-word-idx="5063" id="w_5063">ZBHL</span> <span class="k-word" data-word-idx="5064" id="w_5064">XBPZXBL</span> <span class="k-word" data-word-idx="5065" id="w_5065">MVYABUHL</span> <span class="k-word" data-word-idx="5066" id="w_5066">HWWPBZ</span> <span class="k-word" data-word-idx="5067" id="w_5067">JSHBKPBZ</span> <span class="k-word" data-word-idx="5068" id="w_5068">JHLJBZ</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5069" id="w_5069">KPJABT</span> <span class="k-word" data-word-idx="5070" id="w_5070">HYJHUBT</span> <span class="k-word" data-word-idx="5071" id="w_5071">LZA</span> <span class="k-word" data-word-idx="5072" id="w_5072">ULBAYVU</span></h3>
 <p><span class="k-word" data-word-idx="5073" id="w_5073">Stage</span> <span class="k-word" data-word-idx="5074" id="w_5074">3:</span> <span class="k-word" data-word-idx="5075" id="w_5075">Monoalphabetic</span> <span class="k-word" data-word-idx="5076" id="w_5076">Cipher</span> <span class="k-word" data-word-idx="5077" id="w_5077">with</span> <span class="k-word" data-word-idx="5078" id="w_5078">Homophones</span></p>
-<h3><span class="k-word" data-word-idx="5079" id="w_5079">IXDVMUFXLFEEFXSOQXYQVXSQT0IXWF*FMXYQVFJ*FXEFQUQXJFPTUFX</span></h3>
-<h3><span class="k-word" data-word-idx="5080" id="w_5080">MX*ISSFLQTUQXMXRPQEUMXUMTUIXYFSSFI*MXKFJF*FMXLQXTIEUVFX</span></h3>
-<h3><span class="k-word" data-word-idx="5081" id="w_5081">EQTEFXSOQXLQ*XVFWMTQTUQXTITXKIJ*FMUQXTQJMVX*QEYQVFQTHMX</span></h3>
-<h3><span class="k-word" data-word-idx="5082" id="w_5082">LFVQUVIXM*XEI*XLQ*XWITLIXEQTHGXJQTUQXSITEFLQVGUQX*GXKIE</span></h3>
-<h3><span class="k-word" data-word-idx="5083" id="w_5083">UVGXEQWQTHGXDGUFXTITXDIEUQXGXKFKQVXSIWQXAVPUFXWGXYQVXEQ</span></h3>
-<h3><span class="k-word" data-word-idx="5084" id="w_5084">JPFVXKFVUPUQXQXSGTIESQTHGX*FXWFQFXSIWYGJTFXDQSFIXEFXGJP</span></h3>
-<h3><span class="k-word" data-word-idx="5085" id="w_5085">UFXSITXRPQEUGXIVGHFITXYFSSFI*CXC*XSCWWFTIXSOQXCXYQTCXYI</span></h3>
-<h3><span class="k-word" data-word-idx="5086" id="w_5086">ESFCX*FXCKVQFXVFUQTPUFXQXKI*UCXTIEUVCXYIYYCXTQ*XWCUUFTI</span></h3>
-<h3><span class="k-word" data-word-idx="5087" id="w_5087">XLQFXVQWFXDCSQWWIXC*FXC*XDI**QXKI*IXEQWYVQXCSRPFEUCTLIX</span></h3>
-<h3><span class="k-word" data-word-idx="5088" id="w_5088">LC*X*CUIXWCTSFTIXUPUUQX*QXEUQ**QXJFCXLQX*C*UVIXYI*IXKQL</span></h3>
-<h3><span class="k-word" data-word-idx="5089" id="w_5089">QCX*CXTIUUQXQX*XTIEUVIXUCTUIXACEEIXSOQXTITXEPVJQCXDPIVX</span></h3>
-<h3><span class="k-word" data-word-idx="5090" id="w_5090">LQ*XWCVFTXEPI*IXSFTRPQXKI*UQXVCSSQEIXQXUCTUIXSCEEIX*IX</span></h3>
-<h3><span class="k-word" data-word-idx="5091" id="w_5091">PWQXQVZXLFXEIUUIXLZX*ZX*PTZXYIFXSOQXTUVZUFXQVZKZWXTQX*Z</span></h3>
-<h3><span class="k-word" data-word-idx="5092" id="w_5092">UIXYZEEIRPZTLIXTZYYZVKQXPTZXWITUZJTZXAVPTZXYQVX*ZXLFEO</span></h3>
-<h3><span class="k-word" data-word-idx="5093" id="w_5093">ZTHZXQXYZVKQWFXZ*UZXUZTUIXRPZTUIXKQLPUZXTITXZKQZXZ*SPTZ</span></h3>
-<h3><span class="k-word" data-word-idx="5094" id="w_5094">XTIFXSFXZ**QJVNWWIXQXUIEUIXUIVTIXFTXYFNTUIXSOQXLQX*NXTI</span></h3>
-<h3><span class="k-word" data-word-idx="5095" id="w_5095">KNXUQVVNXPTXUPVAIXTNSRPQXQXYQVSIEEQXLQ*X*QJTIXF*XYVFWIX</span></h3>
-<h3><span class="k-word" data-word-idx="5096" id="w_5096">SNTUIXUVQXKI*UQXF*XDQXJFVBVXSITXUPUUQX*BSRPQXBX*BXRPBVU</span></h3>
-<h3><span class="k-word" data-word-idx="5097" id="w_5097">BX*QKBVX*BXYIYYBXFTXEPEIXQX*BXYVIVBXFVQXFTXJFPXSIWB*UVP</span></h3>
-<h3><span class="k-word" data-word-idx="5098" id="w_5098">FXYFBSRPQFTDFTXSOQX*XWBVXDPXEIYVBXTIFXVFSOFPEIXX*BXYBVI</span></h3>
-<h3><span class="k-word" data-word-idx="5099" id="w_5099">BXFTXSILFSQXQXQRPBUIV</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5079" id="w_5079">IXDVMUFXLFEEFXSOQXYQVXSQT0IXWF*FMXYQVFJ*FXEFQUQXJFPTUFX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5080" id="w_5080">MX*ISSFLQTUQXMXRPQEUMXUMTUIXYFSSFI*MXKFJF*FMXLQXTIEUVFX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5081" id="w_5081">EQTEFXSOQXLQ*XVFWMTQTUQXTITXKIJ*FMUQXTQJMVX*QEYQVFQTHMX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5082" id="w_5082">LFVQUVIXM*XEI*XLQ*XWITLIXEQTHGXJQTUQXSITEFLQVGUQX*GXKIE</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5083" id="w_5083">UVGXEQWQTHGXDGUFXTITXDIEUQXGXKFKQVXSIWQXAVPUFXWGXYQVXEQ</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5084" id="w_5084">JPFVXKFVUPUQXQXSGTIESQTHGX*FXWFQFXSIWYGJTFXDQSFIXEFXGJP</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5085" id="w_5085">UFXSITXRPQEUGXIVGHFITXYFSSFI*CXC*XSCWWFTIXSOQXCXYQTCXYI</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5086" id="w_5086">ESFCX*FXCKVQFXVFUQTPUFXQXKI*UCXTIEUVCXYIYYCXTQ*XWCUUFTI</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5087" id="w_5087">XLQFXVQWFXDCSQWWIXC*FXC*XDI**QXKI*IXEQWYVQXCSRPFEUCTLIX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5088" id="w_5088">LC*X*CUIXWCTSFTIXUPUUQX*QXEUQ**QXJFCXLQX*C*UVIXYI*IXKQL</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5089" id="w_5089">QCX*CXTIUUQXQX*XTIEUVIXUCTUIXACEEIXSOQXTITXEPVJQCXDPIVX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5090" id="w_5090">LQ*XWCVFTXEPI*IXSFTRPQXKI*UQXVCSSQEIXQXUCTUIXSCEEIX*IX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5091" id="w_5091">PWQXQVZXLFXEIUUIXLZX*ZX*PTZXYIFXSOQXTUVZUFXQVZKZWXTQX*Z</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5092" id="w_5092">UIXYZEEIRPZTLIXTZYYZVKQXPTZXWITUZJTZXAVPTZXYQVX*ZXLFEO</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5093" id="w_5093">ZTHZXQXYZVKQWFXZ*UZXUZTUIXRPZTUIXKQLPUZXTITXZKQZXZ*SPTZ</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5094" id="w_5094">XTIFXSFXZ**QJVNWWIXQXUIEUIXUIVTIXFTXYFNTUIXSOQXLQX*NXTI</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5095" id="w_5095">KNXUQVVNXPTXUPVAIXTNSRPQXQXYQVSIEEQXLQ*X*QJTIXF*XYVFWIX</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5096" id="w_5096">SNTUIXUVQXKI*UQXF*XDQXJFVBVXSITXUPUUQX*BSRPQXBX*BXRPBVU</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5097" id="w_5097">BX*QKBVX*BXYIYYBXFTXEPEIXQX*BXYVIVBXFVQXFTXJFPXSIWB*UVP</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5098" id="w_5098">FXYFBSRPQFTDFTXSOQX*XWBVXDPXEIYVBXTIFXVFSOFPEIXX*BXYBVI</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5099" id="w_5099">BXFTXSILFSQXQXQRPBUIV</span></h3>
 <p><span class="k-word" data-word-idx="5100" id="w_5100">The</span> <span class="k-word" data-word-idx="5101" id="w_5101">Cipher</span> <span class="k-word" data-word-idx="5102" id="w_5102">Challenge</span> <span class="k-word" data-word-idx="5103" id="w_5103">355</span></p>
 <p><span class="k-word" data-word-idx="5104" id="w_5104">Stage</span> <span class="k-word" data-word-idx="5105" id="w_5105">4:</span> <span class="k-word" data-word-idx="5106" id="w_5106">Vigenere</span> <span class="k-word" data-word-idx="5107" id="w_5107">Cipher</span> <span class="k-word" data-word-idx="5108" id="w_5108">GW</span> <span class="k-word" data-word-idx="5109" id="w_5109">R</span></p>
 <p><span class="k-word" data-word-idx="5110" id="w_5110">EE</span> <span class="k-word" data-word-idx="5111" id="w_5111">K</span></p>
@@ -1325,24 +1395,24 @@
 <p><span class="k-word" data-word-idx="5135" id="w_5135">JG</span> <span class="k-word" data-word-idx="5136" id="w_5136">Y</span></p>
 <p><span class="k-word" data-word-idx="5137" id="w_5137">0L</span> <span class="k-word" data-word-idx="5138" id="w_5138">R</span></p>
 <p><span class="k-word" data-word-idx="5139" id="w_5139">EE</span> <span class="k-word" data-word-idx="5140" id="w_5140">Y</span></p>
-<h3><span class="k-word" data-word-idx="5141" id="w_5141">WEFVJ</span></h3>
-<h3><span class="k-word" data-word-idx="5142" id="w_5142">LFNFG</span></h3>
-<h3><span class="k-word" data-word-idx="5143" id="w_5143">0YSSI</span></h3>
-<h3><span class="k-word" data-word-idx="5144" id="w_5144">WXIZA</span></h3>
-<h3><span class="k-word" data-word-idx="5145" id="w_5145">RWUUN</span></h3>
-<h3><span class="k-word" data-word-idx="5146" id="w_5146">FSHNU</span></h3>
-<h3><span class="k-word" data-word-idx="5147" id="w_5147">CUSWV</span></h3>
-<h3><span class="k-word" data-word-idx="5148" id="w_5148">TMHRS</span></h3>
-<h3><span class="k-word" data-word-idx="5149" id="w_5149">GPMUR</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5141" id="w_5141">WEFVJ</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5142" id="w_5142">LFNFG</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5143" id="w_5143">0YSSI</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5144" id="w_5144">WXIZA</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5145" id="w_5145">RWUUN</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5146" id="w_5146">FSHNU</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5147" id="w_5147">CUSWV</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5148" id="w_5148">TMHRS</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5149" id="w_5149">GPMUR</span></h3>
 <p><span class="k-word" data-word-idx="5150" id="w_5150">0E0YJ</span></p>
-<h3><span class="k-word" data-word-idx="5151" id="w_5151">CESWK</span></h3>
-<h3><span class="k-word" data-word-idx="5152" id="w_5152">HCEUC</span></h3>
-<h3><span class="k-word" data-word-idx="5153" id="w_5153">QCUAF</span></h3>
-<h3><span class="k-word" data-word-idx="5154" id="w_5154">W0VMA</span></h3>
-<h3><span class="k-word" data-word-idx="5155" id="w_5155">TW0JF</span></h3>
-<h3><span class="k-word" data-word-idx="5156" id="w_5156">YIDGM</span></h3>
-<h3><span class="k-word" data-word-idx="5157" id="w_5157">1VRWV</span></h3>
-<h3><span class="k-word" data-word-idx="5158" id="w_5158">GU0TD</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5151" id="w_5151">CESWK</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5152" id="w_5152">HCEUC</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5153" id="w_5153">QCUAF</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5154" id="w_5154">W0VMA</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5155" id="w_5155">TW0JF</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5156" id="w_5156">YIDGM</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5157" id="w_5157">1VRWV</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5158" id="w_5158">GU0TD</span></h3>
 <p><span class="k-word" data-word-idx="5159" id="w_5159">PUJ</span></p>
 <p><span class="k-word" data-word-idx="5160" id="w_5160">HUD</span></p>
 <p><span class="k-word" data-word-idx="5161" id="w_5161">WCT</span></p>
@@ -1399,7 +1469,7 @@
 <p><span class="k-word" data-word-idx="5214" id="w_5214">VLP</span> <span class="k-word" data-word-idx="5215" id="w_5215">APX</span></p>
 <p><span class="k-word" data-word-idx="5216" id="w_5216">EYN</span></p>
 <p><span class="k-word" data-word-idx="5217" id="w_5217">MEK</span></p>
-<h3><span class="k-word" data-word-idx="5218" id="w_5218">YTR</span> <span class="k-word" data-word-idx="5219" id="w_5219">KILL</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5218" id="w_5218">YTR</span> <span class="k-word" data-word-idx="5219" id="w_5219">KILL</span></h3>
 <p><span class="k-word" data-word-idx="5220" id="w_5220">TNU</span></p>
 <p><span class="k-word" data-word-idx="5221" id="w_5221">EVG</span></p>
 <p><span class="k-word" data-word-idx="5222" id="w_5222">FEL</span></p>
@@ -1411,35 +1481,35 @@
 <p><span class="k-word" data-word-idx="5228" id="w_5228">GJL</span></p>
 <p><span class="k-word" data-word-idx="5229" id="w_5229">GMU</span></p>
 <p><span class="k-word" data-word-idx="5230" id="w_5230">VGG</span></p>
-<h3><span class="k-word" data-word-idx="5231" id="w_5231">KJIN</span></h3>
-<h3><span class="k-word" data-word-idx="5232" id="w_5232">SNCM</span></h3>
-<h3><span class="k-word" data-word-idx="5233" id="w_5233">PLWP</span></h3>
-<h3><span class="k-word" data-word-idx="5234" id="w_5234">CTSS</span></h3>
-<h3><span class="k-word" data-word-idx="5235" id="w_5235">QHUI</span></h3>
-<h3><span class="k-word" data-word-idx="5236" id="w_5236">GKME</span></h3>
-<h3><span class="k-word" data-word-idx="5237" id="w_5237">EFVJ</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5231" id="w_5231">KJIN</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5232" id="w_5232">SNCM</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5233" id="w_5233">PLWP</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5234" id="w_5234">CTSS</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5235" id="w_5235">QHUI</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5236" id="w_5236">GKME</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5237" id="w_5237">EFVJ</span></h3>
 <p><span class="k-word" data-word-idx="5238" id="w_5238">0CZG</span> <span class="k-word" data-word-idx="5239" id="w_5239">0YCW</span></p>
-<h3><span class="k-word" data-word-idx="5240" id="w_5240">XYVL</span></h3>
-<h3><span class="k-word" data-word-idx="5241" id="w_5241">WGNM</span></h3>
-<h3><span class="k-word" data-word-idx="5242" id="w_5242">EMNY</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5240" id="w_5240">XYVL</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5241" id="w_5241">WGNM</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5242" id="w_5242">EMNY</span></h3>
 <p><span class="k-word" data-word-idx="5243" id="w_5243">W0DC</span></p>
-<h3><span class="k-word" data-word-idx="5244" id="w_5244">YTNM</span></h3>
-<h3><span class="k-word" data-word-idx="5245" id="w_5245">CLDH</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5244" id="w_5244">YTNM</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5245" id="w_5245">CLDH</span></h3>
 <p><span class="k-word" data-word-idx="5246" id="w_5246">AG0E</span></p>
-<h3><span class="k-word" data-word-idx="5247" id="w_5247">TJCD</span></h3>
-<h3><span class="k-word" data-word-idx="5248" id="w_5248">BRUJ</span></h3>
-<h3><span class="k-word" data-word-idx="5249" id="w_5249">MWUXF</span></h3>
-<h3><span class="k-word" data-word-idx="5250" id="w_5250">UEKQC</span></h3>
-<h3><span class="k-word" data-word-idx="5251" id="w_5251">NTCG0</span></h3>
-<h3><span class="k-word" data-word-idx="5252" id="w_5252">PNTUJ</span></h3>
-<h3><span class="k-word" data-word-idx="5253" id="w_5253">DUXFP</span></h3>
-<h3><span class="k-word" data-word-idx="5254" id="w_5254">EDCTV</span></h3>
-<h3><span class="k-word" data-word-idx="5255" id="w_5255">JTWWM</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5247" id="w_5247">TJCD</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5248" id="w_5248">BRUJ</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5249" id="w_5249">MWUXF</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5250" id="w_5250">UEKQC</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5251" id="w_5251">NTCG0</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5252" id="w_5252">PNTUJ</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5253" id="w_5253">DUXFP</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5254" id="w_5254">EDCTV</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5255" id="w_5255">JTWWM</span></h3>
 <p><span class="k-word" data-word-idx="5256" id="w_5256">MD0E0</span></p>
-<h3><span class="k-word" data-word-idx="5257" id="w_5257">XIZAY</span></h3>
-<h3><span class="k-word" data-word-idx="5258" id="w_5258">WN0JN</span></h3>
-<h3><span class="k-word" data-word-idx="5259" id="w_5259">AAFFV</span></h3>
-<h3><span class="k-word" data-word-idx="5260" id="w_5260">MAMVL</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5257" id="w_5257">XIZAY</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5258" id="w_5258">WN0JN</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5259" id="w_5259">AAFFV</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5260" id="w_5260">MAMVL</span></h3>
 <p><span class="k-word" data-word-idx="5261" id="w_5261">---</span></p>
 <p><span class="k-word" data-word-idx="5262" id="w_5262">[⏮</span> <span class="k-word" data-word-idx="5263" id="w_5263">Previous</span> <span class="k-word" data-word-idx="5264" id="w_5264">Pages</span> <span class="k-word" data-word-idx="5265" id="w_5265">(511–540)](#listen-file:/usr/local/google/home/koushikchak/Downloads/Liberation_Library/14_The_Code_Book_Simon_Singh.pdf?pages=511-540&amp;track=author)</span> <span class="k-word" data-word-idx="5266" id="w_5266">·</span> <span class="k-word" data-word-idx="5267" id="w_5267">[⏭</span> <span class="k-word" data-word-idx="5268" id="w_5268">Next</span> <span class="k-word" data-word-idx="5269" id="w_5269">Pages</span> <span class="k-word" data-word-idx="5270" id="w_5270">(571–600)](#listen-file:/usr/local/google/home/koushikchak/Downloads/Liberation_Library/14_The_Code_Book_Simon_Singh.pdf?pages=571-600&amp;track=author)</span></p>
     </section>

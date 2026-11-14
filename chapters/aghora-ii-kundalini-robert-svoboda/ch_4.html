@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">Aghora II: Kundalini</div>
       <h1 class="hero-chapter-title">Ch. 3–4: Preliminaries &amp; Sadhana</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 47-71</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 4 of 6)</span>
+        <span class="meta-chip">📄 Pages 47-71 (25p · 15.8% vol)</span>
+        <span class="meta-chip effort">⏱️ ~38m effort (38 min)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>25 pages (15.8% of book)</strong></span>
+          <span>Full Book: <strong>158 pages (3h 57m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 35%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> Food, daily discipline, and making every action a sadhana.</div>
 
       
@@ -434,8 +504,8 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">3–4:</span> <span class="k-word" data-word-idx="2" id="w_2">Preliminaries</span> <span class="k-word" data-word-idx="3" id="w_3">&amp;</span> <span class="k-word" data-word-idx="4" id="w_4">Sadhana</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">3–4:</span> <span class="k-word" data-word-idx="2" id="w_2">Preliminaries</span> <span class="k-word" data-word-idx="3" id="w_3">&amp;</span> <span class="k-word" data-word-idx="4" id="w_4">Sadhana</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="5" id="w_5">Food,</span> <span class="k-word" data-word-idx="6" id="w_6">daily</span> <span class="k-word" data-word-idx="7" id="w_7">discipline,</span> <span class="k-word" data-word-idx="8" id="w_8">and</span> <span class="k-word" data-word-idx="9" id="w_9">making</span> <span class="k-word" data-word-idx="10" id="w_10">every</span> <span class="k-word" data-word-idx="11" id="w_11">action</span> <span class="k-word" data-word-idx="12" id="w_12">a</span> <span class="k-word" data-word-idx="13" id="w_13">sadhana.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="14" id="w_14">Preliminaries</span></p>

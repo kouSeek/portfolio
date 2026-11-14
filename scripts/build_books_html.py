@@ -485,6 +485,12 @@ def generate_books_html() -> None:
       font-size: 0.92rem;
       line-height: 1.35;
     }}
+    .chapter-metrics {{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }}
     .chapter-chip {{
       font-size: 0.72rem;
       padding: 2px 6px;
@@ -493,6 +499,37 @@ def generate_books_html() -> None:
       color: var(--ink-muted);
       border: 1px solid var(--border);
       white-space: nowrap;
+    }}
+    .chapter-chip.count {{
+      color: var(--accent);
+      background: var(--accent-light);
+      border-color: rgba(99, 102, 241, 0.25);
+      font-weight: 600;
+    }}
+    .chapter-chip.effort {{
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.25);
+      font-weight: 600;
+    }}
+    .book-toc-vol-bar-track {{
+      width: 100%;
+      height: 4px;
+      background: rgba(148, 163, 184, 0.18);
+      border-radius: 2px;
+      margin: 6px 0 6px;
+      overflow: hidden;
+    }}
+    .book-toc-vol-bar-fill {{
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }}
+    .book-toc-vol-bar-fill.adhd {{
+      background: #10B981;
+    }}
+    .book-toc-vol-bar-fill.author {{
+      background: #6366F1;
     }}
     .chapter-brief {{
       font-size: 0.8rem;
@@ -1472,6 +1509,9 @@ def generate_books_html() -> None:
         const fullCount = (b.author_chapters || []).length;
         const cleanAdhdTime = cleanEffortStr(b.adhd_time_label);
         const cleanFullTime = cleanEffortStr(b.full_time_label);
+        const adhdPages = b.adhd_total_pages ? `${{b.adhd_total_pages}}p` : "";
+        const adhdVol = b.adhd_volume_pct ? `${{b.adhd_volume_pct}}%` : "";
+        const fullPages = b.full_book_pages || b.pages ? `${{b.full_book_pages || b.pages}}p` : "";
 
         const hasAudio = b.has_audio || (AUDIO_INDEX.books && AUDIO_INDEX.books[b.slug]);
 
@@ -1488,8 +1528,8 @@ def generate_books_html() -> None:
           </div>
           <div>
             <div class="book-card-stats">
-              <span class="badge-chip adhd">⚡ ${{adhdCount}} Steps ${{cleanAdhdTime ? `· ⏱️ ${{cleanAdhdTime}}` : ""}}</span>
-              <span class="badge-chip full">📖 ${{fullCount}} Ch ${{cleanFullTime ? `· ⏱️ ${{cleanFullTime}}` : ""}}</span>
+              <span class="badge-chip adhd">⚡ ${{adhdCount}} Steps ${{adhdPages ? `· ${{adhdPages}}` : ""}} ${{adhdVol ? `(${{adhdVol}})` : ""}} ${{cleanAdhdTime ? `· ⏱️ ${{cleanAdhdTime}}` : ""}}</span>
+              <span class="badge-chip full">📖 ${{fullCount}} Ch ${{fullPages ? `· ${{fullPages}}` : ""}} ${{cleanFullTime ? `· ⏱️ ${{cleanFullTime}}` : ""}}</span>
               ${{hasAudio ? `<span class="badge-chip voice">🎙️ Audio Ready</span>` : ""}}
             </div>
           </div>
@@ -1515,10 +1555,14 @@ def generate_books_html() -> None:
 
       const adhdTime = cleanEffortStr(book.adhd_time_label);
       const fullTime = cleanEffortStr(book.full_time_label);
+      const adhdPages = book.adhd_total_pages ? `${{book.adhd_total_pages}} pages` : "";
+      const adhdVol = book.adhd_volume_pct ? `${{book.adhd_volume_pct}}% of book` : "";
+      const prunedInfo = book.pruned_pct ? `${{book.pruned_pct}}% pruned` : "";
+      const fullPages = book.full_book_pages || book.pages ? `${{book.full_book_pages || book.pages}} pages` : "";
 
       document.getElementById("detailBadges").innerHTML = `
-        <span class="badge-chip adhd">⚡ ${{(book.adhd_segments || []).length}} Steps ${{adhdTime ? `· ⏱️ ${{adhdTime}}` : ""}}</span>
-        <span class="badge-chip full">📖 ${{(book.author_chapters || []).length}} Chapters ${{fullTime ? `· ⏱️ ${{fullTime}}` : ""}}</span>
+        <span class="badge-chip adhd">⚡ ${{(book.adhd_segments || []).length}} Steps ${{adhdPages ? `· ${{adhdPages}}` : ""}} ${{adhdVol ? `· ${{adhdVol}}` : ""}} ${{prunedInfo ? `(${{prunedInfo}})` : ""}} ${{adhdTime ? `· ⏱️ ${{adhdTime}}` : ""}}</span>
+        <span class="badge-chip full">📖 ${{(book.author_chapters || []).length}} Chapters ${{fullPages ? `· ${{fullPages}}` : ""}} ${{fullTime ? `· ⏱️ ${{fullTime}}` : ""}}</span>
       `;
 
       const cleanSlug = getCleanBookSlug(book);
@@ -1533,13 +1577,24 @@ def generate_books_html() -> None:
         const stepNum = idx + 1;
         const row = document.createElement("div");
         row.className = "chapter-row";
-        const effortChip = item.duration_min ? `⏱️ ${{item.duration_min}}m` : (item.pages ? `p. ${{item.pages}}` : "");
+        const pageRange = item.pages ? `p. ${{item.pages}}` : "";
+        const pageCnt = item.pageCount ? `${{item.pageCount}}p` : "";
+        const volPct = item.volumePct ? `${{item.volumePct}}%` : "";
+        const effStr = item.effortLabel || (item.estMinutes ? `⏱️ ${{item.estMinutes}}m` : (item.duration_min ? `⏱️ ${{item.duration_min}}m` : ""));
+        const volWidth = Math.min(100, Math.max(4, Math.round((Number(item.volumePct) || 2) * 2.2)));
 
         row.innerHTML = `
           <div class="chapter-info">
             <div class="chapter-title-row">
               <span class="chapter-label">Step ${{stepNum}} · ${{item.label}}</span>
-              ${{effortChip ? `<span class="chapter-chip">${{effortChip}}</span>` : ""}}
+              <div class="chapter-metrics">
+                ${{pageRange ? `<span class="chapter-chip">${{pageRange}}</span>` : ""}}
+                ${{pageCnt ? `<span class="chapter-chip count">${{pageCnt}} (${{volPct}})</span>` : ""}}
+                ${{effStr ? `<span class="chapter-chip effort">${{effStr}}</span>` : ""}}
+              </div>
+            </div>
+            <div class="book-toc-vol-bar-track">
+              <div class="book-toc-vol-bar-fill adhd" style="width: ${{volWidth}}%;"></div>
             </div>
             <div class="chapter-brief">${{item.brief || ""}}</div>
           </div>
@@ -1560,13 +1615,24 @@ def generate_books_html() -> None:
         const chNum = idx + 1;
         const row = document.createElement("div");
         row.className = "chapter-row";
-        const effortChip = item.duration_min ? `⏱️ ${{item.duration_min}}m` : (item.pages ? `p. ${{item.pages}}` : "");
+        const pageRange = item.pages ? `p. ${{item.pages}}` : "";
+        const pageCnt = item.pageCount ? `${{item.pageCount}}p` : "";
+        const volPct = item.volumePct ? `${{item.volumePct}}%` : "";
+        const effStr = item.effortLabel || (item.estMinutes ? `⏱️ ${{item.estMinutes}}m` : (item.duration_min ? `⏱️ ${{item.duration_min}}m` : ""));
+        const volWidth = Math.min(100, Math.max(4, Math.round((Number(item.volumePct) || 2) * 2.2)));
 
         row.innerHTML = `
           <div class="chapter-info">
             <div class="chapter-title-row">
               <span class="chapter-label">Ch ${{chNum}} · ${{item.label}}</span>
-              ${{effortChip ? `<span class="chapter-chip">${{effortChip}}</span>` : ""}}
+              <div class="chapter-metrics">
+                ${{pageRange ? `<span class="chapter-chip">${{pageRange}}</span>` : ""}}
+                ${{pageCnt ? `<span class="chapter-chip count">${{pageCnt}} (${{volPct}})</span>` : ""}}
+                ${{effStr ? `<span class="chapter-chip effort">${{effStr}}</span>` : ""}}
+              </div>
+            </div>
+            <div class="book-toc-vol-bar-track">
+              <div class="book-toc-vol-bar-fill author" style="width: ${{volWidth}}%;"></div>
             </div>
             <div class="chapter-brief">${{item.brief || ""}}</div>
           </div>

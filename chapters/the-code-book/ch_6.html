@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">The Code Book</div>
       <h1 class="hero-chapter-title">Ch. 5: The Language Barrier</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 316-395</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 6 of 8)</span>
+        <span class="meta-chip">📄 Pages 316-395 (80p · 11.5% vol)</span>
+        <span class="meta-chip effort">⏱️ ~120m effort (2h)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>80 pages (11.5% of book)</strong></span>
+          <span>Full Book: <strong>695 pages (17h 22m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 25%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> Navajo windtalkers and deciphering ancient Egyptian hieroglyphs and Linear B.</div>
 
       
@@ -434,8 +504,8 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">5:</span> <span class="k-word" data-word-idx="2" id="w_2">The</span> <span class="k-word" data-word-idx="3" id="w_3">Language</span> <span class="k-word" data-word-idx="4" id="w_4">Barrier</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">5:</span> <span class="k-word" data-word-idx="2" id="w_2">The</span> <span class="k-word" data-word-idx="3" id="w_3">Language</span> <span class="k-word" data-word-idx="4" id="w_4">Barrier</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="5" id="w_5">Navajo</span> <span class="k-word" data-word-idx="6" id="w_6">windtalkers</span> <span class="k-word" data-word-idx="7" id="w_7">and</span> <span class="k-word" data-word-idx="8" id="w_8">deciphering</span> <span class="k-word" data-word-idx="9" id="w_9">ancient</span> <span class="k-word" data-word-idx="10" id="w_10">Egyptian</span> <span class="k-word" data-word-idx="11" id="w_11">hieroglyphs</span> <span class="k-word" data-word-idx="12" id="w_12">and</span> <span class="k-word" data-word-idx="13" id="w_13">Linear</span> <span class="k-word" data-word-idx="14" id="w_14">B.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="15" id="w_15">split-second</span></p>
@@ -1005,7 +1075,7 @@
 <p><span class="k-word" data-word-idx="2855" id="w_2855">discussion</span> <span class="k-word" data-word-idx="2856" id="w_2856">of</span></p>
 <p><span class="k-word" data-word-idx="2857" id="w_2857">archaeological</span> <span class="k-word" data-word-idx="2858" id="w_2858">decipherments,</span> <span class="k-word" data-word-idx="2859" id="w_2859">is</span> <span class="k-word" data-word-idx="2860" id="w_2860">therefore</span> <span class="k-word" data-word-idx="2861" id="w_2861">a</span> <span class="k-word" data-word-idx="2862" id="w_2862">slight</span> <span class="k-word" data-word-idx="2863" id="w_2863">detour</span></p>
 <p><span class="k-word" data-word-idx="2864" id="w_2864">from</span> <span class="k-word" data-word-idx="2865" id="w_2865">the</span></p>
-<h3><span class="k-word" data-word-idx="2866" id="w_2866">book&#x27;s</span> <span class="k-word" data-word-idx="2867" id="w_2867">main</span> <span class="k-word" data-word-idx="2868" id="w_2868">theme.</span> <span class="k-word" data-word-idx="2869" id="w_2869">However,</span> <span class="k-word" data-word-idx="2870" id="w_2870">the</span> <span class="k-word" data-word-idx="2871" id="w_2871">principles</span> <span class="k-word" data-word-idx="2872" id="w_2872">of</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="2866" id="w_2866">book&#x27;s</span> <span class="k-word" data-word-idx="2867" id="w_2867">main</span> <span class="k-word" data-word-idx="2868" id="w_2868">theme.</span> <span class="k-word" data-word-idx="2869" id="w_2869">However,</span> <span class="k-word" data-word-idx="2870" id="w_2870">the</span> <span class="k-word" data-word-idx="2871" id="w_2871">principles</span> <span class="k-word" data-word-idx="2872" id="w_2872">of</span></h3>
 <p><span class="k-word" data-word-idx="2873" id="w_2873">archaeological</span> <span class="k-word" data-word-idx="2874" id="w_2874">decipherment</span></p>
 <p><span class="k-word" data-word-idx="2875" id="w_2875">are</span> <span class="k-word" data-word-idx="2876" id="w_2876">essentially</span> <span class="k-word" data-word-idx="2877" id="w_2877">the</span> <span class="k-word" data-word-idx="2878" id="w_2878">same</span> <span class="k-word" data-word-idx="2879" id="w_2879">as</span> <span class="k-word" data-word-idx="2880" id="w_2880">those</span> <span class="k-word" data-word-idx="2881" id="w_2881">of</span> <span class="k-word" data-word-idx="2882" id="w_2882">conventional</span> <span class="k-word" data-word-idx="2883" id="w_2883">military</span></p>
 <p><span class="k-word" data-word-idx="2884" id="w_2884">cryptanalysis.</span> <span class="k-word" data-word-idx="2885" id="w_2885">Indeed,</span> <span class="k-word" data-word-idx="2886" id="w_2886">many</span> <span class="k-word" data-word-idx="2887" id="w_2887">military</span> <span class="k-word" data-word-idx="2888" id="w_2888">codebreakers</span> <span class="k-word" data-word-idx="2889" id="w_2889">have</span></p>
@@ -1447,7 +1517,7 @@
 <p><span class="k-word" data-word-idx="5353" id="w_5353">&lt;=&gt;</span></p>
 <p><span class="k-word" data-word-idx="5354" id="w_5354">e</span></p>
 <p><span class="k-word" data-word-idx="5355" id="w_5355">r</span></p>
-<h3><span class="k-word" data-word-idx="5356" id="w_5356">MAAMVS</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="5356" id="w_5356">MAAMVS</span></h3>
 <p><span class="k-word" data-word-idx="5357" id="w_5357">\\</span></p>
 <p><span class="k-word" data-word-idx="5358" id="w_5358">E</span></p>
 <p><span class="k-word" data-word-idx="5359" id="w_5359">n</span></p>

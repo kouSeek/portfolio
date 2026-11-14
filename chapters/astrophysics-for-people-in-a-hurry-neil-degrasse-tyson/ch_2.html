@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">Astrophysics for People in a Hurry</div>
       <h1 class="hero-chapter-title">Ch. 1: The Greatest Story Ever Told</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 11-18</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 2 of 10)</span>
+        <span class="meta-chip">📄 Pages 11-18 (8p · 6.7% vol)</span>
+        <span class="meta-chip effort">⏱️ ~12m effort (12 min)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>8 pages (6.7% of book)</strong></span>
+          <span>Full Book: <strong>120 pages (3h)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 15%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> The Big Bang and the first minutes of the cosmos.</div>
 
       
@@ -434,16 +504,16 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">1:</span> <span class="k-word" data-word-idx="2" id="w_2">The</span> <span class="k-word" data-word-idx="3" id="w_3">Greatest</span> <span class="k-word" data-word-idx="4" id="w_4">Story</span> <span class="k-word" data-word-idx="5" id="w_5">Ever</span> <span class="k-word" data-word-idx="6" id="w_6">Told</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">1:</span> <span class="k-word" data-word-idx="2" id="w_2">The</span> <span class="k-word" data-word-idx="3" id="w_3">Greatest</span> <span class="k-word" data-word-idx="4" id="w_4">Story</span> <span class="k-word" data-word-idx="5" id="w_5">Ever</span> <span class="k-word" data-word-idx="6" id="w_6">Told</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="7" id="w_7">The</span> <span class="k-word" data-word-idx="8" id="w_8">Big</span> <span class="k-word" data-word-idx="9" id="w_9">Bang</span> <span class="k-word" data-word-idx="10" id="w_10">and</span> <span class="k-word" data-word-idx="11" id="w_11">the</span> <span class="k-word" data-word-idx="12" id="w_12">first</span> <span class="k-word" data-word-idx="13" id="w_13">minutes</span> <span class="k-word" data-word-idx="14" id="w_14">of</span> <span class="k-word" data-word-idx="15" id="w_15">the</span> <span class="k-word" data-word-idx="16" id="w_16">cosmos.</span></p>
 </blockquote>
-<blockquote>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="17" id="w_17">1.</span></p>
 </blockquote>
-<h3><span class="k-word" data-word-idx="18" id="w_18">The</span> <span class="k-word" data-word-idx="19" id="w_19">Greatest</span> <span class="k-word" data-word-idx="20" id="w_20">Story</span> <span class="k-word" data-word-idx="21" id="w_21">Ever</span> <span class="k-word" data-word-idx="22" id="w_22">Told</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="18" id="w_18">The</span> <span class="k-word" data-word-idx="19" id="w_19">Greatest</span> <span class="k-word" data-word-idx="20" id="w_20">Story</span> <span class="k-word" data-word-idx="21" id="w_21">Ever</span> <span class="k-word" data-word-idx="22" id="w_22">Told</span></h3>
 <p><span class="k-word" data-word-idx="23" id="w_23">The</span>  <span class="k-word" data-word-idx="24" id="w_24">world</span>  <span class="k-word" data-word-idx="25" id="w_25">has</span>  <span class="k-word" data-word-idx="26" id="w_26">persisted</span>  <span class="k-word" data-word-idx="27" id="w_27">many</span>  <span class="k-word" data-word-idx="28" id="w_28">a</span>  <span class="k-word" data-word-idx="29" id="w_29">long</span>  <span class="k-word" data-word-idx="30" id="w_30">year,</span>  <span class="k-word" data-word-idx="31" id="w_31">having</span>  <span class="k-word" data-word-idx="32" id="w_32">once</span>  <span class="k-word" data-word-idx="33" id="w_33">been</span>  <span class="k-word" data-word-idx="34" id="w_34">set</span>  <span class="k-word" data-word-idx="35" id="w_35">going</span>  <span class="k-word" data-word-idx="36" id="w_36">in</span>  <span class="k-word" data-word-idx="37" id="w_37">the</span>  <span class="k-word" data-word-idx="38" id="w_38">appropriate</span></p>
-<blockquote>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="39" id="w_39">motions.</span> <span class="k-word" data-word-idx="40" id="w_40">From</span> <span class="k-word" data-word-idx="41" id="w_41">these</span> <span class="k-word" data-word-idx="42" id="w_42">everything</span> <span class="k-word" data-word-idx="43" id="w_43">else</span> <span class="k-word" data-word-idx="44" id="w_44">follows.</span></p>
 <p><span class="k-word" data-word-idx="45" id="w_45">LUCRETIUS,</span> <span class="k-word" data-word-idx="46" id="w_46">C.</span> <span class="k-word" data-word-idx="47" id="w_47">50</span> <span class="k-word" data-word-idx="48" id="w_48">BC</span></p>
 </blockquote>
@@ -476,11 +546,11 @@
 <p><span class="k-word" data-word-idx="1950" id="w_1950">The</span> <span class="k-word" data-word-idx="1951" id="w_1951">gas</span> <span class="k-word" data-word-idx="1952" id="w_1952">cloud</span> <span class="k-word" data-word-idx="1953" id="w_1953">from</span> <span class="k-word" data-word-idx="1954" id="w_1954">which</span> <span class="k-word" data-word-idx="1955" id="w_1955">the</span> <span class="k-word" data-word-idx="1956" id="w_1956">Sun</span> <span class="k-word" data-word-idx="1957" id="w_1957">formed</span> <span class="k-word" data-word-idx="1958" id="w_1958">contained</span> <span class="k-word" data-word-idx="1959" id="w_1959">a</span> <span class="k-word" data-word-idx="1960" id="w_1960">sufficient</span> <span class="k-word" data-word-idx="1961" id="w_1961">supply</span> <span class="k-word" data-word-idx="1962" id="w_1962">of</span> <span class="k-word" data-word-idx="1963" id="w_1963">heavy</span> <span class="k-word" data-word-idx="1964" id="w_1964">elements</span> <span class="k-word" data-word-idx="1965" id="w_1965">to</span> <span class="k-word" data-word-idx="1966" id="w_1966">coalesce</span> <span class="k-word" data-word-idx="1967" id="w_1967">and</span> <span class="k-word" data-word-idx="1968" id="w_1968">spawn</span> <span class="k-word" data-word-idx="1969" id="w_1969">a</span> <span class="k-word" data-word-idx="1970" id="w_1970">complex</span> <span class="k-word" data-word-idx="1971" id="w_1971">inventory</span> <span class="k-word" data-word-idx="1972" id="w_1972">of</span> <span class="k-word" data-word-idx="1973" id="w_1973">orbiting</span> <span class="k-word" data-word-idx="1974" id="w_1974">objects</span>  <span class="k-word" data-word-idx="1975" id="w_1975">that</span>  <span class="k-word" data-word-idx="1976" id="w_1976">includes</span>  <span class="k-word" data-word-idx="1977" id="w_1977">several</span>  <span class="k-word" data-word-idx="1978" id="w_1978">rocky</span>  <span class="k-word" data-word-idx="1979" id="w_1979">and</span>  <span class="k-word" data-word-idx="1980" id="w_1980">gaseous</span>  <span class="k-word" data-word-idx="1981" id="w_1981">planets,</span>  <span class="k-word" data-word-idx="1982" id="w_1982">hundreds</span>  <span class="k-word" data-word-idx="1983" id="w_1983">of</span> <span class="k-word" data-word-idx="1984" id="w_1984">thousands</span> <span class="k-word" data-word-idx="1985" id="w_1985">of</span> <span class="k-word" data-word-idx="1986" id="w_1986">asteroids,</span> <span class="k-word" data-word-idx="1987" id="w_1987">and</span> <span class="k-word" data-word-idx="1988" id="w_1988">billions</span> <span class="k-word" data-word-idx="1989" id="w_1989">of</span> <span class="k-word" data-word-idx="1990" id="w_1990">comets.</span> <span class="k-word" data-word-idx="1991" id="w_1991">For</span> <span class="k-word" data-word-idx="1992" id="w_1992">the</span> <span class="k-word" data-word-idx="1993" id="w_1993">first</span> <span class="k-word" data-word-idx="1994" id="w_1994">several</span> <span class="k-word" data-word-idx="1995" id="w_1995">hundred</span> <span class="k-word" data-word-idx="1996" id="w_1996">million</span>  <span class="k-word" data-word-idx="1997" id="w_1997">years,</span>  <span class="k-word" data-word-idx="1998" id="w_1998">large</span>  <span class="k-word" data-word-idx="1999" id="w_1999">quantities</span>  <span class="k-word" data-word-idx="2000" id="w_2000">of</span>  <span class="k-word" data-word-idx="2001" id="w_2001">leftover</span>  <span class="k-word" data-word-idx="2002" id="w_2002">debris</span>  <span class="k-word" data-word-idx="2003" id="w_2003">in</span>  <span class="k-word" data-word-idx="2004" id="w_2004">wayward</span>  <span class="k-word" data-word-idx="2005" id="w_2005">orbits</span>  <span class="k-word" data-word-idx="2006" id="w_2006">would</span> <span class="k-word" data-word-idx="2007" id="w_2007">accrete</span> <span class="k-word" data-word-idx="2008" id="w_2008">onto</span> <span class="k-word" data-word-idx="2009" id="w_2009">larger</span> <span class="k-word" data-word-idx="2010" id="w_2010">bodies.</span> <span class="k-word" data-word-idx="2011" id="w_2011">This</span> <span class="k-word" data-word-idx="2012" id="w_2012">occurred</span> <span class="k-word" data-word-idx="2013" id="w_2013">in</span> <span class="k-word" data-word-idx="2014" id="w_2014">the</span> <span class="k-word" data-word-idx="2015" id="w_2015">form</span> <span class="k-word" data-word-idx="2016" id="w_2016">of</span> <span class="k-word" data-word-idx="2017" id="w_2017">high-speed,</span> <span class="k-word" data-word-idx="2018" id="w_2018">highenergy</span>  <span class="k-word" data-word-idx="2019" id="w_2019">impacts,</span>  <span class="k-word" data-word-idx="2020" id="w_2020">which</span>  <span class="k-word" data-word-idx="2021" id="w_2021">rendered</span>  <span class="k-word" data-word-idx="2022" id="w_2022">molten</span>  <span class="k-word" data-word-idx="2023" id="w_2023">the</span>  <span class="k-word" data-word-idx="2024" id="w_2024">surfaces</span>  <span class="k-word" data-word-idx="2025" id="w_2025">of</span>  <span class="k-word" data-word-idx="2026" id="w_2026">the</span>  <span class="k-word" data-word-idx="2027" id="w_2027">rocky</span>  <span class="k-word" data-word-idx="2028" id="w_2028">planets,</span> <span class="k-word" data-word-idx="2029" id="w_2029">preventing</span> <span class="k-word" data-word-idx="2030" id="w_2030">the</span> <span class="k-word" data-word-idx="2031" id="w_2031">formation</span> <span class="k-word" data-word-idx="2032" id="w_2032">of</span> <span class="k-word" data-word-idx="2033" id="w_2033">complex</span> <span class="k-word" data-word-idx="2034" id="w_2034">molecules.</span></p>
 <p><span class="k-word" data-word-idx="2035" id="w_2035">As</span> <span class="k-word" data-word-idx="2036" id="w_2036">less</span> <span class="k-word" data-word-idx="2037" id="w_2037">and</span> <span class="k-word" data-word-idx="2038" id="w_2038">less</span> <span class="k-word" data-word-idx="2039" id="w_2039">accretable</span> <span class="k-word" data-word-idx="2040" id="w_2040">matter</span> <span class="k-word" data-word-idx="2041" id="w_2041">remained</span> <span class="k-word" data-word-idx="2042" id="w_2042">in</span> <span class="k-word" data-word-idx="2043" id="w_2043">the</span> <span class="k-word" data-word-idx="2044" id="w_2044">solar</span> <span class="k-word" data-word-idx="2045" id="w_2045">system,</span> <span class="k-word" data-word-idx="2046" id="w_2046">planet</span> <span class="k-word" data-word-idx="2047" id="w_2047">surfaces</span>  <span class="k-word" data-word-idx="2048" id="w_2048">began</span>  <span class="k-word" data-word-idx="2049" id="w_2049">to</span>  <span class="k-word" data-word-idx="2050" id="w_2050">cool.</span>  <span class="k-word" data-word-idx="2051" id="w_2051">The</span>  <span class="k-word" data-word-idx="2052" id="w_2052">one</span>  <span class="k-word" data-word-idx="2053" id="w_2053">we</span>  <span class="k-word" data-word-idx="2054" id="w_2054">call</span>  <span class="k-word" data-word-idx="2055" id="w_2055">Earth</span>  <span class="k-word" data-word-idx="2056" id="w_2056">formed</span>  <span class="k-word" data-word-idx="2057" id="w_2057">in</span>  <span class="k-word" data-word-idx="2058" id="w_2058">a</span>  <span class="k-word" data-word-idx="2059" id="w_2059">kind</span>  <span class="k-word" data-word-idx="2060" id="w_2060">of</span> <span class="k-word" data-word-idx="2061" id="w_2061">Goldilocks</span>  <span class="k-word" data-word-idx="2062" id="w_2062">zone</span>  <span class="k-word" data-word-idx="2063" id="w_2063">around</span>  <span class="k-word" data-word-idx="2064" id="w_2064">the</span>  <span class="k-word" data-word-idx="2065" id="w_2065">Sun,</span>  <span class="k-word" data-word-idx="2066" id="w_2066">where</span>  <span class="k-word" data-word-idx="2067" id="w_2067">oceans</span>  <span class="k-word" data-word-idx="2068" id="w_2068">remain</span>  <span class="k-word" data-word-idx="2069" id="w_2069">largely</span>  <span class="k-word" data-word-idx="2070" id="w_2070">in</span>  <span class="k-word" data-word-idx="2071" id="w_2071">liquid</span> <span class="k-word" data-word-idx="2072" id="w_2072">form.</span>  <span class="k-word" data-word-idx="2073" id="w_2073">Had</span>  <span class="k-word" data-word-idx="2074" id="w_2074">Earth</span>  <span class="k-word" data-word-idx="2075" id="w_2075">been</span>  <span class="k-word" data-word-idx="2076" id="w_2076">much</span>  <span class="k-word" data-word-idx="2077" id="w_2077">closer</span>  <span class="k-word" data-word-idx="2078" id="w_2078">to</span>  <span class="k-word" data-word-idx="2079" id="w_2079">the</span>  <span class="k-word" data-word-idx="2080" id="w_2080">Sun,</span>  <span class="k-word" data-word-idx="2081" id="w_2081">the</span>  <span class="k-word" data-word-idx="2082" id="w_2082">oceans</span>  <span class="k-word" data-word-idx="2083" id="w_2083">would</span>  <span class="k-word" data-word-idx="2084" id="w_2084">have</span> <span class="k-word" data-word-idx="2085" id="w_2085">evaporated.</span>  <span class="k-word" data-word-idx="2086" id="w_2086">Had</span>  <span class="k-word" data-word-idx="2087" id="w_2087">Earth</span>  <span class="k-word" data-word-idx="2088" id="w_2088">been</span>  <span class="k-word" data-word-idx="2089" id="w_2089">much</span>  <span class="k-word" data-word-idx="2090" id="w_2090">farther</span>  <span class="k-word" data-word-idx="2091" id="w_2091">away,</span>  <span class="k-word" data-word-idx="2092" id="w_2092">the</span>  <span class="k-word" data-word-idx="2093" id="w_2093">oceans</span>  <span class="k-word" data-word-idx="2094" id="w_2094">would</span>  <span class="k-word" data-word-idx="2095" id="w_2095">have</span> <span class="k-word" data-word-idx="2096" id="w_2096">frozen.</span> <span class="k-word" data-word-idx="2097" id="w_2097">In</span> <span class="k-word" data-word-idx="2098" id="w_2098">either</span> <span class="k-word" data-word-idx="2099" id="w_2099">case,</span> <span class="k-word" data-word-idx="2100" id="w_2100">life</span> <span class="k-word" data-word-idx="2101" id="w_2101">as</span> <span class="k-word" data-word-idx="2102" id="w_2102">we</span> <span class="k-word" data-word-idx="2103" id="w_2103">know</span> <span class="k-word" data-word-idx="2104" id="w_2104">it</span> <span class="k-word" data-word-idx="2105" id="w_2105">would</span> <span class="k-word" data-word-idx="2106" id="w_2106">not</span> <span class="k-word" data-word-idx="2107" id="w_2107">have</span> <span class="k-word" data-word-idx="2108" id="w_2108">evolved.</span></p>
 <p><span class="k-word" data-word-idx="2109" id="w_2109">Within</span>  <span class="k-word" data-word-idx="2110" id="w_2110">the</span>  <span class="k-word" data-word-idx="2111" id="w_2111">chemically</span>  <span class="k-word" data-word-idx="2112" id="w_2112">rich</span>  <span class="k-word" data-word-idx="2113" id="w_2113">liquid</span>  <span class="k-word" data-word-idx="2114" id="w_2114">oceans,</span>  <span class="k-word" data-word-idx="2115" id="w_2115">by</span>  <span class="k-word" data-word-idx="2116" id="w_2116">a</span>  <span class="k-word" data-word-idx="2117" id="w_2117">mechanism</span>  <span class="k-word" data-word-idx="2118" id="w_2118">yet</span>  <span class="k-word" data-word-idx="2119" id="w_2119">to</span>  <span class="k-word" data-word-idx="2120" id="w_2120">be</span> <span class="k-word" data-word-idx="2121" id="w_2121">discovered,</span> <span class="k-word" data-word-idx="2122" id="w_2122">organic</span> <span class="k-word" data-word-idx="2123" id="w_2123">molecules</span> <span class="k-word" data-word-idx="2124" id="w_2124">transitioned</span> <span class="k-word" data-word-idx="2125" id="w_2125">to</span> <span class="k-word" data-word-idx="2126" id="w_2126">self-replicating</span> <span class="k-word" data-word-idx="2127" id="w_2127">life.</span> <span class="k-word" data-word-idx="2128" id="w_2128">Dominant</span> <span class="k-word" data-word-idx="2129" id="w_2129">in</span> <span class="k-word" data-word-idx="2130" id="w_2130">this</span> <span class="k-word" data-word-idx="2131" id="w_2131">primordial</span> <span class="k-word" data-word-idx="2132" id="w_2132">soup</span> <span class="k-word" data-word-idx="2133" id="w_2133">were</span> <span class="k-word" data-word-idx="2134" id="w_2134">simple</span> <span class="k-word" data-word-idx="2135" id="w_2135">anaerobic</span> <span class="k-word" data-word-idx="2136" id="w_2136">bacteria—life</span> <span class="k-word" data-word-idx="2137" id="w_2137">that</span> <span class="k-word" data-word-idx="2138" id="w_2138">thrives</span> <span class="k-word" data-word-idx="2139" id="w_2139">in</span> <span class="k-word" data-word-idx="2140" id="w_2140">oxygen-empty</span> <span class="k-word" data-word-idx="2141" id="w_2141">environments</span> <span class="k-word" data-word-idx="2142" id="w_2142">but</span> <span class="k-word" data-word-idx="2143" id="w_2143">excretes</span> <span class="k-word" data-word-idx="2144" id="w_2144">chemically</span> <span class="k-word" data-word-idx="2145" id="w_2145">potent</span> <span class="k-word" data-word-idx="2146" id="w_2146">oxygen</span> <span class="k-word" data-word-idx="2147" id="w_2147">as</span> <span class="k-word" data-word-idx="2148" id="w_2148">one</span> <span class="k-word" data-word-idx="2149" id="w_2149">of</span>  <span class="k-word" data-word-idx="2150" id="w_2150">its</span>  <span class="k-word" data-word-idx="2151" id="w_2151">by-products.</span>  <span class="k-word" data-word-idx="2152" id="w_2152">These</span>  <span class="k-word" data-word-idx="2153" id="w_2153">early,</span>  <span class="k-word" data-word-idx="2154" id="w_2154">single-celled</span>  <span class="k-word" data-word-idx="2155" id="w_2155">organisms</span>  <span class="k-word" data-word-idx="2156" id="w_2156">unwittingly</span> <span class="k-word" data-word-idx="2157" id="w_2157">transformed</span> <span class="k-word" data-word-idx="2158" id="w_2158">Earth’s</span> <span class="k-word" data-word-idx="2159" id="w_2159">carbon</span> <span class="k-word" data-word-idx="2160" id="w_2160">dioxide-rich</span> <span class="k-word" data-word-idx="2161" id="w_2161">atmosphere</span> <span class="k-word" data-word-idx="2162" id="w_2162">into</span> <span class="k-word" data-word-idx="2163" id="w_2163">one</span> <span class="k-word" data-word-idx="2164" id="w_2164">with</span> <span class="k-word" data-word-idx="2165" id="w_2165">sufficient</span> <span class="k-word" data-word-idx="2166" id="w_2166">oxygen</span> <span class="k-word" data-word-idx="2167" id="w_2167">to</span> <span class="k-word" data-word-idx="2168" id="w_2168">allow</span> <span class="k-word" data-word-idx="2169" id="w_2169">aerobic</span> <span class="k-word" data-word-idx="2170" id="w_2170">organisms</span> <span class="k-word" data-word-idx="2171" id="w_2171">to</span> <span class="k-word" data-word-idx="2172" id="w_2172">emerge</span> <span class="k-word" data-word-idx="2173" id="w_2173">and</span> <span class="k-word" data-word-idx="2174" id="w_2174">dominate</span> <span class="k-word" data-word-idx="2175" id="w_2175">the</span> <span class="k-word" data-word-idx="2176" id="w_2176">oceans</span> <span class="k-word" data-word-idx="2177" id="w_2177">and</span> <span class="k-word" data-word-idx="2178" id="w_2178">land.</span>  <span class="k-word" data-word-idx="2179" id="w_2179">These</span>  <span class="k-word" data-word-idx="2180" id="w_2180">same</span>  <span class="k-word" data-word-idx="2181" id="w_2181">oxygen</span>  <span class="k-word" data-word-idx="2182" id="w_2182">atoms,</span>  <span class="k-word" data-word-idx="2183" id="w_2183">normally</span>  <span class="k-word" data-word-idx="2184" id="w_2184">found</span>  <span class="k-word" data-word-idx="2185" id="w_2185">in</span>  <span class="k-word" data-word-idx="2186" id="w_2186">pairs</span>  <span class="k-word" data-word-idx="2187" id="w_2187">(O</span> <span class="k-word" data-word-idx="2188" id="w_2188">),</span>  <span class="k-word" data-word-idx="2189" id="w_2189">also</span></p>
-<blockquote>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="2190" id="w_2190">2</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="2191" id="w_2191">combined</span>  <span class="k-word" data-word-idx="2192" id="w_2192">in</span>  <span class="k-word" data-word-idx="2193" id="w_2193">threes</span>  <span class="k-word" data-word-idx="2194" id="w_2194">to</span>  <span class="k-word" data-word-idx="2195" id="w_2195">form</span>  <span class="k-word" data-word-idx="2196" id="w_2196">ozone</span>  <span class="k-word" data-word-idx="2197" id="w_2197">(O</span> <span class="k-word" data-word-idx="2198" id="w_2198">)</span>  <span class="k-word" data-word-idx="2199" id="w_2199">in</span>  <span class="k-word" data-word-idx="2200" id="w_2200">the</span>  <span class="k-word" data-word-idx="2201" id="w_2201">upper</span>  <span class="k-word" data-word-idx="2202" id="w_2202">atmosphere,</span>  <span class="k-word" data-word-idx="2203" id="w_2203">which</span></p>
-<blockquote>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="2204" id="w_2204">3</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="2205" id="w_2205">serves</span>  <span class="k-word" data-word-idx="2206" id="w_2206">as</span>  <span class="k-word" data-word-idx="2207" id="w_2207">a</span>  <span class="k-word" data-word-idx="2208" id="w_2208">shield</span>  <span class="k-word" data-word-idx="2209" id="w_2209">that</span>  <span class="k-word" data-word-idx="2210" id="w_2210">protects</span>  <span class="k-word" data-word-idx="2211" id="w_2211">Earth’s</span>  <span class="k-word" data-word-idx="2212" id="w_2212">surface</span>  <span class="k-word" data-word-idx="2213" id="w_2213">from</span>  <span class="k-word" data-word-idx="2214" id="w_2214">most</span>  <span class="k-word" data-word-idx="2215" id="w_2215">of</span>  <span class="k-word" data-word-idx="2216" id="w_2216">the</span>  <span class="k-word" data-word-idx="2217" id="w_2217">Sun’s</span> <span class="k-word" data-word-idx="2218" id="w_2218">molecule-hostile</span> <span class="k-word" data-word-idx="2219" id="w_2219">ultraviolet</span> <span class="k-word" data-word-idx="2220" id="w_2220">photons.</span></p>

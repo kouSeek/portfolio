@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">The Code Book</div>
       <h1 class="hero-chapter-title">Introduction</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 7-14</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 1 of 8)</span>
+        <span class="meta-chip">📄 Pages 7-14 (8p · 1.2% vol)</span>
+        <span class="meta-chip effort">⏱️ ~12m effort (12 min)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>8 pages (1.2% of book)</strong></span>
+          <span>Full Book: <strong>695 pages (17h 22m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 4%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> The evolutionary battle between codemakers and codebreakers.</div>
 
       
@@ -434,8 +504,8 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Introduction</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Introduction</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="1" id="w_1">The</span> <span class="k-word" data-word-idx="2" id="w_2">evolutionary</span> <span class="k-word" data-word-idx="3" id="w_3">battle</span> <span class="k-word" data-word-idx="4" id="w_4">between</span> <span class="k-word" data-word-idx="5" id="w_5">codemakers</span> <span class="k-word" data-word-idx="6" id="w_6">and</span> <span class="k-word" data-word-idx="7" id="w_7">codebreakers.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="8" id="w_8">information</span> <span class="k-word" data-word-idx="9" id="w_9">to</span> <span class="k-word" data-word-idx="10" id="w_10">opposing</span></p>
@@ -550,7 +620,7 @@
 <p><span class="k-word" data-word-idx="636" id="w_636">and</span> <span class="k-word" data-word-idx="637" id="w_637">guarantee</span></p>
 <p><span class="k-word" data-word-idx="638" id="w_638">the</span> <span class="k-word" data-word-idx="639" id="w_639">success</span> <span class="k-word" data-word-idx="640" id="w_640">of</span> <span class="k-word" data-word-idx="641" id="w_641">the</span> <span class="k-word" data-word-idx="642" id="w_642">digital</span> <span class="k-word" data-word-idx="643" id="w_643">marketplace.</span> <span class="k-word" data-word-idx="644" id="w_644">The</span> <span class="k-word" data-word-idx="645" id="w_645">art</span> <span class="k-word" data-word-idx="646" id="w_646">of</span> <span class="k-word" data-word-idx="647" id="w_647">secret</span></p>
 <p><span class="k-word" data-word-idx="648" id="w_648">communication,</span></p>
-<h3><span class="k-word" data-word-idx="649" id="w_649">Introduction</span> <span class="k-word" data-word-idx="650" id="w_650">xv</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="649" id="w_649">Introduction</span> <span class="k-word" data-word-idx="650" id="w_650">xv</span></h3>
 <p><span class="k-word" data-word-idx="651" id="w_651">otherwise</span> <span class="k-word" data-word-idx="652" id="w_652">known</span> <span class="k-word" data-word-idx="653" id="w_653">as</span> <span class="k-word" data-word-idx="654" id="w_654">cryptography,</span> <span class="k-word" data-word-idx="655" id="w_655">will</span> <span class="k-word" data-word-idx="656" id="w_656">provide</span> <span class="k-word" data-word-idx="657" id="w_657">the</span> <span class="k-word" data-word-idx="658" id="w_658">locks</span></p>
 <p><span class="k-word" data-word-idx="659" id="w_659">and</span> <span class="k-word" data-word-idx="660" id="w_660">keys</span> <span class="k-word" data-word-idx="661" id="w_661">of</span> <span class="k-word" data-word-idx="662" id="w_662">the</span></p>
 <p><span class="k-word" data-word-idx="663" id="w_663">Information</span> <span class="k-word" data-word-idx="664" id="w_664">Age.</span></p>
@@ -674,7 +744,7 @@
 <p><span class="k-word" data-word-idx="1384" id="w_1384">meaning</span> <span class="k-word" data-word-idx="1385" id="w_1385">of</span> <span class="k-word" data-word-idx="1386" id="w_1386">the</span> <span class="k-word" data-word-idx="1387" id="w_1387">word</span> <span class="k-word" data-word-idx="1388" id="w_1388">is</span></p>
 <p><span class="k-word" data-word-idx="1389" id="w_1389">obvious</span> <span class="k-word" data-word-idx="1390" id="w_1390">from</span> <span class="k-word" data-word-idx="1391" id="w_1391">the</span> <span class="k-word" data-word-idx="1392" id="w_1392">context.</span> <span class="k-word" data-word-idx="1393" id="w_1393">There</span> <span class="k-word" data-word-idx="1394" id="w_1394">is</span> <span class="k-word" data-word-idx="1395" id="w_1395">a</span> <span class="k-word" data-word-idx="1396" id="w_1396">glossary</span> <span class="k-word" data-word-idx="1397" id="w_1397">of</span> <span class="k-word" data-word-idx="1398" id="w_1398">terms</span> <span class="k-word" data-word-idx="1399" id="w_1399">at</span></p>
 <p><span class="k-word" data-word-idx="1400" id="w_1400">the</span> <span class="k-word" data-word-idx="1401" id="w_1401">end</span> <span class="k-word" data-word-idx="1402" id="w_1402">of</span> <span class="k-word" data-word-idx="1403" id="w_1403">the</span></p>
-<h3><span class="k-word" data-word-idx="1404" id="w_1404">book.</span> <span class="k-word" data-word-idx="1405" id="w_1405">More</span> <span class="k-word" data-word-idx="1406" id="w_1406">often</span> <span class="k-word" data-word-idx="1407" id="w_1407">than</span> <span class="k-word" data-word-idx="1408" id="w_1408">not,</span> <span class="k-word" data-word-idx="1409" id="w_1409">though,</span> <span class="k-word" data-word-idx="1410" id="w_1410">crypto-jargon</span> <span class="k-word" data-word-idx="1411" id="w_1411">is</span> <span class="k-word" data-word-idx="1412" id="w_1412">quite</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="1404" id="w_1404">book.</span> <span class="k-word" data-word-idx="1405" id="w_1405">More</span> <span class="k-word" data-word-idx="1406" id="w_1406">often</span> <span class="k-word" data-word-idx="1407" id="w_1407">than</span> <span class="k-word" data-word-idx="1408" id="w_1408">not,</span> <span class="k-word" data-word-idx="1409" id="w_1409">though,</span> <span class="k-word" data-word-idx="1410" id="w_1410">crypto-jargon</span> <span class="k-word" data-word-idx="1411" id="w_1411">is</span> <span class="k-word" data-word-idx="1412" id="w_1412">quite</span></h3>
 <p><span class="k-word" data-word-idx="1413" id="w_1413">transparent:</span> <span class="k-word" data-word-idx="1414" id="w_1414">for</span></p>
 <p><span class="k-word" data-word-idx="1415" id="w_1415">example,</span> <span class="k-word" data-word-idx="1416" id="w_1416">plaintext</span> <span class="k-word" data-word-idx="1417" id="w_1417">is</span> <span class="k-word" data-word-idx="1418" id="w_1418">the</span> <span class="k-word" data-word-idx="1419" id="w_1419">message</span> <span class="k-word" data-word-idx="1420" id="w_1420">before</span> <span class="k-word" data-word-idx="1421" id="w_1421">encryption,</span> <span class="k-word" data-word-idx="1422" id="w_1422">and</span></p>
 <p><span class="k-word" data-word-idx="1423" id="w_1423">ciphertext</span> <span class="k-word" data-word-idx="1424" id="w_1424">is</span> <span class="k-word" data-word-idx="1425" id="w_1425">the</span></p>
@@ -685,7 +755,7 @@
 <p><span class="k-word" data-word-idx="1448" id="w_1448">the</span> <span class="k-word" data-word-idx="1449" id="w_1449">science</span> <span class="k-word" data-word-idx="1450" id="w_1450">of</span></p>
 <p><span class="k-word" data-word-idx="1451" id="w_1451">secrecy</span> <span class="k-word" data-word-idx="1452" id="w_1452">is</span> <span class="k-word" data-word-idx="1453" id="w_1453">largely</span> <span class="k-word" data-word-idx="1454" id="w_1454">a</span> <span class="k-word" data-word-idx="1455" id="w_1455">secret</span> <span class="k-word" data-word-idx="1456" id="w_1456">science.</span> <span class="k-word" data-word-idx="1457" id="w_1457">Many</span> <span class="k-word" data-word-idx="1458" id="w_1458">of</span> <span class="k-word" data-word-idx="1459" id="w_1459">the</span> <span class="k-word" data-word-idx="1460" id="w_1460">heroes</span> <span class="k-word" data-word-idx="1461" id="w_1461">in</span></p>
 <p><span class="k-word" data-word-idx="1462" id="w_1462">this</span> <span class="k-word" data-word-idx="1463" id="w_1463">book</span> <span class="k-word" data-word-idx="1464" id="w_1464">never</span></p>
-<h3><span class="k-word" data-word-idx="1465" id="w_1465">Introduction</span> <span class="k-word" data-word-idx="1466" id="w_1466">xvii</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="1465" id="w_1465">Introduction</span> <span class="k-word" data-word-idx="1466" id="w_1466">xvii</span></h3>
 <p><span class="k-word" data-word-idx="1467" id="w_1467">gained</span> <span class="k-word" data-word-idx="1468" id="w_1468">recognition</span> <span class="k-word" data-word-idx="1469" id="w_1469">for</span> <span class="k-word" data-word-idx="1470" id="w_1470">their</span> <span class="k-word" data-word-idx="1471" id="w_1471">work</span> <span class="k-word" data-word-idx="1472" id="w_1472">during</span> <span class="k-word" data-word-idx="1473" id="w_1473">their</span> <span class="k-word" data-word-idx="1474" id="w_1474">lifetimes</span></p>
 <p><span class="k-word" data-word-idx="1475" id="w_1475">because</span> <span class="k-word" data-word-idx="1476" id="w_1476">their</span></p>
 <p><span class="k-word" data-word-idx="1477" id="w_1477">contribution</span> <span class="k-word" data-word-idx="1478" id="w_1478">could</span> <span class="k-word" data-word-idx="1479" id="w_1479">not</span> <span class="k-word" data-word-idx="1480" id="w_1480">be</span> <span class="k-word" data-word-idx="1481" id="w_1481">publicly</span> <span class="k-word" data-word-idx="1482" id="w_1482">acknowledged</span> <span class="k-word" data-word-idx="1483" id="w_1483">while</span></p>

@@ -89,12 +89,9 @@ def render_markdown_to_html(md_text: str) -> tuple[str, list[dict], int]:
                 in_quote = False
             continue
 
-        if re.match(r"^#{1,3}\s+(Step|Chapter)", line_s):
-            continue
-
         if line_s.startswith(">"):
             if not in_quote:
-                body_parts.append("<blockquote>")
+                body_parts.append('<blockquote class="chapter-spoken-brief">')
                 in_quote = True
             quote_text = re.sub(r"^>\s*", "", line_s)
             body_parts.append(f"<p>{wrap_words(quote_text)}</p>")
@@ -102,17 +99,17 @@ def render_markdown_to_html(md_text: str) -> tuple[str, list[dict], int]:
             if in_quote:
                 body_parts.append("</blockquote>")
                 in_quote = False
-            body_parts.append(f"<h3>{wrap_words(line_s[4:])}</h3>")
+            body_parts.append(f'<h3 class="section-heading">{wrap_words(line_s[4:])}</h3>')
         elif line_s.startswith("## "):
             if in_quote:
                 body_parts.append("</blockquote>")
                 in_quote = False
-            body_parts.append(f"<h2>{wrap_words(line_s[3:])}</h2>")
+            body_parts.append(f'<h2 class="chapter-prose-title">{wrap_words(line_s[3:])}</h2>')
         elif line_s.startswith("# "):
             if in_quote:
                 body_parts.append("</blockquote>")
                 in_quote = False
-            body_parts.append(f"<h1>{wrap_words(line_s[2:])}</h1>")
+            body_parts.append(f'<h1 class="chapter-prose-title">{wrap_words(line_s[2:])}</h1>')
         else:
             if in_quote:
                 body_parts.append("</blockquote>")
@@ -145,7 +142,29 @@ def build_chapter_html(
     book_title = book.get("title", "Book")
     label = chapter_data.get("label", f"Chapter {index}")
     pages = chapter_data.get("pages", "")
-    duration_min = chapter_data.get("duration_min", 15)
+    page_count = chapter_data.get("pageCount")
+    if not page_count and pages and "-" in str(pages):
+        try:
+            parts = str(pages).split("-")
+            page_count = max(1, int(parts[1]) - int(parts[0]) + 1)
+        except Exception:
+            page_count = 1
+    page_count = page_count or 1
+
+    volume_pct = chapter_data.get("volumePct", 0.0)
+    est_minutes = chapter_data.get("estMinutes", chapter_data.get("duration_min", 15))
+    effort_label = chapter_data.get("effortLabel", f"{est_minutes} min")
+
+    full_book_pages = book.get("full_book_pages") or book.get("pages", 0)
+    full_book_effort = book.get("full_book_effort_label") or book.get("full_time_label", "")
+    adhd_pages = book.get("adhd_total_pages", 0)
+    adhd_effort = book.get("adhd_effort_label") or book.get("adhd_time_label", "")
+    adhd_vol_pct = book.get("adhd_volume_pct", 0.0)
+    pruned_pct = book.get("pruned_pct", 0.0)
+
+    bar_width = min(100, max(4, round(float(volume_pct) * 2.2))) if volume_pct else 8
+
+    duration_min = est_minutes
     brief = chapter_data.get("brief", "")
     content = chapter_data.get("content", brief)
 
@@ -302,7 +321,7 @@ def build_chapter_html(
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }}
     .meta-chip {{
       font-size: 0.76rem;
@@ -311,10 +330,68 @@ def build_chapter_html(
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }}
+    .meta-chip.primary {{
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }}
+    .meta-chip.effort {{
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }}
     .meta-chip.voice {{
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }}
+    .hero-distribution-bar {{
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }}
+    .hero-dist-info {{
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }}
+    .hero-dist-info strong {{
+      color: var(--ink);
+    }}
+    .book-toc-vol-bar-track {{
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }}
+    .book-toc-vol-bar-fill {{
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }}
+    .book-toc-vol-bar-fill.adhd {{
+      background: #10B981;
+    }}
+    .book-toc-vol-bar-fill.author {{
+      background: #6366F1;
+    }}
+    .hero-curation-pill {{
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }}
     .hero-brief {{
       font-size: 0.95rem;
@@ -579,11 +656,23 @@ def build_chapter_html(
       <div class="hero-book-title">{html.escape(book_title)}</div>
       <h1 class="hero-chapter-title">{html.escape(label)}</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">{html.escape(track_type_name)}</span>
-        <span class="meta-chip">📄 Pages {html.escape(pages or "N/A")}</span>
-        <span class="meta-chip">⏱️ ~{html.escape(str(duration_min))} mins</span>
+        <span class="meta-chip primary">{html.escape(track_type_name)} ({html.escape(step_title_short)} of {total_items})</span>
+        <span class="meta-chip">📄 Pages {html.escape(str(pages) or "N/A")} ({page_count}p · {volume_pct}% vol)</span>
+        <span class="meta-chip effort">⏱️ ~{est_minutes}m effort ({effort_label})</span>
         {"<span class='meta-chip voice'>🎙️ Voice Track Ready</span>" if has_audio else ""}
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>{page_count} pages ({volume_pct}% of book)</strong></span>
+          <span>Full Book: <strong>{full_book_pages} pages ({full_book_effort})</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill {track_type}" style="width: {bar_width}%;"></div>
+        </div>
+      </div>
+      {f'<div class="hero-curation-pill">⚡ ADHD Core Cut: {adhd_pages} pages total ({adhd_effort}) · {pruned_pct}% filler pruned for maximum flow</div>' if (track_type == 'adhd' and pruned_pct > 0) else ''}
+
       {f'<div class="hero-brief"><strong>Core Takeaway:</strong> {html.escape(brief)}</div>' if brief else ""}
 
       {f'''

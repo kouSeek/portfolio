@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">The Code Book</div>
       <h1 class="hero-chapter-title">Ch. 6–7: Alice and Bob Go Public &amp; Pretty Good Privacy</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 396-540</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 7 of 8)</span>
+        <span class="meta-chip">📄 Pages 396-540 (145p · 20.9% vol)</span>
+        <span class="meta-chip effort">⏱️ ~218m effort (3h 38m)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>145 pages (20.9% of book)</strong></span>
+          <span>Full Book: <strong>695 pages (17h 22m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 46%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> Diffie-Hellman, RSA public-key cryptography, and Zimmermann&#x27;s PGP.</div>
 
       
@@ -434,8 +504,8 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">6–7:</span> <span class="k-word" data-word-idx="2" id="w_2">Alice</span> <span class="k-word" data-word-idx="3" id="w_3">and</span> <span class="k-word" data-word-idx="4" id="w_4">Bob</span> <span class="k-word" data-word-idx="5" id="w_5">Go</span> <span class="k-word" data-word-idx="6" id="w_6">Public</span> <span class="k-word" data-word-idx="7" id="w_7">&amp;</span> <span class="k-word" data-word-idx="8" id="w_8">Pretty</span> <span class="k-word" data-word-idx="9" id="w_9">Good</span> <span class="k-word" data-word-idx="10" id="w_10">Privacy</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">6–7:</span> <span class="k-word" data-word-idx="2" id="w_2">Alice</span> <span class="k-word" data-word-idx="3" id="w_3">and</span> <span class="k-word" data-word-idx="4" id="w_4">Bob</span> <span class="k-word" data-word-idx="5" id="w_5">Go</span> <span class="k-word" data-word-idx="6" id="w_6">Public</span> <span class="k-word" data-word-idx="7" id="w_7">&amp;</span> <span class="k-word" data-word-idx="8" id="w_8">Pretty</span> <span class="k-word" data-word-idx="9" id="w_9">Good</span> <span class="k-word" data-word-idx="10" id="w_10">Privacy</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="11" id="w_11">Diffie-Hellman,</span> <span class="k-word" data-word-idx="12" id="w_12">RSA</span> <span class="k-word" data-word-idx="13" id="w_13">public-key</span> <span class="k-word" data-word-idx="14" id="w_14">cryptography,</span> <span class="k-word" data-word-idx="15" id="w_15">and</span> <span class="k-word" data-word-idx="16" id="w_16">Zimmermann&#x27;s</span> <span class="k-word" data-word-idx="17" id="w_17">PGP.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="18" id="w_18">the</span> <span class="k-word" data-word-idx="19" id="w_19">receiver</span> <span class="k-word" data-word-idx="20" id="w_20">reinterprets</span></p>
@@ -1217,10 +1287,10 @@
 <p><span class="k-word" data-word-idx="4791" id="w_4791">260</span> <span class="k-word" data-word-idx="4792" id="w_4792">The</span> <span class="k-word" data-word-idx="4793" id="w_4793">Code</span> <span class="k-word" data-word-idx="4794" id="w_4794">Book</span></p>
 <p><span class="k-word" data-word-idx="4795" id="w_4795">Alice&#x27;s</span> <span class="k-word" data-word-idx="4796" id="w_4796">key</span></p>
 <p><span class="k-word" data-word-idx="4797" id="w_4797">abcdefgh</span> <span class="k-word" data-word-idx="4798" id="w_4798">i</span> <span class="k-word" data-word-idx="4799" id="w_4799">j</span> <span class="k-word" data-word-idx="4800" id="w_4800">k</span> <span class="k-word" data-word-idx="4801" id="w_4801">Imnopq</span> <span class="k-word" data-word-idx="4802" id="w_4802">rstuvwxyz</span></p>
-<h3><span class="k-word" data-word-idx="4803" id="w_4803">HFSUGTAKVDEOYJ</span> <span class="k-word" data-word-idx="4804" id="w_4804">BPNXWCQR</span> <span class="k-word" data-word-idx="4805" id="w_4805">IMZL</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4803" id="w_4803">HFSUGTAKVDEOYJ</span> <span class="k-word" data-word-idx="4804" id="w_4804">BPNXWCQR</span> <span class="k-word" data-word-idx="4805" id="w_4805">IMZL</span></h3>
 <p><span class="k-word" data-word-idx="4806" id="w_4806">Bob&#x27;s</span> <span class="k-word" data-word-idx="4807" id="w_4807">key</span></p>
 <p><span class="k-word" data-word-idx="4808" id="w_4808">abcdefgh</span> <span class="k-word" data-word-idx="4809" id="w_4809">i</span> <span class="k-word" data-word-idx="4810" id="w_4810">j</span> <span class="k-word" data-word-idx="4811" id="w_4811">k</span> <span class="k-word" data-word-idx="4812" id="w_4812">Imnopq</span> <span class="k-word" data-word-idx="4813" id="w_4813">rstuvwxyz</span></p>
-<h3><span class="k-word" data-word-idx="4814" id="w_4814">CPMGATNOJ</span> <span class="k-word" data-word-idx="4815" id="w_4815">EFWIQBURYHXSDZKLV</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="4814" id="w_4814">CPMGATNOJ</span> <span class="k-word" data-word-idx="4815" id="w_4815">EFWIQBURYHXSDZKLV</span></h3>
 <p><span class="k-word" data-word-idx="4816" id="w_4816">Messagemeetmeatnoon</span></p>
 <p><span class="k-word" data-word-idx="4817" id="w_4817">Encrypted</span> <span class="k-word" data-word-idx="4818" id="w_4818">with</span> <span class="k-word" data-word-idx="4819" id="w_4819">Alice&#x27;s</span> <span class="k-word" data-word-idx="4820" id="w_4820">keyYGGCYGHEJBBJ</span></p>
 <p><span class="k-word" data-word-idx="4821" id="w_4821">Encrypted</span> <span class="k-word" data-word-idx="4822" id="w_4822">with</span> <span class="k-word" data-word-idx="4823" id="w_4823">Bob&#x27;s</span> <span class="k-word" data-word-idx="4824" id="w_4824">keyLNNMINOMEPPE</span></p>

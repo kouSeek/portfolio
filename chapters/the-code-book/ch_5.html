@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">The Code Book</div>
       <h1 class="hero-chapter-title">Ch. 4: Cracking the Enigma</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 215-315</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 5 of 8)</span>
+        <span class="meta-chip">📄 Pages 215-315 (101p · 14.5% vol)</span>
+        <span class="meta-chip effort">⏱️ ~152m effort (2h 32m)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>101 pages (14.5% of book)</strong></span>
+          <span>Full Book: <strong>695 pages (17h 22m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 32%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> Polish cryptanalysts, Alan Turing, and Bletchley Park.</div>
 
       
@@ -434,8 +504,8 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">4:</span> <span class="k-word" data-word-idx="2" id="w_2">Cracking</span> <span class="k-word" data-word-idx="3" id="w_3">the</span> <span class="k-word" data-word-idx="4" id="w_4">Enigma</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">4:</span> <span class="k-word" data-word-idx="2" id="w_2">Cracking</span> <span class="k-word" data-word-idx="3" id="w_3">the</span> <span class="k-word" data-word-idx="4" id="w_4">Enigma</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="5" id="w_5">Polish</span> <span class="k-word" data-word-idx="6" id="w_6">cryptanalysts,</span> <span class="k-word" data-word-idx="7" id="w_7">Alan</span> <span class="k-word" data-word-idx="8" id="w_8">Turing,</span> <span class="k-word" data-word-idx="9" id="w_9">and</span> <span class="k-word" data-word-idx="10" id="w_10">Bletchley</span> <span class="k-word" data-word-idx="11" id="w_11">Park.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="12" id="w_12">Midnight,</span> <span class="k-word" data-word-idx="13" id="w_13">one</span> <span class="k-word" data-word-idx="14" id="w_14">of</span> <span class="k-word" data-word-idx="15" id="w_15">the</span></p>
@@ -847,7 +917,7 @@
 <p><span class="k-word" data-word-idx="2235" id="w_2235">Enigma</span> <span class="k-word" data-word-idx="2236" id="w_2236">machine</span> <span class="k-word" data-word-idx="2237" id="w_2237">and</span> <span class="k-word" data-word-idx="2238" id="w_2238">a</span> <span class="k-word" data-word-idx="2239" id="w_2239">copy</span> <span class="k-word" data-word-idx="2240" id="w_2240">of</span> <span class="k-word" data-word-idx="2241" id="w_2241">the</span> <span class="k-word" data-word-idx="2242" id="w_2242">codebook</span> <span class="k-word" data-word-idx="2243" id="w_2243">that</span> <span class="k-word" data-word-idx="2244" id="w_2244">contains</span></p>
 <p><span class="k-word" data-word-idx="2245" id="w_2245">the</span> <span class="k-word" data-word-idx="2246" id="w_2246">initial</span> <span class="k-word" data-word-idx="2247" id="w_2247">scrambler</span> <span class="k-word" data-word-idx="2248" id="w_2248">settings</span> <span class="k-word" data-word-idx="2249" id="w_2249">for</span> <span class="k-word" data-word-idx="2250" id="w_2250">that</span> <span class="k-word" data-word-idx="2251" id="w_2251">day.</span> <span class="k-word" data-word-idx="2252" id="w_2252">He</span> <span class="k-word" data-word-idx="2253" id="w_2253">sets</span> <span class="k-word" data-word-idx="2254" id="w_2254">up</span> <span class="k-word" data-word-idx="2255" id="w_2255">the</span> <span class="k-word" data-word-idx="2256" id="w_2256">machine</span></p>
 <p><span class="k-word" data-word-idx="2257" id="w_2257">according</span> <span class="k-word" data-word-idx="2258" id="w_2258">to</span> <span class="k-word" data-word-idx="2259" id="w_2259">the</span></p>
-<h3><span class="k-word" data-word-idx="2260" id="w_2260">book,</span> <span class="k-word" data-word-idx="2261" id="w_2261">types</span> <span class="k-word" data-word-idx="2262" id="w_2262">in</span> <span class="k-word" data-word-idx="2263" id="w_2263">the</span> <span class="k-word" data-word-idx="2264" id="w_2264">ciphertext</span> <span class="k-word" data-word-idx="2265" id="w_2265">letter</span> <span class="k-word" data-word-idx="2266" id="w_2266">by</span> <span class="k-word" data-word-idx="2267" id="w_2267">letter,</span> <span class="k-word" data-word-idx="2268" id="w_2268">and</span> <span class="k-word" data-word-idx="2269" id="w_2269">the</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="2260" id="w_2260">book,</span> <span class="k-word" data-word-idx="2261" id="w_2261">types</span> <span class="k-word" data-word-idx="2262" id="w_2262">in</span> <span class="k-word" data-word-idx="2263" id="w_2263">the</span> <span class="k-word" data-word-idx="2264" id="w_2264">ciphertext</span> <span class="k-word" data-word-idx="2265" id="w_2265">letter</span> <span class="k-word" data-word-idx="2266" id="w_2266">by</span> <span class="k-word" data-word-idx="2267" id="w_2267">letter,</span> <span class="k-word" data-word-idx="2268" id="w_2268">and</span> <span class="k-word" data-word-idx="2269" id="w_2269">the</span></h3>
 <p><span class="k-word" data-word-idx="2270" id="w_2270">lampboard</span> <span class="k-word" data-word-idx="2271" id="w_2271">indicates</span></p>
 <p><span class="k-word" data-word-idx="2272" id="w_2272">the</span> <span class="k-word" data-word-idx="2273" id="w_2273">plaintext.</span> <span class="k-word" data-word-idx="2274" id="w_2274">In</span> <span class="k-word" data-word-idx="2275" id="w_2275">other</span> <span class="k-word" data-word-idx="2276" id="w_2276">words,</span> <span class="k-word" data-word-idx="2277" id="w_2277">the</span> <span class="k-word" data-word-idx="2278" id="w_2278">sender</span> <span class="k-word" data-word-idx="2279" id="w_2279">typed</span> <span class="k-word" data-word-idx="2280" id="w_2280">in</span> <span class="k-word" data-word-idx="2281" id="w_2281">the</span></p>
 <p><span class="k-word" data-word-idx="2282" id="w_2282">plaintext</span> <span class="k-word" data-word-idx="2283" id="w_2283">to</span> <span class="k-word" data-word-idx="2284" id="w_2284">generate</span></p>
@@ -1165,7 +1235,7 @@
 <p><span class="k-word" data-word-idx="4152" id="w_4152">each</span> <span class="k-word" data-word-idx="4153" id="w_4153">other&#x27;s</span></p>
 <p><span class="k-word" data-word-idx="4154" id="w_4154">§</span> <span class="k-word" data-word-idx="4155" id="w_4155">fliail.&quot;</span> <span class="k-word" data-word-idx="4156" id="w_4156">If</span> <span class="k-word" data-word-idx="4157" id="w_4157">a</span> <span class="k-word" data-word-idx="4158" id="w_4158">nation</span> <span class="k-word" data-word-idx="4159" id="w_4159">believes</span> <span class="k-word" data-word-idx="4160" id="w_4160">that</span> <span class="k-word" data-word-idx="4161" id="w_4161">it</span> <span class="k-word" data-word-idx="4162" id="w_4162">is</span> <span class="k-word" data-word-idx="4163" id="w_4163">wrong</span> <span class="k-word" data-word-idx="4164" id="w_4164">to</span> <span class="k-word" data-word-idx="4165" id="w_4165">read</span></p>
 <p><span class="k-word" data-word-idx="4166" id="w_4166">the</span> <span class="k-word" data-word-idx="4167" id="w_4167">messages</span> <span class="k-word" data-word-idx="4168" id="w_4168">of</span> <span class="k-word" data-word-idx="4169" id="w_4169">others,</span></p>
-<blockquote>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="4170" id="w_4170">then</span> <span class="k-word" data-word-idx="4171" id="w_4171">it</span> <span class="k-word" data-word-idx="4172" id="w_4172">also</span> <span class="k-word" data-word-idx="4173" id="w_4173">begins</span> <span class="k-word" data-word-idx="4174" id="w_4174">to</span> <span class="k-word" data-word-idx="4175" id="w_4175">believe</span> <span class="k-word" data-word-idx="4176" id="w_4176">that</span> <span class="k-word" data-word-idx="4177" id="w_4177">others</span> <span class="k-word" data-word-idx="4178" id="w_4178">will</span> <span class="k-word" data-word-idx="4179" id="w_4179">not</span> <span class="k-word" data-word-idx="4180" id="w_4180">read</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="4181" id="w_4181">its</span> <span class="k-word" data-word-idx="4182" id="w_4182">own</span> <span class="k-word" data-word-idx="4183" id="w_4183">messages,</span></p>

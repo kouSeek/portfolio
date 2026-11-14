@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">The Hitchhiker&#x27;s Guide to the Galaxy</div>
       <h1 class="hero-chapter-title">Ch. 9–14: The Infinite Improbability Drive &amp; The Heart of Gold</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 98-139</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 3 of 6)</span>
+        <span class="meta-chip">📄 Pages 98-139 (42p · 16.3% vol)</span>
+        <span class="meta-chip effort">⏱️ ~63m effort (1h 03m)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>42 pages (16.3% of book)</strong></span>
+          <span>Full Book: <strong>257 pages (6h 26m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 36%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> Rescued in space against 2 to the power of 276,709 to 1 odds, Zaphod Beeblebrox, Trillian, and Marvin.</div>
 
       
@@ -434,8 +504,8 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">9–14:</span> <span class="k-word" data-word-idx="2" id="w_2">The</span> <span class="k-word" data-word-idx="3" id="w_3">Infinite</span> <span class="k-word" data-word-idx="4" id="w_4">Improbability</span> <span class="k-word" data-word-idx="5" id="w_5">Drive</span> <span class="k-word" data-word-idx="6" id="w_6">&amp;</span> <span class="k-word" data-word-idx="7" id="w_7">The</span> <span class="k-word" data-word-idx="8" id="w_8">Heart</span> <span class="k-word" data-word-idx="9" id="w_9">of</span> <span class="k-word" data-word-idx="10" id="w_10">Gold</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">9–14:</span> <span class="k-word" data-word-idx="2" id="w_2">The</span> <span class="k-word" data-word-idx="3" id="w_3">Infinite</span> <span class="k-word" data-word-idx="4" id="w_4">Improbability</span> <span class="k-word" data-word-idx="5" id="w_5">Drive</span> <span class="k-word" data-word-idx="6" id="w_6">&amp;</span> <span class="k-word" data-word-idx="7" id="w_7">The</span> <span class="k-word" data-word-idx="8" id="w_8">Heart</span> <span class="k-word" data-word-idx="9" id="w_9">of</span> <span class="k-word" data-word-idx="10" id="w_10">Gold</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="11" id="w_11">Rescued</span> <span class="k-word" data-word-idx="12" id="w_12">in</span> <span class="k-word" data-word-idx="13" id="w_13">space</span> <span class="k-word" data-word-idx="14" id="w_14">against</span> <span class="k-word" data-word-idx="15" id="w_15">2</span> <span class="k-word" data-word-idx="16" id="w_16">to</span> <span class="k-word" data-word-idx="17" id="w_17">the</span> <span class="k-word" data-word-idx="18" id="w_18">power</span> <span class="k-word" data-word-idx="19" id="w_19">of</span> <span class="k-word" data-word-idx="20" id="w_20">276,709</span> <span class="k-word" data-word-idx="21" id="w_21">to</span> <span class="k-word" data-word-idx="22" id="w_22">1</span> <span class="k-word" data-word-idx="23" id="w_23">odds,</span> <span class="k-word" data-word-idx="24" id="w_24">Zaphod</span> <span class="k-word" data-word-idx="25" id="w_25">Beeblebrox,</span> <span class="k-word" data-word-idx="26" id="w_26">Trillian,</span> <span class="k-word" data-word-idx="27" id="w_27">and</span> <span class="k-word" data-word-idx="28" id="w_28">Marvin.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="29" id="w_29">mind</span></p>
@@ -754,7 +824,7 @@
 <p><span class="k-word" data-word-idx="2970" id="w_2970">comes</span> <span class="k-word" data-word-idx="2971" id="w_2971">naturally</span> <span class="k-word" data-word-idx="2972" id="w_2972">and</span> <span class="k-word" data-word-idx="2973" id="w_2973">everything</span> <span class="k-word" data-word-idx="2974" id="w_2974">will</span> <span class="k-word" data-word-idx="2975" id="w_2975">be</span> <span class="k-word" data-word-idx="2976" id="w_2976">just</span> <span class="k-word" data-word-idx="2977" id="w_2977">ﬁne.&quot;</span></p>
 <p><span class="k-word" data-word-idx="2978" id="w_2978">&quot;You&#x27;re</span> <span class="k-word" data-word-idx="2979" id="w_2979">sure</span> <span class="k-word" data-word-idx="2980" id="w_2980">you</span> <span class="k-word" data-word-idx="2981" id="w_2981">don&#x27;t</span> <span class="k-word" data-word-idx="2982" id="w_2982">mind?&quot;</span> <span class="k-word" data-word-idx="2983" id="w_2983">probed</span> <span class="k-word" data-word-idx="2984" id="w_2984">Marvin.</span></p>
 <p><span class="k-word" data-word-idx="2985" id="w_2985">&quot;No</span> <span class="k-word" data-word-idx="2986" id="w_2986">no</span> <span class="k-word" data-word-idx="2987" id="w_2987">Marvin,&quot;</span> <span class="k-word" data-word-idx="2988" id="w_2988">lilted</span> <span class="k-word" data-word-idx="2989" id="w_2989">Trillian,</span> <span class="k-word" data-word-idx="2990" id="w_2990">&quot;that&#x27;s</span> <span class="k-word" data-word-idx="2991" id="w_2991">just</span>  <span class="k-word" data-word-idx="2992" id="w_2992">ﬁne,</span>  <span class="k-word" data-word-idx="2993" id="w_2993">really...</span>  <span class="k-word" data-word-idx="2994" id="w_2994">just</span></p>
-<h3><span class="k-word" data-word-idx="2995" id="w_2995">part</span> <span class="k-word" data-word-idx="2996" id="w_2996">of</span> <span class="k-word" data-word-idx="2997" id="w_2997">life.&quot;</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="2995" id="w_2995">part</span> <span class="k-word" data-word-idx="2996" id="w_2996">of</span> <span class="k-word" data-word-idx="2997" id="w_2997">life.&quot;</span></h3>
 <p><span class="k-word" data-word-idx="2998" id="w_2998">&quot;Marvin</span> <span class="k-word" data-word-idx="2999" id="w_2999">ﬂashed</span> <span class="k-word" data-word-idx="3000" id="w_3000">him</span> <span class="k-word" data-word-idx="3001" id="w_3001">an</span> <span class="k-word" data-word-idx="3002" id="w_3002">electronic</span> <span class="k-word" data-word-idx="3003" id="w_3003">look.</span></p>
 <p><span class="k-word" data-word-idx="3004" id="w_3004">&quot;Life,&quot;</span> <span class="k-word" data-word-idx="3005" id="w_3005">said</span> <span class="k-word" data-word-idx="3006" id="w_3006">Marvin,</span> <span class="k-word" data-word-idx="3007" id="w_3007">&quot;don&#x27;t</span> <span class="k-word" data-word-idx="3008" id="w_3008">talk</span> <span class="k-word" data-word-idx="3009" id="w_3009">to</span> <span class="k-word" data-word-idx="3010" id="w_3010">me</span> <span class="k-word" data-word-idx="3011" id="w_3011">about</span> <span class="k-word" data-word-idx="3012" id="w_3012">life.&quot;</span></p>
 <p><span class="k-word" data-word-idx="3013" id="w_3013">He</span> <span class="k-word" data-word-idx="3014" id="w_3014">turned</span> <span class="k-word" data-word-idx="3015" id="w_3015">hopelessly</span> <span class="k-word" data-word-idx="3016" id="w_3016">on</span> <span class="k-word" data-word-idx="3017" id="w_3017">his</span> <span class="k-word" data-word-idx="3018" id="w_3018">heel</span> <span class="k-word" data-word-idx="3019" id="w_3019">and</span> <span class="k-word" data-word-idx="3020" id="w_3020">lugged</span> <span class="k-word" data-word-idx="3021" id="w_3021">himself</span> <span class="k-word" data-word-idx="3022" id="w_3022">out</span> <span class="k-word" data-word-idx="3023" id="w_3023">of</span> <span class="k-word" data-word-idx="3024" id="w_3024">the</span> <span class="k-word" data-word-idx="3025" id="w_3025">cabin.</span></p>

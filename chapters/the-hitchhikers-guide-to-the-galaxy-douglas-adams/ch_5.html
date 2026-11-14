@@ -142,7 +142,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .meta-chip {
       font-size: 0.76rem;
@@ -151,10 +151,68 @@
       border-radius: 999px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
     }
     .meta-chip.voice {
       background: #ECFDF5;
       color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
     .hero-brief {
       font-size: 0.95rem;
@@ -419,11 +477,23 @@
       <div class="hero-book-title">The Hitchhiker&#x27;s Guide to the Galaxy</div>
       <h1 class="hero-chapter-title">Ch. 21–28: Deep Thought &amp; The Answer 42</h1>
       <div class="hero-meta-row">
-        <span class="meta-chip">📖 Full Book Chapter</span>
-        <span class="meta-chip">📄 Pages 178-227</span>
-        <span class="meta-chip">⏱️ ~20 mins</span>
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 5 of 6)</span>
+        <span class="meta-chip">📄 Pages 178-227 (50p · 19.5% vol)</span>
+        <span class="meta-chip effort">⏱️ ~75m effort (1h 15m)</span>
         
       </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>50 pages (19.5% of book)</strong></span>
+          <span>Full Book: <strong>257 pages (6h 26m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 43%;"></div>
+        </div>
+      </div>
+      
+
       <div class="hero-brief"><strong>Core Takeaway:</strong> The great supercomputer Deep Thought and the seven-and-a-half-million-year calculation.</div>
 
       
@@ -434,8 +504,8 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">21–28:</span> <span class="k-word" data-word-idx="2" id="w_2">Deep</span> <span class="k-word" data-word-idx="3" id="w_3">Thought</span> <span class="k-word" data-word-idx="4" id="w_4">&amp;</span> <span class="k-word" data-word-idx="5" id="w_5">The</span> <span class="k-word" data-word-idx="6" id="w_6">Answer</span> <span class="k-word" data-word-idx="7" id="w_7">42</span></h2>
-<blockquote>
+      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">21–28:</span> <span class="k-word" data-word-idx="2" id="w_2">Deep</span> <span class="k-word" data-word-idx="3" id="w_3">Thought</span> <span class="k-word" data-word-idx="4" id="w_4">&amp;</span> <span class="k-word" data-word-idx="5" id="w_5">The</span> <span class="k-word" data-word-idx="6" id="w_6">Answer</span> <span class="k-word" data-word-idx="7" id="w_7">42</span></h2>
+<blockquote class="chapter-spoken-brief">
 <p><span class="k-word" data-word-idx="8" id="w_8">The</span> <span class="k-word" data-word-idx="9" id="w_9">great</span> <span class="k-word" data-word-idx="10" id="w_10">supercomputer</span> <span class="k-word" data-word-idx="11" id="w_11">Deep</span> <span class="k-word" data-word-idx="12" id="w_12">Thought</span> <span class="k-word" data-word-idx="13" id="w_13">and</span> <span class="k-word" data-word-idx="14" id="w_14">the</span> <span class="k-word" data-word-idx="15" id="w_15">seven-and-a-half-million-year</span> <span class="k-word" data-word-idx="16" id="w_16">calculation.</span></p>
 </blockquote>
 <p><span class="k-word" data-word-idx="17" id="w_17">&quot;I&#x27;ll</span> <span class="k-word" data-word-idx="18" id="w_18">tell</span> <span class="k-word" data-word-idx="19" id="w_19">you</span> <span class="k-word" data-word-idx="20" id="w_20">about</span> <span class="k-word" data-word-idx="21" id="w_21">it</span> <span class="k-word" data-word-idx="22" id="w_22">later,&quot;</span> <span class="k-word" data-word-idx="23" id="w_23">choked</span> <span class="k-word" data-word-idx="24" id="w_24">Zaphod</span>  <span class="k-word" data-word-idx="25" id="w_25">as</span>  <span class="k-word" data-word-idx="26" id="w_26">all</span>  <span class="k-word" data-word-idx="27" id="w_27">three</span>  <span class="k-word" data-word-idx="28" id="w_28">passed</span></p>
@@ -445,7 +515,7 @@
 <p><span class="k-word" data-word-idx="40" id="w_40">Ford</span> <span class="k-word" data-word-idx="41" id="w_41">had</span> <span class="k-word" data-word-idx="42" id="w_42">thoughtfully</span> <span class="k-word" data-word-idx="43" id="w_43">left</span> <span class="k-word" data-word-idx="44" id="w_44">him</span> <span class="k-word" data-word-idx="45" id="w_45">his</span> <span class="k-word" data-word-idx="46" id="w_46">copy</span> <span class="k-word" data-word-idx="47" id="w_47">of</span> <span class="k-word" data-word-idx="48" id="w_48">The</span> <span class="k-word" data-word-idx="49" id="w_49">Hitch</span> <span class="k-word" data-word-idx="50" id="w_50">Hiker&#x27;s</span> <span class="k-word" data-word-idx="51" id="w_51">Guide</span> <span class="k-word" data-word-idx="52" id="w_52">to</span></p>
 <p><span class="k-word" data-word-idx="53" id="w_53">the</span> <span class="k-word" data-word-idx="54" id="w_54">Galaxy</span> <span class="k-word" data-word-idx="55" id="w_55">to</span> <span class="k-word" data-word-idx="56" id="w_56">while</span> <span class="k-word" data-word-idx="57" id="w_57">away</span> <span class="k-word" data-word-idx="58" id="w_58">the</span> <span class="k-word" data-word-idx="59" id="w_59">time</span> <span class="k-word" data-word-idx="60" id="w_60">with.</span> <span class="k-word" data-word-idx="61" id="w_61">He</span> <span class="k-word" data-word-idx="62" id="w_62">pushed</span> <span class="k-word" data-word-idx="63" id="w_63">a</span> <span class="k-word" data-word-idx="64" id="w_64">few</span> <span class="k-word" data-word-idx="65" id="w_65">buttons</span> <span class="k-word" data-word-idx="66" id="w_66">at</span> <span class="k-word" data-word-idx="67" id="w_67">random.</span></p>
 <p><span class="k-word" data-word-idx="68" id="w_68">The</span> <span class="k-word" data-word-idx="69" id="w_69">Hitch</span> <span class="k-word" data-word-idx="70" id="w_70">Hiker&#x27;s</span> <span class="k-word" data-word-idx="71" id="w_71">Guide</span> <span class="k-word" data-word-idx="72" id="w_72">to</span> <span class="k-word" data-word-idx="73" id="w_73">the</span> <span class="k-word" data-word-idx="74" id="w_74">Galaxy</span> <span class="k-word" data-word-idx="75" id="w_75">is</span> <span class="k-word" data-word-idx="76" id="w_76">a</span> <span class="k-word" data-word-idx="77" id="w_77">very</span> <span class="k-word" data-word-idx="78" id="w_78">unevenly</span> <span class="k-word" data-word-idx="79" id="w_79">edited</span></p>
-<h3><span class="k-word" data-word-idx="80" id="w_80">book</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="80" id="w_80">book</span></h3>
 <p><span class="k-word" data-word-idx="81" id="w_81">and</span> <span class="k-word" data-word-idx="82" id="w_82">contains</span> <span class="k-word" data-word-idx="83" id="w_83">many</span> <span class="k-word" data-word-idx="84" id="w_84">passages</span> <span class="k-word" data-word-idx="85" id="w_85">that</span> <span class="k-word" data-word-idx="86" id="w_86">simply</span> <span class="k-word" data-word-idx="87" id="w_87">seemed</span> <span class="k-word" data-word-idx="88" id="w_88">to</span> <span class="k-word" data-word-idx="89" id="w_89">its</span> <span class="k-word" data-word-idx="90" id="w_90">editors</span> <span class="k-word" data-word-idx="91" id="w_91">like</span>  <span class="k-word" data-word-idx="92" id="w_92">a</span> <span class="k-word" data-word-idx="93" id="w_93">good</span></p>
 <p><span class="k-word" data-word-idx="94" id="w_94">idea</span> <span class="k-word" data-word-idx="95" id="w_95">at</span> <span class="k-word" data-word-idx="96" id="w_96">the</span> <span class="k-word" data-word-idx="97" id="w_97">time.</span></p>
 <p><span class="k-word" data-word-idx="98" id="w_98">One</span> <span class="k-word" data-word-idx="99" id="w_99">of</span> <span class="k-word" data-word-idx="100" id="w_100">these</span> <span class="k-word" data-word-idx="101" id="w_101">(the</span> <span class="k-word" data-word-idx="102" id="w_102">one</span> <span class="k-word" data-word-idx="103" id="w_103">Arthur</span> <span class="k-word" data-word-idx="104" id="w_104">now</span> <span class="k-word" data-word-idx="105" id="w_105">came</span> <span class="k-word" data-word-idx="106" id="w_106">across)</span> <span class="k-word" data-word-idx="107" id="w_107">supposedly</span> <span class="k-word" data-word-idx="108" id="w_108">relates</span> <span class="k-word" data-word-idx="109" id="w_109">the</span></p>
@@ -470,7 +540,7 @@
 <p><span class="k-word" data-word-idx="316" id="w_316">Voojagig</span> <span class="k-word" data-word-idx="317" id="w_317">suddenly</span> <span class="k-word" data-word-idx="318" id="w_318">claimed</span> <span class="k-word" data-word-idx="319" id="w_319">to</span> <span class="k-word" data-word-idx="320" id="w_320">have</span> <span class="k-word" data-word-idx="321" id="w_321">found</span> <span class="k-word" data-word-idx="322" id="w_322">this</span> <span class="k-word" data-word-idx="323" id="w_323">planet,</span> <span class="k-word" data-word-idx="324" id="w_324">and</span>  <span class="k-word" data-word-idx="325" id="w_325">to</span>  <span class="k-word" data-word-idx="326" id="w_326">have</span> <span class="k-word" data-word-idx="327" id="w_327">worked</span></p>
 <p><span class="k-word" data-word-idx="328" id="w_328">there</span> <span class="k-word" data-word-idx="329" id="w_329">for</span> <span class="k-word" data-word-idx="330" id="w_330">a</span> <span class="k-word" data-word-idx="331" id="w_331">while</span>  <span class="k-word" data-word-idx="332" id="w_332">driving</span>  <span class="k-word" data-word-idx="333" id="w_333">a</span>  <span class="k-word" data-word-idx="334" id="w_334">limousine</span>  <span class="k-word" data-word-idx="335" id="w_335">for</span>  <span class="k-word" data-word-idx="336" id="w_336">a</span>  <span class="k-word" data-word-idx="337" id="w_337">family</span>  <span class="k-word" data-word-idx="338" id="w_338">of</span>  <span class="k-word" data-word-idx="339" id="w_339">cheap</span>  <span class="k-word" data-word-idx="340" id="w_340">green</span></p>
 <p><span class="k-word" data-word-idx="341" id="w_341">retractables,</span> <span class="k-word" data-word-idx="342" id="w_342">whereupon</span> <span class="k-word" data-word-idx="343" id="w_343">he</span> <span class="k-word" data-word-idx="344" id="w_344">was</span> <span class="k-word" data-word-idx="345" id="w_345">taken</span> <span class="k-word" data-word-idx="346" id="w_346">away,</span> <span class="k-word" data-word-idx="347" id="w_347">locked</span> <span class="k-word" data-word-idx="348" id="w_348">up,</span> <span class="k-word" data-word-idx="349" id="w_349">wrote</span>  <span class="k-word" data-word-idx="350" id="w_350">a</span></p>
-<h3><span class="k-word" data-word-idx="351" id="w_351">book,</span>  <span class="k-word" data-word-idx="352" id="w_352">and</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="351" id="w_351">book,</span>  <span class="k-word" data-word-idx="352" id="w_352">and</span></h3>
 <p><span class="k-word" data-word-idx="353" id="w_353">was</span> <span class="k-word" data-word-idx="354" id="w_354">ﬁnally</span> <span class="k-word" data-word-idx="355" id="w_355">sent</span> <span class="k-word" data-word-idx="356" id="w_356">into</span> <span class="k-word" data-word-idx="357" id="w_357">tax</span> <span class="k-word" data-word-idx="358" id="w_358">exile,</span> <span class="k-word" data-word-idx="359" id="w_359">which</span> <span class="k-word" data-word-idx="360" id="w_360">is</span>  <span class="k-word" data-word-idx="361" id="w_361">the</span>  <span class="k-word" data-word-idx="362" id="w_362">usual</span>  <span class="k-word" data-word-idx="363" id="w_363">fate</span>  <span class="k-word" data-word-idx="364" id="w_364">reserved</span>  <span class="k-word" data-word-idx="365" id="w_365">for</span></p>
 <p><span class="k-word" data-word-idx="366" id="w_366">those</span> <span class="k-word" data-word-idx="367" id="w_367">who</span> <span class="k-word" data-word-idx="368" id="w_368">are</span> <span class="k-word" data-word-idx="369" id="w_369">determined</span> <span class="k-word" data-word-idx="370" id="w_370">to</span> <span class="k-word" data-word-idx="371" id="w_371">make</span> <span class="k-word" data-word-idx="372" id="w_372">a</span> <span class="k-word" data-word-idx="373" id="w_373">fool</span> <span class="k-word" data-word-idx="374" id="w_374">of</span> <span class="k-word" data-word-idx="375" id="w_375">themselves</span> <span class="k-word" data-word-idx="376" id="w_376">in</span> <span class="k-word" data-word-idx="377" id="w_377">public.</span></p>
 <p><span class="k-word" data-word-idx="378" id="w_378">When</span> <span class="k-word" data-word-idx="379" id="w_379">one</span> <span class="k-word" data-word-idx="380" id="w_380">day</span> <span class="k-word" data-word-idx="381" id="w_381">an</span> <span class="k-word" data-word-idx="382" id="w_382">expedition</span> <span class="k-word" data-word-idx="383" id="w_383">was</span> <span class="k-word" data-word-idx="384" id="w_384">sent</span> <span class="k-word" data-word-idx="385" id="w_385">to</span> <span class="k-word" data-word-idx="386" id="w_386">the</span> <span class="k-word" data-word-idx="387" id="w_387">spatial</span>  <span class="k-word" data-word-idx="388" id="w_388">coordinates</span> <span class="k-word" data-word-idx="389" id="w_389">that</span></p>
@@ -754,7 +824,7 @@
 <p><span class="k-word" data-word-idx="3194" id="w_3194">familiar</span> <span class="k-word" data-word-idx="3195" id="w_3195">to</span> <span class="k-word" data-word-idx="3196" id="w_3196">him</span> <span class="k-word" data-word-idx="3197" id="w_3197">as</span> <span class="k-word" data-word-idx="3198" id="w_3198">the</span> <span class="k-word" data-word-idx="3199" id="w_3199">shapes</span> <span class="k-word" data-word-idx="3200" id="w_3200">of</span> <span class="k-word" data-word-idx="3201" id="w_3201">words,</span> <span class="k-word" data-word-idx="3202" id="w_3202">part</span> <span class="k-word" data-word-idx="3203" id="w_3203">of</span> <span class="k-word" data-word-idx="3204" id="w_3204">the</span> <span class="k-word" data-word-idx="3205" id="w_3205">furniture</span> <span class="k-word" data-word-idx="3206" id="w_3206">of</span> <span class="k-word" data-word-idx="3207" id="w_3207">his</span> <span class="k-word" data-word-idx="3208" id="w_3208">mind.</span></p>
 <p><span class="k-word" data-word-idx="3209" id="w_3209">For</span> <span class="k-word" data-word-idx="3210" id="w_3210">a</span> <span class="k-word" data-word-idx="3211" id="w_3211">few</span> <span class="k-word" data-word-idx="3212" id="w_3212">seconds</span> <span class="k-word" data-word-idx="3213" id="w_3213">he</span> <span class="k-word" data-word-idx="3214" id="w_3214">sat</span> <span class="k-word" data-word-idx="3215" id="w_3215">in</span> <span class="k-word" data-word-idx="3216" id="w_3216">stunned</span> <span class="k-word" data-word-idx="3217" id="w_3217">silence</span> <span class="k-word" data-word-idx="3218" id="w_3218">as</span> <span class="k-word" data-word-idx="3219" id="w_3219">the</span>  <span class="k-word" data-word-idx="3220" id="w_3220">images</span>  <span class="k-word" data-word-idx="3221" id="w_3221">rushed</span> <span class="k-word" data-word-idx="3222" id="w_3222">around</span></p>
 <p><span class="k-word" data-word-idx="3223" id="w_3223">his</span> <span class="k-word" data-word-idx="3224" id="w_3224">mind</span> <span class="k-word" data-word-idx="3225" id="w_3225">and</span> <span class="k-word" data-word-idx="3226" id="w_3226">tried</span> <span class="k-word" data-word-idx="3227" id="w_3227">to</span> <span class="k-word" data-word-idx="3228" id="w_3228">ﬁnd</span> <span class="k-word" data-word-idx="3229" id="w_3229">somewhere</span> <span class="k-word" data-word-idx="3230" id="w_3230">to</span> <span class="k-word" data-word-idx="3231" id="w_3231">settle</span> <span class="k-word" data-word-idx="3232" id="w_3232">down</span> <span class="k-word" data-word-idx="3233" id="w_3233">and</span> <span class="k-word" data-word-idx="3234" id="w_3234">make</span> <span class="k-word" data-word-idx="3235" id="w_3235">sense.</span></p>
-<h3><span class="k-word" data-word-idx="3236" id="w_3236">Part</span> <span class="k-word" data-word-idx="3237" id="w_3237">of</span> <span class="k-word" data-word-idx="3238" id="w_3238">his</span> <span class="k-word" data-word-idx="3239" id="w_3239">brain</span> <span class="k-word" data-word-idx="3240" id="w_3240">told</span> <span class="k-word" data-word-idx="3241" id="w_3241">him</span> <span class="k-word" data-word-idx="3242" id="w_3242">that</span> <span class="k-word" data-word-idx="3243" id="w_3243">he</span> <span class="k-word" data-word-idx="3244" id="w_3244">knew</span> <span class="k-word" data-word-idx="3245" id="w_3245">perfectly</span> <span class="k-word" data-word-idx="3246" id="w_3246">well</span>  <span class="k-word" data-word-idx="3247" id="w_3247">what</span>  <span class="k-word" data-word-idx="3248" id="w_3248">he</span></h3>
+<h3 class="section-heading"><span class="k-word" data-word-idx="3236" id="w_3236">Part</span> <span class="k-word" data-word-idx="3237" id="w_3237">of</span> <span class="k-word" data-word-idx="3238" id="w_3238">his</span> <span class="k-word" data-word-idx="3239" id="w_3239">brain</span> <span class="k-word" data-word-idx="3240" id="w_3240">told</span> <span class="k-word" data-word-idx="3241" id="w_3241">him</span> <span class="k-word" data-word-idx="3242" id="w_3242">that</span> <span class="k-word" data-word-idx="3243" id="w_3243">he</span> <span class="k-word" data-word-idx="3244" id="w_3244">knew</span> <span class="k-word" data-word-idx="3245" id="w_3245">perfectly</span> <span class="k-word" data-word-idx="3246" id="w_3246">well</span>  <span class="k-word" data-word-idx="3247" id="w_3247">what</span>  <span class="k-word" data-word-idx="3248" id="w_3248">he</span></h3>
 <p><span class="k-word" data-word-idx="3249" id="w_3249">was</span></p>
 <p><span class="k-word" data-word-idx="3250" id="w_3250">looking</span> <span class="k-word" data-word-idx="3251" id="w_3251">at</span> <span class="k-word" data-word-idx="3252" id="w_3252">and</span> <span class="k-word" data-word-idx="3253" id="w_3253">what</span> <span class="k-word" data-word-idx="3254" id="w_3254">the</span> <span class="k-word" data-word-idx="3255" id="w_3255">shapes</span> <span class="k-word" data-word-idx="3256" id="w_3256">represented</span> <span class="k-word" data-word-idx="3257" id="w_3257">whilst</span> <span class="k-word" data-word-idx="3258" id="w_3258">another</span>  <span class="k-word" data-word-idx="3259" id="w_3259">quite</span> <span class="k-word" data-word-idx="3260" id="w_3260">sensibly</span></p>
 <p><span class="k-word" data-word-idx="3261" id="w_3261">refused</span> <span class="k-word" data-word-idx="3262" id="w_3262">to</span> <span class="k-word" data-word-idx="3263" id="w_3263">countenance</span> <span class="k-word" data-word-idx="3264" id="w_3264">the</span>  <span class="k-word" data-word-idx="3265" id="w_3265">idea</span>  <span class="k-word" data-word-idx="3266" id="w_3266">and</span>  <span class="k-word" data-word-idx="3267" id="w_3267">abdicated</span>  <span class="k-word" data-word-idx="3268" id="w_3268">responsibility</span>  <span class="k-word" data-word-idx="3269" id="w_3269">for</span> <span class="k-word" data-word-idx="3270" id="w_3270">any</span></p>
