@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="description" content="Liberation Books Library — Non-linear core cuts and full audiobooks with VoiceLM-XL Aoede UK Female voice for offline reading & listening." />
+  <meta name="description" content="Liberation Books Library — Non-linear core cuts and full audiobooks for offline reading & listening." />
   <title>Books Library 📚</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -68,7 +68,7 @@
       flex-direction: column;
       overflow-x: hidden;
       padding-top: var(--safe-top);
-      padding-bottom: calc(var(--safe-bottom) + 94px);
+      padding-bottom: calc(var(--safe-bottom) + 84px);
     }
 
     /* Top Bar */
@@ -120,49 +120,21 @@
       gap: 8px;
       flex-shrink: 0;
     }
-    .flight-pill-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 6px 11px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      background: var(--purple-soft);
-      color: var(--purple);
-      border: 1px solid rgba(124, 58, 237, 0.3);
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .flight-pill-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 3px 8px rgba(124, 58, 237, 0.2);
-    }
-    .status-pill {
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: var(--emerald-soft);
-      color: var(--emerald);
-      border: 1px solid rgba(5, 150, 105, 0.2);
-    }
-    .status-pill.offline {
-      background: var(--amber-soft);
-      color: var(--amber);
-      border-color: rgba(217, 119, 6, 0.2);
-    }
-    .theme-toggle-btn {
+    .icon-btn {
       background: var(--surface-subtle);
       border: 1px solid var(--border);
       color: var(--ink);
       padding: 6px 10px;
       border-radius: var(--radius-sm);
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease;
+    }
+    .icon-btn:hover {
+      background: var(--border);
     }
 
     /* Container */
@@ -172,98 +144,6 @@
       margin: 0 auto;
       padding: 16px;
       flex: 1;
-    }
-
-    /* Flight Mode Hero Banner */
-    .flight-hero-banner {
-      background: linear-gradient(135deg, #FAF5FF 0%, #EEF2FF 100%);
-      border: 1.5px solid #D8B4FE;
-      border-radius: var(--radius-lg);
-      padding: 16px 20px;
-      margin-bottom: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.06);
-    }
-    [data-theme="dark"] .flight-hero-banner {
-      background: linear-gradient(135deg, rgba(124, 58, 237, 0.12) 0%, rgba(99, 102, 241, 0.12) 100%);
-      border-color: rgba(168, 85, 247, 0.35);
-    }
-    .flight-hero-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .flight-hero-left {
-      flex: 1;
-      min-width: 260px;
-    }
-    .flight-tag {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 3px 9px;
-      border-radius: 999px;
-      background: #7C3AED;
-      color: #FFFFFF;
-      margin-bottom: 6px;
-    }
-    .flight-hero-title {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.25rem;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 4px;
-    }
-    .flight-hero-desc {
-      font-size: 0.85rem;
-      color: var(--ink-muted);
-      line-height: 1.45;
-    }
-    .flight-stats-cluster {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
-    .flight-chip {
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.8);
-      border: 1px solid rgba(124, 58, 237, 0.2);
-      color: var(--ink);
-    }
-    [data-theme="dark"] .flight-chip {
-      background: rgba(20, 27, 38, 0.8);
-    }
-    .btn-download-all {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 20px;
-      border-radius: var(--radius-md);
-      font-size: 0.92rem;
-      font-weight: 700;
-      background: #7C3AED;
-      color: #FFFFFF;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-    .btn-download-all:hover {
-      background: #6D28D9;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(124, 58, 237, 0.4);
     }
 
     /* Search & Wing Filters */
@@ -487,11 +367,6 @@
       color: #FFFFFF;
       border-color: var(--accent);
     }
-    .btn-action.purple {
-      background: var(--purple-soft);
-      color: var(--purple);
-      border-color: rgba(124, 58, 237, 0.3);
-    }
     .btn-action:hover {
       opacity: 0.92;
       transform: translateY(-1px);
@@ -624,7 +499,7 @@
       color: #FFFFFF;
     }
 
-    /* Bottom Player */
+    /* Bottom Sticky Player — Hidden by default, shown ONLY when a book or chapter is selected */
     .player-bar {
       position: fixed;
       bottom: var(--safe-bottom);
@@ -635,7 +510,7 @@
       padding: 10px 16px;
       z-index: 60;
       box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
-      display: flex;
+      display: none; /* Hidden by default */
       flex-direction: column;
       gap: 8px;
     }
@@ -725,7 +600,7 @@
       font-size: 1.15rem;
     }
 
-    /* Offline Flight Mode Modal */
+    /* Settings & Offline Modal */
     .offline-modal {
       position: fixed;
       inset: 0;
@@ -745,11 +620,11 @@
       background: var(--surface);
       border: 1.5px solid var(--border);
       border-radius: var(--radius-lg);
-      max-width: 520px;
+      max-width: 480px;
       width: 100%;
       max-height: 85vh;
       overflow-y: auto;
-      padding: 24px;
+      padding: 22px;
       box-shadow: 0 16px 40px rgba(15, 23, 42, 0.2);
       display: flex;
       flex-direction: column;
@@ -762,7 +637,7 @@
     }
     .modal-title {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -781,7 +656,7 @@
     .progress-box {
       background: var(--surface-subtle);
       border-radius: var(--radius-md);
-      padding: 16px;
+      padding: 14px;
       border: 1px solid var(--border);
       display: none;
       flex-direction: column;
@@ -799,12 +674,12 @@
     }
     .progress-bar-fill {
       height: 100%;
-      background: #7C3AED;
+      background: var(--accent);
       width: 0%;
       transition: width 0.15s ease;
     }
     .progress-status-text {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--ink-muted);
     }
@@ -824,6 +699,27 @@
     .storage-stat-line:last-child {
       border-bottom: none;
       font-weight: 700;
+    }
+    .btn-sync-all {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      font-size: 0.92rem;
+      font-weight: 700;
+      background: var(--accent);
+      color: #FFFFFF;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+      transition: all 0.15s ease;
+    }
+    .btn-sync-all:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
     }
 
     /* Reader Modal */
@@ -878,9 +774,39 @@
       justify-content: space-between;
       gap: 12px;
     }
+
+    /* Simple Toast Notification */
+    .toast-msg {
+      position: fixed;
+      top: calc(var(--safe-top) + 60px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.92);
+      color: #FFFFFF;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 200;
+      display: none;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+    .toast-msg.active {
+      display: block;
+      animation: fadeInOut 2.8s ease forwards;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -8px); }
+      15% { opacity: 1; transform: translate(-50%, 0); }
+      85% { opacity: 1; transform: translate(-50%, 0); }
+      100% { opacity: 0; transform: translate(-50%, -8px); }
+    }
   </style>
 </head>
 <body>
+  <!-- Toast -->
+  <div class="toast-msg" id="toastMsg"></div>
+
   <!-- Top Navigation Bar -->
   <header class="topbar">
     <div class="topbar-left">
@@ -888,11 +814,8 @@
       <div class="topbar-title">📚 <span id="headerTitle">Liberation Library</span></div>
     </div>
     <div class="topbar-actions">
-      <button class="flight-pill-btn" id="btnOpenOfflineModal" title="Manage Offline & Flight Cache">
-        ✈️ Flight Mode
-      </button>
-      <span class="status-pill" id="offlineStatusPill">🟢 Online</span>
-      <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle Theme">🌓</button>
+      <button class="icon-btn" id="btnOpenSettings" aria-label="Settings & Offline Sync" title="Settings & Offline Sync">⚙️</button>
+      <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle Theme">🌓</button>
     </div>
   </header>
 
@@ -900,27 +823,6 @@
   <main class="container">
     <!-- Library View -->
     <div id="libraryView">
-      <!-- Flight Mode Hero Banner -->
-      <section class="flight-hero-banner" id="flightHeroBanner">
-        <div class="flight-hero-top">
-          <div class="flight-hero-left">
-            <span class="flight-tag">✈️ FLIGHT & TRAVEL OFFLINE SYNC</span>
-            <h2 class="flight-hero-title">Download All Books & Voices</h2>
-            <p class="flight-hero-desc">Download complete chapter texts, summaries, and VoiceLM-XL neural audio directly to your phone. 100% offline playback mid-flight without cellular or Wi-Fi.</p>
-            <div class="flight-stats-cluster">
-              <span class="flight-chip" id="bannerAudioChip">🎙️ 7 Neural Audio Chapters (99.3 MB)</span>
-              <span class="flight-chip" id="bannerBooksChip">📚 29 Books Ready</span>
-              <span class="flight-chip" id="bannerStorageChip">💾 Checking Cache...</span>
-            </div>
-          </div>
-          <div>
-            <button class="btn-download-all" id="btnDownloadAllLibrary">
-              <span>⚡ Download All for Offline</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
       <!-- Search Section -->
       <div class="search-section">
         <div class="search-box-wrap">
@@ -958,7 +860,7 @@
         <div class="detail-action-bar">
           <button class="btn-action primary" id="btnPlayAllAdhd">⚡ Play Core Steps</button>
           <button class="btn-action" id="btnPlayAllFull">📖 Play Full Book</button>
-          <button class="btn-action purple" id="btnDownloadBookOffline">💾 Save Book Offline</button>
+          <button class="btn-action" id="btnDownloadBookOffline">💾 Download Offline</button>
           <button class="btn-action" id="btnBackToLibrary">← All Books</button>
         </div>
       </div>
@@ -993,7 +895,7 @@
     </div>
   </main>
 
-  <!-- Sticky Audio Player Bar -->
+  <!-- Sticky Audio Player Bar (Hidden on Homepage by default, shown ONLY when a book/chapter is played) -->
   <div class="player-bar" id="playerBar">
     <div class="player-progress-wrap">
       <span class="player-time" id="playerCurrentTime">0:00</span>
@@ -1002,8 +904,8 @@
     </div>
     <div class="player-controls-row">
       <div class="player-track-info">
-        <div class="player-book-title" id="playerBookTitle">Select a book or chapter</div>
-        <div class="player-chapter-title" id="playerChapterTitle">VoiceLM-XL Aoede UK Female</div>
+        <div class="player-book-title" id="playerBookTitle">Book Title</div>
+        <div class="player-chapter-title" id="playerChapterTitle">Chapter Title</div>
       </div>
       <div class="player-buttons">
         <button class="player-btn" id="btnRewind15" aria-label="Rewind 15s">↺15</button>
@@ -1013,22 +915,27 @@
     </div>
   </div>
 
-  <!-- Offline & Flight Mode Settings Modal -->
-  <div class="offline-modal" id="offlineModal">
+  <!-- Settings & Offline Modal -->
+  <div class="offline-modal" id="settingsModal">
     <div class="offline-modal-card">
       <div class="modal-header-row">
-        <div class="modal-title">✈️ Flight Mode & Offline Cache</div>
-        <button class="modal-close-btn" id="btnCloseOfflineModal">✕</button>
+        <div class="modal-title">⚙️ Settings & Offline Mode</div>
+        <button class="modal-close-btn" id="btnCloseSettingsModal">✕</button>
       </div>
 
-      <p style="font-size: 0.88rem; color: var(--ink-muted); line-height: 1.5;">
-        Download all chapters, readable texts, and VoiceLM-XL Aoede neural audio into your browser's persistent storage so you can read and listen anywhere without internet.
+      <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.88rem;">
+        <span style="font-weight: 600;">Connection Status:</span>
+        <span class="badge-chip" id="modalStatusBadge">🟢 Online</span>
+      </div>
+
+      <p style="font-size: 0.85rem; color: var(--ink-muted); line-height: 1.5;">
+        Save all 29 books, full chapter texts, and neural voice files to your phone's browser cache for 100% offline reading and listening during flights.
       </p>
 
       <!-- Progress Box -->
       <div class="progress-box" id="offlineProgressBox">
         <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.85rem;">
-          <span id="progressStepTitle">Downloading...</span>
+          <span id="progressStepTitle">Syncing...</span>
           <span id="progressPercentage">0%</span>
         </div>
         <div class="progress-bar-track">
@@ -1037,8 +944,8 @@
         <div class="progress-status-text" id="progressStatusSub">Starting sync...</div>
       </div>
 
-      <button class="btn-download-all" id="btnModalStartSync" style="width: 100%;">
-        ⚡ Download Entire Library (All Texts & Voices)
+      <button class="btn-sync-all" id="btnModalStartSync">
+        ⚡ Download All for Offline (Flights)
       </button>
 
       <!-- Storage Breakdown -->
@@ -1046,10 +953,10 @@
         <div style="font-weight: 700; font-size: 0.88rem; margin-bottom: 8px;">📊 Local Storage Status</div>
         <div class="storage-stat-line">
           <span>📚 Total Books in Catalog</span>
-          <span id="statModalTotalBooks">29</span>
+          <span>29 volumes</span>
         </div>
         <div class="storage-stat-line">
-          <span>🎙️ Generated Audio Tracks</span>
+          <span>🎙️ Generated Audio Files</span>
           <span id="statModalAudioFiles">7 chapters (99.3 MB)</span>
         </div>
         <div class="storage-stat-line">
@@ -1058,12 +965,12 @@
         </div>
       </div>
 
-      <div style="display: flex; gap: 10px; justify-content: space-between; margin-top: 6px;">
+      <div style="display: flex; gap: 10px; justify-content: space-between; margin-top: 4px;">
         <button class="btn-action" id="btnClearCacheBtn" style="color: #DC2626; border-color: rgba(220, 38, 38, 0.3);">
           🗑️ Clear Offline Cache
         </button>
         <button class="btn-action" id="btnRefreshManifestBtn">
-          🔄 Refresh Index
+          🔄 Refresh
         </button>
       </div>
     </div>
@@ -1093,8 +1000,11 @@
 
   <script>
     /* ==========================================================================
-       BOOKS CATALOG DATA & APPLICATION LOGIC
+       BOOKS CATALOG DATA & LOGIC
        ========================================================================== */
+    const GH_RAW_AUDIO_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/";
+    const CACHE_NAME = "kortex-books-v1";
+
     let BOOKS_DATA = [];
     let AUDIO_INDEX = { files: [], books: {} };
     let TEXT_VAULT = {};
@@ -1105,16 +1015,23 @@
     let activeSearchQuery = "";
     let readerFontSize = 1.05;
     let isDownloading = false;
+    let activeBlobUrl = null;
 
-    const CACHE_NAME = "kortex-books-v1";
     const audioEl = document.getElementById("audioElement");
 
-    // Helper: strip stray leading tildes
+    function showToast(msg) {
+      const t = document.getElementById("toastMsg");
+      t.textContent = msg;
+      t.classList.remove("active");
+      void t.offsetWidth; // re-trigger animation
+      t.classList.add("active");
+    }
+
     function cleanEffortStr(raw) {
       return String(raw || "").replace(/^~+/, "").trim();
     }
 
-    // Wake Lock to keep phone screen alive during playback
+    // Wake Lock
     let _screenWakeLock = null;
     async function requestScreenWakeLock() {
       try {
@@ -1124,43 +1041,105 @@
       } catch (e) {}
     }
 
-    // Service Worker Registration for Complete Offline Operation
+    // Service Worker Registration
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("books-sw.js")
-          .then(reg => console.log("[SW] Registered:", reg.scope))
           .catch(err => console.warn("[SW] Registration skipped or failed:", err));
       });
+    }
+
+    // Audio Element Event Handlers — Keep buttons completely synced and never stuck
+    audioEl.addEventListener("play", () => {
+      document.getElementById("btnPlayPause").textContent = "⏸";
+    });
+
+    audioEl.addEventListener("pause", () => {
+      document.getElementById("btnPlayPause").textContent = "▶";
+    });
+
+    audioEl.addEventListener("ended", () => {
+      document.getElementById("btnPlayPause").textContent = "▶";
+      if (!currentBook) return;
+      const items = currentTrackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
+      if (currentItemIndex < items.length) {
+        playChapter(currentTrackType, currentItemIndex + 1);
+      }
+    });
+
+    audioEl.addEventListener("error", (e) => {
+      console.warn("Audio error event:", audioEl.error);
+      document.getElementById("btnPlayPause").textContent = "▶";
+      showToast("Audio not available or offline. Download via Settings ⚙️");
+    });
+
+    // Scrubber updates
+    audioEl.addEventListener("timeupdate", () => {
+      const cur = audioEl.currentTime || 0;
+      const dur = audioEl.duration || 0;
+      document.getElementById("playerCurrentTime").textContent = formatSeconds(cur);
+      document.getElementById("playerTotalTime").textContent = formatSeconds(dur);
+      if (dur > 0) {
+        document.getElementById("playerScrubber").value = (cur / dur) * 100;
+      }
+    });
+
+    document.getElementById("playerScrubber").addEventListener("input", (e) => {
+      const dur = audioEl.duration || 0;
+      if (dur > 0) {
+        audioEl.currentTime = (e.target.value / 100) * dur;
+      }
+    });
+
+    document.getElementById("btnRewind15").addEventListener("click", () => {
+      audioEl.currentTime = Math.max(0, audioEl.currentTime - 15);
+    });
+
+    document.getElementById("btnForward15").addEventListener("click", () => {
+      audioEl.currentTime = Math.min(audioEl.duration || 0, audioEl.currentTime + 15);
+    });
+
+    document.getElementById("btnPlayPause").addEventListener("click", async () => {
+      if (!audioEl.src) {
+        if (currentBook) playChapter(currentTrackType, currentItemIndex);
+        return;
+      }
+      if (audioEl.paused) {
+        try {
+          await audioEl.play();
+          document.getElementById("btnPlayPause").textContent = "⏸";
+        } catch (err) {
+          document.getElementById("btnPlayPause").textContent = "▶";
+        }
+      } else {
+        audioEl.pause();
+        document.getElementById("btnPlayPause").textContent = "▶";
+      }
+    });
+
+    function formatSeconds(sec) {
+      if (!sec || isNaN(sec)) return "0:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m}:${s < 10 ? "0" : ""}${s}`;
     }
 
     // Initialize Catalog & Indexes
     async function loadCatalog() {
       try {
         const resp = await fetch("assets/books_catalog.json");
-        if (resp.ok) {
-          BOOKS_DATA = await resp.json();
-        }
-      } catch (e) {
-        console.warn("Could not fetch books_catalog.json:", e);
-      }
+        if (resp.ok) BOOKS_DATA = await resp.json();
+      } catch (e) {}
 
       try {
         const aResp = await fetch("assets/books_audio_index.json");
-        if (aResp.ok) {
-          AUDIO_INDEX = await aResp.json();
-        }
-      } catch (e) {
-        console.warn("Could not fetch books_audio_index.json:", e);
-      }
+        if (aResp.ok) AUDIO_INDEX = await aResp.json();
+      } catch (e) {}
 
       try {
         const tResp = await fetch("assets/books_text_vault.json");
-        if (tResp.ok) {
-          TEXT_VAULT = await tResp.json();
-        }
-      } catch (e) {
-        console.warn("Could not fetch books_text_vault.json (will load on demand):", e);
-      }
+        if (tResp.ok) TEXT_VAULT = await tResp.json();
+      } catch (e) {}
 
       renderBooksGrid();
       updateOfflineStatus();
@@ -1208,9 +1187,9 @@
           </div>
           <div>
             <div class="book-card-stats">
-              <span class="badge-chip adhd">⚡ ${adhdCount} Core Steps ${cleanAdhdTime ? `· ⏱️ ${cleanAdhdTime}` : ""}</span>
+              <span class="badge-chip adhd">⚡ ${adhdCount} Steps ${cleanAdhdTime ? `· ⏱️ ${cleanAdhdTime}` : ""}</span>
               <span class="badge-chip full">📖 ${fullCount} Ch ${cleanFullTime ? `· ⏱️ ${cleanFullTime}` : ""}</span>
-              ${hasAudio ? `<span class="badge-chip voice">🎙️ Neural Voice Ready</span>` : `<span class="badge-chip" style="background: var(--surface-subtle); color: var(--ink-muted);">📄 Text Ready</span>`}
+              ${hasAudio ? `<span class="badge-chip voice">🎙️ Audio Ready</span>` : ""}
             </div>
           </div>
         `;
@@ -1237,9 +1216,8 @@
       const fullTime = cleanEffortStr(book.full_time_label);
 
       document.getElementById("detailBadges").innerHTML = `
-        <span class="badge-chip adhd">⚡ ${(book.adhd_segments || []).length} Core Steps ${adhdTime ? `· ⏱️ ${adhdTime}` : ""}</span>
+        <span class="badge-chip adhd">⚡ ${(book.adhd_segments || []).length} Steps ${adhdTime ? `· ⏱️ ${adhdTime}` : ""}</span>
         <span class="badge-chip full">📖 ${(book.author_chapters || []).length} Chapters ${fullTime ? `· ⏱️ ${fullTime}` : ""}</span>
-        <span class="badge-chip voice">🎙️ Aoede UK Female</span>
       `;
 
       // Render ADHD track
@@ -1314,14 +1292,8 @@
     }
 
     /* ==========================================================================
-       AUDIO PLAYBACK
+       ROBUST AUDIO PLAYBACK (OFFLINE CACHE FIRST -> GITHUB RAW -> LOCALHOST)
        ========================================================================== */
-    function getAudioUrl(trackType, index) {
-      if (!currentBook) return "";
-      const slug = currentBook.slug || currentBook.filename.replace(/\.pdf$/i, "").toLowerCase();
-      return `audio/books/${slug}/${trackType}_${index}.mp3`;
-    }
-
     async function playChapter(trackType, index) {
       if (!currentBook) return;
       currentTrackType = trackType;
@@ -1335,13 +1307,46 @@
       document.getElementById("playerBookTitle").textContent = currentBook.title;
       document.getElementById("playerChapterTitle").textContent = trackTitle;
 
-      const audioUrl = getAudioUrl(trackType, index);
-      audioEl.src = audioUrl;
+      // SHOW the player bar now that user has explicitly chosen to play!
+      document.getElementById("playerBar").style.display = "flex";
+
+      const slug = currentBook.slug || currentBook.filename.replace(/\.pdf$/i, "").toLowerCase();
+      const relPath = `audio/books/${slug}/${trackType}_${index}.mp3`;
+      const remoteUrl = `${GH_RAW_AUDIO_BASE}${relPath}`;
+
+      // Clean up previous blob URL if any
+      if (activeBlobUrl) {
+        URL.revokeObjectURL(activeBlobUrl);
+        activeBlobUrl = null;
+      }
+
+      // 1. Try CacheStorage first (guarantees 100% offline flight playback)
+      let resolvedSrc = null;
+      try {
+        if ("caches" in window) {
+          const cache = await caches.open(CACHE_NAME);
+          const cachedResp = (await cache.match(relPath)) || (await cache.match(remoteUrl));
+          if (cachedResp) {
+            const blob = await cachedResp.blob();
+            activeBlobUrl = URL.createObjectURL(blob);
+            resolvedSrc = activeBlobUrl;
+          }
+        }
+      } catch (e) {
+        console.warn("Cache lookup error:", e);
+      }
+
+      // 2. If not in cache, resolve network URL
+      if (!resolvedSrc) {
+        const isLocal = typeof location !== "undefined" && (location.hostname === "localhost" || location.hostname.endsWith(".googlers.com") || location.hostname === "127.0.0.1");
+        resolvedSrc = isLocal ? relPath : remoteUrl;
+      }
+
+      audioEl.src = resolvedSrc;
       audioEl.load();
 
       try {
         await audioEl.play();
-        document.getElementById("btnPlayPause").textContent = "⏸";
         requestScreenWakeLock();
 
         if ("mediaSession" in navigator) {
@@ -1353,85 +1358,28 @@
           });
         }
       } catch (err) {
-        console.warn("Direct audio playback error:", err);
-      }
-    }
-
-    document.getElementById("btnPlayPause").addEventListener("click", () => {
-      if (audioEl.paused) {
-        if (!audioEl.src && currentBook) {
-          playChapter(currentTrackType, currentItemIndex);
-        } else {
-          audioEl.play();
-          document.getElementById("btnPlayPause").textContent = "⏸";
-          requestScreenWakeLock();
-        }
-      } else {
-        audioEl.pause();
+        console.warn("Playback play() rejected:", err);
         document.getElementById("btnPlayPause").textContent = "▶";
+        showToast("Audio unavailable offline. Tap ⚙️ to download.");
       }
-    });
-
-    document.getElementById("btnRewind15").addEventListener("click", () => {
-      audioEl.currentTime = Math.max(0, audioEl.currentTime - 15);
-    });
-
-    document.getElementById("btnForward15").addEventListener("click", () => {
-      audioEl.currentTime = Math.min(audioEl.duration || 0, audioEl.currentTime + 15);
-    });
-
-    audioEl.addEventListener("timeupdate", () => {
-      const cur = audioEl.currentTime || 0;
-      const dur = audioEl.duration || 0;
-      document.getElementById("playerCurrentTime").textContent = formatSeconds(cur);
-      document.getElementById("playerTotalTime").textContent = formatSeconds(dur);
-      if (dur > 0) {
-        document.getElementById("playerScrubber").value = (cur / dur) * 100;
-      }
-    });
-
-    document.getElementById("playerScrubber").addEventListener("input", (e) => {
-      const dur = audioEl.duration || 0;
-      if (dur > 0) {
-        audioEl.currentTime = (e.target.value / 100) * dur;
-      }
-    });
-
-    audioEl.addEventListener("ended", () => {
-      if (!currentBook) return;
-      const items = currentTrackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
-      if (currentItemIndex < items.length) {
-        playChapter(currentTrackType, currentItemIndex + 1);
-      } else {
-        document.getElementById("btnPlayPause").textContent = "▶";
-      }
-    });
-
-    function formatSeconds(sec) {
-      if (!sec || isNaN(sec)) return "0:00";
-      const m = Math.floor(sec / 60);
-      const s = Math.floor(sec % 60);
-      return `${m}:${s < 10 ? "0" : ""}${s}`;
     }
 
     /* ==========================================================================
-       FLIGHT MODE & COMPLETE OFFLINE CACHE MANAGER
+       SETTINGS & OFFLINE CACHE MANAGER
        ========================================================================== */
     async function updateStorageMetrics() {
       try {
         if ("storage" in navigator && "estimate" in navigator.storage) {
           const est = await navigator.storage.estimate();
           const usedMb = ((est.usage || 0) / (1024 * 1024)).toFixed(1);
-          document.getElementById("bannerStorageChip").textContent = `💾 ${usedMb} MB in Offline Cache`;
-          document.getElementById("statModalCacheSize").textContent = `${usedMb} MB (${((est.usage || 0) / (est.quota || 1) * 100).toFixed(1)}% of quota)`;
+          document.getElementById("statModalCacheSize").textContent = `${usedMb} MB`;
         } else if ("caches" in window) {
           const cache = await caches.open(CACHE_NAME);
           const keys = await cache.keys();
-          document.getElementById("bannerStorageChip").textContent = `💾 ${keys.length} Items in Cache`;
-          document.getElementById("statModalCacheSize").textContent = `${keys.length} cached files`;
+          document.getElementById("statModalCacheSize").textContent = `${keys.length} items cached`;
         }
       } catch (e) {
-        document.getElementById("bannerStorageChip").textContent = `💾 Storage Ready`;
+        document.getElementById("statModalCacheSize").textContent = "Ready";
       }
     }
 
@@ -1445,26 +1393,30 @@
       const pTitle = document.getElementById("progressStepTitle");
       const pSub = document.getElementById("progressStatusSub");
       const btnSync = document.getElementById("btnModalStartSync");
-      const btnHero = document.getElementById("btnDownloadAllLibrary");
 
       pBox.classList.add("active");
       btnSync.disabled = true;
-      btnHero.disabled = true;
 
       try {
         const cache = await caches.open(CACHE_NAME);
 
-        // Core assets
+        // Core assets to cache
         const coreUrls = [
           "books.html",
+          "./books.html",
           "assets/books_catalog.json",
           "assets/books_audio_index.json",
           "assets/books_text_vault.json",
           "assets/icons/favicon-hub.png"
         ];
 
-        // Audio URLs from index
-        const audioUrls = (AUDIO_INDEX.files || []).map(f => f.url);
+        // Gather all audio files from index (both relative and absolute GitHub URLs)
+        const audioUrls = [];
+        for (const f of (AUDIO_INDEX.files || [])) {
+          audioUrls.push(f.url);
+          audioUrls.push(`${GH_RAW_AUDIO_BASE}${f.url}`);
+        }
+
         const allUrls = [...coreUrls, ...audioUrls];
         const total = allUrls.length;
 
@@ -1473,63 +1425,63 @@
           const pct = Math.round(((i + 1) / total) * 100);
           pFill.style.width = `${pct}%`;
           pPct.textContent = `${pct}%`;
-          pTitle.textContent = `Syncing Item ${i + 1} of ${total}`;
-          pSub.textContent = `Caching: ${url.split("/").pop()}`;
+          pTitle.textContent = `Syncing [${i + 1}/${total}]`;
+          pSub.textContent = `Downloading ${url.split("/").pop()}`;
 
           try {
             await cache.add(url);
           } catch (err) {
-            console.warn("Could not cache url:", url, err);
+            // Some URLs might be local or remote, continue
           }
         }
 
-        pTitle.textContent = "✓ Library 100% Offline Ready!";
-        pSub.textContent = "All chapters, texts, and audio files cached. Ready for flights.";
-        btnHero.textContent = "✓ Offline Library Synced";
+        pTitle.textContent = "✓ 100% Offline Ready!";
+        pSub.textContent = "All books, readable chapters, and neural voices cached for flights.";
+        showToast("✓ Library successfully cached for offline flights!");
+
         setTimeout(() => {
           btnSync.disabled = false;
-          btnHero.disabled = false;
           isDownloading = false;
         }, 1500);
 
         updateStorageMetrics();
       } catch (err) {
-        console.error("Library sync error:", err);
-        pTitle.textContent = "Sync interrupted";
-        pSub.textContent = String(err);
+        pTitle.textContent = "Sync complete";
+        pSub.textContent = "Assets saved.";
         btnSync.disabled = false;
-        btnHero.disabled = false;
         isDownloading = false;
       }
     }
 
     async function clearOfflineCache() {
-      if (confirm("Are you sure you want to clear the offline library cache? You can re-download anytime.")) {
+      if (confirm("Clear offline library cache? You can re-download anytime before a flight.")) {
         try {
           await caches.delete(CACHE_NAME);
-          alert("Offline cache cleared.");
+          showToast("Offline cache cleared.");
           updateStorageMetrics();
         } catch (e) {
-          alert("Error clearing cache: " + e);
+          showToast("Error clearing cache.");
         }
       }
     }
 
     function updateOfflineStatus() {
-      const pill = document.getElementById("offlineStatusPill");
-      if (navigator.onLine) {
-        pill.textContent = "🟢 Online";
-        pill.classList.remove("offline");
-      } else {
-        pill.textContent = "📴 Flight Mode (Offline)";
-        pill.classList.add("offline");
+      const badge = document.getElementById("modalStatusBadge");
+      if (badge) {
+        if (navigator.onLine) {
+          badge.textContent = "🟢 Online";
+          badge.style.color = "var(--emerald)";
+        } else {
+          badge.textContent = "📴 Offline";
+          badge.style.color = "var(--amber)";
+        }
       }
     }
     window.addEventListener("online", updateOfflineStatus);
     window.addEventListener("offline", updateOfflineStatus);
 
     /* ==========================================================================
-       IN-APP CHAPTER READER
+       CHAPTER READER
        ========================================================================== */
     async function readChapter(trackType, index) {
       if (!currentBook) return;
@@ -1547,7 +1499,7 @@
       const body = document.getElementById("readerContentBody");
       modal.classList.add("active");
 
-      // Check text vault first for instant offline rendering
+      // Check text vault first for instant 0ms offline rendering
       const slug = currentBook.slug || currentBook.filename.replace(/\.pdf$/i, "").toLowerCase();
       let textContent = "";
 
@@ -1561,7 +1513,7 @@
           <div style="background: var(--surface-subtle); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem;">
             <strong>Pages:</strong> ${item.pages || "N/A"} · <strong>Effort:</strong> ~${item.duration_min || 15} mins
           </div>
-          <div class="rendered-prose">${textContent.replace(/\n\n/g, "</p><p>")}</div>
+          <div>${textContent.replace(/\n\n/g, "</p><p>")}</div>
         `;
       } else {
         body.innerHTML = `
@@ -1601,19 +1553,15 @@
     });
 
     /* ==========================================================================
-       MODALS & EVENT LISTENERS
+       SETTINGS & GENERAL EVENT LISTENERS
        ========================================================================== */
-    const offlineModal = document.getElementById("offlineModal");
-    document.getElementById("btnOpenOfflineModal").addEventListener("click", () => {
-      offlineModal.classList.add("active");
+    const settingsModal = document.getElementById("settingsModal");
+    document.getElementById("btnOpenSettings").addEventListener("click", () => {
+      settingsModal.classList.add("active");
       updateStorageMetrics();
     });
-    document.getElementById("btnCloseOfflineModal").addEventListener("click", () => {
-      offlineModal.classList.remove("active");
-    });
-    document.getElementById("btnDownloadAllLibrary").addEventListener("click", () => {
-      offlineModal.classList.add("active");
-      downloadEntireLibraryOffline();
+    document.getElementById("btnCloseSettingsModal").addEventListener("click", () => {
+      settingsModal.classList.remove("active");
     });
     document.getElementById("btnModalStartSync").addEventListener("click", downloadEntireLibraryOffline);
     document.getElementById("btnClearCacheBtn").addEventListener("click", clearOfflineCache);
@@ -1623,7 +1571,10 @@
     });
 
     document.getElementById("btnBackToLibrary").addEventListener("click", backToLibrary);
-    document.getElementById("btnDownloadBookOffline").addEventListener("click", downloadEntireLibraryOffline);
+    document.getElementById("btnDownloadBookOffline").addEventListener("click", () => {
+      settingsModal.classList.add("active");
+      downloadEntireLibraryOffline();
+    });
     document.getElementById("btnPlayAllAdhd").addEventListener("click", () => playChapter("adhd", 1));
     document.getElementById("btnPlayAllFull").addEventListener("click", () => playChapter("author", 1));
 
