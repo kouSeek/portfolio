@@ -1891,16 +1891,19 @@ def generate_books_html() -> None:
         }}
 
         // Check cache storage size
-        if ("storage" in navigator && "estimate" in navigator.storage) {{
-          const est = await navigator.storage.estimate();
-          const usedMb = ((est.usage || 0) / (1024 * 1024)).toFixed(1);
-          document.getElementById("statModalCacheSize").textContent = `${{usedMb}} MB in Cache`;
-        }} else if ("caches" in window) {{
-          const cache = await caches.open(CACHE_NAME);
-          const keys = await cache.keys();
-          document.getElementById("statModalCacheSize").textContent = `${{keys.length}} files in Cache`;
-        }} else {{
-          document.getElementById("statModalCacheSize").textContent = "Available";
+        const statCacheSize = document.getElementById("statModalCacheSize");
+        if (statCacheSize) {{
+          if ("storage" in navigator && "estimate" in navigator.storage) {{
+            const est = await navigator.storage.estimate();
+            const usedMb = ((est.usage || 0) / (1024 * 1024)).toFixed(1);
+            statCacheSize.textContent = `${{usedMb}} MB in Cache`;
+          }} else if ("caches" in window) {{
+            const cache = await caches.open(CACHE_NAME);
+            const keys = await cache.keys();
+            statCacheSize.textContent = `${{keys.length}} files in Cache`;
+          }} else {{
+            statCacheSize.textContent = "Available";
+          }}
         }}
 
         if (btnSync && !isDownloading) {{
