@@ -1450,13 +1450,33 @@ def generate_books_html() -> None:
           .replace(/"/g, "&quot;");
       }}
 
-      function wrapWords(text) {{
-        const tokens = text.split(/(\\s+)/);
-        return tokens.map(tok => {{
+      function wrapWords(text, lineType) {{
+        const rawTokens = text.split(/(\\s+)/);
+        const nonWsTokens = rawTokens.filter(t => t && !/^\\s+$/.test(t));
+        let tokenPos = 0;
+        return rawTokens.map(tok => {{
           if (/^\\s+$/.test(tok) || !tok) return tok;
           const clean = tok.replace(/[*_#`~[\\]()]/g, "");
+          const isLast = (tokenPos === nonWsTokens.length - 1);
+          tokenPos++;
+
           const wIdx = wordIndex++;
-          const weight = Math.max(1, clean.length);
+          let weight = Math.max(3, clean.length);
+          if (lineType === "h1" || lineType === "h2") {{
+            weight += 2;
+          }}
+          if (/[.?!]$/.test(clean) || /[.?!]["'\)\]]*$/.test(tok)) {{
+            weight += 6;
+          }} else if (/[,;:—–·]$/.test(clean) || /[,;:—–·]["'\)\]]*$/.test(tok) || tok === "—" || tok === "–" || tok === "·") {{
+            weight += 3;
+          }}
+          if (isLast) {{
+            if (lineType === "h1") weight += 40;
+            else if (lineType === "h2") weight += 52;
+            else if (lineType === "h3") weight += 10;
+            else if (lineType === "quote") weight += 2;
+            else weight += 6;
+          }}
           wordsList.push({{
             index: wIdx,
             word: clean,
@@ -1489,26 +1509,22 @@ def generate_books_html() -> None:
           continue;
         }}
 
-        if (line.startsWith("## Step") || line.startsWith("## Chapter") || line.startsWith("# Step")) {{
-          continue;
-        }}
-
         if (line.startsWith(">")) {{
           if (!inQuote) {{ bodyHtml += "<blockquote>"; inQuote = true; }}
           line = line.replace(/^>\\s*/, "");
-          bodyHtml += `<p>${{wrapWords(line)}}</p>`;
+          bodyHtml += `<p>${{wrapWords(line, "quote")}}</p>`;
         }} else if (line.startsWith("### ")) {{
           if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
-          bodyHtml += `<h3>${{wrapWords(line.slice(4))}}</h3>`;
+          bodyHtml += `<h3>${{wrapWords(line.slice(4), "h3")}}</h3>`;
         }} else if (line.startsWith("## ")) {{
           if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
-          bodyHtml += `<h2>${{wrapWords(line.slice(3))}}</h2>`;
+          bodyHtml += `<h2>${{wrapWords(line.slice(3), "h2")}}</h2>`;
         }} else if (line.startsWith("# ")) {{
           if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
-          bodyHtml += `<h1>${{wrapWords(line.slice(2))}}</h1>`;
+          bodyHtml += `<h1>${{wrapWords(line.slice(2), "h1")}}</h1>`;
         }} else {{
           if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
-          bodyHtml += `<p>${{wrapWords(line)}}</p>`;
+          bodyHtml += `<p>${{wrapWords(line, "body")}}</p>`;
         }}
       }}
       if (inQuote) {{ bodyHtml += "</blockquote>"; }}

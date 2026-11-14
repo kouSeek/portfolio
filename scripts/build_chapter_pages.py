@@ -72,18 +72,41 @@ def render_markdown_to_html(md_text: str) -> tuple[str, list[dict], int]:
     word_index = 0
     words_list = []
 
-    def wrap_words(text: str) -> str:
+    def wrap_words(text: str, line_type: str = "body") -> str:
         nonlocal word_index
         tokens = re.split(r"(\s+)", text)
+        non_ws = [t for t in tokens if t and not re.match(r"^\s+$", t)]
+        token_pos = 0
         res = []
         for tok in tokens:
             if not tok or re.match(r"^\s+$", tok):
                 res.append(tok)
                 continue
             clean = re.sub(r"[*_#`~\[\]()]", "", tok)
+            is_last = (token_pos == len(non_ws) - 1)
+            token_pos += 1
+
             w_idx = word_index
             word_index += 1
-            weight = max(1, len(clean))
+            weight = max(3, len(clean))
+            if line_type in ("h1", "h2"):
+                weight += 2
+            if re.search(r"[.?!]$", clean) or re.search(r'[.?!]["\'\)\]]*$', tok):
+                weight += 6
+            elif re.search(r"[,;:—–·]$", clean) or re.search(r'[,;:—–·]["\'\)\]]*$', tok) or tok in ("—", "–", "·"):
+                weight += 3
+            if is_last:
+                if line_type == "h1":
+                    weight += 40
+                elif line_type == "h2":
+                    weight += 52
+                elif line_type == "h3":
+                    weight += 10
+                elif line_type == "quote":
+                    weight += 2
+                else:
+                    weight += 6
+
             words_list.append({"idx": w_idx, "word": clean, "weight": weight})
             escaped_tok = html.escape(tok)
             res.append(f'<span class="k-word" data-word-idx="{w_idx}" id="w_{w_idx}">{escaped_tok}</span>')
@@ -102,27 +125,27 @@ def render_markdown_to_html(md_text: str) -> tuple[str, list[dict], int]:
                 body_parts.append('<blockquote class="chapter-spoken-brief">')
                 in_quote = True
             quote_text = re.sub(r"^>\s*", "", line_s)
-            body_parts.append(f"<p>{wrap_words(quote_text)}</p>")
+            body_parts.append(f"<p>{wrap_words(quote_text, 'quote')}</p>")
         elif line_s.startswith("### "):
             if in_quote:
                 body_parts.append("</blockquote>")
                 in_quote = False
-            body_parts.append(f'<h3 class="section-heading">{wrap_words(line_s[4:])}</h3>')
+            body_parts.append(f'<h3 class="section-heading">{wrap_words(line_s[4:], "h3")}</h3>')
         elif line_s.startswith("## "):
             if in_quote:
                 body_parts.append("</blockquote>")
                 in_quote = False
-            body_parts.append(f'<h2 class="chapter-prose-title">{wrap_words(line_s[3:])}</h2>')
+            body_parts.append(f'<h2 class="chapter-prose-title">{wrap_words(line_s[3:], "h2")}</h2>')
         elif line_s.startswith("# "):
             if in_quote:
                 body_parts.append("</blockquote>")
                 in_quote = False
-            body_parts.append(f'<h1 class="chapter-prose-title">{wrap_words(line_s[2:])}</h1>')
+            body_parts.append(f'<h1 class="chapter-prose-title">{wrap_words(line_s[2:], "h1")}</h1>')
         else:
             if in_quote:
                 body_parts.append("</blockquote>")
                 in_quote = False
-            body_parts.append(f"<p>{wrap_words(line_s)}</p>")
+            body_parts.append(f"<p>{wrap_words(line_s, 'body')}</p>")
 
     if in_quote:
         body_parts.append("</blockquote>")
