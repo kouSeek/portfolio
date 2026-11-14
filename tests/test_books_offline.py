@@ -3,9 +3,9 @@
 """Unit & Integration Tests for Liberation Books Library Offline Flight Mode.
 
 Verifies:
-1. All 279 chapter HTML files across 29 books exist, contain full chapter text,
+1. All 369 chapter HTML files across 40 books exist, contain full chapter text,
    and have word-synced karaoke data.
-2. `books.html` offline sync downloads all 279 chapter HTML pages and all audio tracks.
+2. `books.html` offline sync downloads all 369 chapter HTML pages and all audio tracks.
 3. `kalyani-sw.js` Cache-First fetch interceptor serves requests from CacheStorage offline.
 4. Headless Node.js VM simulation of 100% offline flight mode (zero network / airplane mode):
    - Offline chapter navigation from books library to chapter reader.
@@ -102,8 +102,8 @@ class TestBooksOfflineFlightMode(unittest.TestCase):
 
             checked_books += 1
 
-        self.assertEqual(checked_books, 29, "Expected 29 books in catalog")
-        self.assertEqual(total_chapters, 279, "Expected exactly 279 chapter HTML files")
+        self.assertEqual(checked_books, 40, "Expected 40 books in catalog")
+        self.assertEqual(total_chapters, 369, "Expected exactly 369 chapter HTML files")
 
     def test_books_html_contains_chapter_files_and_full_offline_sync(self) -> None:
         """Verify books.html embeds all 279 chapter files, storage metrics, and sync handler."""
@@ -120,7 +120,7 @@ class TestBooksOfflineFlightMode(unittest.TestCase):
         match = re.search(r"const CHAPTER_FILES = (\[[\s\S]*?\]);", html)
         self.assertIsNotNone(match, "CHAPTER_FILES constant not found in books.html")
         chapter_files = json.loads(match.group(1))
-        self.assertEqual(len(chapter_files), 279, "Expected 279 chapter files in CHAPTER_FILES")
+        self.assertEqual(len(chapter_files), 369, "Expected 369 chapter files in CHAPTER_FILES")
 
     def test_books_html_script_syntax_and_eval_clean(self) -> None:
         """Verify books.html inlined JavaScript parses cleanly with 0 syntax errors in Node.js."""

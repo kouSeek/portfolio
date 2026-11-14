@@ -673,7 +673,7 @@ class TestAndroidMobileBrowserSimulator(unittest.TestCase):
         assert.ok(booksGrid, 'booksGrid element should exist');
         const bookCards = booksGrid.querySelectorAll('.book-card');
         console.log(`✓ Books catalog loaded: ${bookCards.length} book cards rendered in mobile grid`);
-        assert.strictEqual(bookCards.length, 29, 'Expected exactly 29 book cards rendered');
+        assert.strictEqual(bookCards.length, 40, 'Expected exactly 40 book cards rendered');
 
         // Check header and search input
         const searchInput = documentNode.getElementById('bookSearchInput');
@@ -697,7 +697,7 @@ class TestAndroidMobileBrowserSimulator(unittest.TestCase):
         searchInput.value = '';
         searchInput.dispatchEvent({ type: 'input', bubbles: true, target: searchInput });
         filteredCards = booksGrid.querySelectorAll('.book-card');
-        assert.strictEqual(filteredCards.length, 29, 'Clearing search should restore all 29 books');
+        assert.strictEqual(filteredCards.length, 40, 'Clearing search should restore all 40 books');
 
         // Tap category pill "Science & Cosmos" (or fallback)
         const sciencePill = documentNode.querySelector('.filter-chip[data-cat="Science & Cosmos"]') || documentNode.querySelector('.filter-chip[data-cat="Science & Frontier"]');
@@ -711,7 +711,7 @@ class TestAndroidMobileBrowserSimulator(unittest.TestCase):
         const allPill = documentNode.querySelector('.filter-chip[data-cat="all"]');
         assert.ok(allPill, 'All filter chip should exist');
         allPill.click();
-        assert.strictEqual(booksGrid.querySelectorAll('.book-card').length, 29, 'Category All restores 29 books');
+        assert.strictEqual(booksGrid.querySelectorAll('.book-card').length, 40, 'Category All restores 40 books');
 
         // =========================================================================
         // Test Journey 3: Book Detail View Navigation & Metadata
