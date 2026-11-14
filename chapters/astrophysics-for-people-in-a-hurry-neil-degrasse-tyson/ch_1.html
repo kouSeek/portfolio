@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0F172A" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Ch 1 • Astrophysics for People in a Hurry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --surface: #FFFFFF;
+      --surface-subtle: #F1F5F9;
+      --border: #E2E8F0;
+      --ink: #0F172A;
+      --ink-muted: #64748B;
+      --accent: #4F46E5;
+      --accent-light: #EEF2FF;
+      --emerald: #10B981;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    body.dark-mode {
+      --bg: #0F172A;
+      --surface: #1E293B;
+      --surface-subtle: #334155;
+      --border: #334155;
+      --ink: #F8FAFC;
+      --ink-muted: #94A3B8;
+      --accent: #818CF8;
+      --accent-light: rgba(99, 102, 241, 0.15);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: calc(var(--safe-top) + 56px);
+      padding-bottom: calc(var(--safe-bottom) + 110px);
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    /* Topbar */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--safe-top) + 56px);
+      padding-top: var(--safe-top);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 12px;
+      padding-right: 12px;
+      z-index: 50;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: var(--surface-subtle);
+    }
+    .top-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 55%;
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-icon {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 5px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Main Container */
+    .reader-container {
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 18px;
+    }
+
+    /* Chapter Header Banner */
+    .chapter-hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    .hero-book-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .hero-chapter-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 12px;
+    }
+    .hero-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .meta-chip {
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--surface-subtle);
+      color: var(--ink-muted);
+    }
+    .meta-chip.voice {
+      background: #ECFDF5;
+      color: #059669;
+    }
+    .hero-brief {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--ink);
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    /* Top Play Button Card */
+    .hero-listen-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--accent-light);
+      border: 1px solid rgba(79, 70, 229, 0.2);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-top: 14px;
+    }
+    .btn-top-listen {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      background: var(--accent);
+      color: #FFFFFF;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+      transition: all 0.15s ease;
+    }
+    .btn-top-listen:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Reading Typography */
+    .prose-body {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1.12rem;
+      line-height: 1.85;
+      color: var(--ink);
+    }
+    .prose-body h1, .prose-body h2, .prose-body h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      margin-top: 28px;
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+    .prose-body p {
+      margin-bottom: 18px;
+    }
+    .prose-body blockquote {
+      border-left: 3.5px solid var(--accent);
+      margin: 18px 0;
+      padding: 10px 18px;
+      color: var(--ink-muted);
+      background: var(--surface-subtle);
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+
+    /* Karaoke Highlighting */
+    .k-word {
+      display: inline;
+      border-radius: 4px;
+      padding: 0 2px;
+      transition: background-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+      cursor: pointer;
+    }
+    .k-word:hover {
+      background-color: rgba(99, 102, 241, 0.15);
+    }
+    .k-word.active-word {
+      background-color: #FEF08A !important;
+      color: #0F172A !important;
+      font-weight: 700;
+      border-radius: 4px;
+      box-shadow: 0 0 0 2px #FEF08A, 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+    body.dark-mode .k-word.active-word {
+      background-color: #6366F1 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 0 0 2px #6366F1, 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Chapter Footer Navigation */
+    .nav-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .nav-footer a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .nav-footer a.primary {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+
+    /* Sticky Bottom Player Bar */
+    .sticky-player {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1.5px solid var(--border);
+      padding: 10px 16px calc(var(--safe-bottom) + 10px);
+      z-index: 60;
+      box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .player-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .player-time {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink-muted);
+      min-width: 38px;
+      font-variant-numeric: tabular-nums;
+    }
+    .player-time.right {
+      text-align: right;
+    }
+    .player-slider {
+      flex: 1;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--border);
+      border-radius: 999px;
+      outline: none;
+    }
+    .player-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+    .player-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .player-info {
+      flex: 1;
+      min-width: 0;
+      margin-right: 12px;
+    }
+    .player-info-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .player-info-sub {
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .player-btns {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-play-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #FFFFFF;
+      border: none;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+    }
+    .btn-skip {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* Toast */
+    .toast-msg {
+      position: fixed;
+      top: calc(var(--safe-top) + 60px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.92);
+      color: #FFFFFF;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 100;
+    }
+    .toast-msg.active {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back-btn" id="navBackBtn" href="../../books.html">← Library</a>
+    <div class="top-title">Astrophysics for People in a Hurry</div>
+    <div class="top-actions">
+      <button class="btn-icon" id="btnFontSmaller">A-</button>
+      <button class="btn-icon" id="btnFontLarger">A+</button>
+      <button class="btn-icon" id="btnToggleTheme">🎨</button>
+    </div>
+  </header>
+
+  <main class="reader-container">
+    <article class="chapter-hero">
+      <div class="hero-book-title">Astrophysics for People in a Hurry</div>
+      <h1 class="hero-chapter-title">Preface</h1>
+      <div class="hero-meta-row">
+        <span class="meta-chip">📖 Full Book Chapter</span>
+        <span class="meta-chip">📄 Pages 8-10</span>
+        <span class="meta-chip">⏱️ ~20 mins</span>
+        
+      </div>
+      <div class="hero-brief"><strong>Core Takeaway:</strong> A concise field guide to the universe.</div>
+
+      
+      <div style="margin-top: 14px; font-size: 0.85rem; color: var(--ink-muted); background: var(--surface-subtle); padding: 10px 14px; border-radius: 8px;">
+        📖 Distraction-free reading mode. Voice track is in generation queue.
+      </div>
+      
+    </article>
+
+    <section class="prose-body" id="proseBody">
+      <h2><span class="k-word" data-word-idx="0" id="w_0">Preface</span></h2>
+<blockquote>
+<p><span class="k-word" data-word-idx="1" id="w_1">A</span> <span class="k-word" data-word-idx="2" id="w_2">concise</span> <span class="k-word" data-word-idx="3" id="w_3">field</span> <span class="k-word" data-word-idx="4" id="w_4">guide</span> <span class="k-word" data-word-idx="5" id="w_5">to</span> <span class="k-word" data-word-idx="6" id="w_6">the</span> <span class="k-word" data-word-idx="7" id="w_7">universe.</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="8" id="w_8">In</span>  <span class="k-word" data-word-idx="9" id="w_9">recent</span>  <span class="k-word" data-word-idx="10" id="w_10">years,</span>  <span class="k-word" data-word-idx="11" id="w_11">no</span>  <span class="k-word" data-word-idx="12" id="w_12">more</span>  <span class="k-word" data-word-idx="13" id="w_13">than</span>  <span class="k-word" data-word-idx="14" id="w_14">a</span>  <span class="k-word" data-word-idx="15" id="w_15">week</span>  <span class="k-word" data-word-idx="16" id="w_16">goes</span>  <span class="k-word" data-word-idx="17" id="w_17">by</span>  <span class="k-word" data-word-idx="18" id="w_18">without</span>  <span class="k-word" data-word-idx="19" id="w_19">news</span>  <span class="k-word" data-word-idx="20" id="w_20">of</span>  <span class="k-word" data-word-idx="21" id="w_21">a</span>  <span class="k-word" data-word-idx="22" id="w_22">cosmic</span> <span class="k-word" data-word-idx="23" id="w_23">discovery</span> <span class="k-word" data-word-idx="24" id="w_24">worthy</span> <span class="k-word" data-word-idx="25" id="w_25">of</span> <span class="k-word" data-word-idx="26" id="w_26">banner</span> <span class="k-word" data-word-idx="27" id="w_27">headlines.</span> <span class="k-word" data-word-idx="28" id="w_28">While</span> <span class="k-word" data-word-idx="29" id="w_29">media</span> <span class="k-word" data-word-idx="30" id="w_30">gatekeepers</span> <span class="k-word" data-word-idx="31" id="w_31">may</span> <span class="k-word" data-word-idx="32" id="w_32">have</span> <span class="k-word" data-word-idx="33" id="w_33">developed</span>  <span class="k-word" data-word-idx="34" id="w_34">an</span>  <span class="k-word" data-word-idx="35" id="w_35">interest</span>  <span class="k-word" data-word-idx="36" id="w_36">in</span>  <span class="k-word" data-word-idx="37" id="w_37">the</span>  <span class="k-word" data-word-idx="38" id="w_38">universe,</span>  <span class="k-word" data-word-idx="39" id="w_39">this</span>  <span class="k-word" data-word-idx="40" id="w_40">rise</span>  <span class="k-word" data-word-idx="41" id="w_41">in</span>  <span class="k-word" data-word-idx="42" id="w_42">coverage</span>  <span class="k-word" data-word-idx="43" id="w_43">likely</span>  <span class="k-word" data-word-idx="44" id="w_44">comes</span> <span class="k-word" data-word-idx="45" id="w_45">from</span>  <span class="k-word" data-word-idx="46" id="w_46">a</span>  <span class="k-word" data-word-idx="47" id="w_47">genuine</span>  <span class="k-word" data-word-idx="48" id="w_48">increase</span>  <span class="k-word" data-word-idx="49" id="w_49">in</span>  <span class="k-word" data-word-idx="50" id="w_50">the</span>  <span class="k-word" data-word-idx="51" id="w_51">public’s</span>  <span class="k-word" data-word-idx="52" id="w_52">appetite</span>  <span class="k-word" data-word-idx="53" id="w_53">for</span>  <span class="k-word" data-word-idx="54" id="w_54">science.</span>  <span class="k-word" data-word-idx="55" id="w_55">Evidence</span>  <span class="k-word" data-word-idx="56" id="w_56">for</span> <span class="k-word" data-word-idx="57" id="w_57">this</span> <span class="k-word" data-word-idx="58" id="w_58">abounds,</span> <span class="k-word" data-word-idx="59" id="w_59">from</span> <span class="k-word" data-word-idx="60" id="w_60">hit</span> <span class="k-word" data-word-idx="61" id="w_61">television</span> <span class="k-word" data-word-idx="62" id="w_62">shows</span> <span class="k-word" data-word-idx="63" id="w_63">inspired</span> <span class="k-word" data-word-idx="64" id="w_64">or</span> <span class="k-word" data-word-idx="65" id="w_65">informed</span> <span class="k-word" data-word-idx="66" id="w_66">by</span> <span class="k-word" data-word-idx="67" id="w_67">science,</span> <span class="k-word" data-word-idx="68" id="w_68">to</span> <span class="k-word" data-word-idx="69" id="w_69">the</span> <span class="k-word" data-word-idx="70" id="w_70">success</span> <span class="k-word" data-word-idx="71" id="w_71">of</span> <span class="k-word" data-word-idx="72" id="w_72">science</span> <span class="k-word" data-word-idx="73" id="w_73">fiction</span> <span class="k-word" data-word-idx="74" id="w_74">films</span> <span class="k-word" data-word-idx="75" id="w_75">starring</span> <span class="k-word" data-word-idx="76" id="w_76">marquee</span> <span class="k-word" data-word-idx="77" id="w_77">actors,</span> <span class="k-word" data-word-idx="78" id="w_78">and</span> <span class="k-word" data-word-idx="79" id="w_79">brought</span> <span class="k-word" data-word-idx="80" id="w_80">to</span> <span class="k-word" data-word-idx="81" id="w_81">the</span>  <span class="k-word" data-word-idx="82" id="w_82">screen</span>  <span class="k-word" data-word-idx="83" id="w_83">by</span>  <span class="k-word" data-word-idx="84" id="w_84">celebrated</span>  <span class="k-word" data-word-idx="85" id="w_85">producers</span>  <span class="k-word" data-word-idx="86" id="w_86">and</span>  <span class="k-word" data-word-idx="87" id="w_87">directors.</span>  <span class="k-word" data-word-idx="88" id="w_88">And</span>  <span class="k-word" data-word-idx="89" id="w_89">lately,</span>  <span class="k-word" data-word-idx="90" id="w_90">theatrical</span> <span class="k-word" data-word-idx="91" id="w_91">release</span>  <span class="k-word" data-word-idx="92" id="w_92">biopics</span>  <span class="k-word" data-word-idx="93" id="w_93">featuring</span>  <span class="k-word" data-word-idx="94" id="w_94">important</span>  <span class="k-word" data-word-idx="95" id="w_95">scientists</span>  <span class="k-word" data-word-idx="96" id="w_96">have</span>  <span class="k-word" data-word-idx="97" id="w_97">become</span>  <span class="k-word" data-word-idx="98" id="w_98">a</span>  <span class="k-word" data-word-idx="99" id="w_99">genre</span>  <span class="k-word" data-word-idx="100" id="w_100">unto</span> <span class="k-word" data-word-idx="101" id="w_101">itself.</span> <span class="k-word" data-word-idx="102" id="w_102">There’s</span> <span class="k-word" data-word-idx="103" id="w_103">also</span> <span class="k-word" data-word-idx="104" id="w_104">widespread</span> <span class="k-word" data-word-idx="105" id="w_105">interest</span> <span class="k-word" data-word-idx="106" id="w_106">around</span> <span class="k-word" data-word-idx="107" id="w_107">the</span> <span class="k-word" data-word-idx="108" id="w_108">world</span> <span class="k-word" data-word-idx="109" id="w_109">in</span> <span class="k-word" data-word-idx="110" id="w_110">science</span> <span class="k-word" data-word-idx="111" id="w_111">festivals,</span> <span class="k-word" data-word-idx="112" id="w_112">science</span> <span class="k-word" data-word-idx="113" id="w_113">fiction</span> <span class="k-word" data-word-idx="114" id="w_114">conventions,</span> <span class="k-word" data-word-idx="115" id="w_115">and</span> <span class="k-word" data-word-idx="116" id="w_116">science</span> <span class="k-word" data-word-idx="117" id="w_117">documentaries</span> <span class="k-word" data-word-idx="118" id="w_118">for</span> <span class="k-word" data-word-idx="119" id="w_119">television.</span></p>
+<p><span class="k-word" data-word-idx="120" id="w_120">The</span> <span class="k-word" data-word-idx="121" id="w_121">highest</span> <span class="k-word" data-word-idx="122" id="w_122">grossing</span> <span class="k-word" data-word-idx="123" id="w_123">film</span> <span class="k-word" data-word-idx="124" id="w_124">of</span> <span class="k-word" data-word-idx="125" id="w_125">all</span> <span class="k-word" data-word-idx="126" id="w_126">time</span> <span class="k-word" data-word-idx="127" id="w_127">is</span> <span class="k-word" data-word-idx="128" id="w_128">by</span> <span class="k-word" data-word-idx="129" id="w_129">a</span> <span class="k-word" data-word-idx="130" id="w_130">famous</span> <span class="k-word" data-word-idx="131" id="w_131">director</span> <span class="k-word" data-word-idx="132" id="w_132">who</span> <span class="k-word" data-word-idx="133" id="w_133">set</span> <span class="k-word" data-word-idx="134" id="w_134">his</span> <span class="k-word" data-word-idx="135" id="w_135">story</span>  <span class="k-word" data-word-idx="136" id="w_136">on</span>  <span class="k-word" data-word-idx="137" id="w_137">a</span>  <span class="k-word" data-word-idx="138" id="w_138">planet</span>  <span class="k-word" data-word-idx="139" id="w_139">orbiting</span>  <span class="k-word" data-word-idx="140" id="w_140">a</span>  <span class="k-word" data-word-idx="141" id="w_141">distant</span>  <span class="k-word" data-word-idx="142" id="w_142">star.</span>  <span class="k-word" data-word-idx="143" id="w_143">And</span>  <span class="k-word" data-word-idx="144" id="w_144">it</span>  <span class="k-word" data-word-idx="145" id="w_145">features</span>  <span class="k-word" data-word-idx="146" id="w_146">a</span>  <span class="k-word" data-word-idx="147" id="w_147">famous</span>  <span class="k-word" data-word-idx="148" id="w_148">actress</span> <span class="k-word" data-word-idx="149" id="w_149">who</span> <span class="k-word" data-word-idx="150" id="w_150">plays</span> <span class="k-word" data-word-idx="151" id="w_151">an</span> <span class="k-word" data-word-idx="152" id="w_152">astrobiologist.</span> <span class="k-word" data-word-idx="153" id="w_153">While</span> <span class="k-word" data-word-idx="154" id="w_154">most</span> <span class="k-word" data-word-idx="155" id="w_155">branches</span> <span class="k-word" data-word-idx="156" id="w_156">of</span> <span class="k-word" data-word-idx="157" id="w_157">science</span> <span class="k-word" data-word-idx="158" id="w_158">have</span> <span class="k-word" data-word-idx="159" id="w_159">ascended</span> <span class="k-word" data-word-idx="160" id="w_160">in</span>  <span class="k-word" data-word-idx="161" id="w_161">this</span>  <span class="k-word" data-word-idx="162" id="w_162">era,</span>  <span class="k-word" data-word-idx="163" id="w_163">the</span>  <span class="k-word" data-word-idx="164" id="w_164">field</span>  <span class="k-word" data-word-idx="165" id="w_165">of</span>  <span class="k-word" data-word-idx="166" id="w_166">astrophysics</span>  <span class="k-word" data-word-idx="167" id="w_167">persistently</span>  <span class="k-word" data-word-idx="168" id="w_168">rises</span>  <span class="k-word" data-word-idx="169" id="w_169">to</span>  <span class="k-word" data-word-idx="170" id="w_170">the</span>  <span class="k-word" data-word-idx="171" id="w_171">top.</span>  <span class="k-word" data-word-idx="172" id="w_172">I</span>  <span class="k-word" data-word-idx="173" id="w_173">think</span>  <span class="k-word" data-word-idx="174" id="w_174">I</span> <span class="k-word" data-word-idx="175" id="w_175">know</span>  <span class="k-word" data-word-idx="176" id="w_176">why.</span>  <span class="k-word" data-word-idx="177" id="w_177">At</span>  <span class="k-word" data-word-idx="178" id="w_178">one</span>  <span class="k-word" data-word-idx="179" id="w_179">time</span>  <span class="k-word" data-word-idx="180" id="w_180">or</span>  <span class="k-word" data-word-idx="181" id="w_181">another</span>  <span class="k-word" data-word-idx="182" id="w_182">every</span>  <span class="k-word" data-word-idx="183" id="w_183">one</span>  <span class="k-word" data-word-idx="184" id="w_184">of</span>  <span class="k-word" data-word-idx="185" id="w_185">us</span>  <span class="k-word" data-word-idx="186" id="w_186">has</span>  <span class="k-word" data-word-idx="187" id="w_187">looked</span>  <span class="k-word" data-word-idx="188" id="w_188">up</span>  <span class="k-word" data-word-idx="189" id="w_189">at</span>  <span class="k-word" data-word-idx="190" id="w_190">the</span> <span class="k-word" data-word-idx="191" id="w_191">night</span>  <span class="k-word" data-word-idx="192" id="w_192">sky</span>  <span class="k-word" data-word-idx="193" id="w_193">and</span>  <span class="k-word" data-word-idx="194" id="w_194">wondered:</span>  <span class="k-word" data-word-idx="195" id="w_195">What</span>  <span class="k-word" data-word-idx="196" id="w_196">does</span>  <span class="k-word" data-word-idx="197" id="w_197">it</span>  <span class="k-word" data-word-idx="198" id="w_198">all</span>  <span class="k-word" data-word-idx="199" id="w_199">mean?</span>  <span class="k-word" data-word-idx="200" id="w_200">How</span>  <span class="k-word" data-word-idx="201" id="w_201">does</span>  <span class="k-word" data-word-idx="202" id="w_202">it</span>  <span class="k-word" data-word-idx="203" id="w_203">all</span>  <span class="k-word" data-word-idx="204" id="w_204">work?</span> <span class="k-word" data-word-idx="205" id="w_205">And,</span> <span class="k-word" data-word-idx="206" id="w_206">what</span> <span class="k-word" data-word-idx="207" id="w_207">is</span> <span class="k-word" data-word-idx="208" id="w_208">my</span> <span class="k-word" data-word-idx="209" id="w_209">place</span> <span class="k-word" data-word-idx="210" id="w_210">in</span> <span class="k-word" data-word-idx="211" id="w_211">the</span> <span class="k-word" data-word-idx="212" id="w_212">universe?</span></p>
+<p><span class="k-word" data-word-idx="213" id="w_213">If</span>  <span class="k-word" data-word-idx="214" id="w_214">you’re</span>  <span class="k-word" data-word-idx="215" id="w_215">too</span>  <span class="k-word" data-word-idx="216" id="w_216">busy</span>  <span class="k-word" data-word-idx="217" id="w_217">to</span>  <span class="k-word" data-word-idx="218" id="w_218">absorb</span>  <span class="k-word" data-word-idx="219" id="w_219">the</span>  <span class="k-word" data-word-idx="220" id="w_220">cosmos</span>  <span class="k-word" data-word-idx="221" id="w_221">via</span>  <span class="k-word" data-word-idx="222" id="w_222">classes,</span>  <span class="k-word" data-word-idx="223" id="w_223">textbooks,</span>  <span class="k-word" data-word-idx="224" id="w_224">or</span> <span class="k-word" data-word-idx="225" id="w_225">documentaries,</span>  <span class="k-word" data-word-idx="226" id="w_226">and</span>  <span class="k-word" data-word-idx="227" id="w_227">you</span>  <span class="k-word" data-word-idx="228" id="w_228">nonetheless</span>  <span class="k-word" data-word-idx="229" id="w_229">seek</span>  <span class="k-word" data-word-idx="230" id="w_230">a</span>  <span class="k-word" data-word-idx="231" id="w_231">brief</span>  <span class="k-word" data-word-idx="232" id="w_232">but</span>  <span class="k-word" data-word-idx="233" id="w_233">meaningful</span> <span class="k-word" data-word-idx="234" id="w_234">introduction</span> <span class="k-word" data-word-idx="235" id="w_235">to</span> <span class="k-word" data-word-idx="236" id="w_236">the</span> <span class="k-word" data-word-idx="237" id="w_237">field,</span> <span class="k-word" data-word-idx="238" id="w_238">I</span> <span class="k-word" data-word-idx="239" id="w_239">offer</span> <span class="k-word" data-word-idx="240" id="w_240">you</span> <span class="k-word" data-word-idx="241" id="w_241">*Astrophysics</span> <span class="k-word" data-word-idx="242" id="w_242">for</span> <span class="k-word" data-word-idx="243" id="w_243">People</span> <span class="k-word" data-word-idx="244" id="w_244">in</span> <span class="k-word" data-word-idx="245" id="w_245">a</span> <span class="k-word" data-word-idx="246" id="w_246">Hurry*.</span> <span class="k-word" data-word-idx="247" id="w_247">In</span> <span class="k-word" data-word-idx="248" id="w_248">this</span> <span class="k-word" data-word-idx="249" id="w_249">slim</span> <span class="k-word" data-word-idx="250" id="w_250">volume,</span> <span class="k-word" data-word-idx="251" id="w_251">you</span> <span class="k-word" data-word-idx="252" id="w_252">will</span> <span class="k-word" data-word-idx="253" id="w_253">earn</span> <span class="k-word" data-word-idx="254" id="w_254">a</span> <span class="k-word" data-word-idx="255" id="w_255">foundational</span> <span class="k-word" data-word-idx="256" id="w_256">fluency</span> <span class="k-word" data-word-idx="257" id="w_257">in</span> <span class="k-word" data-word-idx="258" id="w_258">all</span> <span class="k-word" data-word-idx="259" id="w_259">the</span> <span class="k-word" data-word-idx="260" id="w_260">major</span> <span class="k-word" data-word-idx="261" id="w_261">ideas</span> <span class="k-word" data-word-idx="262" id="w_262">and</span> <span class="k-word" data-word-idx="263" id="w_263">discoveries</span> <span class="k-word" data-word-idx="264" id="w_264">that</span> <span class="k-word" data-word-idx="265" id="w_265">drive</span> <span class="k-word" data-word-idx="266" id="w_266">our</span> <span class="k-word" data-word-idx="267" id="w_267">modern</span> <span class="k-word" data-word-idx="268" id="w_268">understanding</span> <span class="k-word" data-word-idx="269" id="w_269">of</span> <span class="k-word" data-word-idx="270" id="w_270">the</span> <span class="k-word" data-word-idx="271" id="w_271">universe.</span> <span class="k-word" data-word-idx="272" id="w_272">If</span> <span class="k-word" data-word-idx="273" id="w_273">I’ve</span> <span class="k-word" data-word-idx="274" id="w_274">succeeded,</span> <span class="k-word" data-word-idx="275" id="w_275">you’ll</span> <span class="k-word" data-word-idx="276" id="w_276">be</span> <span class="k-word" data-word-idx="277" id="w_277">culturally</span> <span class="k-word" data-word-idx="278" id="w_278">conversant</span> <span class="k-word" data-word-idx="279" id="w_279">in</span> <span class="k-word" data-word-idx="280" id="w_280">my</span> <span class="k-word" data-word-idx="281" id="w_281">field</span> <span class="k-word" data-word-idx="282" id="w_282">of</span> <span class="k-word" data-word-idx="283" id="w_283">expertise,</span> <span class="k-word" data-word-idx="284" id="w_284">and</span> <span class="k-word" data-word-idx="285" id="w_285">you</span> <span class="k-word" data-word-idx="286" id="w_286">just</span> <span class="k-word" data-word-idx="287" id="w_287">may</span> <span class="k-word" data-word-idx="288" id="w_288">be</span> <span class="k-word" data-word-idx="289" id="w_289">hungry</span> <span class="k-word" data-word-idx="290" id="w_290">for</span> <span class="k-word" data-word-idx="291" id="w_291">more.</span></p>
+<blockquote>
+<p><span class="k-word" data-word-idx="292" id="w_292">The</span> <span class="k-word" data-word-idx="293" id="w_293">universe</span> <span class="k-word" data-word-idx="294" id="w_294">is</span> <span class="k-word" data-word-idx="295" id="w_295">under</span> <span class="k-word" data-word-idx="296" id="w_296">no</span> <span class="k-word" data-word-idx="297" id="w_297">obligation</span> <span class="k-word" data-word-idx="298" id="w_298">to</span> <span class="k-word" data-word-idx="299" id="w_299">make</span> <span class="k-word" data-word-idx="300" id="w_300">sense</span> <span class="k-word" data-word-idx="301" id="w_301">to</span> <span class="k-word" data-word-idx="302" id="w_302">you.</span></p>
+<p><span class="k-word" data-word-idx="303" id="w_303">—</span></p>
+<p><span class="k-word" data-word-idx="304" id="w_304">NDT</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="305" id="w_305">---</span></p>
+<p><span class="k-word" data-word-idx="306" id="w_306">[⏮</span> <span class="k-word" data-word-idx="307" id="w_307">Previous</span> <span class="k-word" data-word-idx="308" id="w_308">Pages</span> <span class="k-word" data-word-idx="309" id="w_309">(5–7)](#listen-file:/usr/local/google/home/koushikchak/Downloads/Liberation_Library/15c_Astrophysics_for_People_in_a_Hurry_Neil_deGrasse_Tyson.pdf?pages=5-7&amp;track=author)</span> <span class="k-word" data-word-idx="310" id="w_310">·</span> <span class="k-word" data-word-idx="311" id="w_311">[⏭</span> <span class="k-word" data-word-idx="312" id="w_312">Next</span> <span class="k-word" data-word-idx="313" id="w_313">Pages</span> <span class="k-word" data-word-idx="314" id="w_314">(11–13)](#listen-file:/usr/local/google/home/koushikchak/Downloads/Liberation_Library/15c_Astrophysics_for_People_in_a_Hurry_Neil_deGrasse_Tyson.pdf?pages=11-13&amp;track=author)</span></p>
+    </section>
+
+    <nav class="nav-footer">
+      <span style="flex:1;"></span>
+      <a class="primary" href="../../books.html">📚 All Books</a>
+      <a href="ch_2.html">Next Chapter →</a>
+    </nav>
+  </main>
+
+  <!-- Sticky Player Bar -->
+  <div class="sticky-player" id="stickyPlayer">
+    <div class="player-progress-wrap">
+      <span class="player-time" id="playerCurrentTime">0:00</span>
+      <input type="range" class="player-slider" id="playerScrubber" min="0" max="100" value="0" />
+      <span class="player-time right" id="playerTotalTime">0:00</span>
+    </div>
+    <div class="player-controls">
+      <div class="player-info">
+        <div class="player-info-title">Preface</div>
+        <div class="player-info-sub">Astrophysics for People in a Hurry · Ch 1</div>
+      </div>
+      <div class="player-btns">
+        <button class="btn-skip" id="btnRewind15" title="Rewind 15s">⏪ 15s</button>
+        <button class="btn-play-circle" id="btnBottomPlay" onclick="toggleAudioPlay()">▶</button>
+        <button class="btn-skip" id="btnForward15" title="Forward 15s">⏩ 15s</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-msg" id="toastMsg"></div>
+  <audio id="playerAudio" preload="auto" playsinline webkit-playsinline></audio>
+
+  <script>
+    const AUDIO_URL = "";
+    const CACHE_NAME = "kortex-books-v1";
+    const WORDS_DATA = [{"c": 0, "w": 7}, {"c": 7, "w": 1}, {"c": 8, "w": 7}, {"c": 15, "w": 5}, {"c": 20, "w": 5}, {"c": 25, "w": 2}, {"c": 27, "w": 3}, {"c": 30, "w": 9}, {"c": 39, "w": 2}, {"c": 41, "w": 6}, {"c": 47, "w": 6}, {"c": 53, "w": 2}, {"c": 55, "w": 4}, {"c": 59, "w": 4}, {"c": 63, "w": 1}, {"c": 64, "w": 4}, {"c": 68, "w": 4}, {"c": 72, "w": 2}, {"c": 74, "w": 7}, {"c": 81, "w": 4}, {"c": 85, "w": 2}, {"c": 87, "w": 1}, {"c": 88, "w": 6}, {"c": 94, "w": 9}, {"c": 103, "w": 6}, {"c": 109, "w": 2}, {"c": 111, "w": 6}, {"c": 117, "w": 10}, {"c": 127, "w": 5}, {"c": 132, "w": 5}, {"c": 137, "w": 11}, {"c": 148, "w": 3}, {"c": 151, "w": 4}, {"c": 155, "w": 9}, {"c": 164, "w": 2}, {"c": 166, "w": 8}, {"c": 174, "w": 2}, {"c": 176, "w": 3}, {"c": 179, "w": 9}, {"c": 188, "w": 4}, {"c": 192, "w": 4}, {"c": 196, "w": 2}, {"c": 198, "w": 8}, {"c": 206, "w": 6}, {"c": 212, "w": 5}, {"c": 217, "w": 4}, {"c": 221, "w": 1}, {"c": 222, "w": 7}, {"c": 229, "w": 8}, {"c": 237, "w": 2}, {"c": 239, "w": 3}, {"c": 242, "w": 8}, {"c": 250, "w": 8}, {"c": 258, "w": 3}, {"c": 261, "w": 8}, {"c": 269, "w": 8}, {"c": 277, "w": 3}, {"c": 280, "w": 4}, {"c": 284, "w": 8}, {"c": 292, "w": 4}, {"c": 296, "w": 3}, {"c": 299, "w": 10}, {"c": 309, "w": 5}, {"c": 314, "w": 8}, {"c": 322, "w": 2}, {"c": 324, "w": 8}, {"c": 332, "w": 2}, {"c": 334, "w": 8}, {"c": 342, "w": 2}, {"c": 344, "w": 3}, {"c": 347, "w": 7}, {"c": 354, "w": 2}, {"c": 356, "w": 7}, {"c": 363, "w": 7}, {"c": 370, "w": 5}, {"c": 375, "w": 8}, {"c": 383, "w": 7}, {"c": 390, "w": 7}, {"c": 397, "w": 3}, {"c": 400, "w": 7}, {"c": 407, "w": 2}, {"c": 409, "w": 3}, {"c": 412, "w": 6}, {"c": 418, "w": 2}, {"c": 420, "w": 10}, {"c": 430, "w": 9}, {"c": 439, "w": 3}, {"c": 442, "w": 10}, {"c": 452, "w": 3}, {"c": 455, "w": 7}, {"c": 462, "w": 10}, {"c": 472, "w": 7}, {"c": 479, "w": 7}, {"c": 486, "w": 9}, {"c": 495, "w": 9}, {"c": 504, "w": 10}, {"c": 514, "w": 4}, {"c": 518, "w": 6}, {"c": 524, "w": 1}, {"c": 525, "w": 5}, {"c": 530, "w": 4}, {"c": 534, "w": 7}, {"c": 541, "w": 7}, {"c": 548, "w": 4}, {"c": 552, "w": 10}, {"c": 562, "w": 8}, {"c": 570, "w": 6}, {"c": 576, "w": 3}, {"c": 579, "w": 5}, {"c": 584, "w": 2}, {"c": 586, "w": 7}, {"c": 593, "w": 10}, {"c": 603, "w": 7}, {"c": 610, "w": 7}, {"c": 617, "w": 12}, {"c": 629, "w": 3}, {"c": 632, "w": 7}, {"c": 639, "w": 13}, {"c": 652, "w": 3}, {"c": 655, "w": 11}, {"c": 666, "w": 3}, {"c": 669, "w": 7}, {"c": 676, "w": 8}, {"c": 684, "w": 4}, {"c": 688, "w": 2}, {"c": 690, "w": 3}, {"c": 693, "w": 4}, {"c": 697, "w": 2}, {"c": 699, "w": 2}, {"c": 701, "w": 1}, {"c": 702, "w": 6}, {"c": 708, "w": 8}, {"c": 716, "w": 3}, {"c": 719, "w": 3}, {"c": 722, "w": 3}, {"c": 725, "w": 5}, {"c": 730, "w": 2}, {"c": 732, "w": 1}, {"c": 733, "w": 6}, {"c": 739, "w": 8}, {"c": 747, "w": 1}, {"c": 748, "w": 7}, {"c": 755, "w": 5}, {"c": 760, "w": 3}, {"c": 763, "w": 2}, {"c": 765, "w": 8}, {"c": 773, "w": 1}, {"c": 774, "w": 6}, {"c": 780, "w": 7}, {"c": 787, "w": 3}, {"c": 790, "w": 5}, {"c": 795, "w": 2}, {"c": 797, "w": 15}, {"c": 812, "w": 5}, {"c": 817, "w": 4}, {"c": 821, "w": 8}, {"c": 829, "w": 2}, {"c": 831, "w": 7}, {"c": 838, "w": 4}, {"c": 842, "w": 8}, {"c": 850, "w": 2}, {"c": 852, "w": 4}, {"c": 856, "w": 4}, {"c": 860, "w": 3}, {"c": 863, "w": 5}, {"c": 868, "w": 2}, {"c": 870, "w": 12}, {"c": 882, "w": 12}, {"c": 894, "w": 5}, {"c": 899, "w": 2}, {"c": 901, "w": 3}, {"c": 904, "w": 4}, {"c": 908, "w": 1}, {"c": 909, "w": 5}, {"c": 914, "w": 1}, {"c": 915, "w": 4}, {"c": 919, "w": 4}, {"c": 923, "w": 2}, {"c": 925, "w": 3}, {"c": 928, "w": 4}, {"c": 932, "w": 2}, {"c": 934, "w": 7}, {"c": 941, "w": 5}, {"c": 946, "w": 3}, {"c": 949, "w": 2}, {"c": 951, "w": 2}, {"c": 953, "w": 3}, {"c": 956, "w": 6}, {"c": 962, "w": 2}, {"c": 964, "w": 2}, {"c": 966, "w": 3}, {"c": 969, "w": 5}, {"c": 974, "w": 3}, {"c": 977, "w": 3}, {"c": 980, "w": 9}, {"c": 989, "w": 4}, {"c": 993, "w": 4}, {"c": 997, "w": 2}, {"c": 999, "w": 3}, {"c": 1002, "w": 5}, {"c": 1007, "w": 3}, {"c": 1010, "w": 4}, {"c": 1014, "w": 2}, {"c": 1016, "w": 3}, {"c": 1019, "w": 5}, {"c": 1024, "w": 4}, {"c": 1028, "w": 4}, {"c": 1032, "w": 2}, {"c": 1034, "w": 2}, {"c": 1036, "w": 5}, {"c": 1041, "w": 2}, {"c": 1043, "w": 3}, {"c": 1046, "w": 9}, {"c": 1055, "w": 2}, {"c": 1057, "w": 6}, {"c": 1063, "w": 3}, {"c": 1066, "w": 4}, {"c": 1070, "w": 2}, {"c": 1072, "w": 6}, {"c": 1078, "w": 3}, {"c": 1081, "w": 6}, {"c": 1087, "w": 3}, {"c": 1090, "w": 8}, {"c": 1098, "w": 10}, {"c": 1108, "w": 2}, {"c": 1110, "w": 14}, {"c": 1124, "w": 3}, {"c": 1127, "w": 3}, {"c": 1130, "w": 11}, {"c": 1141, "w": 4}, {"c": 1145, "w": 1}, {"c": 1146, "w": 5}, {"c": 1151, "w": 3}, {"c": 1154, "w": 10}, {"c": 1164, "w": 12}, {"c": 1176, "w": 2}, {"c": 1178, "w": 3}, {"c": 1181, "w": 6}, {"c": 1187, "w": 1}, {"c": 1188, "w": 5}, {"c": 1193, "w": 3}, {"c": 1196, "w": 12}, {"c": 1208, "w": 3}, {"c": 1211, "w": 6}, {"c": 1217, "w": 2}, {"c": 1219, "w": 1}, {"c": 1220, "w": 6}, {"c": 1226, "w": 2}, {"c": 1228, "w": 4}, {"c": 1232, "w": 4}, {"c": 1236, "w": 7}, {"c": 1243, "w": 3}, {"c": 1246, "w": 4}, {"c": 1250, "w": 4}, {"c": 1254, "w": 1}, {"c": 1255, "w": 12}, {"c": 1267, "w": 7}, {"c": 1274, "w": 2}, {"c": 1276, "w": 3}, {"c": 1279, "w": 3}, {"c": 1282, "w": 5}, {"c": 1287, "w": 5}, {"c": 1292, "w": 3}, {"c": 1295, "w": 11}, {"c": 1306, "w": 4}, {"c": 1310, "w": 5}, {"c": 1315, "w": 3}, {"c": 1318, "w": 6}, {"c": 1324, "w": 13}, {"c": 1337, "w": 2}, {"c": 1339, "w": 3}, {"c": 1342, "w": 9}, {"c": 1351, "w": 2}, {"c": 1353, "w": 4}, {"c": 1357, "w": 10}, {"c": 1367, "w": 6}, {"c": 1373, "w": 2}, {"c": 1375, "w": 10}, {"c": 1385, "w": 10}, {"c": 1395, "w": 2}, {"c": 1397, "w": 2}, {"c": 1399, "w": 5}, {"c": 1404, "w": 2}, {"c": 1406, "w": 10}, {"c": 1416, "w": 3}, {"c": 1419, "w": 3}, {"c": 1422, "w": 4}, {"c": 1426, "w": 3}, {"c": 1429, "w": 2}, {"c": 1431, "w": 6}, {"c": 1437, "w": 3}, {"c": 1440, "w": 5}, {"c": 1445, "w": 3}, {"c": 1448, "w": 8}, {"c": 1456, "w": 2}, {"c": 1458, "w": 5}, {"c": 1463, "w": 2}, {"c": 1465, "w": 10}, {"c": 1475, "w": 2}, {"c": 1477, "w": 4}, {"c": 1481, "w": 5}, {"c": 1486, "w": 2}, {"c": 1488, "w": 4}, {"c": 1492, "w": 1}, {"c": 1493, "w": 3}, {"c": 1496, "w": 3}, {"c": 1499, "w": 1}, {"c": 1500, "w": 8}, {"c": 1508, "w": 5}, {"c": 1513, "w": 154}, {"c": 1667, "w": 1}, {"c": 1668, "w": 1}, {"c": 1669, "w": 4}, {"c": 1673, "w": 5}, {"c": 1678, "w": 158}];
+    const TOTAL_WEIGHT = 1836;
+
+    let audioEl = document.getElementById("playerAudio");
+    let activeBlobUrl = null;
+    let audioLoaded = false;
+    let karaokeActive = false;
+    let activeWordIdx = -1;
+    let readerFontSize = 1.12;
+
+    function showToast(msg) {
+      const t = document.getElementById("toastMsg");
+      t.textContent = msg;
+      t.classList.remove("active");
+      void t.offsetWidth;
+      t.classList.add("active");
+      setTimeout(() => t.classList.remove("active"), 2500);
+    }
+
+    function formatSeconds(sec) {
+      if (!sec || isNaN(sec)) return "0:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m}:${s < 10 ? "0" : ""}${s}`;
+    }
+
+    let _screenWakeLock = null;
+    async function requestScreenWakeLock() {
+      try {
+        if ("wakeLock" in navigator && !(_screenWakeLock && !_screenWakeLock.released)) {
+          _screenWakeLock = await navigator.wakeLock.request("screen");
+        }
+      } catch (e) {}
+    }
+
+    function syncPlayButtonUi(isPlaying) {
+      const bBtn = document.getElementById("btnBottomPlay");
+      const tBtn = document.getElementById("btnTopListen");
+      if (bBtn) bBtn.textContent = isPlaying ? "⏸" : "▶";
+      if (tBtn) tBtn.textContent = isPlaying ? "⏸ Pause" : "▶️ Listen";
+    }
+
+    async function toggleAudioPlay() {
+      if (!AUDIO_URL) {
+        showToast("Voice track not yet available for this chapter.");
+        return;
+      }
+
+      if (!audioEl.paused && audioLoaded) {
+        audioEl.pause();
+        return;
+      }
+
+      if (audioLoaded && audioEl.paused && audioEl.src) {
+        try {
+          await audioEl.play();
+          return;
+        } catch (e) {
+          console.warn("Resume failed, reloading src...", e);
+        }
+      }
+
+      showToast("Loading voice track...");
+      let resolvedSrc = null;
+
+      // 1. Try CacheStorage
+      if ("caches" in window) {
+        try {
+          const cache = await caches.open(CACHE_NAME);
+          const cached = await cache.match(AUDIO_URL);
+          if (cached) {
+            const blob = await cached.blob();
+            activeBlobUrl = URL.createObjectURL(blob);
+            resolvedSrc = activeBlobUrl;
+          }
+        } catch (ce) {}
+      }
+
+      // 2. If not in cache, try direct URL
+      if (!resolvedSrc) {
+        resolvedSrc = AUDIO_URL;
+      }
+
+      audioEl.src = resolvedSrc;
+      audioEl.load();
+
+      try {
+        await audioEl.play();
+        audioLoaded = true;
+        karaokeActive = true;
+        requestScreenWakeLock();
+      } catch (err) {
+        console.warn("Direct play failed, trying Blob fetch fallback (iOS Safari / octet-stream workaround)...", err);
+        try {
+          const resp = await fetch(AUDIO_URL, { mode: "cors" });
+          if (resp.ok) {
+            const buf = await resp.arrayBuffer();
+            const audioBlob = new Blob([buf], { type: "audio/mpeg" });
+            activeBlobUrl = URL.createObjectURL(audioBlob);
+            audioEl.src = activeBlobUrl;
+            audioEl.load();
+            await audioEl.play();
+            audioLoaded = true;
+            karaokeActive = true;
+            requestScreenWakeLock();
+
+            // Save to CacheStorage for offline flights
+            if ("caches" in window) {
+              caches.open(CACHE_NAME).then(c => c.put(AUDIO_URL, new Response(audioBlob)));
+            }
+          } else {
+            throw new Error("HTTP " + resp.status);
+          }
+        } catch (blobErr) {
+          console.error("Audio playback error:", blobErr);
+          showToast("⚠️ Could not load audio. Check internet or tap ⚙️ in Library.");
+        }
+      }
+    }
+
+    // Sync Karaoke Word
+    function syncKaraokeWord() {
+      if (!karaokeActive || !WORDS_DATA.length || TOTAL_WEIGHT <= 0) return;
+      const dur = audioEl.duration;
+      if (!Number.isFinite(dur) || dur <= 0) return;
+      const cur = audioEl.currentTime;
+      const progress = Math.min(1.0, Math.max(0, cur / dur));
+      const targetWeight = progress * TOTAL_WEIGHT;
+
+      let low = 0;
+      let high = WORDS_DATA.length - 1;
+      let foundIdx = 0;
+      while (low <= high) {
+        const mid = (low + high) >> 1;
+        if (WORDS_DATA[mid].c <= targetWeight) {
+          foundIdx = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      if (foundIdx !== activeWordIdx) {
+        if (activeWordIdx >= 0) {
+          const prev = document.getElementById(`w_${activeWordIdx}`);
+          if (prev) prev.classList.remove("active-word");
+        }
+        activeWordIdx = foundIdx;
+        const curEl = document.getElementById(`w_${activeWordIdx}`);
+        if (curEl) {
+          curEl.classList.add("active-word");
+          const r = curEl.getBoundingClientRect();
+          const targetY = window.innerHeight * 0.40;
+          if (r.top < 80 || r.top > window.innerHeight * 0.65) {
+            window.scrollBy({
+              top: r.top - targetY,
+              behavior: "smooth"
+            });
+          }
+        }
+      }
+    }
+
+    // Audio Listeners
+    audioEl.addEventListener("play", () => {
+      syncPlayButtonUi(true);
+      karaokeActive = true;
+    });
+    audioEl.addEventListener("pause", () => {
+      syncPlayButtonUi(false);
+    });
+    audioEl.addEventListener("ended", () => {
+      syncPlayButtonUi(false);
+      karaokeActive = false;
+      if (activeWordIdx >= 0) {
+        const prev = document.getElementById(`w_${activeWordIdx}`);
+        if (prev) prev.classList.remove("active-word");
+      }
+      showToast("Chapter complete.");
+    });
+    audioEl.addEventListener("timeupdate", () => {
+      const cur = audioEl.currentTime || 0;
+      const dur = audioEl.duration || 0;
+      document.getElementById("playerCurrentTime").textContent = formatSeconds(cur);
+      document.getElementById("playerTotalTime").textContent = formatSeconds(dur);
+      if (dur > 0) {
+        document.getElementById("playerScrubber").value = (cur / dur) * 100;
+      }
+      if (karaokeActive) {
+        syncKaraokeWord();
+      }
+    });
+
+    // Scrubber
+    document.getElementById("playerScrubber").addEventListener("input", (e) => {
+      const dur = audioEl.duration || 0;
+      if (dur > 0) {
+        audioEl.currentTime = (e.target.value / 100) * dur;
+      }
+    });
+    document.getElementById("btnRewind15").addEventListener("click", () => {
+      audioEl.currentTime = Math.max(0, audioEl.currentTime - 15);
+    });
+    document.getElementById("btnForward15").addEventListener("click", () => {
+      audioEl.currentTime = Math.min(audioEl.duration || 0, audioEl.currentTime + 15);
+    });
+
+    // Tap/Click any word to seek audio
+    document.getElementById("proseBody").addEventListener("click", (e) => {
+      const span = e.target.closest(".k-word");
+      if (!span) return;
+      const wIdx = parseInt(span.getAttribute("data-word-idx"), 10);
+      if (Number.isFinite(wIdx) && WORDS_DATA[wIdx]) {
+        const dur = audioEl.duration;
+        if (Number.isFinite(dur) && dur > 0 && TOTAL_WEIGHT > 0) {
+          const targetTime = (WORDS_DATA[wIdx].c / TOTAL_WEIGHT) * dur;
+          audioEl.currentTime = targetTime;
+          if (audioEl.paused) {
+            toggleAudioPlay();
+          }
+        } else if (!audioLoaded) {
+          toggleAudioPlay();
+        }
+      }
+    });
+
+    // Font Controls
+    document.getElementById("btnFontSmaller").addEventListener("click", () => {
+      readerFontSize = Math.max(0.9, readerFontSize - 0.1);
+      document.getElementById("proseBody").style.fontSize = `${readerFontSize}rem`;
+    });
+    document.getElementById("btnFontLarger").addEventListener("click", () => {
+      readerFontSize = Math.min(1.5, readerFontSize + 0.1);
+      document.getElementById("proseBody").style.fontSize = `${readerFontSize}rem`;
+    });
+
+    // Theme Toggle
+    document.getElementById("btnToggleTheme").addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      const isDark = document.body.classList.contains("dark-mode");
+      localStorage.setItem("kortex_theme", isDark ? "dark" : "light");
+    });
+    if (localStorage.getItem("kortex_theme") === "dark") {
+      document.body.classList.add("dark-mode");
+    }
+
+    // GitHub Preview Link Hydration
+    (function hydratePageLinks() {
+      try {
+        if (typeof location === "undefined" || typeof document === "undefined") return;
+        const isHtmlPreview = /htmlpreview\.github\.io/i.test(location.hostname || "") || /github\.com[\/]kouSeek[\/]portfolio[\/]blob[\/]/i.test(location.search || "");
+        if (!isHtmlPreview) return;
+        const m = (location.search || "").match(/https:[\/][\/]github\.com[\/]kouSeek[\/]portfolio[\/]blob[\/]([^/]+)[\/]/i);
+        const branch = (m && m[1]) ? m[1] : "kalyani-reels";
+        
+        document.querySelectorAll("a[href]").forEach(a => {
+          const href = a.getAttribute("href");
+          if (!href || href.startsWith("http") || href.startsWith("#")) return;
+          // Resolve relative path against current directory: chapters/<clean_slug>/
+          let targetPath = "";
+          if (href.startsWith("../../")) {
+            targetPath = href.replace("../../", "");
+          } else {
+            targetPath = "chapters/astrophysics-for-people-in-a-hurry-neil-degrasse-tyson/" + href;
+          }
+          a.href = "https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/" + branch + "/" + targetPath;
+        });
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>

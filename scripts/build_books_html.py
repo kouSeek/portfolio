@@ -1521,6 +1521,8 @@ def generate_books_html() -> None:
         <span class="badge-chip full">📖 ${{(book.author_chapters || []).length}} Chapters ${{fullTime ? `· ⏱️ ${{fullTime}}` : ""}}</span>
       `;
 
+      const cleanSlug = getCleanBookSlug(book);
+
       // Render ADHD track
       const adhdBody = document.getElementById("adhdTrackBody");
       adhdBody.innerHTML = "";
@@ -1542,8 +1544,7 @@ def generate_books_html() -> None:
             <div class="chapter-brief">${{item.brief || ""}}</div>
           </div>
           <div class="chapter-actions">
-            <button class="btn-ch play-btn" onclick="playChapter('adhd', ${{stepNum}})">▶️ Listen</button>
-            <button class="btn-ch" onclick="readChapter('adhd', ${{stepNum}})">📖 Read</button>
+            <a class="btn-ch play-btn" href="chapters/${{cleanSlug}}/step_${{stepNum}}.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px;">📖 Read &amp; Listen →</a>
           </div>
         `;
         adhdBody.appendChild(row);
@@ -1570,14 +1571,14 @@ def generate_books_html() -> None:
             <div class="chapter-brief">${{item.brief || ""}}</div>
           </div>
           <div class="chapter-actions">
-            <button class="btn-ch play-btn" onclick="playChapter('author', ${{chNum}})">▶️ Listen</button>
-            <button class="btn-ch" onclick="readChapter('author', ${{chNum}})">📖 Read</button>
+            <a class="btn-ch play-btn" href="chapters/${{cleanSlug}}/ch_${{chNum}}.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px;">📖 Read &amp; Listen →</a>
           </div>
         `;
         fullBody.appendChild(row);
       }});
 
       window.scrollTo({{ top: 0, behavior: "smooth" }});
+      hydrateAppLinks();
     }}
 
     function backToLibrary() {{
@@ -2055,6 +2056,33 @@ def generate_books_html() -> None:
       }}
     }});
 
+    function getCleanBookSlug(b) {{
+      if (!b) return "";
+      const title = (b.title || "").toLowerCase();
+      const slug = (b.slug || "").toLowerCase();
+      if (title.includes("gene") || slug.includes("gene")) return "the-gene";
+      if (title.includes("code book") || slug.includes("code_book")) return "the-code-book";
+      let clean = slug.replace(/^\\d+[a-z]?_/, "");
+      clean = clean.replace(/_+/g, "-");
+      clean = clean.replace(/[^\\w\\-]/g, "").replace(/^-+|-+$/g, "");
+      return clean || slug;
+    }}
+
+    function hydrateAppLinks() {{
+      try {{
+        if (typeof location === "undefined" || typeof document === "undefined") return;
+        const isHtmlPreview = /htmlpreview\\.github\\.io/i.test(location.hostname || "") || /github\\.com[\\/]kouSeek[\\/]portfolio[\\/]blob[\\/]/i.test(location.search || "");
+        if (!isHtmlPreview) return;
+        const m = (location.search || "").match(/https:[\\/][\\/]github\\.com[\\/]kouSeek[\\/]portfolio[\\/]blob[\\/]([^/]+)[\\/]/i);
+        const branch = (m && m[1]) ? m[1] : "kalyani-reels";
+
+        document.querySelectorAll("a[href^='chapters/']").forEach(a => {{
+          const href = a.getAttribute("href");
+          a.href = "https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/" + branch + "/" + href;
+        }});
+      }} catch (e) {{}}
+    }}
+
     // Support GitHub Preview rewriting
     (function hydrateHubAppLinks() {{
       try {{
@@ -2067,6 +2095,7 @@ def generate_books_html() -> None:
         if (backBtn) {{
           backBtn.href = "https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/" + branch + "/index.html";
         }}
+        hydrateAppLinks();
       }} catch (e) {{}}
     }})();
 

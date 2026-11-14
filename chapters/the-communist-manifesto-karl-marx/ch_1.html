@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0F172A" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Ch 1 • The Communist Manifesto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --surface: #FFFFFF;
+      --surface-subtle: #F1F5F9;
+      --border: #E2E8F0;
+      --ink: #0F172A;
+      --ink-muted: #64748B;
+      --accent: #4F46E5;
+      --accent-light: #EEF2FF;
+      --emerald: #10B981;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    body.dark-mode {
+      --bg: #0F172A;
+      --surface: #1E293B;
+      --surface-subtle: #334155;
+      --border: #334155;
+      --ink: #F8FAFC;
+      --ink-muted: #94A3B8;
+      --accent: #818CF8;
+      --accent-light: rgba(99, 102, 241, 0.15);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: calc(var(--safe-top) + 56px);
+      padding-bottom: calc(var(--safe-bottom) + 110px);
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    /* Topbar */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--safe-top) + 56px);
+      padding-top: var(--safe-top);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 12px;
+      padding-right: 12px;
+      z-index: 50;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: var(--surface-subtle);
+    }
+    .top-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 55%;
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-icon {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 5px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Main Container */
+    .reader-container {
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 18px;
+    }
+
+    /* Chapter Header Banner */
+    .chapter-hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    .hero-book-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .hero-chapter-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 12px;
+    }
+    .hero-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .meta-chip {
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--surface-subtle);
+      color: var(--ink-muted);
+    }
+    .meta-chip.voice {
+      background: #ECFDF5;
+      color: #059669;
+    }
+    .hero-brief {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--ink);
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    /* Top Play Button Card */
+    .hero-listen-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--accent-light);
+      border: 1px solid rgba(79, 70, 229, 0.2);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-top: 14px;
+    }
+    .btn-top-listen {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      background: var(--accent);
+      color: #FFFFFF;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+      transition: all 0.15s ease;
+    }
+    .btn-top-listen:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Reading Typography */
+    .prose-body {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1.12rem;
+      line-height: 1.85;
+      color: var(--ink);
+    }
+    .prose-body h1, .prose-body h2, .prose-body h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      margin-top: 28px;
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+    .prose-body p {
+      margin-bottom: 18px;
+    }
+    .prose-body blockquote {
+      border-left: 3.5px solid var(--accent);
+      margin: 18px 0;
+      padding: 10px 18px;
+      color: var(--ink-muted);
+      background: var(--surface-subtle);
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+
+    /* Karaoke Highlighting */
+    .k-word {
+      display: inline;
+      border-radius: 4px;
+      padding: 0 2px;
+      transition: background-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+      cursor: pointer;
+    }
+    .k-word:hover {
+      background-color: rgba(99, 102, 241, 0.15);
+    }
+    .k-word.active-word {
+      background-color: #FEF08A !important;
+      color: #0F172A !important;
+      font-weight: 700;
+      border-radius: 4px;
+      box-shadow: 0 0 0 2px #FEF08A, 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+    body.dark-mode .k-word.active-word {
+      background-color: #6366F1 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 0 0 2px #6366F1, 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Chapter Footer Navigation */
+    .nav-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .nav-footer a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .nav-footer a.primary {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+
+    /* Sticky Bottom Player Bar */
+    .sticky-player {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1.5px solid var(--border);
+      padding: 10px 16px calc(var(--safe-bottom) + 10px);
+      z-index: 60;
+      box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .player-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .player-time {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink-muted);
+      min-width: 38px;
+      font-variant-numeric: tabular-nums;
+    }
+    .player-time.right {
+      text-align: right;
+    }
+    .player-slider {
+      flex: 1;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--border);
+      border-radius: 999px;
+      outline: none;
+    }
+    .player-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+    .player-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .player-info {
+      flex: 1;
+      min-width: 0;
+      margin-right: 12px;
+    }
+    .player-info-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .player-info-sub {
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .player-btns {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-play-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #FFFFFF;
+      border: none;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+    }
+    .btn-skip {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* Toast */
+    .toast-msg {
+      position: fixed;
+      top: calc(var(--safe-top) + 60px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.92);
+      color: #FFFFFF;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 100;
+    }
+    .toast-msg.active {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back-btn" id="navBackBtn" href="../../books.html">← Library</a>
+    <div class="top-title">The Communist Manifesto</div>
+    <div class="top-actions">
+      <button class="btn-icon" id="btnFontSmaller">A-</button>
+      <button class="btn-icon" id="btnFontLarger">A+</button>
+      <button class="btn-icon" id="btnToggleTheme">🎨</button>
+    </div>
+  </header>
+
+  <main class="reader-container">
+    <article class="chapter-hero">
+      <div class="hero-book-title">The Communist Manifesto</div>
+      <h1 class="hero-chapter-title">Historical Introduction &amp; Prefaces (1872–1890)</h1>
+      <div class="hero-meta-row">
+        <span class="meta-chip">📖 Full Book Chapter</span>
+        <span class="meta-chip">📄 Pages 8-39</span>
+        <span class="meta-chip">⏱️ ~20 mins</span>
+        
+      </div>
+      <div class="hero-brief"><strong>Core Takeaway:</strong> Historical context of the 1848 revolutions and Marx and Engels&#x27; later prefaces.</div>
+
+      
+      <div style="margin-top: 14px; font-size: 0.85rem; color: var(--ink-muted); background: var(--surface-subtle); padding: 10px 14px; border-radius: 8px;">
+        📖 Distraction-free reading mode. Voice track is in generation queue.
+      </div>
+      
+    </article>
+
+    <section class="prose-body" id="proseBody">
+      <h2><span class="k-word" data-word-idx="0" id="w_0">Historical</span> <span class="k-word" data-word-idx="1" id="w_1">Introduction</span> <span class="k-word" data-word-idx="2" id="w_2">&amp;</span> <span class="k-word" data-word-idx="3" id="w_3">Prefaces</span> <span class="k-word" data-word-idx="4" id="w_4">(1872–1890)</span></h2>
+<blockquote>
+<p><span class="k-word" data-word-idx="5" id="w_5">Historical</span> <span class="k-word" data-word-idx="6" id="w_6">context</span> <span class="k-word" data-word-idx="7" id="w_7">of</span> <span class="k-word" data-word-idx="8" id="w_8">the</span> <span class="k-word" data-word-idx="9" id="w_9">1848</span> <span class="k-word" data-word-idx="10" id="w_10">revolutions</span> <span class="k-word" data-word-idx="11" id="w_11">and</span> <span class="k-word" data-word-idx="12" id="w_12">Marx</span> <span class="k-word" data-word-idx="13" id="w_13">and</span> <span class="k-word" data-word-idx="14" id="w_14">Engels&#x27;</span> <span class="k-word" data-word-idx="15" id="w_15">later</span> <span class="k-word" data-word-idx="16" id="w_16">prefaces.</span></p>
+</blockquote>
+<blockquote>
+<p><span class="k-word" data-word-idx="17" id="w_17">‘Marx’s</span> <span class="k-word" data-word-idx="18" id="w_18">life</span> <span class="k-word" data-word-idx="19" id="w_19">exemplified</span> <span class="k-word" data-word-idx="20" id="w_20">his</span> <span class="k-word" data-word-idx="21" id="w_21">ideal</span> <span class="k-word" data-word-idx="22" id="w_22">of</span> <span class="k-word" data-word-idx="23" id="w_23">internationalism,</span> <span class="k-word" data-word-idx="24" id="w_24">for</span> <span class="k-word" data-word-idx="25" id="w_25">by</span> <span class="k-word" data-word-idx="26" id="w_26">the</span></p>
+<p><span class="k-word" data-word-idx="27" id="w_27">end</span> <span class="k-word" data-word-idx="28" id="w_28">he</span> <span class="k-word" data-word-idx="29" id="w_29">was</span> <span class="k-word" data-word-idx="30" id="w_30">neither</span> <span class="k-word" data-word-idx="31" id="w_31">German</span> <span class="k-word" data-word-idx="32" id="w_32">nor</span> <span class="k-word" data-word-idx="33" id="w_33">British,</span> <span class="k-word" data-word-idx="34" id="w_34">but</span> <span class="k-word" data-word-idx="35" id="w_35">a</span> <span class="k-word" data-word-idx="36" id="w_36">European</span> <span class="k-word" data-word-idx="37" id="w_37">or</span> <span class="k-word" data-word-idx="38" id="w_38">even</span> <span class="k-word" data-word-idx="39" id="w_39">a</span></p>
+<p><span class="k-word" data-word-idx="40" id="w_40">global</span> <span class="k-word" data-word-idx="41" id="w_41">intellectual’</span></p>
+<p><span class="k-word" data-word-idx="42" id="w_42">-</span> <span class="k-word" data-word-idx="43" id="w_43">Kevin</span> <span class="k-word" data-word-idx="44" id="w_44">Anderson,</span> <span class="k-word" data-word-idx="45" id="w_45">*Marx</span> <span class="k-word" data-word-idx="46" id="w_46">at</span> <span class="k-word" data-word-idx="47" id="w_47">the</span> <span class="k-word" data-word-idx="48" id="w_48">Margins*</span> <span class="k-word" data-word-idx="49" id="w_49">,</span> <span class="k-word" data-word-idx="50" id="w_50">4.</span></p>
+<p><span class="k-word" data-word-idx="51" id="w_51">I</span> <span class="k-word" data-word-idx="52" id="w_52">forsook</span> <span class="k-word" data-word-idx="53" id="w_53">the</span> <span class="k-word" data-word-idx="54" id="w_54">company</span> <span class="k-word" data-word-idx="55" id="w_55">and</span> <span class="k-word" data-word-idx="56" id="w_56">the</span> <span class="k-word" data-word-idx="57" id="w_57">dinner-parties,</span> <span class="k-word" data-word-idx="58" id="w_58">the</span> <span class="k-word" data-word-idx="59" id="w_59">port-wine</span></p>
+<p><span class="k-word" data-word-idx="60" id="w_60">and</span> <span class="k-word" data-word-idx="61" id="w_61">champagne</span> <span class="k-word" data-word-idx="62" id="w_62">of</span> <span class="k-word" data-word-idx="63" id="w_63">the</span> <span class="k-word" data-word-idx="64" id="w_64">middle</span> <span class="k-word" data-word-idx="65" id="w_65">classes,</span> <span class="k-word" data-word-idx="66" id="w_66">and</span> <span class="k-word" data-word-idx="67" id="w_67">devoted</span> <span class="k-word" data-word-idx="68" id="w_68">my</span></p>
+<p><span class="k-word" data-word-idx="69" id="w_69">leisure-hours</span> <span class="k-word" data-word-idx="70" id="w_70">almost</span> <span class="k-word" data-word-idx="71" id="w_71">exclusively</span> <span class="k-word" data-word-idx="72" id="w_72">to</span> <span class="k-word" data-word-idx="73" id="w_73">intercourse</span> <span class="k-word" data-word-idx="74" id="w_74">with</span> <span class="k-word" data-word-idx="75" id="w_75">plain</span></p>
+<p><span class="k-word" data-word-idx="76" id="w_76">working</span> <span class="k-word" data-word-idx="77" id="w_77">men…</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="78" id="w_78">Such</span> <span class="k-word" data-word-idx="79" id="w_79">are</span> <span class="k-word" data-word-idx="80" id="w_80">the</span> <span class="k-word" data-word-idx="81" id="w_81">various</span> <span class="k-word" data-word-idx="82" id="w_82">working-people&#x27;s</span> <span class="k-word" data-word-idx="83" id="w_83">quarters</span> <span class="k-word" data-word-idx="84" id="w_84">of</span> <span class="k-word" data-word-idx="85" id="w_85">Manchester</span> <span class="k-word" data-word-idx="86" id="w_86">as</span> <span class="k-word" data-word-idx="87" id="w_87">I</span> <span class="k-word" data-word-idx="88" id="w_88">had</span> <span class="k-word" data-word-idx="89" id="w_89">occasion</span> <span class="k-word" data-word-idx="90" id="w_90">to</span> <span class="k-word" data-word-idx="91" id="w_91">observe</span> <span class="k-word" data-word-idx="92" id="w_92">them</span> <span class="k-word" data-word-idx="93" id="w_93">personally</span> <span class="k-word" data-word-idx="94" id="w_94">during</span> <span class="k-word" data-word-idx="95" id="w_95">twenty</span> <span class="k-word" data-word-idx="96" id="w_96">months.</span> <span class="k-word" data-word-idx="97" id="w_97">If</span> <span class="k-word" data-word-idx="98" id="w_98">we</span> <span class="k-word" data-word-idx="99" id="w_99">briefly</span> <span class="k-word" data-word-idx="100" id="w_100">formulate</span> <span class="k-word" data-word-idx="101" id="w_101">the</span> <span class="k-word" data-word-idx="102" id="w_102">result</span> <span class="k-word" data-word-idx="103" id="w_103">of</span> <span class="k-word" data-word-idx="104" id="w_104">our</span> <span class="k-word" data-word-idx="105" id="w_105">wanderings,</span> <span class="k-word" data-word-idx="106" id="w_106">we</span> <span class="k-word" data-word-idx="107" id="w_107">must</span> <span class="k-word" data-word-idx="108" id="w_108">admit</span> <span class="k-word" data-word-idx="109" id="w_109">that</span> <span class="k-word" data-word-idx="110" id="w_110">350,000</span> <span class="k-word" data-word-idx="111" id="w_111">working-people</span> <span class="k-word" data-word-idx="112" id="w_112">of</span> <span class="k-word" data-word-idx="113" id="w_113">Manchester</span> <span class="k-word" data-word-idx="114" id="w_114">and</span> <span class="k-word" data-word-idx="115" id="w_115">its</span> <span class="k-word" data-word-idx="116" id="w_116">environs</span> <span class="k-word" data-word-idx="117" id="w_117">live,</span> <span class="k-word" data-word-idx="118" id="w_118">almost</span> <span class="k-word" data-word-idx="119" id="w_119">all</span> <span class="k-word" data-word-idx="120" id="w_120">of</span> <span class="k-word" data-word-idx="121" id="w_121">them,</span> <span class="k-word" data-word-idx="122" id="w_122">in</span> <span class="k-word" data-word-idx="123" id="w_123">wretched,</span> <span class="k-word" data-word-idx="124" id="w_124">damp,</span> <span class="k-word" data-word-idx="125" id="w_125">filthy</span> <span class="k-word" data-word-idx="126" id="w_126">cottages,</span> <span class="k-word" data-word-idx="127" id="w_127">that</span> <span class="k-word" data-word-idx="128" id="w_128">the</span> <span class="k-word" data-word-idx="129" id="w_129">streets</span> <span class="k-word" data-word-idx="130" id="w_130">which</span> <span class="k-word" data-word-idx="131" id="w_131">surround</span> <span class="k-word" data-word-idx="132" id="w_132">them</span> <span class="k-word" data-word-idx="133" id="w_133">are</span> <span class="k-word" data-word-idx="134" id="w_134">usually</span> <span class="k-word" data-word-idx="135" id="w_135">in</span> <span class="k-word" data-word-idx="136" id="w_136">the</span> <span class="k-word" data-word-idx="137" id="w_137">most</span> <span class="k-word" data-word-idx="138" id="w_138">miserable</span> <span class="k-word" data-word-idx="139" id="w_139">and</span> <span class="k-word" data-word-idx="140" id="w_140">filthy</span> <span class="k-word" data-word-idx="141" id="w_141">condition,</span> <span class="k-word" data-word-idx="142" id="w_142">laid</span> <span class="k-word" data-word-idx="143" id="w_143">out</span> <span class="k-word" data-word-idx="144" id="w_144">without</span> <span class="k-word" data-word-idx="145" id="w_145">the</span> <span class="k-word" data-word-idx="146" id="w_146">slightest</span> <span class="k-word" data-word-idx="147" id="w_147">reference</span> <span class="k-word" data-word-idx="148" id="w_148">to</span> <span class="k-word" data-word-idx="149" id="w_149">ventilation,</span> <span class="k-word" data-word-idx="150" id="w_150">with</span> <span class="k-word" data-word-idx="151" id="w_151">reference</span> <span class="k-word" data-word-idx="152" id="w_152">solely</span> <span class="k-word" data-word-idx="153" id="w_153">to</span> <span class="k-word" data-word-idx="154" id="w_154">the</span> <span class="k-word" data-word-idx="155" id="w_155">profit</span> <span class="k-word" data-word-idx="156" id="w_156">secured</span> <span class="k-word" data-word-idx="157" id="w_157">by</span> <span class="k-word" data-word-idx="158" id="w_158">the</span> <span class="k-word" data-word-idx="159" id="w_159">contractor.</span> <span class="k-word" data-word-idx="160" id="w_160">In</span> <span class="k-word" data-word-idx="161" id="w_161">a</span> <span class="k-word" data-word-idx="162" id="w_162">word,</span> <span class="k-word" data-word-idx="163" id="w_163">we</span> <span class="k-word" data-word-idx="164" id="w_164">must</span> <span class="k-word" data-word-idx="165" id="w_165">confess</span> <span class="k-word" data-word-idx="166" id="w_166">that</span> <span class="k-word" data-word-idx="167" id="w_167">in</span> <span class="k-word" data-word-idx="168" id="w_168">the</span> <span class="k-word" data-word-idx="169" id="w_169">working-men&#x27;s</span> <span class="k-word" data-word-idx="170" id="w_170">dwellings</span> <span class="k-word" data-word-idx="171" id="w_171">of</span> <span class="k-word" data-word-idx="172" id="w_172">Manchester,</span> <span class="k-word" data-word-idx="173" id="w_173">no</span> <span class="k-word" data-word-idx="174" id="w_174">cleanliness,</span> <span class="k-word" data-word-idx="175" id="w_175">no</span> <span class="k-word" data-word-idx="176" id="w_176">convenience,</span> <span class="k-word" data-word-idx="177" id="w_177">and</span> <span class="k-word" data-word-idx="178" id="w_178">consequently</span> <span class="k-word" data-word-idx="179" id="w_179">no</span> <span class="k-word" data-word-idx="180" id="w_180">comfortable</span> <span class="k-word" data-word-idx="181" id="w_181">family</span> <span class="k-word" data-word-idx="182" id="w_182">life</span> <span class="k-word" data-word-idx="183" id="w_183">is</span> <span class="k-word" data-word-idx="184" id="w_184">possible;</span> <span class="k-word" data-word-idx="185" id="w_185">that</span> <span class="k-word" data-word-idx="186" id="w_186">in</span> <span class="k-word" data-word-idx="187" id="w_187">such</span> <span class="k-word" data-word-idx="188" id="w_188">dwellings</span> <span class="k-word" data-word-idx="189" id="w_189">only</span> <span class="k-word" data-word-idx="190" id="w_190">a</span> <span class="k-word" data-word-idx="191" id="w_191">physically</span> <span class="k-word" data-word-idx="192" id="w_192">degenerate</span> <span class="k-word" data-word-idx="193" id="w_193">race,</span> <span class="k-word" data-word-idx="194" id="w_194">robbed</span> <span class="k-word" data-word-idx="195" id="w_195">of</span> <span class="k-word" data-word-idx="196" id="w_196">all</span> <span class="k-word" data-word-idx="197" id="w_197">humanity,</span> <span class="k-word" data-word-idx="198" id="w_198">degraded,</span> <span class="k-word" data-word-idx="199" id="w_199">reduced</span> <span class="k-word" data-word-idx="200" id="w_200">morally</span> <span class="k-word" data-word-idx="201" id="w_201">and</span> <span class="k-word" data-word-idx="202" id="w_202">physically</span> <span class="k-word" data-word-idx="203" id="w_203">to</span> <span class="k-word" data-word-idx="204" id="w_204">bestiality,</span> <span class="k-word" data-word-idx="205" id="w_205">could</span> <span class="k-word" data-word-idx="206" id="w_206">feel</span> <span class="k-word" data-word-idx="207" id="w_207">comfortable</span></p>
+<blockquote>
+<p><span class="k-word" data-word-idx="208" id="w_208">and</span> <span class="k-word" data-word-idx="209" id="w_209">at</span> <span class="k-word" data-word-idx="210" id="w_210">home.</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="211" id="w_211">An</span> <span class="k-word" data-word-idx="212" id="w_212">old,</span> <span class="k-word" data-word-idx="213" id="w_213">mad,</span> <span class="k-word" data-word-idx="214" id="w_214">blind,</span> <span class="k-word" data-word-idx="215" id="w_215">despised,</span> <span class="k-word" data-word-idx="216" id="w_216">and</span> <span class="k-word" data-word-idx="217" id="w_217">dying</span> <span class="k-word" data-word-idx="218" id="w_218">king,--</span> <span class="k-word" data-word-idx="219" id="w_219">Princes,</span> <span class="k-word" data-word-idx="220" id="w_220">the</span> <span class="k-word" data-word-idx="221" id="w_221">dregs</span> <span class="k-word" data-word-idx="222" id="w_222">of</span> <span class="k-word" data-word-idx="223" id="w_223">their</span> <span class="k-word" data-word-idx="224" id="w_224">dull</span> <span class="k-word" data-word-idx="225" id="w_225">race,</span> <span class="k-word" data-word-idx="226" id="w_226">who</span> <span class="k-word" data-word-idx="227" id="w_227">flow</span> <span class="k-word" data-word-idx="228" id="w_228">Through</span> <span class="k-word" data-word-idx="229" id="w_229">public</span> <span class="k-word" data-word-idx="230" id="w_230">scorn,</span> <span class="k-word" data-word-idx="231" id="w_231">mud</span> <span class="k-word" data-word-idx="232" id="w_232">from</span> <span class="k-word" data-word-idx="233" id="w_233">a</span> <span class="k-word" data-word-idx="234" id="w_234">muddy</span> <span class="k-word" data-word-idx="235" id="w_235">spring,--</span> <span class="k-word" data-word-idx="236" id="w_236">Rulers</span> <span class="k-word" data-word-idx="237" id="w_237">who</span> <span class="k-word" data-word-idx="238" id="w_238">neither</span> <span class="k-word" data-word-idx="239" id="w_239">see,</span> <span class="k-word" data-word-idx="240" id="w_240">nor</span> <span class="k-word" data-word-idx="241" id="w_241">feel,</span> <span class="k-word" data-word-idx="242" id="w_242">nor</span> <span class="k-word" data-word-idx="243" id="w_243">know,</span> <span class="k-word" data-word-idx="244" id="w_244">But</span> <span class="k-word" data-word-idx="245" id="w_245">leech-like</span> <span class="k-word" data-word-idx="246" id="w_246">to</span> <span class="k-word" data-word-idx="247" id="w_247">their</span> <span class="k-word" data-word-idx="248" id="w_248">fainting</span> <span class="k-word" data-word-idx="249" id="w_249">country</span> <span class="k-word" data-word-idx="250" id="w_250">cling,</span> <span class="k-word" data-word-idx="251" id="w_251">Till</span> <span class="k-word" data-word-idx="252" id="w_252">they</span> <span class="k-word" data-word-idx="253" id="w_253">drop,</span> <span class="k-word" data-word-idx="254" id="w_254">blind</span> <span class="k-word" data-word-idx="255" id="w_255">in</span> <span class="k-word" data-word-idx="256" id="w_256">blood,</span> <span class="k-word" data-word-idx="257" id="w_257">without</span> <span class="k-word" data-word-idx="258" id="w_258">a</span> <span class="k-word" data-word-idx="259" id="w_259">blow,--</span> <span class="k-word" data-word-idx="260" id="w_260">A</span> <span class="k-word" data-word-idx="261" id="w_261">people</span> <span class="k-word" data-word-idx="262" id="w_262">starved</span> <span class="k-word" data-word-idx="263" id="w_263">and</span> <span class="k-word" data-word-idx="264" id="w_264">stabbed</span> <span class="k-word" data-word-idx="265" id="w_265">in</span> <span class="k-word" data-word-idx="266" id="w_266">the</span> <span class="k-word" data-word-idx="267" id="w_267">untilled</span> <span class="k-word" data-word-idx="268" id="w_268">field,--</span> <span class="k-word" data-word-idx="269" id="w_269">An</span> <span class="k-word" data-word-idx="270" id="w_270">army</span> <span class="k-word" data-word-idx="271" id="w_271">which</span> <span class="k-word" data-word-idx="272" id="w_272">liberticide</span> <span class="k-word" data-word-idx="273" id="w_273">and</span> <span class="k-word" data-word-idx="274" id="w_274">prey</span> <span class="k-word" data-word-idx="275" id="w_275">Makes</span> <span class="k-word" data-word-idx="276" id="w_276">as</span> <span class="k-word" data-word-idx="277" id="w_277">a</span> <span class="k-word" data-word-idx="278" id="w_278">two-edged</span> <span class="k-word" data-word-idx="279" id="w_279">sword</span> <span class="k-word" data-word-idx="280" id="w_280">to</span> <span class="k-word" data-word-idx="281" id="w_281">all</span> <span class="k-word" data-word-idx="282" id="w_282">who</span> <span class="k-word" data-word-idx="283" id="w_283">wield,--</span> <span class="k-word" data-word-idx="284" id="w_284">Golden</span> <span class="k-word" data-word-idx="285" id="w_285">and</span> <span class="k-word" data-word-idx="286" id="w_286">sanguine</span> <span class="k-word" data-word-idx="287" id="w_287">laws</span> <span class="k-word" data-word-idx="288" id="w_288">which</span> <span class="k-word" data-word-idx="289" id="w_289">tempt</span> <span class="k-word" data-word-idx="290" id="w_290">and</span> <span class="k-word" data-word-idx="291" id="w_291">slay;</span> <span class="k-word" data-word-idx="292" id="w_292">Religion</span> <span class="k-word" data-word-idx="293" id="w_293">Christless,</span> <span class="k-word" data-word-idx="294" id="w_294">Godless,</span> <span class="k-word" data-word-idx="295" id="w_295">a</span> <span class="k-word" data-word-idx="296" id="w_296">book</span> <span class="k-word" data-word-idx="297" id="w_297">sealed,--</span> <span class="k-word" data-word-idx="298" id="w_298">A</span> <span class="k-word" data-word-idx="299" id="w_299">Senate—Time&#x27;s</span> <span class="k-word" data-word-idx="300" id="w_300">worst</span> <span class="k-word" data-word-idx="301" id="w_301">statute</span> <span class="k-word" data-word-idx="302" id="w_302">unrepealed,--</span> <span class="k-word" data-word-idx="303" id="w_303">Are</span> <span class="k-word" data-word-idx="304" id="w_304">graves</span> <span class="k-word" data-word-idx="305" id="w_305">from</span> <span class="k-word" data-word-idx="306" id="w_306">which</span> <span class="k-word" data-word-idx="307" id="w_307">a</span> <span class="k-word" data-word-idx="308" id="w_308">glorious</span> <span class="k-word" data-word-idx="309" id="w_309">Phantom</span> <span class="k-word" data-word-idx="310" id="w_310">may</span> <span class="k-word" data-word-idx="311" id="w_311">Burst</span> <span class="k-word" data-word-idx="312" id="w_312">to</span> <span class="k-word" data-word-idx="313" id="w_313">illumine</span> <span class="k-word" data-word-idx="314" id="w_314">our</span> <span class="k-word" data-word-idx="315" id="w_315">tempestuous</span> <span class="k-word" data-word-idx="316" id="w_316">day.</span></p>
+<p><span class="k-word" data-word-idx="317" id="w_317">-</span> <span class="k-word" data-word-idx="318" id="w_318">Percy</span> <span class="k-word" data-word-idx="319" id="w_319">Shelly</span></p>
+<blockquote>
+<p><span class="k-word" data-word-idx="320" id="w_320">‘What</span> <span class="k-word" data-word-idx="321" id="w_321">I</span> <span class="k-word" data-word-idx="322" id="w_322">have</span> <span class="k-word" data-word-idx="323" id="w_323">seen</span> <span class="k-word" data-word-idx="324" id="w_324">has</span> <span class="k-word" data-word-idx="325" id="w_325">disgusted</span> <span class="k-word" data-word-idx="326" id="w_326">and</span> <span class="k-word" data-word-idx="327" id="w_327">astonished</span> <span class="k-word" data-word-idx="328" id="w_328">me</span> <span class="k-word" data-word-idx="329" id="w_329">beyond</span> <span class="k-word" data-word-idx="330" id="w_330">all</span> <span class="k-word" data-word-idx="331" id="w_331">measure’</span></p>
+<p><span class="k-word" data-word-idx="332" id="w_332">-</span> <span class="k-word" data-word-idx="333" id="w_333">Charles</span> <span class="k-word" data-word-idx="334" id="w_334">Dickens</span></p>
+<p><span class="k-word" data-word-idx="335" id="w_335">The</span> <span class="k-word" data-word-idx="336" id="w_336">history</span> <span class="k-word" data-word-idx="337" id="w_337">of</span> <span class="k-word" data-word-idx="338" id="w_338">the</span> <span class="k-word" data-word-idx="339" id="w_339">proletariat</span> <span class="k-word" data-word-idx="340" id="w_340">in</span> <span class="k-word" data-word-idx="341" id="w_341">England</span> <span class="k-word" data-word-idx="342" id="w_342">begins</span> <span class="k-word" data-word-idx="343" id="w_343">with</span> <span class="k-word" data-word-idx="344" id="w_344">the</span> <span class="k-word" data-word-idx="345" id="w_345">second</span></p>
+<p><span class="k-word" data-word-idx="346" id="w_346">half</span> <span class="k-word" data-word-idx="347" id="w_347">of</span> <span class="k-word" data-word-idx="348" id="w_348">the</span> <span class="k-word" data-word-idx="349" id="w_349">last</span> <span class="k-word" data-word-idx="350" id="w_350">century,</span> <span class="k-word" data-word-idx="351" id="w_351">with</span> <span class="k-word" data-word-idx="352" id="w_352">the</span> <span class="k-word" data-word-idx="353" id="w_353">invention</span> <span class="k-word" data-word-idx="354" id="w_354">of</span> <span class="k-word" data-word-idx="355" id="w_355">the</span> <span class="k-word" data-word-idx="356" id="w_356">steam-engine</span></p>
+<p><span class="k-word" data-word-idx="357" id="w_357">and</span> <span class="k-word" data-word-idx="358" id="w_358">of</span> <span class="k-word" data-word-idx="359" id="w_359">machinery</span> <span class="k-word" data-word-idx="360" id="w_360">for</span> <span class="k-word" data-word-idx="361" id="w_361">working</span> <span class="k-word" data-word-idx="362" id="w_362">cotton.</span> <span class="k-word" data-word-idx="363" id="w_363">These</span> <span class="k-word" data-word-idx="364" id="w_364">inventions</span> <span class="k-word" data-word-idx="365" id="w_365">gave</span></p>
+<p><span class="k-word" data-word-idx="366" id="w_366">rise,</span> <span class="k-word" data-word-idx="367" id="w_367">as</span> <span class="k-word" data-word-idx="368" id="w_368">is</span> <span class="k-word" data-word-idx="369" id="w_369">well</span> <span class="k-word" data-word-idx="370" id="w_370">known,</span> <span class="k-word" data-word-idx="371" id="w_371">to</span> <span class="k-word" data-word-idx="372" id="w_372">an</span> <span class="k-word" data-word-idx="373" id="w_373">industrial</span> <span class="k-word" data-word-idx="374" id="w_374">revolution,</span> <span class="k-word" data-word-idx="375" id="w_375">a</span> <span class="k-word" data-word-idx="376" id="w_376">revolution</span></p>
+<p><span class="k-word" data-word-idx="377" id="w_377">which</span> <span class="k-word" data-word-idx="378" id="w_378">altered</span> <span class="k-word" data-word-idx="379" id="w_379">the</span> <span class="k-word" data-word-idx="380" id="w_380">whole</span> <span class="k-word" data-word-idx="381" id="w_381">civil</span> <span class="k-word" data-word-idx="382" id="w_382">society;</span> <span class="k-word" data-word-idx="383" id="w_383">one,</span> <span class="k-word" data-word-idx="384" id="w_384">the</span> <span class="k-word" data-word-idx="385" id="w_385">historical</span></p>
+<p><span class="k-word" data-word-idx="386" id="w_386">importance</span> <span class="k-word" data-word-idx="387" id="w_387">of</span> <span class="k-word" data-word-idx="388" id="w_388">which</span> <span class="k-word" data-word-idx="389" id="w_389">is</span> <span class="k-word" data-word-idx="390" id="w_390">only</span> <span class="k-word" data-word-idx="391" id="w_391">now</span> <span class="k-word" data-word-idx="392" id="w_392">beginning</span> <span class="k-word" data-word-idx="393" id="w_393">to</span> <span class="k-word" data-word-idx="394" id="w_394">be</span> <span class="k-word" data-word-idx="395" id="w_395">recognised.</span></p>
+<p><span class="k-word" data-word-idx="396" id="w_396">England</span> <span class="k-word" data-word-idx="397" id="w_397">is</span> <span class="k-word" data-word-idx="398" id="w_398">the</span> <span class="k-word" data-word-idx="399" id="w_399">classic</span> <span class="k-word" data-word-idx="400" id="w_400">soil</span> <span class="k-word" data-word-idx="401" id="w_401">of</span> <span class="k-word" data-word-idx="402" id="w_402">this</span> <span class="k-word" data-word-idx="403" id="w_403">transformation,</span> <span class="k-word" data-word-idx="404" id="w_404">which</span> <span class="k-word" data-word-idx="405" id="w_405">was</span> <span class="k-word" data-word-idx="406" id="w_406">all</span></p>
+<p><span class="k-word" data-word-idx="407" id="w_407">the</span> <span class="k-word" data-word-idx="408" id="w_408">mightier,</span> <span class="k-word" data-word-idx="409" id="w_409">the</span> <span class="k-word" data-word-idx="410" id="w_410">more</span> <span class="k-word" data-word-idx="411" id="w_411">silently</span> <span class="k-word" data-word-idx="412" id="w_412">it</span> <span class="k-word" data-word-idx="413" id="w_413">proceeded;</span> <span class="k-word" data-word-idx="414" id="w_414">and</span> <span class="k-word" data-word-idx="415" id="w_415">England</span> <span class="k-word" data-word-idx="416" id="w_416">is,</span></p>
+<p><span class="k-word" data-word-idx="417" id="w_417">therefore,</span> <span class="k-word" data-word-idx="418" id="w_418">the</span> <span class="k-word" data-word-idx="419" id="w_419">classic</span> <span class="k-word" data-word-idx="420" id="w_420">land</span> <span class="k-word" data-word-idx="421" id="w_421">of</span> <span class="k-word" data-word-idx="422" id="w_422">its</span> <span class="k-word" data-word-idx="423" id="w_423">chief</span> <span class="k-word" data-word-idx="424" id="w_424">product</span> <span class="k-word" data-word-idx="425" id="w_425">also,</span> <span class="k-word" data-word-idx="426" id="w_426">the</span></p>
+<p><span class="k-word" data-word-idx="427" id="w_427">proletariat.</span> <span class="k-word" data-word-idx="428" id="w_428">Only</span> <span class="k-word" data-word-idx="429" id="w_429">in</span> <span class="k-word" data-word-idx="430" id="w_430">England</span> <span class="k-word" data-word-idx="431" id="w_431">can</span> <span class="k-word" data-word-idx="432" id="w_432">the</span> <span class="k-word" data-word-idx="433" id="w_433">proletariat</span> <span class="k-word" data-word-idx="434" id="w_434">be</span> <span class="k-word" data-word-idx="435" id="w_435">studied</span> <span class="k-word" data-word-idx="436" id="w_436">in</span> <span class="k-word" data-word-idx="437" id="w_437">all</span></p>
+<p><span class="k-word" data-word-idx="438" id="w_438">its</span> <span class="k-word" data-word-idx="439" id="w_439">relations</span> <span class="k-word" data-word-idx="440" id="w_440">and</span> <span class="k-word" data-word-idx="441" id="w_441">from</span> <span class="k-word" data-word-idx="442" id="w_442">all</span> <span class="k-word" data-word-idx="443" id="w_443">sides.</span></p>
+<p><span class="k-word" data-word-idx="444" id="w_444">Steam</span> <span class="k-word" data-word-idx="445" id="w_445">has</span> <span class="k-word" data-word-idx="446" id="w_446">brought</span> <span class="k-word" data-word-idx="447" id="w_447">India</span> <span class="k-word" data-word-idx="448" id="w_448">into</span> <span class="k-word" data-word-idx="449" id="w_449">regular</span> <span class="k-word" data-word-idx="450" id="w_450">and</span> <span class="k-word" data-word-idx="451" id="w_451">rapid</span></p>
+<p><span class="k-word" data-word-idx="452" id="w_452">communication</span> <span class="k-word" data-word-idx="453" id="w_453">with</span> <span class="k-word" data-word-idx="454" id="w_454">Europe,</span> <span class="k-word" data-word-idx="455" id="w_455">has</span> <span class="k-word" data-word-idx="456" id="w_456">connected</span> <span class="k-word" data-word-idx="457" id="w_457">its</span></p>
+<p><span class="k-word" data-word-idx="458" id="w_458">chief</span> <span class="k-word" data-word-idx="459" id="w_459">ports</span> <span class="k-word" data-word-idx="460" id="w_460">with</span> <span class="k-word" data-word-idx="461" id="w_461">those</span> <span class="k-word" data-word-idx="462" id="w_462">of</span> <span class="k-word" data-word-idx="463" id="w_463">the</span> <span class="k-word" data-word-idx="464" id="w_464">whole</span> <span class="k-word" data-word-idx="465" id="w_465">south-</span></p>
+<p><span class="k-word" data-word-idx="466" id="w_466">eastern</span> <span class="k-word" data-word-idx="467" id="w_467">ocean</span> <span class="k-word" data-word-idx="468" id="w_468">and</span> <span class="k-word" data-word-idx="469" id="w_469">has</span> <span class="k-word" data-word-idx="470" id="w_470">revindicated</span> <span class="k-word" data-word-idx="471" id="w_471">it</span> <span class="k-word" data-word-idx="472" id="w_472">from</span> <span class="k-word" data-word-idx="473" id="w_473">the</span></p>
+<p><span class="k-word" data-word-idx="474" id="w_474">isolated</span> <span class="k-word" data-word-idx="475" id="w_475">position</span> <span class="k-word" data-word-idx="476" id="w_476">which</span> <span class="k-word" data-word-idx="477" id="w_477">was</span> <span class="k-word" data-word-idx="478" id="w_478">the</span> <span class="k-word" data-word-idx="479" id="w_479">prime</span> <span class="k-word" data-word-idx="480" id="w_480">law</span> <span class="k-word" data-word-idx="481" id="w_481">of</span></p>
+<p><span class="k-word" data-word-idx="482" id="w_482">its</span> <span class="k-word" data-word-idx="483" id="w_483">stagnation.</span> <span class="k-word" data-word-idx="484" id="w_484">The</span> <span class="k-word" data-word-idx="485" id="w_485">day</span> <span class="k-word" data-word-idx="486" id="w_486">is</span> <span class="k-word" data-word-idx="487" id="w_487">no</span> <span class="k-word" data-word-idx="488" id="w_488">far</span> <span class="k-word" data-word-idx="489" id="w_489">distant,</span> <span class="k-word" data-word-idx="490" id="w_490">when</span></p>
+<p><span class="k-word" data-word-idx="491" id="w_491">by</span> <span class="k-word" data-word-idx="492" id="w_492">a</span> <span class="k-word" data-word-idx="493" id="w_493">combination</span> <span class="k-word" data-word-idx="494" id="w_494">of</span> <span class="k-word" data-word-idx="495" id="w_495">railways</span> <span class="k-word" data-word-idx="496" id="w_496">and</span> <span class="k-word" data-word-idx="497" id="w_497">steam</span></p>
+<p><span class="k-word" data-word-idx="498" id="w_498">vessels,</span> <span class="k-word" data-word-idx="499" id="w_499">the</span> <span class="k-word" data-word-idx="500" id="w_500">distance</span> <span class="k-word" data-word-idx="501" id="w_501">between</span> <span class="k-word" data-word-idx="502" id="w_502">England</span> <span class="k-word" data-word-idx="503" id="w_503">and</span></p>
+<p><span class="k-word" data-word-idx="504" id="w_504">India,</span> <span class="k-word" data-word-idx="505" id="w_505">measured</span> <span class="k-word" data-word-idx="506" id="w_506">by</span> <span class="k-word" data-word-idx="507" id="w_507">time,</span> <span class="k-word" data-word-idx="508" id="w_508">will</span> <span class="k-word" data-word-idx="509" id="w_509">be</span> <span class="k-word" data-word-idx="510" id="w_510">shortened</span> <span class="k-word" data-word-idx="511" id="w_511">to</span></p>
+<p><span class="k-word" data-word-idx="512" id="w_512">eight</span> <span class="k-word" data-word-idx="513" id="w_513">days,</span> <span class="k-word" data-word-idx="514" id="w_514">and</span> <span class="k-word" data-word-idx="515" id="w_515">when</span> <span class="k-word" data-word-idx="516" id="w_516">that</span> <span class="k-word" data-word-idx="517" id="w_517">once</span> <span class="k-word" data-word-idx="518" id="w_518">fabulous</span></p>
+<p><span class="k-word" data-word-idx="519" id="w_519">country</span> <span class="k-word" data-word-idx="520" id="w_520">will</span> <span class="k-word" data-word-idx="521" id="w_521">thus</span> <span class="k-word" data-word-idx="522" id="w_522">be</span> <span class="k-word" data-word-idx="523" id="w_523">actually</span> <span class="k-word" data-word-idx="524" id="w_524">annexed</span> <span class="k-word" data-word-idx="525" id="w_525">to</span> <span class="k-word" data-word-idx="526" id="w_526">the</span></p>
+<p><span class="k-word" data-word-idx="527" id="w_527">Western</span> <span class="k-word" data-word-idx="528" id="w_528">world.</span></p>
+<p><span class="k-word" data-word-idx="529" id="w_529">-</span> <span class="k-word" data-word-idx="530" id="w_530">Marx</span> <span class="k-word" data-word-idx="531" id="w_531">‘British</span> <span class="k-word" data-word-idx="532" id="w_532">Rule</span> <span class="k-word" data-word-idx="533" id="w_533">in</span> <span class="k-word" data-word-idx="534" id="w_534">India’</span></p>
+</blockquote>
+<h3><span class="k-word" data-word-idx="535" id="w_535">CAPITAL</span></h3>
+<h3><span class="k-word" data-word-idx="536" id="w_536">(1867-1894)</span></h3>
+<blockquote>
+<p><span class="k-word" data-word-idx="537" id="w_537">1867</span> <span class="k-word" data-word-idx="538" id="w_538">First</span> <span class="k-word" data-word-idx="539" id="w_539">German</span> <span class="k-word" data-word-idx="540" id="w_540">edition</span></p>
+<p><span class="k-word" data-word-idx="541" id="w_541">1873</span> <span class="k-word" data-word-idx="542" id="w_542">Second</span> <span class="k-word" data-word-idx="543" id="w_543">German</span> <span class="k-word" data-word-idx="544" id="w_544">edition</span> <span class="k-word" data-word-idx="545" id="w_545">–</span> <span class="k-word" data-word-idx="546" id="w_546">with</span> <span class="k-word" data-word-idx="547" id="w_547">significant</span> <span class="k-word" data-word-idx="548" id="w_548">revisions</span></p>
+<p><span class="k-word" data-word-idx="549" id="w_549">1872-1875</span> <span class="k-word" data-word-idx="550" id="w_550">French</span> <span class="k-word" data-word-idx="551" id="w_551">edition</span></p>
+<p><span class="k-word" data-word-idx="552" id="w_552">translated</span> <span class="k-word" data-word-idx="553" id="w_553">on</span> <span class="k-word" data-word-idx="554" id="w_554">the</span> <span class="k-word" data-word-idx="555" id="w_555">basis</span> <span class="k-word" data-word-idx="556" id="w_556">of</span> <span class="k-word" data-word-idx="557" id="w_557">German</span> <span class="k-word" data-word-idx="558" id="w_558">edition</span> <span class="k-word" data-word-idx="559" id="w_559">(1873)</span> <span class="k-word" data-word-idx="560" id="w_560">and</span></p>
+<p><span class="k-word" data-word-idx="561" id="w_561">heavily</span> <span class="k-word" data-word-idx="562" id="w_562">edited</span> <span class="k-word" data-word-idx="563" id="w_563">by</span> <span class="k-word" data-word-idx="564" id="w_564">Marx</span></p>
+<p><span class="k-word" data-word-idx="565" id="w_565">1883</span> <span class="k-word" data-word-idx="566" id="w_566">Third</span> <span class="k-word" data-word-idx="567" id="w_567">German</span> <span class="k-word" data-word-idx="568" id="w_568">edition</span></p>
+<p><span class="k-word" data-word-idx="569" id="w_569">prepared</span> <span class="k-word" data-word-idx="570" id="w_570">for</span> <span class="k-word" data-word-idx="571" id="w_571">publication</span> <span class="k-word" data-word-idx="572" id="w_572">by</span> <span class="k-word" data-word-idx="573" id="w_573">Engels</span> <span class="k-word" data-word-idx="574" id="w_574">after</span> <span class="k-word" data-word-idx="575" id="w_575">Marx’s</span> <span class="k-word" data-word-idx="576" id="w_576">death</span></p>
+<p><span class="k-word" data-word-idx="577" id="w_577">based</span> <span class="k-word" data-word-idx="578" id="w_578">on</span> <span class="k-word" data-word-idx="579" id="w_579">second</span> <span class="k-word" data-word-idx="580" id="w_580">German</span> <span class="k-word" data-word-idx="581" id="w_581">edition</span> <span class="k-word" data-word-idx="582" id="w_582">with</span> <span class="k-word" data-word-idx="583" id="w_583">some</span> <span class="k-word" data-word-idx="584" id="w_584">revisions</span></p>
+<p><span class="k-word" data-word-idx="585" id="w_585">from</span> <span class="k-word" data-word-idx="586" id="w_586">French</span> <span class="k-word" data-word-idx="587" id="w_587">edition</span></p>
+<p><span class="k-word" data-word-idx="588" id="w_588">1886</span> <span class="k-word" data-word-idx="589" id="w_589">First</span> <span class="k-word" data-word-idx="590" id="w_590">English</span> <span class="k-word" data-word-idx="591" id="w_591">edition</span> <span class="k-word" data-word-idx="592" id="w_592">–</span> <span class="k-word" data-word-idx="593" id="w_593">translated</span> <span class="k-word" data-word-idx="594" id="w_594">from</span> <span class="k-word" data-word-idx="595" id="w_595">Third</span> <span class="k-word" data-word-idx="596" id="w_596">German</span> <span class="k-word" data-word-idx="597" id="w_597">edition</span></p>
+<p><span class="k-word" data-word-idx="598" id="w_598">‘Yesterday</span> <span class="k-word" data-word-idx="599" id="w_599">I</span> <span class="k-word" data-word-idx="600" id="w_600">read</span> <span class="k-word" data-word-idx="601" id="w_601">the</span> <span class="k-word" data-word-idx="602" id="w_602">chapter</span> <span class="k-word" data-word-idx="603" id="w_603">on</span> <span class="k-word" data-word-idx="604" id="w_604">factory</span> <span class="k-word" data-word-idx="605" id="w_605">legislation</span> <span class="k-word" data-word-idx="606" id="w_606">in</span> <span class="k-word" data-word-idx="607" id="w_607">the</span> <span class="k-word" data-word-idx="608" id="w_608">French</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="609" id="w_609">translation.</span> <span class="k-word" data-word-idx="610" id="w_610">With</span> <span class="k-word" data-word-idx="611" id="w_611">all</span> <span class="k-word" data-word-idx="612" id="w_612">due</span> <span class="k-word" data-word-idx="613" id="w_613">respect</span> <span class="k-word" data-word-idx="614" id="w_614">for</span> <span class="k-word" data-word-idx="615" id="w_615">the</span> <span class="k-word" data-word-idx="616" id="w_616">skill</span> <span class="k-word" data-word-idx="617" id="w_617">with</span> <span class="k-word" data-word-idx="618" id="w_618">which</span> <span class="k-word" data-word-idx="619" id="w_619">this</span> <span class="k-word" data-word-idx="620" id="w_620">chapter</span> <span class="k-word" data-word-idx="621" id="w_621">has</span> <span class="k-word" data-word-idx="622" id="w_622">been</span> <span class="k-word" data-word-idx="623" id="w_623">rendered</span> <span class="k-word" data-word-idx="624" id="w_624">into</span> <span class="k-word" data-word-idx="625" id="w_625">elegant</span> <span class="k-word" data-word-idx="626" id="w_626">French,</span> <span class="k-word" data-word-idx="627" id="w_627">I</span> <span class="k-word" data-word-idx="628" id="w_628">still</span> <span class="k-word" data-word-idx="629" id="w_629">felt</span> <span class="k-word" data-word-idx="630" id="w_630">regret</span> <span class="k-word" data-word-idx="631" id="w_631">at</span> <span class="k-word" data-word-idx="632" id="w_632">what</span> <span class="k-word" data-word-idx="633" id="w_633">had</span> <span class="k-word" data-word-idx="634" id="w_634">been</span> <span class="k-word" data-word-idx="635" id="w_635">lost</span> <span class="k-word" data-word-idx="636" id="w_636">from</span> <span class="k-word" data-word-idx="637" id="w_637">the</span> <span class="k-word" data-word-idx="638" id="w_638">beautiful</span> <span class="k-word" data-word-idx="639" id="w_639">chapter.</span> <span class="k-word" data-word-idx="640" id="w_640">Its</span> <span class="k-word" data-word-idx="641" id="w_641">vigor</span> <span class="k-word" data-word-idx="642" id="w_642">and</span> <span class="k-word" data-word-idx="643" id="w_643">vitality</span> <span class="k-word" data-word-idx="644" id="w_644">and</span> <span class="k-word" data-word-idx="645" id="w_645">life</span> <span class="k-word" data-word-idx="646" id="w_646">have</span> <span class="k-word" data-word-idx="647" id="w_647">gone</span> <span class="k-word" data-word-idx="648" id="w_648">to</span> <span class="k-word" data-word-idx="649" id="w_649">the</span></p>
+<blockquote>
+<p><span class="k-word" data-word-idx="650" id="w_650">devil.</span> <span class="k-word" data-word-idx="651" id="w_651">The</span> <span class="k-word" data-word-idx="652" id="w_652">chance</span> <span class="k-word" data-word-idx="653" id="w_653">for</span> <span class="k-word" data-word-idx="654" id="w_654">an</span> <span class="k-word" data-word-idx="655" id="w_655">ordinary</span> <span class="k-word" data-word-idx="656" id="w_656">writer</span> <span class="k-word" data-word-idx="657" id="w_657">to</span> <span class="k-word" data-word-idx="658" id="w_658">express</span> <span class="k-word" data-word-idx="659" id="w_659">himself</span> <span class="k-word" data-word-idx="660" id="w_660">with</span> <span class="k-word" data-word-idx="661" id="w_661">certain</span></p>
+<p><span class="k-word" data-word-idx="662" id="w_662">elegance</span> <span class="k-word" data-word-idx="663" id="w_663">has</span> <span class="k-word" data-word-idx="664" id="w_664">been</span> <span class="k-word" data-word-idx="665" id="w_665">purchased</span> <span class="k-word" data-word-idx="666" id="w_666">by</span> <span class="k-word" data-word-idx="667" id="w_667">castrating</span> <span class="k-word" data-word-idx="668" id="w_668">the</span> <span class="k-word" data-word-idx="669" id="w_669">language.</span> <span class="k-word" data-word-idx="670" id="w_670">It</span> <span class="k-word" data-word-idx="671" id="w_671">is</span> <span class="k-word" data-word-idx="672" id="w_672">becoming</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="673" id="w_673">increasingly</span> <span class="k-word" data-word-idx="674" id="w_674">impossible</span> <span class="k-word" data-word-idx="675" id="w_675">to</span> <span class="k-word" data-word-idx="676" id="w_676">think</span> <span class="k-word" data-word-idx="677" id="w_677">originally</span> <span class="k-word" data-word-idx="678" id="w_678">in</span> <span class="k-word" data-word-idx="679" id="w_679">the</span> <span class="k-word" data-word-idx="680" id="w_680">straightjacket</span> <span class="k-word" data-word-idx="681" id="w_681">of</span> <span class="k-word" data-word-idx="682" id="w_682">modern</span> <span class="k-word" data-word-idx="683" id="w_683">French…..I</span> <span class="k-word" data-word-idx="684" id="w_684">would</span> <span class="k-word" data-word-idx="685" id="w_685">think</span> <span class="k-word" data-word-idx="686" id="w_686">it</span> <span class="k-word" data-word-idx="687" id="w_687">a</span> <span class="k-word" data-word-idx="688" id="w_688">great</span> <span class="k-word" data-word-idx="689" id="w_689">mistake</span> <span class="k-word" data-word-idx="690" id="w_690">to</span> <span class="k-word" data-word-idx="691" id="w_691">take</span> <span class="k-word" data-word-idx="692" id="w_692">the</span> <span class="k-word" data-word-idx="693" id="w_693">French</span> <span class="k-word" data-word-idx="694" id="w_694">version</span> <span class="k-word" data-word-idx="695" id="w_695">as</span> <span class="k-word" data-word-idx="696" id="w_696">a</span></p>
+<blockquote>
+<p><span class="k-word" data-word-idx="697" id="w_697">model</span> <span class="k-word" data-word-idx="698" id="w_698">for</span> <span class="k-word" data-word-idx="699" id="w_699">the</span> <span class="k-word" data-word-idx="700" id="w_700">English</span> <span class="k-word" data-word-idx="701" id="w_701">translation.</span> <span class="k-word" data-word-idx="702" id="w_702">In</span> <span class="k-word" data-word-idx="703" id="w_703">English</span> <span class="k-word" data-word-idx="704" id="w_704">the</span> <span class="k-word" data-word-idx="705" id="w_705">power</span> <span class="k-word" data-word-idx="706" id="w_706">of</span> <span class="k-word" data-word-idx="707" id="w_707">expression</span> <span class="k-word" data-word-idx="708" id="w_708">in</span></p>
+<p><span class="k-word" data-word-idx="709" id="w_709">the</span> <span class="k-word" data-word-idx="710" id="w_710">original</span> <span class="k-word" data-word-idx="711" id="w_711">does</span> <span class="k-word" data-word-idx="712" id="w_712">not</span> <span class="k-word" data-word-idx="713" id="w_713">need</span> <span class="k-word" data-word-idx="714" id="w_714">to</span> <span class="k-word" data-word-idx="715" id="w_715">be</span> <span class="k-word" data-word-idx="716" id="w_716">toned</span> <span class="k-word" data-word-idx="717" id="w_717">down;</span> <span class="k-word" data-word-idx="718" id="w_718">whatever</span> <span class="k-word" data-word-idx="719" id="w_719">has</span> <span class="k-word" data-word-idx="720" id="w_720">inevitably</span> <span class="k-word" data-word-idx="721" id="w_721">to</span></p>
+<p><span class="k-word" data-word-idx="722" id="w_722">be</span> <span class="k-word" data-word-idx="723" id="w_723">sacrificed</span> <span class="k-word" data-word-idx="724" id="w_724">in</span> <span class="k-word" data-word-idx="725" id="w_725">the</span> <span class="k-word" data-word-idx="726" id="w_726">genuinely</span> <span class="k-word" data-word-idx="727" id="w_727">dialectical</span> <span class="k-word" data-word-idx="728" id="w_728">passages</span> <span class="k-word" data-word-idx="729" id="w_729">can</span> <span class="k-word" data-word-idx="730" id="w_730">be</span> <span class="k-word" data-word-idx="731" id="w_731">made</span> <span class="k-word" data-word-idx="732" id="w_732">up</span> <span class="k-word" data-word-idx="733" id="w_733">in</span></p>
+<p><span class="k-word" data-word-idx="734" id="w_734">others</span> <span class="k-word" data-word-idx="735" id="w_735">by</span> <span class="k-word" data-word-idx="736" id="w_736">the</span> <span class="k-word" data-word-idx="737" id="w_737">greater</span> <span class="k-word" data-word-idx="738" id="w_738">energy</span> <span class="k-word" data-word-idx="739" id="w_739">and</span> <span class="k-word" data-word-idx="740" id="w_740">brevity</span> <span class="k-word" data-word-idx="741" id="w_741">of</span> <span class="k-word" data-word-idx="742" id="w_742">the</span> <span class="k-word" data-word-idx="743" id="w_743">English</span> <span class="k-word" data-word-idx="744" id="w_744">language.’</span></p>
+<p><span class="k-word" data-word-idx="745" id="w_745">-</span> <span class="k-word" data-word-idx="746" id="w_746">From</span> <span class="k-word" data-word-idx="747" id="w_747">Engels</span> <span class="k-word" data-word-idx="748" id="w_748">to</span> <span class="k-word" data-word-idx="749" id="w_749">Marx</span> <span class="k-word" data-word-idx="750" id="w_750">-</span> <span class="k-word" data-word-idx="751" id="w_751">*Collected</span> <span class="k-word" data-word-idx="752" id="w_752">Works</span> <span class="k-word" data-word-idx="753" id="w_753">of</span> <span class="k-word" data-word-idx="754" id="w_754">Marx</span> <span class="k-word" data-word-idx="755" id="w_755">and</span> <span class="k-word" data-word-idx="756" id="w_756">Engels*</span> <span class="k-word" data-word-idx="757" id="w_757">,</span> <span class="k-word" data-word-idx="758" id="w_758">44,</span> <span class="k-word" data-word-idx="759" id="w_759">540-541</span></p>
+<p><span class="k-word" data-word-idx="760" id="w_760">‘Now</span> <span class="k-word" data-word-idx="761" id="w_761">that</span> <span class="k-word" data-word-idx="762" id="w_762">you</span> <span class="k-word" data-word-idx="763" id="w_763">are</span> <span class="k-word" data-word-idx="764" id="w_764">taking</span> <span class="k-word" data-word-idx="765" id="w_765">a</span> <span class="k-word" data-word-idx="766" id="w_766">look</span> <span class="k-word" data-word-idx="767" id="w_767">at</span> <span class="k-word" data-word-idx="768" id="w_768">the</span> <span class="k-word" data-word-idx="769" id="w_769">French</span> <span class="k-word" data-word-idx="770" id="w_770">translation</span> <span class="k-word" data-word-idx="771" id="w_771">of</span> <span class="k-word" data-word-idx="772" id="w_772">Capital,</span> <span class="k-word" data-word-idx="773" id="w_773">I</span></p>
+<p><span class="k-word" data-word-idx="774" id="w_774">would</span> <span class="k-word" data-word-idx="775" id="w_775">be</span> <span class="k-word" data-word-idx="776" id="w_776">grateful</span> <span class="k-word" data-word-idx="777" id="w_777">if</span> <span class="k-word" data-word-idx="778" id="w_778">you</span> <span class="k-word" data-word-idx="779" id="w_779">could</span> <span class="k-word" data-word-idx="780" id="w_780">persevere</span> <span class="k-word" data-word-idx="781" id="w_781">with</span> <span class="k-word" data-word-idx="782" id="w_782">it.</span> <span class="k-word" data-word-idx="783" id="w_783">I</span> <span class="k-word" data-word-idx="784" id="w_784">think</span> <span class="k-word" data-word-idx="785" id="w_785">you</span> <span class="k-word" data-word-idx="786" id="w_786">will</span> <span class="k-word" data-word-idx="787" id="w_787">find</span></p>
+<p><span class="k-word" data-word-idx="788" id="w_788">that</span> <span class="k-word" data-word-idx="789" id="w_789">some</span> <span class="k-word" data-word-idx="790" id="w_790">passages</span> <span class="k-word" data-word-idx="791" id="w_791">are</span> <span class="k-word" data-word-idx="792" id="w_792">superior</span> <span class="k-word" data-word-idx="793" id="w_793">to</span> <span class="k-word" data-word-idx="794" id="w_794">the</span> <span class="k-word" data-word-idx="795" id="w_795">German’</span></p>
+<p><span class="k-word" data-word-idx="796" id="w_796">-</span> <span class="k-word" data-word-idx="797" id="w_797">From</span> <span class="k-word" data-word-idx="798" id="w_798">Marx</span> <span class="k-word" data-word-idx="799" id="w_799">to</span> <span class="k-word" data-word-idx="800" id="w_800">Engels</span> <span class="k-word" data-word-idx="801" id="w_801">-</span> <span class="k-word" data-word-idx="802" id="w_802">*Collected</span> <span class="k-word" data-word-idx="803" id="w_803">Works</span> <span class="k-word" data-word-idx="804" id="w_804">of</span> <span class="k-word" data-word-idx="805" id="w_805">Marx</span> <span class="k-word" data-word-idx="806" id="w_806">and</span> <span class="k-word" data-word-idx="807" id="w_807">Engels*</span> <span class="k-word" data-word-idx="808" id="w_808">,</span> <span class="k-word" data-word-idx="809" id="w_809">44,</span> <span class="k-word" data-word-idx="810" id="w_810">541.</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="811" id="w_811">The</span> <span class="k-word" data-word-idx="812" id="w_812">Colonial</span> <span class="k-word" data-word-idx="813" id="w_813">markets</span> <span class="k-word" data-word-idx="814" id="w_814">developed</span> <span class="k-word" data-word-idx="815" id="w_815">at</span> <span class="k-word" data-word-idx="816" id="w_816">an</span> <span class="k-word" data-word-idx="817" id="w_817">increasing</span> <span class="k-word" data-word-idx="818" id="w_818">rate</span> <span class="k-word" data-word-idx="819" id="w_819">their</span> <span class="k-word" data-word-idx="820" id="w_820">capacity</span> <span class="k-word" data-word-idx="821" id="w_821">for</span> <span class="k-word" data-word-idx="822" id="w_822">absorbing</span> <span class="k-word" data-word-idx="823" id="w_823">English</span> <span class="k-word" data-word-idx="824" id="w_824">manufactured</span> <span class="k-word" data-word-idx="825" id="w_825">goods.</span>  <span class="k-word" data-word-idx="826" id="w_826">In</span> <span class="k-word" data-word-idx="827" id="w_827">India</span> <span class="k-word" data-word-idx="828" id="w_828">millions</span> <span class="k-word" data-word-idx="829" id="w_829">of</span> <span class="k-word" data-word-idx="830" id="w_830">hand-weavers</span> <span class="k-word" data-word-idx="831" id="w_831">were</span> <span class="k-word" data-word-idx="832" id="w_832">finally</span> <span class="k-word" data-word-idx="833" id="w_833">crushed</span></p>
+<blockquote>
+<p><span class="k-word" data-word-idx="834" id="w_834">out</span> <span class="k-word" data-word-idx="835" id="w_835">by</span> <span class="k-word" data-word-idx="836" id="w_836">the</span> <span class="k-word" data-word-idx="837" id="w_837">Lancashire</span> <span class="k-word" data-word-idx="838" id="w_838">power-loom.</span>  <span class="k-word" data-word-idx="839" id="w_839">China</span> <span class="k-word" data-word-idx="840" id="w_840">was</span> <span class="k-word" data-word-idx="841" id="w_841">more</span> <span class="k-word" data-word-idx="842" id="w_842">and</span> <span class="k-word" data-word-idx="843" id="w_843">more</span> <span class="k-word" data-word-idx="844" id="w_844">being</span> <span class="k-word" data-word-idx="845" id="w_845">opened</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="846" id="w_846">up.</span>  <span class="k-word" data-word-idx="847" id="w_847">Above</span> <span class="k-word" data-word-idx="848" id="w_848">all,</span> <span class="k-word" data-word-idx="849" id="w_849">the</span> <span class="k-word" data-word-idx="850" id="w_850">United</span> <span class="k-word" data-word-idx="851" id="w_851">States—then,</span> <span class="k-word" data-word-idx="852" id="w_852">commercially</span> <span class="k-word" data-word-idx="853" id="w_853">speaking,</span> <span class="k-word" data-word-idx="854" id="w_854">a</span> <span class="k-word" data-word-idx="855" id="w_855">mere</span> <span class="k-word" data-word-idx="856" id="w_856">colonial</span> <span class="k-word" data-word-idx="857" id="w_857">market,</span> <span class="k-word" data-word-idx="858" id="w_858">but</span> <span class="k-word" data-word-idx="859" id="w_859">by</span> <span class="k-word" data-word-idx="860" id="w_860">far</span> <span class="k-word" data-word-idx="861" id="w_861">the</span> <span class="k-word" data-word-idx="862" id="w_862">biggest</span> <span class="k-word" data-word-idx="863" id="w_863">of</span> <span class="k-word" data-word-idx="864" id="w_864">them</span> <span class="k-word" data-word-idx="865" id="w_865">all—underwent</span> <span class="k-word" data-word-idx="866" id="w_866">an</span> <span class="k-word" data-word-idx="867" id="w_867">economic</span> <span class="k-word" data-word-idx="868" id="w_868">development</span> <span class="k-word" data-word-idx="869" id="w_869">astounding</span> <span class="k-word" data-word-idx="870" id="w_870">even</span> <span class="k-word" data-word-idx="871" id="w_871">for</span> <span class="k-word" data-word-idx="872" id="w_872">that</span> <span class="k-word" data-word-idx="873" id="w_873">rapidly</span> <span class="k-word" data-word-idx="874" id="w_874">progressive</span> <span class="k-word" data-word-idx="875" id="w_875">country.</span>  <span class="k-word" data-word-idx="876" id="w_876">And,</span> <span class="k-word" data-word-idx="877" id="w_877">finally,</span> <span class="k-word" data-word-idx="878" id="w_878">the</span> <span class="k-word" data-word-idx="879" id="w_879">new</span> <span class="k-word" data-word-idx="880" id="w_880">means</span> <span class="k-word" data-word-idx="881" id="w_881">of</span> <span class="k-word" data-word-idx="882" id="w_882">communication</span> <span class="k-word" data-word-idx="883" id="w_883">introduced</span> <span class="k-word" data-word-idx="884" id="w_884">at</span> <span class="k-word" data-word-idx="885" id="w_885">the</span> <span class="k-word" data-word-idx="886" id="w_886">close</span> <span class="k-word" data-word-idx="887" id="w_887">of</span> <span class="k-word" data-word-idx="888" id="w_888">the</span> <span class="k-word" data-word-idx="889" id="w_889">preceding</span> <span class="k-word" data-word-idx="890" id="w_890">period—railways</span> <span class="k-word" data-word-idx="891" id="w_891">and</span> <span class="k-word" data-word-idx="892" id="w_892">ocean</span> <span class="k-word" data-word-idx="893" id="w_893">steamers—were</span> <span class="k-word" data-word-idx="894" id="w_894">now</span> <span class="k-word" data-word-idx="895" id="w_895">worked</span> <span class="k-word" data-word-idx="896" id="w_896">out</span> <span class="k-word" data-word-idx="897" id="w_897">on</span> <span class="k-word" data-word-idx="898" id="w_898">an</span> <span class="k-word" data-word-idx="899" id="w_899">international</span> <span class="k-word" data-word-idx="900" id="w_900">scale;</span> <span class="k-word" data-word-idx="901" id="w_901">they</span> <span class="k-word" data-word-idx="902" id="w_902">realised</span> <span class="k-word" data-word-idx="903" id="w_903">actually,</span> <span class="k-word" data-word-idx="904" id="w_904">what</span> <span class="k-word" data-word-idx="905" id="w_905">had</span> <span class="k-word" data-word-idx="906" id="w_906">hitherto</span> <span class="k-word" data-word-idx="907" id="w_907">existed</span> <span class="k-word" data-word-idx="908" id="w_908">only</span> <span class="k-word" data-word-idx="909" id="w_909">potentially,</span> <span class="k-word" data-word-idx="910" id="w_910">a</span> <span class="k-word" data-word-idx="911" id="w_911">world-market.</span>  <span class="k-word" data-word-idx="912" id="w_912">This</span> <span class="k-word" data-word-idx="913" id="w_913">world-market,</span> <span class="k-word" data-word-idx="914" id="w_914">at</span> <span class="k-word" data-word-idx="915" id="w_915">first,</span> <span class="k-word" data-word-idx="916" id="w_916">was</span> <span class="k-word" data-word-idx="917" id="w_917">composed</span> <span class="k-word" data-word-idx="918" id="w_918">of</span> <span class="k-word" data-word-idx="919" id="w_919">a</span> <span class="k-word" data-word-idx="920" id="w_920">number</span> <span class="k-word" data-word-idx="921" id="w_921">of</span> <span class="k-word" data-word-idx="922" id="w_922">chiefly</span> <span class="k-word" data-word-idx="923" id="w_923">or</span> <span class="k-word" data-word-idx="924" id="w_924">entirely</span> <span class="k-word" data-word-idx="925" id="w_925">agricultural</span> <span class="k-word" data-word-idx="926" id="w_926">countries</span> <span class="k-word" data-word-idx="927" id="w_927">grouped</span> <span class="k-word" data-word-idx="928" id="w_928">around</span> <span class="k-word" data-word-idx="929" id="w_929">one</span> <span class="k-word" data-word-idx="930" id="w_930">manufacturing</span> <span class="k-word" data-word-idx="931" id="w_931">centre—England—which</span> <span class="k-word" data-word-idx="932" id="w_932">consumed</span> <span class="k-word" data-word-idx="933" id="w_933">the</span> <span class="k-word" data-word-idx="934" id="w_934">greater</span> <span class="k-word" data-word-idx="935" id="w_935">part</span> <span class="k-word" data-word-idx="936" id="w_936">of</span> <span class="k-word" data-word-idx="937" id="w_937">their</span> <span class="k-word" data-word-idx="938" id="w_938">surplus</span> <span class="k-word" data-word-idx="939" id="w_939">raw</span> <span class="k-word" data-word-idx="940" id="w_940">produce,</span> <span class="k-word" data-word-idx="941" id="w_941">and</span> <span class="k-word" data-word-idx="942" id="w_942">supplied</span> <span class="k-word" data-word-idx="943" id="w_943">them</span> <span class="k-word" data-word-idx="944" id="w_944">in</span> <span class="k-word" data-word-idx="945" id="w_945">return</span> <span class="k-word" data-word-idx="946" id="w_946">with</span> <span class="k-word" data-word-idx="947" id="w_947">the</span> <span class="k-word" data-word-idx="948" id="w_948">greater</span> <span class="k-word" data-word-idx="949" id="w_949">part</span> <span class="k-word" data-word-idx="950" id="w_950">of</span> <span class="k-word" data-word-idx="951" id="w_951">their</span> <span class="k-word" data-word-idx="952" id="w_952">requirements</span></p>
+<blockquote>
+<p><span class="k-word" data-word-idx="953" id="w_953">in</span> <span class="k-word" data-word-idx="954" id="w_954">manufactured</span> <span class="k-word" data-word-idx="955" id="w_955">articles.</span></p>
+<p><span class="k-word" data-word-idx="956" id="w_956">Engels,</span> <span class="k-word" data-word-idx="957" id="w_957">*The</span> <span class="k-word" data-word-idx="958" id="w_958">Conditions</span> <span class="k-word" data-word-idx="959" id="w_959">of</span> <span class="k-word" data-word-idx="960" id="w_960">the</span> <span class="k-word" data-word-idx="961" id="w_961">Working</span> <span class="k-word" data-word-idx="962" id="w_962">Class</span> <span class="k-word" data-word-idx="963" id="w_963">in</span> <span class="k-word" data-word-idx="964" id="w_964">England</span> <span class="k-word" data-word-idx="965" id="w_965">–*</span> <span class="k-word" data-word-idx="966" id="w_966">Preface</span> <span class="k-word" data-word-idx="967" id="w_967">(1892)</span></p>
+<p><span class="k-word" data-word-idx="968" id="w_968">Robert</span> <span class="k-word" data-word-idx="969" id="w_969">Clive</span> <span class="k-word" data-word-idx="970" id="w_970">–</span> <span class="k-word" data-word-idx="971" id="w_971">credited</span> <span class="k-word" data-word-idx="972" id="w_972">with</span> <span class="k-word" data-word-idx="973" id="w_973">securing</span> <span class="k-word" data-word-idx="974" id="w_974">EIC</span> <span class="k-word" data-word-idx="975" id="w_975">rule</span> <span class="k-word" data-word-idx="976" id="w_976">in</span></p>
+<p><span class="k-word" data-word-idx="977" id="w_977">Bengal</span></p>
+<p><span class="k-word" data-word-idx="978" id="w_978">Warren</span> <span class="k-word" data-word-idx="979" id="w_979">Hastings</span></p>
+<p><span class="k-word" data-word-idx="980" id="w_980">Englishmen</span> <span class="k-word" data-word-idx="981" id="w_981">as</span> <span class="k-word" data-word-idx="982" id="w_982">‘Unscrupulous</span> <span class="k-word" data-word-idx="983" id="w_983">Nabobs’</span></p>
+<p><span class="k-word" data-word-idx="984" id="w_984">India</span> <span class="k-word" data-word-idx="985" id="w_985">under</span> <span class="k-word" data-word-idx="986" id="w_986">British</span> <span class="k-word" data-word-idx="987" id="w_987">Rule</span> <span class="k-word" data-word-idx="988" id="w_988">-</span> <span class="k-word" data-word-idx="989" id="w_989">1863</span></p>
+<p><span class="k-word" data-word-idx="990" id="w_990">‘League</span> <span class="k-word" data-word-idx="991" id="w_991">of</span> <span class="k-word" data-word-idx="992" id="w_992">Just’</span> <span class="k-word" data-word-idx="993" id="w_993">becomes</span> <span class="k-word" data-word-idx="994" id="w_994">‘Communist</span> <span class="k-word" data-word-idx="995" id="w_995">League’</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="996" id="w_996">‘….Marx’s</span> <span class="k-word" data-word-idx="997" id="w_997">thorough</span> <span class="k-word" data-word-idx="998" id="w_998">knowledge</span> <span class="k-word" data-word-idx="999" id="w_999">of</span> <span class="k-word" data-word-idx="1000" id="w_1000">French</span> <span class="k-word" data-word-idx="1001" id="w_1001">history</span> <span class="k-word" data-word-idx="1002" id="w_1002">was</span> <span class="k-word" data-word-idx="1003" id="w_1003">needed.</span> <span class="k-word" data-word-idx="1004" id="w_1004">France</span> <span class="k-word" data-word-idx="1005" id="w_1005">is</span> <span class="k-word" data-word-idx="1006" id="w_1006">the</span> <span class="k-word" data-word-idx="1007" id="w_1007">land</span> <span class="k-word" data-word-idx="1008" id="w_1008">where,</span> <span class="k-word" data-word-idx="1009" id="w_1009">more</span> <span class="k-word" data-word-idx="1010" id="w_1010">than</span> <span class="k-word" data-word-idx="1011" id="w_1011">anywhere</span> <span class="k-word" data-word-idx="1012" id="w_1012">else,</span> <span class="k-word" data-word-idx="1013" id="w_1013">the</span> <span class="k-word" data-word-idx="1014" id="w_1014">historical</span> <span class="k-word" data-word-idx="1015" id="w_1015">class</span> <span class="k-word" data-word-idx="1016" id="w_1016">struggles</span> <span class="k-word" data-word-idx="1017" id="w_1017">were</span> <span class="k-word" data-word-idx="1018" id="w_1018">each</span> <span class="k-word" data-word-idx="1019" id="w_1019">time</span> <span class="k-word" data-word-idx="1020" id="w_1020">fought</span> <span class="k-word" data-word-idx="1021" id="w_1021">out</span> <span class="k-word" data-word-idx="1022" id="w_1022">to</span> <span class="k-word" data-word-idx="1023" id="w_1023">a</span> <span class="k-word" data-word-idx="1024" id="w_1024">decision,</span> <span class="k-word" data-word-idx="1025" id="w_1025">and</span> <span class="k-word" data-word-idx="1026" id="w_1026">where,</span> <span class="k-word" data-word-idx="1027" id="w_1027">consequently,</span> <span class="k-word" data-word-idx="1028" id="w_1028">the</span> <span class="k-word" data-word-idx="1029" id="w_1029">changing</span> <span class="k-word" data-word-idx="1030" id="w_1030">political</span> <span class="k-word" data-word-idx="1031" id="w_1031">forms</span> <span class="k-word" data-word-idx="1032" id="w_1032">within</span> <span class="k-word" data-word-idx="1033" id="w_1033">which</span> <span class="k-word" data-word-idx="1034" id="w_1034">they</span> <span class="k-word" data-word-idx="1035" id="w_1035">move</span> <span class="k-word" data-word-idx="1036" id="w_1036">and</span> <span class="k-word" data-word-idx="1037" id="w_1037">in</span> <span class="k-word" data-word-idx="1038" id="w_1038">which</span> <span class="k-word" data-word-idx="1039" id="w_1039">their</span> <span class="k-word" data-word-idx="1040" id="w_1040">results</span> <span class="k-word" data-word-idx="1041" id="w_1041">are</span> <span class="k-word" data-word-idx="1042" id="w_1042">summarised</span> <span class="k-word" data-word-idx="1043" id="w_1043">have</span> <span class="k-word" data-word-idx="1044" id="w_1044">been</span> <span class="k-word" data-word-idx="1045" id="w_1045">stamped</span> <span class="k-word" data-word-idx="1046" id="w_1046">in</span> <span class="k-word" data-word-idx="1047" id="w_1047">the</span> <span class="k-word" data-word-idx="1048" id="w_1048">sharpest</span> <span class="k-word" data-word-idx="1049" id="w_1049">outlines.</span> <span class="k-word" data-word-idx="1050" id="w_1050">The</span> <span class="k-word" data-word-idx="1051" id="w_1051">centre</span> <span class="k-word" data-word-idx="1052" id="w_1052">of</span> <span class="k-word" data-word-idx="1053" id="w_1053">feudalism</span> <span class="k-word" data-word-idx="1054" id="w_1054">in</span> <span class="k-word" data-word-idx="1055" id="w_1055">the</span> <span class="k-word" data-word-idx="1056" id="w_1056">Middle</span> <span class="k-word" data-word-idx="1057" id="w_1057">Ages,</span> <span class="k-word" data-word-idx="1058" id="w_1058">the</span> <span class="k-word" data-word-idx="1059" id="w_1059">model</span> <span class="k-word" data-word-idx="1060" id="w_1060">country</span> <span class="k-word" data-word-idx="1061" id="w_1061">of</span> <span class="k-word" data-word-idx="1062" id="w_1062">unified</span> <span class="k-word" data-word-idx="1063" id="w_1063">monarchy,</span> <span class="k-word" data-word-idx="1064" id="w_1064">resting</span> <span class="k-word" data-word-idx="1065" id="w_1065">on</span> <span class="k-word" data-word-idx="1066" id="w_1066">estates,</span> <span class="k-word" data-word-idx="1067" id="w_1067">since</span> <span class="k-word" data-word-idx="1068" id="w_1068">the</span> <span class="k-word" data-word-idx="1069" id="w_1069">Renaissance,</span> <span class="k-word" data-word-idx="1070" id="w_1070">France</span> <span class="k-word" data-word-idx="1071" id="w_1071">demolished</span> <span class="k-word" data-word-idx="1072" id="w_1072">feudalism</span> <span class="k-word" data-word-idx="1073" id="w_1073">in</span> <span class="k-word" data-word-idx="1074" id="w_1074">the</span> <span class="k-word" data-word-idx="1075" id="w_1075">Great</span> <span class="k-word" data-word-idx="1076" id="w_1076">Revolution</span> <span class="k-word" data-word-idx="1077" id="w_1077">and</span> <span class="k-word" data-word-idx="1078" id="w_1078">established</span> <span class="k-word" data-word-idx="1079" id="w_1079">the</span> <span class="k-word" data-word-idx="1080" id="w_1080">unalloyed</span> <span class="k-word" data-word-idx="1081" id="w_1081">rule</span> <span class="k-word" data-word-idx="1082" id="w_1082">of</span> <span class="k-word" data-word-idx="1083" id="w_1083">the</span> <span class="k-word" data-word-idx="1084" id="w_1084">bourgeoisie</span> <span class="k-word" data-word-idx="1085" id="w_1085">in</span> <span class="k-word" data-word-idx="1086" id="w_1086">a</span> <span class="k-word" data-word-idx="1087" id="w_1087">classical</span> <span class="k-word" data-word-idx="1088" id="w_1088">purity</span> <span class="k-word" data-word-idx="1089" id="w_1089">unequalled</span> <span class="k-word" data-word-idx="1090" id="w_1090">by</span> <span class="k-word" data-word-idx="1091" id="w_1091">any</span> <span class="k-word" data-word-idx="1092" id="w_1092">other</span> <span class="k-word" data-word-idx="1093" id="w_1093">European</span> <span class="k-word" data-word-idx="1094" id="w_1094">land.</span> <span class="k-word" data-word-idx="1095" id="w_1095">And</span> <span class="k-word" data-word-idx="1096" id="w_1096">the</span> <span class="k-word" data-word-idx="1097" id="w_1097">struggle</span> <span class="k-word" data-word-idx="1098" id="w_1098">of</span> <span class="k-word" data-word-idx="1099" id="w_1099">the</span> <span class="k-word" data-word-idx="1100" id="w_1100">upward-striving</span> <span class="k-word" data-word-idx="1101" id="w_1101">proletariat</span> <span class="k-word" data-word-idx="1102" id="w_1102">against</span> <span class="k-word" data-word-idx="1103" id="w_1103">the</span> <span class="k-word" data-word-idx="1104" id="w_1104">ruling</span> <span class="k-word" data-word-idx="1105" id="w_1105">bourgeoisie</span> <span class="k-word" data-word-idx="1106" id="w_1106">appeared</span> <span class="k-word" data-word-idx="1107" id="w_1107">here</span> <span class="k-word" data-word-idx="1108" id="w_1108">in</span> <span class="k-word" data-word-idx="1109" id="w_1109">an</span> <span class="k-word" data-word-idx="1110" id="w_1110">acute</span> <span class="k-word" data-word-idx="1111" id="w_1111">form</span> <span class="k-word" data-word-idx="1112" id="w_1112">unknown</span> <span class="k-word" data-word-idx="1113" id="w_1113">elsewhere</span> <span class="k-word" data-word-idx="1114" id="w_1114">.</span> <span class="k-word" data-word-idx="1115" id="w_1115">This</span> <span class="k-word" data-word-idx="1116" id="w_1116">was</span> <span class="k-word" data-word-idx="1117" id="w_1117">the</span> <span class="k-word" data-word-idx="1118" id="w_1118">reason</span> <span class="k-word" data-word-idx="1119" id="w_1119">why</span> <span class="k-word" data-word-idx="1120" id="w_1120">Marx</span> <span class="k-word" data-word-idx="1121" id="w_1121">not</span> <span class="k-word" data-word-idx="1122" id="w_1122">only</span> <span class="k-word" data-word-idx="1123" id="w_1123">studied</span> <span class="k-word" data-word-idx="1124" id="w_1124">the</span> <span class="k-word" data-word-idx="1125" id="w_1125">past</span> <span class="k-word" data-word-idx="1126" id="w_1126">history</span> <span class="k-word" data-word-idx="1127" id="w_1127">of</span> <span class="k-word" data-word-idx="1128" id="w_1128">France</span> <span class="k-word" data-word-idx="1129" id="w_1129">with</span> <span class="k-word" data-word-idx="1130" id="w_1130">particular</span> <span class="k-word" data-word-idx="1131" id="w_1131">predilection,</span> <span class="k-word" data-word-idx="1132" id="w_1132">but</span> <span class="k-word" data-word-idx="1133" id="w_1133">also</span> <span class="k-word" data-word-idx="1134" id="w_1134">followed</span> <span class="k-word" data-word-idx="1135" id="w_1135">her</span> <span class="k-word" data-word-idx="1136" id="w_1136">current</span> <span class="k-word" data-word-idx="1137" id="w_1137">history</span> <span class="k-word" data-word-idx="1138" id="w_1138">in</span> <span class="k-word" data-word-idx="1139" id="w_1139">every</span> <span class="k-word" data-word-idx="1140" id="w_1140">detail,</span> <span class="k-word" data-word-idx="1141" id="w_1141">stored</span> <span class="k-word" data-word-idx="1142" id="w_1142">up</span> <span class="k-word" data-word-idx="1143" id="w_1143">the</span> <span class="k-word" data-word-idx="1144" id="w_1144">material</span> <span class="k-word" data-word-idx="1145" id="w_1145">for</span> <span class="k-word" data-word-idx="1146" id="w_1146">future</span> <span class="k-word" data-word-idx="1147" id="w_1147">use</span> <span class="k-word" data-word-idx="1148" id="w_1148">and,</span> <span class="k-word" data-word-idx="1149" id="w_1149">consequently,</span> <span class="k-word" data-word-idx="1150" id="w_1150">events</span> <span class="k-word" data-word-idx="1151" id="w_1151">never</span> <span class="k-word" data-word-idx="1152" id="w_1152">took</span> <span class="k-word" data-word-idx="1153" id="w_1153">him</span> <span class="k-word" data-word-idx="1154" id="w_1154">by</span> <span class="k-word" data-word-idx="1155" id="w_1155">surprise.’</span></p>
+<blockquote>
+<p><span class="k-word" data-word-idx="1156" id="w_1156">Engels</span> <span class="k-word" data-word-idx="1157" id="w_1157">‘Preface’</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="1158" id="w_1158">Third</span> <span class="k-word" data-word-idx="1159" id="w_1159">German</span> <span class="k-word" data-word-idx="1160" id="w_1160">Edition</span> <span class="k-word" data-word-idx="1161" id="w_1161">of</span> <span class="k-word" data-word-idx="1162" id="w_1162">*The</span> <span class="k-word" data-word-idx="1163" id="w_1163">Eighteenth</span> <span class="k-word" data-word-idx="1164" id="w_1164">Brumaire</span> <span class="k-word" data-word-idx="1165" id="w_1165">of</span> <span class="k-word" data-word-idx="1166" id="w_1166">Louis</span> <span class="k-word" data-word-idx="1167" id="w_1167">Bonaparte*</span> <span class="k-word" data-word-idx="1168" id="w_1168">(1885)</span> <span class="k-word" data-word-idx="1169" id="w_1169">The</span> <span class="k-word" data-word-idx="1170" id="w_1170">*first*</span> <span class="k-word" data-word-idx="1171" id="w_1171">French</span> <span class="k-word" data-word-idx="1172" id="w_1172">Revolution,</span> <span class="k-word" data-word-idx="1173" id="w_1173">with</span> <span class="k-word" data-word-idx="1174" id="w_1174">its</span> <span class="k-word" data-word-idx="1175" id="w_1175">task</span> <span class="k-word" data-word-idx="1176" id="w_1176">of</span> <span class="k-word" data-word-idx="1177" id="w_1177">breaking</span> <span class="k-word" data-word-idx="1178" id="w_1178">all</span> <span class="k-word" data-word-idx="1179" id="w_1179">separate</span> <span class="k-word" data-word-idx="1180" id="w_1180">local,</span> <span class="k-word" data-word-idx="1181" id="w_1181">territorial,</span> <span class="k-word" data-word-idx="1182" id="w_1182">urban,</span> <span class="k-word" data-word-idx="1183" id="w_1183">and</span> <span class="k-word" data-word-idx="1184" id="w_1184">provincial</span> <span class="k-word" data-word-idx="1185" id="w_1185">powers</span> <span class="k-word" data-word-idx="1186" id="w_1186">in</span> <span class="k-word" data-word-idx="1187" id="w_1187">order</span> <span class="k-word" data-word-idx="1188" id="w_1188">to</span> <span class="k-word" data-word-idx="1189" id="w_1189">create</span> <span class="k-word" data-word-idx="1190" id="w_1190">the</span> <span class="k-word" data-word-idx="1191" id="w_1191">civil</span> <span class="k-word" data-word-idx="1192" id="w_1192">unity</span> <span class="k-word" data-word-idx="1193" id="w_1193">of</span> <span class="k-word" data-word-idx="1194" id="w_1194">the</span> <span class="k-word" data-word-idx="1195" id="w_1195">nation,</span> <span class="k-word" data-word-idx="1196" id="w_1196">was</span> <span class="k-word" data-word-idx="1197" id="w_1197">bound</span> <span class="k-word" data-word-idx="1198" id="w_1198">to</span> <span class="k-word" data-word-idx="1199" id="w_1199">develop</span> <span class="k-word" data-word-idx="1200" id="w_1200">what</span> <span class="k-word" data-word-idx="1201" id="w_1201">the</span> <span class="k-word" data-word-idx="1202" id="w_1202">monarchy</span> <span class="k-word" data-word-idx="1203" id="w_1203">had</span> <span class="k-word" data-word-idx="1204" id="w_1204">begun,</span> <span class="k-word" data-word-idx="1205" id="w_1205">centralization,</span> <span class="k-word" data-word-idx="1206" id="w_1206">but</span> <span class="k-word" data-word-idx="1207" id="w_1207">at</span> <span class="k-word" data-word-idx="1208" id="w_1208">the</span> <span class="k-word" data-word-idx="1209" id="w_1209">same</span> <span class="k-word" data-word-idx="1210" id="w_1210">time</span> <span class="k-word" data-word-idx="1211" id="w_1211">the</span> <span class="k-word" data-word-idx="1212" id="w_1212">limits,</span> <span class="k-word" data-word-idx="1213" id="w_1213">the</span> <span class="k-word" data-word-idx="1214" id="w_1214">attributes,</span> <span class="k-word" data-word-idx="1215" id="w_1215">and</span> <span class="k-word" data-word-idx="1216" id="w_1216">the</span> <span class="k-word" data-word-idx="1217" id="w_1217">agents</span> <span class="k-word" data-word-idx="1218" id="w_1218">of</span> <span class="k-word" data-word-idx="1219" id="w_1219">the</span> <span class="k-word" data-word-idx="1220" id="w_1220">governmental</span> <span class="k-word" data-word-idx="1221" id="w_1221">power.</span> <span class="k-word" data-word-idx="1222" id="w_1222">Napoleon</span> <span class="k-word" data-word-idx="1223" id="w_1223">completed</span> <span class="k-word" data-word-idx="1224" id="w_1224">this</span> <span class="k-word" data-word-idx="1225" id="w_1225">state</span> <span class="k-word" data-word-idx="1226" id="w_1226">machinery.</span> <span class="k-word" data-word-idx="1227" id="w_1227">The</span> <span class="k-word" data-word-idx="1228" id="w_1228">Legitimate</span> <span class="k-word" data-word-idx="1229" id="w_1229">Monarchy</span> <span class="k-word" data-word-idx="1230" id="w_1230">and</span> <span class="k-word" data-word-idx="1231" id="w_1231">the</span> <span class="k-word" data-word-idx="1232" id="w_1232">July</span> <span class="k-word" data-word-idx="1233" id="w_1233">Monarchy</span> <span class="k-word" data-word-idx="1234" id="w_1234">added</span> <span class="k-word" data-word-idx="1235" id="w_1235">nothing</span> <span class="k-word" data-word-idx="1236" id="w_1236">to</span> <span class="k-word" data-word-idx="1237" id="w_1237">it</span> <span class="k-word" data-word-idx="1238" id="w_1238">but</span> <span class="k-word" data-word-idx="1239" id="w_1239">a</span> <span class="k-word" data-word-idx="1240" id="w_1240">greater</span> <span class="k-word" data-word-idx="1241" id="w_1241">division</span> <span class="k-word" data-word-idx="1242" id="w_1242">of</span> <span class="k-word" data-word-idx="1243" id="w_1243">labor,</span> <span class="k-word" data-word-idx="1244" id="w_1244">increasing</span> <span class="k-word" data-word-idx="1245" id="w_1245">at</span> <span class="k-word" data-word-idx="1246" id="w_1246">the</span> <span class="k-word" data-word-idx="1247" id="w_1247">same</span> <span class="k-word" data-word-idx="1248" id="w_1248">rate</span> <span class="k-word" data-word-idx="1249" id="w_1249">as</span> <span class="k-word" data-word-idx="1250" id="w_1250">the</span> <span class="k-word" data-word-idx="1251" id="w_1251">division</span> <span class="k-word" data-word-idx="1252" id="w_1252">of</span> <span class="k-word" data-word-idx="1253" id="w_1253">labor</span> <span class="k-word" data-word-idx="1254" id="w_1254">inside</span> <span class="k-word" data-word-idx="1255" id="w_1255">the</span> <span class="k-word" data-word-idx="1256" id="w_1256">bourgeois</span> <span class="k-word" data-word-idx="1257" id="w_1257">society</span> <span class="k-word" data-word-idx="1258" id="w_1258">created</span> <span class="k-word" data-word-idx="1259" id="w_1259">new</span> <span class="k-word" data-word-idx="1260" id="w_1260">groups</span> <span class="k-word" data-word-idx="1261" id="w_1261">of</span> <span class="k-word" data-word-idx="1262" id="w_1262">interests,</span> <span class="k-word" data-word-idx="1263" id="w_1263">and</span> <span class="k-word" data-word-idx="1264" id="w_1264">therefore</span> <span class="k-word" data-word-idx="1265" id="w_1265">new</span> <span class="k-word" data-word-idx="1266" id="w_1266">material</span> <span class="k-word" data-word-idx="1267" id="w_1267">for</span> <span class="k-word" data-word-idx="1268" id="w_1268">the</span> <span class="k-word" data-word-idx="1269" id="w_1269">state</span> <span class="k-word" data-word-idx="1270" id="w_1270">administration.</span> <span class="k-word" data-word-idx="1271" id="w_1271">Every</span> <span class="k-word" data-word-idx="1272" id="w_1272">common</span> <span class="k-word" data-word-idx="1273" id="w_1273">interest</span> <span class="k-word" data-word-idx="1274" id="w_1274">was</span> <span class="k-word" data-word-idx="1275" id="w_1275">immediately</span> <span class="k-word" data-word-idx="1276" id="w_1276">severed</span> <span class="k-word" data-word-idx="1277" id="w_1277">from</span> <span class="k-word" data-word-idx="1278" id="w_1278">the</span> <span class="k-word" data-word-idx="1279" id="w_1279">society,</span> <span class="k-word" data-word-idx="1280" id="w_1280">countered</span> <span class="k-word" data-word-idx="1281" id="w_1281">by</span> <span class="k-word" data-word-idx="1282" id="w_1282">a</span> <span class="k-word" data-word-idx="1283" id="w_1283">higher,</span> <span class="k-word" data-word-idx="1284" id="w_1284">general</span> <span class="k-word" data-word-idx="1285" id="w_1285">interest,</span> <span class="k-word" data-word-idx="1286" id="w_1286">snatched</span> <span class="k-word" data-word-idx="1287" id="w_1287">from</span> <span class="k-word" data-word-idx="1288" id="w_1288">the</span> <span class="k-word" data-word-idx="1289" id="w_1289">activities</span> <span class="k-word" data-word-idx="1290" id="w_1290">of</span> <span class="k-word" data-word-idx="1291" id="w_1291">society’s</span> <span class="k-word" data-word-idx="1292" id="w_1292">members</span> <span class="k-word" data-word-idx="1293" id="w_1293">themselves</span> <span class="k-word" data-word-idx="1294" id="w_1294">and</span> <span class="k-word" data-word-idx="1295" id="w_1295">made</span> <span class="k-word" data-word-idx="1296" id="w_1296">an</span> <span class="k-word" data-word-idx="1297" id="w_1297">object</span> <span class="k-word" data-word-idx="1298" id="w_1298">of</span> <span class="k-word" data-word-idx="1299" id="w_1299">government</span> <span class="k-word" data-word-idx="1300" id="w_1300">activity</span> <span class="k-word" data-word-idx="1301" id="w_1301">–</span> <span class="k-word" data-word-idx="1302" id="w_1302">from</span> <span class="k-word" data-word-idx="1303" id="w_1303">a</span> <span class="k-word" data-word-idx="1304" id="w_1304">bridge,</span> <span class="k-word" data-word-idx="1305" id="w_1305">a</span> <span class="k-word" data-word-idx="1306" id="w_1306">schoolhouse,</span> <span class="k-word" data-word-idx="1307" id="w_1307">and</span> <span class="k-word" data-word-idx="1308" id="w_1308">the</span> <span class="k-word" data-word-idx="1309" id="w_1309">communal</span> <span class="k-word" data-word-idx="1310" id="w_1310">property</span> <span class="k-word" data-word-idx="1311" id="w_1311">of</span> <span class="k-word" data-word-idx="1312" id="w_1312">a</span> <span class="k-word" data-word-idx="1313" id="w_1313">village</span> <span class="k-word" data-word-idx="1314" id="w_1314">community,</span> <span class="k-word" data-word-idx="1315" id="w_1315">to</span> <span class="k-word" data-word-idx="1316" id="w_1316">the</span> <span class="k-word" data-word-idx="1317" id="w_1317">railroads,</span> <span class="k-word" data-word-idx="1318" id="w_1318">the</span> <span class="k-word" data-word-idx="1319" id="w_1319">national</span> <span class="k-word" data-word-idx="1320" id="w_1320">wealth,</span> <span class="k-word" data-word-idx="1321" id="w_1321">and</span> <span class="k-word" data-word-idx="1322" id="w_1322">the</span> <span class="k-word" data-word-idx="1323" id="w_1323">national</span> <span class="k-word" data-word-idx="1324" id="w_1324">University</span> <span class="k-word" data-word-idx="1325" id="w_1325">of</span> <span class="k-word" data-word-idx="1326" id="w_1326">France.</span> <span class="k-word" data-word-idx="1327" id="w_1327">Finally</span> <span class="k-word" data-word-idx="1328" id="w_1328">the</span> <span class="k-word" data-word-idx="1329" id="w_1329">parliamentary</span> <span class="k-word" data-word-idx="1330" id="w_1330">republic,</span> <span class="k-word" data-word-idx="1331" id="w_1331">in</span> <span class="k-word" data-word-idx="1332" id="w_1332">its</span> <span class="k-word" data-word-idx="1333" id="w_1333">struggle</span> <span class="k-word" data-word-idx="1334" id="w_1334">against</span> <span class="k-word" data-word-idx="1335" id="w_1335">the</span> <span class="k-word" data-word-idx="1336" id="w_1336">revolution,</span> <span class="k-word" data-word-idx="1337" id="w_1337">found</span> <span class="k-word" data-word-idx="1338" id="w_1338">itself</span> <span class="k-word" data-word-idx="1339" id="w_1339">compelled</span> <span class="k-word" data-word-idx="1340" id="w_1340">to</span> <span class="k-word" data-word-idx="1341" id="w_1341">strengthen</span> <span class="k-word" data-word-idx="1342" id="w_1342">the</span> <span class="k-word" data-word-idx="1343" id="w_1343">means</span> <span class="k-word" data-word-idx="1344" id="w_1344">and</span> <span class="k-word" data-word-idx="1345" id="w_1345">the</span> <span class="k-word" data-word-idx="1346" id="w_1346">centralization</span> <span class="k-word" data-word-idx="1347" id="w_1347">of</span> <span class="k-word" data-word-idx="1348" id="w_1348">governmental</span> <span class="k-word" data-word-idx="1349" id="w_1349">power</span> <span class="k-word" data-word-idx="1350" id="w_1350">with</span> <span class="k-word" data-word-idx="1351" id="w_1351">repressive</span> <span class="k-word" data-word-idx="1352" id="w_1352">measures.</span> <span class="k-word" data-word-idx="1353" id="w_1353">***All</span> <span class="k-word" data-word-idx="1354" id="w_1354">revolutions</span> <span class="k-word" data-word-idx="1355" id="w_1355">perfected</span> <span class="k-word" data-word-idx="1356" id="w_1356">this</span> <span class="k-word" data-word-idx="1357" id="w_1357">machine</span> <span class="k-word" data-word-idx="1358" id="w_1358">instead</span> <span class="k-word" data-word-idx="1359" id="w_1359">of</span> <span class="k-word" data-word-idx="1360" id="w_1360">breaking</span> <span class="k-word" data-word-idx="1361" id="w_1361">it**</span> <span class="k-word" data-word-idx="1362" id="w_1362">**.***</span> <span class="k-word" data-word-idx="1363" id="w_1363">The</span> <span class="k-word" data-word-idx="1364" id="w_1364">parties,</span> <span class="k-word" data-word-idx="1365" id="w_1365">which</span> <span class="k-word" data-word-idx="1366" id="w_1366">alternately</span> <span class="k-word" data-word-idx="1367" id="w_1367">contended</span> <span class="k-word" data-word-idx="1368" id="w_1368">for</span> <span class="k-word" data-word-idx="1369" id="w_1369">domination,</span> <span class="k-word" data-word-idx="1370" id="w_1370">regarded</span> <span class="k-word" data-word-idx="1371" id="w_1371">the</span> <span class="k-word" data-word-idx="1372" id="w_1372">possession</span> <span class="k-word" data-word-idx="1373" id="w_1373">of</span> <span class="k-word" data-word-idx="1374" id="w_1374">this</span> <span class="k-word" data-word-idx="1375" id="w_1375">huge</span> <span class="k-word" data-word-idx="1376" id="w_1376">state</span> <span class="k-word" data-word-idx="1377" id="w_1377">structure</span> <span class="k-word" data-word-idx="1378" id="w_1378">as</span> <span class="k-word" data-word-idx="1379" id="w_1379">the</span> <span class="k-word" data-word-idx="1380" id="w_1380">chief</span> <span class="k-word" data-word-idx="1381" id="w_1381">spoils</span> <span class="k-word" data-word-idx="1382" id="w_1382">of</span> <span class="k-word" data-word-idx="1383" id="w_1383">the</span> <span class="k-word" data-word-idx="1384" id="w_1384">victor.</span></p>
+<p><span class="k-word" data-word-idx="1385" id="w_1385">–</span> <span class="k-word" data-word-idx="1386" id="w_1386">Marx,</span> <span class="k-word" data-word-idx="1387" id="w_1387">*The</span> <span class="k-word" data-word-idx="1388" id="w_1388">Eighteenth</span> <span class="k-word" data-word-idx="1389" id="w_1389">Brumaire</span> <span class="k-word" data-word-idx="1390" id="w_1390">of</span> <span class="k-word" data-word-idx="1391" id="w_1391">Louis</span> <span class="k-word" data-word-idx="1392" id="w_1392">Bonaparte*</span></p>
+<blockquote>
+<p><span class="k-word" data-word-idx="1393" id="w_1393">‘The</span> <span class="k-word" data-word-idx="1394" id="w_1394">French</span> <span class="k-word" data-word-idx="1395" id="w_1395">Revolution….abolished</span> <span class="k-word" data-word-idx="1396" id="w_1396">feudal</span></p>
+<p><span class="k-word" data-word-idx="1397" id="w_1397">property</span> <span class="k-word" data-word-idx="1398" id="w_1398">in</span> <span class="k-word" data-word-idx="1399" id="w_1399">favor</span> <span class="k-word" data-word-idx="1400" id="w_1400">of</span> <span class="k-word" data-word-idx="1401" id="w_1401">bourgeois</span> <span class="k-word" data-word-idx="1402" id="w_1402">property’</span></p>
+<p><span class="k-word" data-word-idx="1403" id="w_1403">-</span> <span class="k-word" data-word-idx="1404" id="w_1404">Marx</span> <span class="k-word" data-word-idx="1405" id="w_1405">and</span> <span class="k-word" data-word-idx="1406" id="w_1406">Engels,</span> <span class="k-word" data-word-idx="1407" id="w_1407">The</span> <span class="k-word" data-word-idx="1408" id="w_1408">Communist</span> <span class="k-word" data-word-idx="1409" id="w_1409">Manifesto</span> <span class="k-word" data-word-idx="1410" id="w_1410">p.</span> <span class="k-word" data-word-idx="1411" id="w_1411">235.</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="1412" id="w_1412">The</span> <span class="k-word" data-word-idx="1413" id="w_1413">Paris</span> <span class="k-word" data-word-idx="1414" id="w_1414">Commune</span> <span class="k-word" data-word-idx="1415" id="w_1415">was,</span> <span class="k-word" data-word-idx="1416" id="w_1416">of</span> <span class="k-word" data-word-idx="1417" id="w_1417">course,</span> <span class="k-word" data-word-idx="1418" id="w_1418">to</span> <span class="k-word" data-word-idx="1419" id="w_1419">serve</span> <span class="k-word" data-word-idx="1420" id="w_1420">as</span> <span class="k-word" data-word-idx="1421" id="w_1421">a</span> <span class="k-word" data-word-idx="1422" id="w_1422">model</span> <span class="k-word" data-word-idx="1423" id="w_1423">to</span> <span class="k-word" data-word-idx="1424" id="w_1424">all</span> <span class="k-word" data-word-idx="1425" id="w_1425">the</span> <span class="k-word" data-word-idx="1426" id="w_1426">great</span> <span class="k-word" data-word-idx="1427" id="w_1427">industrial</span> <span class="k-word" data-word-idx="1428" id="w_1428">centers</span> <span class="k-word" data-word-idx="1429" id="w_1429">of</span> <span class="k-word" data-word-idx="1430" id="w_1430">France.</span> <span class="k-word" data-word-idx="1431" id="w_1431">The</span> <span class="k-word" data-word-idx="1432" id="w_1432">Communal</span> <span class="k-word" data-word-idx="1433" id="w_1433">regime</span> <span class="k-word" data-word-idx="1434" id="w_1434">once</span> <span class="k-word" data-word-idx="1435" id="w_1435">established</span> <span class="k-word" data-word-idx="1436" id="w_1436">in</span> <span class="k-word" data-word-idx="1437" id="w_1437">Paris</span> <span class="k-word" data-word-idx="1438" id="w_1438">and</span> <span class="k-word" data-word-idx="1439" id="w_1439">the</span> <span class="k-word" data-word-idx="1440" id="w_1440">second</span> <span class="k-word" data-word-idx="1441" id="w_1441">centers,</span> <span class="k-word" data-word-idx="1442" id="w_1442">the</span> <span class="k-word" data-word-idx="1443" id="w_1443">old</span> <span class="k-word" data-word-idx="1444" id="w_1444">centralized</span> <span class="k-word" data-word-idx="1445" id="w_1445">government</span> <span class="k-word" data-word-idx="1446" id="w_1446">would</span> <span class="k-word" data-word-idx="1447" id="w_1447">in</span> <span class="k-word" data-word-idx="1448" id="w_1448">the</span> <span class="k-word" data-word-idx="1449" id="w_1449">provinces,</span> <span class="k-word" data-word-idx="1450" id="w_1450">too,</span> <span class="k-word" data-word-idx="1451" id="w_1451">have</span> <span class="k-word" data-word-idx="1452" id="w_1452">to</span> <span class="k-word" data-word-idx="1453" id="w_1453">give</span></p>
+<blockquote>
+<p><span class="k-word" data-word-idx="1454" id="w_1454">way</span> <span class="k-word" data-word-idx="1455" id="w_1455">to</span> <span class="k-word" data-word-idx="1456" id="w_1456">the</span> <span class="k-word" data-word-idx="1457" id="w_1457">self-government</span> <span class="k-word" data-word-idx="1458" id="w_1458">of</span> <span class="k-word" data-word-idx="1459" id="w_1459">the</span> <span class="k-word" data-word-idx="1460" id="w_1460">producers.</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="1461" id="w_1461">If</span> <span class="k-word" data-word-idx="1462" id="w_1462">the</span> <span class="k-word" data-word-idx="1463" id="w_1463">commune</span> <span class="k-word" data-word-idx="1464" id="w_1464">was</span> <span class="k-word" data-word-idx="1465" id="w_1465">the</span> <span class="k-word" data-word-idx="1466" id="w_1466">true</span> <span class="k-word" data-word-idx="1467" id="w_1467">representative</span> <span class="k-word" data-word-idx="1468" id="w_1468">of</span> <span class="k-word" data-word-idx="1469" id="w_1469">all</span> <span class="k-word" data-word-idx="1470" id="w_1470">the</span> <span class="k-word" data-word-idx="1471" id="w_1471">healthy</span> <span class="k-word" data-word-idx="1472" id="w_1472">elements</span> <span class="k-word" data-word-idx="1473" id="w_1473">of</span> <span class="k-word" data-word-idx="1474" id="w_1474">French</span> <span class="k-word" data-word-idx="1475" id="w_1475">Society,</span> <span class="k-word" data-word-idx="1476" id="w_1476">and</span> <span class="k-word" data-word-idx="1477" id="w_1477">therefore</span> <span class="k-word" data-word-idx="1478" id="w_1478">the</span> <span class="k-word" data-word-idx="1479" id="w_1479">truly</span> <span class="k-word" data-word-idx="1480" id="w_1480">national</span> <span class="k-word" data-word-idx="1481" id="w_1481">government,</span> <span class="k-word" data-word-idx="1482" id="w_1482">it</span> <span class="k-word" data-word-idx="1483" id="w_1483">was,</span> <span class="k-word" data-word-idx="1484" id="w_1484">at</span> <span class="k-word" data-word-idx="1485" id="w_1485">the</span> <span class="k-word" data-word-idx="1486" id="w_1486">same</span> <span class="k-word" data-word-idx="1487" id="w_1487">time,</span> <span class="k-word" data-word-idx="1488" id="w_1488">as</span> <span class="k-word" data-word-idx="1489" id="w_1489">a</span> <span class="k-word" data-word-idx="1490" id="w_1490">working</span> <span class="k-word" data-word-idx="1491" id="w_1491">men’s</span> <span class="k-word" data-word-idx="1492" id="w_1492">government,</span> <span class="k-word" data-word-idx="1493" id="w_1493">as</span> <span class="k-word" data-word-idx="1494" id="w_1494">the</span> <span class="k-word" data-word-idx="1495" id="w_1495">gold</span> <span class="k-word" data-word-idx="1496" id="w_1496">champion</span> <span class="k-word" data-word-idx="1497" id="w_1497">of</span> <span class="k-word" data-word-idx="1498" id="w_1498">the</span> <span class="k-word" data-word-idx="1499" id="w_1499">emancipation</span> <span class="k-word" data-word-idx="1500" id="w_1500">of</span> <span class="k-word" data-word-idx="1501" id="w_1501">labor,</span> <span class="k-word" data-word-idx="1502" id="w_1502">emphatically</span> <span class="k-word" data-word-idx="1503" id="w_1503">international.</span> <span class="k-word" data-word-idx="1504" id="w_1504">Within</span> <span class="k-word" data-word-idx="1505" id="w_1505">site</span> <span class="k-word" data-word-idx="1506" id="w_1506">of</span> <span class="k-word" data-word-idx="1507" id="w_1507">that</span> <span class="k-word" data-word-idx="1508" id="w_1508">Prussian</span> <span class="k-word" data-word-idx="1509" id="w_1509">Army,</span> <span class="k-word" data-word-idx="1510" id="w_1510">that</span> <span class="k-word" data-word-idx="1511" id="w_1511">had</span> <span class="k-word" data-word-idx="1512" id="w_1512">annexed</span> <span class="k-word" data-word-idx="1513" id="w_1513">to</span></p>
+<blockquote>
+<p><span class="k-word" data-word-idx="1514" id="w_1514">Germany</span> <span class="k-word" data-word-idx="1515" id="w_1515">two</span> <span class="k-word" data-word-idx="1516" id="w_1516">French</span> <span class="k-word" data-word-idx="1517" id="w_1517">provinces,</span> <span class="k-word" data-word-idx="1518" id="w_1518">the</span> <span class="k-word" data-word-idx="1519" id="w_1519">Commune</span> <span class="k-word" data-word-idx="1520" id="w_1520">annexed</span> <span class="k-word" data-word-idx="1521" id="w_1521">to</span> <span class="k-word" data-word-idx="1522" id="w_1522">France</span> <span class="k-word" data-word-idx="1523" id="w_1523">the</span> <span class="k-word" data-word-idx="1524" id="w_1524">working</span></p>
+<p><span class="k-word" data-word-idx="1525" id="w_1525">people</span> <span class="k-word" data-word-idx="1526" id="w_1526">all</span> <span class="k-word" data-word-idx="1527" id="w_1527">over</span> <span class="k-word" data-word-idx="1528" id="w_1528">the</span> <span class="k-word" data-word-idx="1529" id="w_1529">world.</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="1530" id="w_1530">Working</span> <span class="k-word" data-word-idx="1531" id="w_1531">men’s</span> <span class="k-word" data-word-idx="1532" id="w_1532">Paris,</span> <span class="k-word" data-word-idx="1533" id="w_1533">with</span> <span class="k-word" data-word-idx="1534" id="w_1534">its</span> <span class="k-word" data-word-idx="1535" id="w_1535">Commune,</span> <span class="k-word" data-word-idx="1536" id="w_1536">will</span> <span class="k-word" data-word-idx="1537" id="w_1537">be</span> <span class="k-word" data-word-idx="1538" id="w_1538">forever</span> <span class="k-word" data-word-idx="1539" id="w_1539">celebrated</span> <span class="k-word" data-word-idx="1540" id="w_1540">as</span> <span class="k-word" data-word-idx="1541" id="w_1541">the</span> <span class="k-word" data-word-idx="1542" id="w_1542">glorious</span> <span class="k-word" data-word-idx="1543" id="w_1543">harbinger</span> <span class="k-word" data-word-idx="1544" id="w_1544">of</span> <span class="k-word" data-word-idx="1545" id="w_1545">a</span> <span class="k-word" data-word-idx="1546" id="w_1546">new</span> <span class="k-word" data-word-idx="1547" id="w_1547">society.</span> <span class="k-word" data-word-idx="1548" id="w_1548">Its</span> <span class="k-word" data-word-idx="1549" id="w_1549">martyrs</span> <span class="k-word" data-word-idx="1550" id="w_1550">are</span> <span class="k-word" data-word-idx="1551" id="w_1551">enshrined</span> <span class="k-word" data-word-idx="1552" id="w_1552">in</span> <span class="k-word" data-word-idx="1553" id="w_1553">the</span> <span class="k-word" data-word-idx="1554" id="w_1554">great</span> <span class="k-word" data-word-idx="1555" id="w_1555">heart</span> <span class="k-word" data-word-idx="1556" id="w_1556">of</span> <span class="k-word" data-word-idx="1557" id="w_1557">the</span></p>
+<blockquote>
+<p><span class="k-word" data-word-idx="1558" id="w_1558">working</span> <span class="k-word" data-word-idx="1559" id="w_1559">class.</span></p>
+<p><span class="k-word" data-word-idx="1560" id="w_1560">-</span> <span class="k-word" data-word-idx="1561" id="w_1561">Marx,</span> <span class="k-word" data-word-idx="1562" id="w_1562">‘The</span> <span class="k-word" data-word-idx="1563" id="w_1563">Civil</span> <span class="k-word" data-word-idx="1564" id="w_1564">War</span> <span class="k-word" data-word-idx="1565" id="w_1565">in</span> <span class="k-word" data-word-idx="1566" id="w_1566">France’</span> <span class="k-word" data-word-idx="1567" id="w_1567">(1871)</span></p>
+<p><span class="k-word" data-word-idx="1568" id="w_1568">The</span> <span class="k-word" data-word-idx="1569" id="w_1569">Communist</span> <span class="k-word" data-word-idx="1570" id="w_1570">League,</span> <span class="k-word" data-word-idx="1571" id="w_1571">and</span> <span class="k-word" data-word-idx="1572" id="w_1572">international</span></p>
+<p><span class="k-word" data-word-idx="1573" id="w_1573">association</span> <span class="k-word" data-word-idx="1574" id="w_1574">of</span> <span class="k-word" data-word-idx="1575" id="w_1575">workers,</span> <span class="k-word" data-word-idx="1576" id="w_1576">which</span> <span class="k-word" data-word-idx="1577" id="w_1577">could</span> <span class="k-word" data-word-idx="1578" id="w_1578">of</span> <span class="k-word" data-word-idx="1579" id="w_1579">course</span> <span class="k-word" data-word-idx="1580" id="w_1580">be</span></p>
+<p><span class="k-word" data-word-idx="1581" id="w_1581">only</span> <span class="k-word" data-word-idx="1582" id="w_1582">a</span> <span class="k-word" data-word-idx="1583" id="w_1583">secret</span> <span class="k-word" data-word-idx="1584" id="w_1584">one</span> <span class="k-word" data-word-idx="1585" id="w_1585">under</span> <span class="k-word" data-word-idx="1586" id="w_1586">the</span> <span class="k-word" data-word-idx="1587" id="w_1587">conditions</span> <span class="k-word" data-word-idx="1588" id="w_1588">obtaining</span></p>
+<p><span class="k-word" data-word-idx="1589" id="w_1589">at</span> <span class="k-word" data-word-idx="1590" id="w_1590">the</span> <span class="k-word" data-word-idx="1591" id="w_1591">time,</span> <span class="k-word" data-word-idx="1592" id="w_1592">commissioned</span> <span class="k-word" data-word-idx="1593" id="w_1593">the</span> <span class="k-word" data-word-idx="1594" id="w_1594">undersigned,</span> <span class="k-word" data-word-idx="1595" id="w_1595">at</span></p>
+<p><span class="k-word" data-word-idx="1596" id="w_1596">the</span> <span class="k-word" data-word-idx="1597" id="w_1597">Congress</span> <span class="k-word" data-word-idx="1598" id="w_1598">held</span> <span class="k-word" data-word-idx="1599" id="w_1599">in</span> <span class="k-word" data-word-idx="1600" id="w_1600">London</span> <span class="k-word" data-word-idx="1601" id="w_1601">in</span> <span class="k-word" data-word-idx="1602" id="w_1602">November,</span> <span class="k-word" data-word-idx="1603" id="w_1603">1847,</span></p>
+<p><span class="k-word" data-word-idx="1604" id="w_1604">to</span> <span class="k-word" data-word-idx="1605" id="w_1605">draw</span> <span class="k-word" data-word-idx="1606" id="w_1606">up</span> <span class="k-word" data-word-idx="1607" id="w_1607">for</span> <span class="k-word" data-word-idx="1608" id="w_1608">publication</span> <span class="k-word" data-word-idx="1609" id="w_1609">a</span> <span class="k-word" data-word-idx="1610" id="w_1610">detailed</span> <span class="k-word" data-word-idx="1611" id="w_1611">theoretical</span></p>
+<p><span class="k-word" data-word-idx="1612" id="w_1612">and</span> <span class="k-word" data-word-idx="1613" id="w_1613">practical</span> <span class="k-word" data-word-idx="1614" id="w_1614">programme</span> <span class="k-word" data-word-idx="1615" id="w_1615">of</span> <span class="k-word" data-word-idx="1616" id="w_1616">the</span> <span class="k-word" data-word-idx="1617" id="w_1617">Party</span></p>
+<p><span class="k-word" data-word-idx="1618" id="w_1618">–</span> <span class="k-word" data-word-idx="1619" id="w_1619">Preface</span> <span class="k-word" data-word-idx="1620" id="w_1620">to</span> <span class="k-word" data-word-idx="1621" id="w_1621">the</span> <span class="k-word" data-word-idx="1622" id="w_1622">1872</span> <span class="k-word" data-word-idx="1623" id="w_1623">Edition</span></p>
+</blockquote>
+<p><span class="k-word" data-word-idx="1624" id="w_1624">---</span></p>
+<p><span class="k-word" data-word-idx="1625" id="w_1625">[⏮</span> <span class="k-word" data-word-idx="1626" id="w_1626">Previous</span> <span class="k-word" data-word-idx="1627" id="w_1627">Pages</span> <span class="k-word" data-word-idx="1628" id="w_1628">(1–7)](#listen-file:/usr/local/google/home/koushikchak/Downloads/Liberation_Library/11a_The_Communist_Manifesto_Karl_Marx.pdf?pages=1-7&amp;track=author)</span> <span class="k-word" data-word-idx="1629" id="w_1629">·</span> <span class="k-word" data-word-idx="1630" id="w_1630">[⏭</span> <span class="k-word" data-word-idx="1631" id="w_1631">Next</span> <span class="k-word" data-word-idx="1632" id="w_1632">Pages</span> <span class="k-word" data-word-idx="1633" id="w_1633">(38–67)](#listen-file:/usr/local/google/home/koushikchak/Downloads/Liberation_Library/11a_The_Communist_Manifesto_Karl_Marx.pdf?pages=38-67&amp;track=author)</span></p>
+    </section>
+
+    <nav class="nav-footer">
+      <span style="flex:1;"></span>
+      <a class="primary" href="../../books.html">📚 All Books</a>
+      <a href="ch_2.html">Next Chapter →</a>
+    </nav>
+  </main>
+
+  <!-- Sticky Player Bar -->
+  <div class="sticky-player" id="stickyPlayer">
+    <div class="player-progress-wrap">
+      <span class="player-time" id="playerCurrentTime">0:00</span>
+      <input type="range" class="player-slider" id="playerScrubber" min="0" max="100" value="0" />
+      <span class="player-time right" id="playerTotalTime">0:00</span>
+    </div>
+    <div class="player-controls">
+      <div class="player-info">
+        <div class="player-info-title">Historical Introduction &amp; Prefaces (1872–1890)</div>
+        <div class="player-info-sub">The Communist Manifesto · Ch 1</div>
+      </div>
+      <div class="player-btns">
+        <button class="btn-skip" id="btnRewind15" title="Rewind 15s">⏪ 15s</button>
+        <button class="btn-play-circle" id="btnBottomPlay" onclick="toggleAudioPlay()">▶</button>
+        <button class="btn-skip" id="btnForward15" title="Forward 15s">⏩ 15s</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-msg" id="toastMsg"></div>
+  <audio id="playerAudio" preload="auto" playsinline webkit-playsinline></audio>
+
+  <script>
+    const AUDIO_URL = "";
+    const CACHE_NAME = "kortex-books-v1";
+    const WORDS_DATA = [{"c": 0, "w": 10}, {"c": 10, "w": 12}, {"c": 22, "w": 1}, {"c": 23, "w": 8}, {"c": 31, "w": 9}, {"c": 40, "w": 10}, {"c": 50, "w": 7}, {"c": 57, "w": 2}, {"c": 59, "w": 3}, {"c": 62, "w": 4}, {"c": 66, "w": 11}, {"c": 77, "w": 3}, {"c": 80, "w": 4}, {"c": 84, "w": 3}, {"c": 87, "w": 7}, {"c": 94, "w": 5}, {"c": 99, "w": 9}, {"c": 108, "w": 7}, {"c": 115, "w": 4}, {"c": 119, "w": 11}, {"c": 130, "w": 3}, {"c": 133, "w": 5}, {"c": 138, "w": 2}, {"c": 140, "w": 17}, {"c": 157, "w": 3}, {"c": 160, "w": 2}, {"c": 162, "w": 3}, {"c": 165, "w": 3}, {"c": 168, "w": 2}, {"c": 170, "w": 3}, {"c": 173, "w": 7}, {"c": 180, "w": 6}, {"c": 186, "w": 3}, {"c": 189, "w": 8}, {"c": 197, "w": 3}, {"c": 200, "w": 1}, {"c": 201, "w": 8}, {"c": 209, "w": 2}, {"c": 211, "w": 4}, {"c": 215, "w": 1}, {"c": 216, "w": 6}, {"c": 222, "w": 13}, {"c": 235, "w": 1}, {"c": 236, "w": 5}, {"c": 241, "w": 9}, {"c": 250, "w": 4}, {"c": 254, "w": 2}, {"c": 256, "w": 3}, {"c": 259, "w": 7}, {"c": 266, "w": 1}, {"c": 267, "w": 2}, {"c": 269, "w": 1}, {"c": 270, "w": 7}, {"c": 277, "w": 3}, {"c": 280, "w": 7}, {"c": 287, "w": 3}, {"c": 290, "w": 3}, {"c": 293, "w": 15}, {"c": 308, "w": 3}, {"c": 311, "w": 9}, {"c": 320, "w": 3}, {"c": 323, "w": 9}, {"c": 332, "w": 2}, {"c": 334, "w": 3}, {"c": 337, "w": 6}, {"c": 343, "w": 8}, {"c": 351, "w": 3}, {"c": 354, "w": 7}, {"c": 361, "w": 2}, {"c": 363, "w": 13}, {"c": 376, "w": 6}, {"c": 382, "w": 11}, {"c": 393, "w": 2}, {"c": 395, "w": 11}, {"c": 406, "w": 4}, {"c": 410, "w": 5}, {"c": 415, "w": 7}, {"c": 422, "w": 4}, {"c": 426, "w": 4}, {"c": 430, "w": 3}, {"c": 433, "w": 3}, {"c": 436, "w": 7}, {"c": 443, "w": 16}, {"c": 459, "w": 8}, {"c": 467, "w": 2}, {"c": 469, "w": 10}, {"c": 479, "w": 2}, {"c": 481, "w": 1}, {"c": 482, "w": 3}, {"c": 485, "w": 8}, {"c": 493, "w": 2}, {"c": 495, "w": 7}, {"c": 502, "w": 4}, {"c": 506, "w": 10}, {"c": 516, "w": 6}, {"c": 522, "w": 6}, {"c": 528, "w": 7}, {"c": 535, "w": 2}, {"c": 537, "w": 2}, {"c": 539, "w": 7}, {"c": 546, "w": 9}, {"c": 555, "w": 3}, {"c": 558, "w": 6}, {"c": 564, "w": 2}, {"c": 566, "w": 3}, {"c": 569, "w": 11}, {"c": 580, "w": 2}, {"c": 582, "w": 4}, {"c": 586, "w": 5}, {"c": 591, "w": 4}, {"c": 595, "w": 7}, {"c": 602, "w": 14}, {"c": 616, "w": 2}, {"c": 618, "w": 10}, {"c": 628, "w": 3}, {"c": 631, "w": 3}, {"c": 634, "w": 8}, {"c": 642, "w": 5}, {"c": 647, "w": 6}, {"c": 653, "w": 3}, {"c": 656, "w": 2}, {"c": 658, "w": 5}, {"c": 663, "w": 2}, {"c": 665, "w": 9}, {"c": 674, "w": 5}, {"c": 679, "w": 6}, {"c": 685, "w": 9}, {"c": 694, "w": 4}, {"c": 698, "w": 3}, {"c": 701, "w": 7}, {"c": 708, "w": 5}, {"c": 713, "w": 8}, {"c": 721, "w": 4}, {"c": 725, "w": 3}, {"c": 728, "w": 7}, {"c": 735, "w": 2}, {"c": 737, "w": 3}, {"c": 740, "w": 4}, {"c": 744, "w": 9}, {"c": 753, "w": 3}, {"c": 756, "w": 6}, {"c": 762, "w": 10}, {"c": 772, "w": 4}, {"c": 776, "w": 3}, {"c": 779, "w": 7}, {"c": 786, "w": 3}, {"c": 789, "w": 9}, {"c": 798, "w": 9}, {"c": 807, "w": 2}, {"c": 809, "w": 12}, {"c": 821, "w": 4}, {"c": 825, "w": 9}, {"c": 834, "w": 6}, {"c": 840, "w": 2}, {"c": 842, "w": 3}, {"c": 845, "w": 6}, {"c": 851, "w": 7}, {"c": 858, "w": 2}, {"c": 860, "w": 3}, {"c": 863, "w": 11}, {"c": 874, "w": 2}, {"c": 876, "w": 1}, {"c": 877, "w": 5}, {"c": 882, "w": 2}, {"c": 884, "w": 4}, {"c": 888, "w": 7}, {"c": 895, "w": 4}, {"c": 899, "w": 2}, {"c": 901, "w": 3}, {"c": 904, "w": 13}, {"c": 917, "w": 9}, {"c": 926, "w": 2}, {"c": 928, "w": 11}, {"c": 939, "w": 2}, {"c": 941, "w": 12}, {"c": 953, "w": 2}, {"c": 955, "w": 12}, {"c": 967, "w": 3}, {"c": 970, "w": 12}, {"c": 982, "w": 2}, {"c": 984, "w": 11}, {"c": 995, "w": 6}, {"c": 1001, "w": 4}, {"c": 1005, "w": 2}, {"c": 1007, "w": 9}, {"c": 1016, "w": 4}, {"c": 1020, "w": 2}, {"c": 1022, "w": 4}, {"c": 1026, "w": 9}, {"c": 1035, "w": 4}, {"c": 1039, "w": 1}, {"c": 1040, "w": 10}, {"c": 1050, "w": 10}, {"c": 1060, "w": 5}, {"c": 1065, "w": 6}, {"c": 1071, "w": 2}, {"c": 1073, "w": 3}, {"c": 1076, "w": 9}, {"c": 1085, "w": 9}, {"c": 1094, "w": 7}, {"c": 1101, "w": 7}, {"c": 1108, "w": 3}, {"c": 1111, "w": 10}, {"c": 1121, "w": 2}, {"c": 1123, "w": 11}, {"c": 1134, "w": 5}, {"c": 1139, "w": 4}, {"c": 1143, "w": 11}, {"c": 1154, "w": 3}, {"c": 1157, "w": 2}, {"c": 1159, "w": 5}, {"c": 1164, "w": 2}, {"c": 1166, "w": 4}, {"c": 1170, "w": 4}, {"c": 1174, "w": 6}, {"c": 1180, "w": 9}, {"c": 1189, "w": 3}, {"c": 1192, "w": 5}, {"c": 1197, "w": 7}, {"c": 1204, "w": 8}, {"c": 1212, "w": 3}, {"c": 1215, "w": 5}, {"c": 1220, "w": 2}, {"c": 1222, "w": 5}, {"c": 1227, "w": 4}, {"c": 1231, "w": 5}, {"c": 1236, "w": 3}, {"c": 1239, "w": 4}, {"c": 1243, "w": 7}, {"c": 1250, "w": 6}, {"c": 1256, "w": 6}, {"c": 1262, "w": 3}, {"c": 1265, "w": 4}, {"c": 1269, "w": 1}, {"c": 1270, "w": 5}, {"c": 1275, "w": 9}, {"c": 1284, "w": 6}, {"c": 1290, "w": 3}, {"c": 1293, "w": 7}, {"c": 1300, "w": 4}, {"c": 1304, "w": 3}, {"c": 1307, "w": 5}, {"c": 1312, "w": 3}, {"c": 1315, "w": 5}, {"c": 1320, "w": 3}, {"c": 1323, "w": 10}, {"c": 1333, "w": 2}, {"c": 1335, "w": 5}, {"c": 1340, "w": 8}, {"c": 1348, "w": 7}, {"c": 1355, "w": 6}, {"c": 1361, "w": 4}, {"c": 1365, "w": 4}, {"c": 1369, "w": 5}, {"c": 1374, "w": 5}, {"c": 1379, "w": 2}, {"c": 1381, "w": 6}, {"c": 1387, "w": 7}, {"c": 1394, "w": 1}, {"c": 1395, "w": 7}, {"c": 1402, "w": 1}, {"c": 1403, "w": 6}, {"c": 1409, "w": 7}, {"c": 1416, "w": 3}, {"c": 1419, "w": 7}, {"c": 1426, "w": 2}, {"c": 1428, "w": 3}, {"c": 1431, "w": 8}, {"c": 1439, "w": 8}, {"c": 1447, "w": 2}, {"c": 1449, "w": 4}, {"c": 1453, "w": 5}, {"c": 1458, "w": 11}, {"c": 1469, "w": 3}, {"c": 1472, "w": 4}, {"c": 1476, "w": 5}, {"c": 1481, "w": 2}, {"c": 1483, "w": 1}, {"c": 1484, "w": 9}, {"c": 1493, "w": 5}, {"c": 1498, "w": 2}, {"c": 1500, "w": 3}, {"c": 1503, "w": 3}, {"c": 1506, "w": 8}, {"c": 1514, "w": 6}, {"c": 1520, "w": 3}, {"c": 1523, "w": 8}, {"c": 1531, "w": 4}, {"c": 1535, "w": 5}, {"c": 1540, "w": 5}, {"c": 1545, "w": 3}, {"c": 1548, "w": 5}, {"c": 1553, "w": 8}, {"c": 1561, "w": 11}, {"c": 1572, "w": 8}, {"c": 1580, "w": 1}, {"c": 1581, "w": 4}, {"c": 1585, "w": 9}, {"c": 1594, "w": 1}, {"c": 1595, "w": 13}, {"c": 1608, "w": 5}, {"c": 1613, "w": 7}, {"c": 1620, "w": 13}, {"c": 1633, "w": 3}, {"c": 1636, "w": 6}, {"c": 1642, "w": 4}, {"c": 1646, "w": 5}, {"c": 1651, "w": 1}, {"c": 1652, "w": 8}, {"c": 1660, "w": 7}, {"c": 1667, "w": 3}, {"c": 1670, "w": 5}, {"c": 1675, "w": 2}, {"c": 1677, "w": 8}, {"c": 1685, "w": 3}, {"c": 1688, "w": 11}, {"c": 1699, "w": 4}, {"c": 1703, "w": 1}, {"c": 1704, "w": 5}, {"c": 1709, "w": 6}, {"c": 1715, "w": 5}, {"c": 1720, "w": 1}, {"c": 1721, "w": 4}, {"c": 1725, "w": 4}, {"c": 1729, "w": 3}, {"c": 1732, "w": 9}, {"c": 1741, "w": 3}, {"c": 1744, "w": 10}, {"c": 1754, "w": 2}, {"c": 1756, "w": 6}, {"c": 1762, "w": 3}, {"c": 1765, "w": 8}, {"c": 1773, "w": 1}, {"c": 1774, "w": 7}, {"c": 1781, "w": 7}, {"c": 1788, "w": 3}, {"c": 1791, "w": 7}, {"c": 1798, "w": 2}, {"c": 1800, "w": 3}, {"c": 1803, "w": 11}, {"c": 1814, "w": 2}, {"c": 1816, "w": 7}, {"c": 1823, "w": 6}, {"c": 1829, "w": 4}, {"c": 1833, "w": 3}, {"c": 1836, "w": 6}, {"c": 1842, "w": 4}, {"c": 1846, "w": 2}, {"c": 1848, "w": 3}, {"c": 1851, "w": 4}, {"c": 1855, "w": 8}, {"c": 1863, "w": 4}, {"c": 1867, "w": 3}, {"c": 1870, "w": 9}, {"c": 1879, "w": 2}, {"c": 1881, "w": 3}, {"c": 1884, "w": 12}, {"c": 1896, "w": 3}, {"c": 1899, "w": 2}, {"c": 1901, "w": 9}, {"c": 1910, "w": 3}, {"c": 1913, "w": 7}, {"c": 1920, "w": 7}, {"c": 1927, "w": 5}, {"c": 1932, "w": 10}, {"c": 1942, "w": 4}, {"c": 1946, "w": 5}, {"c": 1951, "w": 2}, {"c": 1953, "w": 2}, {"c": 1955, "w": 4}, {"c": 1959, "w": 6}, {"c": 1965, "w": 2}, {"c": 1967, "w": 2}, {"c": 1969, "w": 10}, {"c": 1979, "w": 11}, {"c": 1990, "w": 1}, {"c": 1991, "w": 10}, {"c": 2001, "w": 5}, {"c": 2006, "w": 7}, {"c": 2013, "w": 3}, {"c": 2016, "w": 5}, {"c": 2021, "w": 5}, {"c": 2026, "w": 8}, {"c": 2034, "w": 4}, {"c": 2038, "w": 3}, {"c": 2041, "w": 10}, {"c": 2051, "w": 10}, {"c": 2061, "w": 2}, {"c": 2063, "w": 5}, {"c": 2068, "w": 2}, {"c": 2070, "w": 4}, {"c": 2074, "w": 3}, {"c": 2077, "w": 9}, {"c": 2086, "w": 2}, {"c": 2088, "w": 2}, {"c": 2090, "w": 11}, {"c": 2101, "w": 7}, {"c": 2108, "w": 2}, {"c": 2110, "w": 3}, {"c": 2113, "w": 7}, {"c": 2120, "w": 4}, {"c": 2124, "w": 2}, {"c": 2126, "w": 4}, {"c": 2130, "w": 15}, {"c": 2145, "w": 5}, {"c": 2150, "w": 3}, {"c": 2153, "w": 3}, {"c": 2156, "w": 3}, {"c": 2159, "w": 9}, {"c": 2168, "w": 3}, {"c": 2171, "w": 4}, {"c": 2175, "w": 8}, {"c": 2183, "w": 2}, {"c": 2185, "w": 10}, {"c": 2195, "w": 3}, {"c": 2198, "w": 7}, {"c": 2205, "w": 3}, {"c": 2208, "w": 10}, {"c": 2218, "w": 3}, {"c": 2221, "w": 7}, {"c": 2228, "w": 4}, {"c": 2232, "w": 2}, {"c": 2234, "w": 3}, {"c": 2237, "w": 5}, {"c": 2242, "w": 7}, {"c": 2249, "w": 5}, {"c": 2254, "w": 3}, {"c": 2257, "w": 12}, {"c": 2269, "w": 4}, {"c": 2273, "w": 2}, {"c": 2275, "w": 7}, {"c": 2282, "w": 3}, {"c": 2285, "w": 3}, {"c": 2288, "w": 11}, {"c": 2299, "w": 2}, {"c": 2301, "w": 7}, {"c": 2308, "w": 2}, {"c": 2310, "w": 3}, {"c": 2313, "w": 3}, {"c": 2316, "w": 9}, {"c": 2325, "w": 3}, {"c": 2328, "w": 4}, {"c": 2332, "w": 3}, {"c": 2335, "w": 6}, {"c": 2341, "w": 5}, {"c": 2346, "w": 3}, {"c": 2349, "w": 7}, {"c": 2356, "w": 5}, {"c": 2361, "w": 4}, {"c": 2365, "w": 7}, {"c": 2372, "w": 3}, {"c": 2375, "w": 5}, {"c": 2380, "w": 13}, {"c": 2393, "w": 4}, {"c": 2397, "w": 7}, {"c": 2404, "w": 3}, {"c": 2407, "w": 9}, {"c": 2416, "w": 3}, {"c": 2419, "w": 5}, {"c": 2424, "w": 5}, {"c": 2429, "w": 4}, {"c": 2433, "w": 5}, {"c": 2438, "w": 2}, {"c": 2440, "w": 3}, {"c": 2443, "w": 5}, {"c": 2448, "w": 6}, {"c": 2454, "w": 7}, {"c": 2461, "w": 5}, {"c": 2466, "w": 3}, {"c": 2469, "w": 3}, {"c": 2472, "w": 12}, {"c": 2484, "w": 2}, {"c": 2486, "w": 4}, {"c": 2490, "w": 3}, {"c": 2493, "w": 8}, {"c": 2501, "w": 8}, {"c": 2509, "w": 5}, {"c": 2514, "w": 3}, {"c": 2517, "w": 3}, {"c": 2520, "w": 5}, {"c": 2525, "w": 3}, {"c": 2528, "w": 2}, {"c": 2530, "w": 3}, {"c": 2533, "w": 11}, {"c": 2544, "w": 3}, {"c": 2547, "w": 3}, {"c": 2550, "w": 2}, {"c": 2552, "w": 2}, {"c": 2554, "w": 3}, {"c": 2557, "w": 8}, {"c": 2565, "w": 4}, {"c": 2569, "w": 2}, {"c": 2571, "w": 1}, {"c": 2572, "w": 11}, {"c": 2583, "w": 2}, {"c": 2585, "w": 8}, {"c": 2593, "w": 3}, {"c": 2596, "w": 5}, {"c": 2601, "w": 8}, {"c": 2609, "w": 3}, {"c": 2612, "w": 8}, {"c": 2620, "w": 7}, {"c": 2627, "w": 7}, {"c": 2634, "w": 3}, {"c": 2637, "w": 6}, {"c": 2643, "w": 8}, {"c": 2651, "w": 2}, {"c": 2653, "w": 5}, {"c": 2658, "w": 4}, {"c": 2662, "w": 2}, {"c": 2664, "w": 9}, {"c": 2673, "w": 2}, {"c": 2675, "w": 5}, {"c": 2680, "w": 5}, {"c": 2685, "w": 3}, {"c": 2688, "w": 4}, {"c": 2692, "w": 4}, {"c": 2696, "w": 4}, {"c": 2700, "w": 8}, {"c": 2708, "w": 7}, {"c": 2715, "w": 4}, {"c": 2719, "w": 4}, {"c": 2723, "w": 2}, {"c": 2725, "w": 8}, {"c": 2733, "w": 7}, {"c": 2740, "w": 2}, {"c": 2742, "w": 3}, {"c": 2745, "w": 7}, {"c": 2752, "w": 6}, {"c": 2758, "w": 1}, {"c": 2759, "w": 4}, {"c": 2763, "w": 8}, {"c": 2771, "w": 4}, {"c": 2775, "w": 2}, {"c": 2777, "w": 6}, {"c": 2783, "w": 7}, {"c": 2790, "w": 9}, {"c": 2799, "w": 4}, {"c": 2803, "w": 5}, {"c": 2808, "w": 6}, {"c": 2814, "w": 7}, {"c": 2821, "w": 4}, {"c": 2825, "w": 6}, {"c": 2831, "w": 6}, {"c": 2837, "w": 7}, {"c": 2844, "w": 1}, {"c": 2845, "w": 4}, {"c": 2849, "w": 11}, {"c": 2860, "w": 9}, {"c": 2869, "w": 9}, {"c": 2878, "w": 6}, {"c": 2884, "w": 7}, {"c": 2891, "w": 10}, {"c": 2901, "w": 2}, {"c": 2903, "w": 3}, {"c": 2906, "w": 5}, {"c": 2911, "w": 2}, {"c": 2913, "w": 6}, {"c": 2919, "w": 7}, {"c": 2926, "w": 4}, {"c": 2930, "w": 3}, {"c": 2933, "w": 7}, {"c": 2940, "w": 6}, {"c": 2946, "w": 2}, {"c": 2948, "w": 4}, {"c": 2952, "w": 4}, {"c": 2956, "w": 5}, {"c": 2961, "w": 6}, {"c": 2967, "w": 7}, {"c": 2974, "w": 8}, {"c": 2982, "w": 3}, {"c": 2985, "w": 11}, {"c": 2996, "w": 2}, {"c": 2998, "w": 6}, {"c": 3004, "w": 5}, {"c": 3009, "w": 6}, {"c": 3015, "w": 5}, {"c": 3020, "w": 5}, {"c": 3025, "w": 2}, {"c": 3027, "w": 6}, {"c": 3033, "w": 6}, {"c": 3039, "w": 7}, {"c": 3046, "w": 4}, {"c": 3050, "w": 4}, {"c": 3054, "w": 9}, {"c": 3063, "w": 4}, {"c": 3067, "w": 6}, {"c": 3073, "w": 7}, {"c": 3080, "w": 4}, {"c": 3084, "w": 5}, {"c": 3089, "w": 7}, {"c": 3096, "w": 7}, {"c": 3103, "w": 1}, {"c": 3104, "w": 10}, {"c": 3114, "w": 4}, {"c": 3118, "w": 5}, {"c": 3123, "w": 6}, {"c": 3129, "w": 7}, {"c": 3136, "w": 10}, {"c": 3146, "w": 1}, {"c": 3147, "w": 4}, {"c": 3151, "w": 3}, {"c": 3154, "w": 7}, {"c": 3161, "w": 2}, {"c": 3163, "w": 7}, {"c": 3170, "w": 11}, {"c": 3181, "w": 2}, {"c": 3183, "w": 3}, {"c": 3186, "w": 6}, {"c": 3192, "w": 12}, {"c": 3204, "w": 4}, {"c": 3208, "w": 3}, {"c": 3211, "w": 3}, {"c": 3214, "w": 7}, {"c": 3221, "w": 3}, {"c": 3224, "w": 3}, {"c": 3227, "w": 5}, {"c": 3232, "w": 4}, {"c": 3236, "w": 5}, {"c": 3241, "w": 4}, {"c": 3245, "w": 7}, {"c": 3252, "w": 3}, {"c": 3255, "w": 4}, {"c": 3259, "w": 8}, {"c": 3267, "w": 4}, {"c": 3271, "w": 7}, {"c": 3278, "w": 7}, {"c": 3285, "w": 1}, {"c": 3286, "w": 5}, {"c": 3291, "w": 4}, {"c": 3295, "w": 6}, {"c": 3301, "w": 2}, {"c": 3303, "w": 4}, {"c": 3307, "w": 3}, {"c": 3310, "w": 4}, {"c": 3314, "w": 4}, {"c": 3318, "w": 4}, {"c": 3322, "w": 3}, {"c": 3325, "w": 9}, {"c": 3334, "w": 8}, {"c": 3342, "w": 3}, {"c": 3345, "w": 5}, {"c": 3350, "w": 3}, {"c": 3353, "w": 8}, {"c": 3361, "w": 3}, {"c": 3364, "w": 4}, {"c": 3368, "w": 4}, {"c": 3372, "w": 4}, {"c": 3376, "w": 2}, {"c": 3378, "w": 3}, {"c": 3381, "w": 6}, {"c": 3387, "w": 3}, {"c": 3390, "w": 6}, {"c": 3396, "w": 3}, {"c": 3399, "w": 2}, {"c": 3401, "w": 8}, {"c": 3409, "w": 6}, {"c": 3415, "w": 2}, {"c": 3417, "w": 7}, {"c": 3424, "w": 7}, {"c": 3431, "w": 4}, {"c": 3435, "w": 7}, {"c": 3442, "w": 8}, {"c": 3450, "w": 3}, {"c": 3453, "w": 4}, {"c": 3457, "w": 9}, {"c": 3466, "w": 2}, {"c": 3468, "w": 10}, {"c": 3478, "w": 3}, {"c": 3481, "w": 9}, {"c": 3490, "w": 2}, {"c": 3492, "w": 2}, {"c": 3494, "w": 8}, {"c": 3502, "w": 12}, {"c": 3514, "w": 10}, {"c": 3524, "w": 2}, {"c": 3526, "w": 5}, {"c": 3531, "w": 10}, {"c": 3541, "w": 2}, {"c": 3543, "w": 3}, {"c": 3546, "w": 14}, {"c": 3560, "w": 2}, {"c": 3562, "w": 6}, {"c": 3568, "w": 10}, {"c": 3578, "w": 5}, {"c": 3583, "w": 5}, {"c": 3588, "w": 2}, {"c": 3590, "w": 1}, {"c": 3591, "w": 5}, {"c": 3596, "w": 7}, {"c": 3603, "w": 2}, {"c": 3605, "w": 4}, {"c": 3609, "w": 3}, {"c": 3612, "w": 6}, {"c": 3618, "w": 7}, {"c": 3625, "w": 2}, {"c": 3627, "w": 1}, {"c": 3628, "w": 5}, {"c": 3633, "w": 3}, {"c": 3636, "w": 3}, {"c": 3639, "w": 7}, {"c": 3646, "w": 12}, {"c": 3658, "w": 2}, {"c": 3660, "w": 7}, {"c": 3667, "w": 3}, {"c": 3670, "w": 5}, {"c": 3675, "w": 2}, {"c": 3677, "w": 10}, {"c": 3687, "w": 2}, {"c": 3689, "w": 3}, {"c": 3692, "w": 8}, {"c": 3700, "w": 4}, {"c": 3704, "w": 3}, {"c": 3707, "w": 4}, {"c": 3711, "w": 2}, {"c": 3713, "w": 2}, {"c": 3715, "w": 5}, {"c": 3720, "w": 5}, {"c": 3725, "w": 8}, {"c": 3733, "w": 3}, {"c": 3736, "w": 10}, {"c": 3746, "w": 2}, {"c": 3748, "w": 2}, {"c": 3750, "w": 10}, {"c": 3760, "w": 2}, {"c": 3762, "w": 3}, {"c": 3765, "w": 9}, {"c": 3774, "w": 11}, {"c": 3785, "w": 8}, {"c": 3793, "w": 3}, {"c": 3796, "w": 2}, {"c": 3798, "w": 4}, {"c": 3802, "w": 2}, {"c": 3804, "w": 2}, {"c": 3806, "w": 6}, {"c": 3812, "w": 2}, {"c": 3814, "w": 3}, {"c": 3817, "w": 7}, {"c": 3824, "w": 6}, {"c": 3830, "w": 3}, {"c": 3833, "w": 7}, {"c": 3840, "w": 2}, {"c": 3842, "w": 3}, {"c": 3845, "w": 7}, {"c": 3852, "w": 10}, {"c": 3862, "w": 1}, {"c": 3863, "w": 4}, {"c": 3867, "w": 6}, {"c": 3873, "w": 2}, {"c": 3875, "w": 4}, {"c": 3879, "w": 1}, {"c": 3880, "w": 9}, {"c": 3889, "w": 5}, {"c": 3894, "w": 2}, {"c": 3896, "w": 4}, {"c": 3900, "w": 3}, {"c": 3903, "w": 6}, {"c": 3909, "w": 1}, {"c": 3910, "w": 3}, {"c": 3913, "w": 7}, {"c": 3920, "w": 4}, {"c": 3924, "w": 4}, {"c": 3928, "w": 3}, {"c": 3931, "w": 3}, {"c": 3934, "w": 6}, {"c": 3940, "w": 1}, {"c": 3941, "w": 4}, {"c": 3945, "w": 2}, {"c": 3947, "w": 3}, {"c": 3950, "w": 6}, {"c": 3956, "w": 11}, {"c": 3967, "w": 2}, {"c": 3969, "w": 8}, {"c": 3977, "w": 1}, {"c": 3978, "w": 5}, {"c": 3983, "w": 2}, {"c": 3985, "w": 8}, {"c": 3993, "w": 2}, {"c": 3995, "w": 3}, {"c": 3998, "w": 5}, {"c": 4003, "w": 9}, {"c": 4012, "w": 4}, {"c": 4016, "w": 3}, {"c": 4019, "w": 1}, {"c": 4020, "w": 5}, {"c": 4025, "w": 3}, {"c": 4028, "w": 4}, {"c": 4032, "w": 4}, {"c": 4036, "w": 4}, {"c": 4040, "w": 4}, {"c": 4044, "w": 8}, {"c": 4052, "w": 3}, {"c": 4055, "w": 8}, {"c": 4063, "w": 2}, {"c": 4065, "w": 3}, {"c": 4068, "w": 7}, {"c": 4075, "w": 1}, {"c": 4076, "w": 4}, {"c": 4080, "w": 4}, {"c": 4084, "w": 2}, {"c": 4086, "w": 6}, {"c": 4092, "w": 1}, {"c": 4093, "w": 9}, {"c": 4102, "w": 5}, {"c": 4107, "w": 2}, {"c": 4109, "w": 4}, {"c": 4113, "w": 3}, {"c": 4116, "w": 6}, {"c": 4122, "w": 1}, {"c": 4123, "w": 3}, {"c": 4126, "w": 4}, {"c": 4130, "w": 3}, {"c": 4133, "w": 8}, {"c": 4141, "w": 7}, {"c": 4148, "w": 9}, {"c": 4157, "w": 2}, {"c": 4159, "w": 2}, {"c": 4161, "w": 10}, {"c": 4171, "w": 4}, {"c": 4175, "w": 5}, {"c": 4180, "w": 8}, {"c": 4188, "w": 3}, {"c": 4191, "w": 9}, {"c": 4200, "w": 7}, {"c": 4207, "w": 12}, {"c": 4219, "w": 6}, {"c": 4225, "w": 2}, {"c": 4227, "w": 5}, {"c": 4232, "w": 8}, {"c": 4240, "w": 2}, {"c": 4242, "w": 12}, {"c": 4254, "w": 4}, {"c": 4258, "w": 7}, {"c": 4265, "w": 7}, {"c": 4272, "w": 3}, {"c": 4275, "w": 2}, {"c": 4277, "w": 3}, {"c": 4280, "w": 10}, {"c": 4290, "w": 11}, {"c": 4301, "w": 5}, {"c": 4306, "w": 3}, {"c": 4309, "w": 4}, {"c": 4313, "w": 3}, {"c": 4316, "w": 4}, {"c": 4320, "w": 5}, {"c": 4325, "w": 6}, {"c": 4331, "w": 3}, {"c": 4334, "w": 5}, {"c": 4339, "w": 4}, {"c": 4343, "w": 3}, {"c": 4346, "w": 6}, {"c": 4352, "w": 12}, {"c": 4364, "w": 12}, {"c": 4376, "w": 9}, {"c": 4385, "w": 1}, {"c": 4386, "w": 4}, {"c": 4390, "w": 8}, {"c": 4398, "w": 7}, {"c": 4405, "w": 3}, {"c": 4408, "w": 2}, {"c": 4410, "w": 3}, {"c": 4413, "w": 3}, {"c": 4416, "w": 7}, {"c": 4423, "w": 2}, {"c": 4425, "w": 4}, {"c": 4429, "w": 13}, {"c": 4442, "w": 2}, {"c": 4444, "w": 8}, {"c": 4452, "w": 11}, {"c": 4463, "w": 10}, {"c": 4473, "w": 4}, {"c": 4477, "w": 3}, {"c": 4480, "w": 4}, {"c": 4484, "w": 7}, {"c": 4491, "w": 11}, {"c": 4502, "w": 8}, {"c": 4510, "w": 4}, {"c": 4514, "w": 8}, {"c": 4522, "w": 3}, {"c": 4525, "w": 3}, {"c": 4528, "w": 5}, {"c": 4533, "w": 2}, {"c": 4535, "w": 13}, {"c": 4548, "w": 10}, {"c": 4558, "w": 2}, {"c": 4560, "w": 3}, {"c": 4563, "w": 5}, {"c": 4568, "w": 2}, {"c": 4570, "w": 3}, {"c": 4573, "w": 9}, {"c": 4582, "w": 15}, {"c": 4597, "w": 3}, {"c": 4600, "w": 5}, {"c": 4605, "w": 13}, {"c": 4618, "w": 3}, {"c": 4621, "w": 6}, {"c": 4627, "w": 3}, {"c": 4630, "w": 2}, {"c": 4632, "w": 2}, {"c": 4634, "w": 13}, {"c": 4647, "w": 6}, {"c": 4653, "w": 4}, {"c": 4657, "w": 8}, {"c": 4665, "w": 9}, {"c": 4674, "w": 4}, {"c": 4678, "w": 3}, {"c": 4681, "w": 8}, {"c": 4689, "w": 7}, {"c": 4696, "w": 4}, {"c": 4700, "w": 12}, {"c": 4712, "w": 1}, {"c": 4713, "w": 13}, {"c": 4726, "w": 4}, {"c": 4730, "w": 13}, {"c": 4743, "w": 2}, {"c": 4745, "w": 6}, {"c": 4751, "w": 3}, {"c": 4754, "w": 8}, {"c": 4762, "w": 2}, {"c": 4764, "w": 1}, {"c": 4765, "w": 6}, {"c": 4771, "w": 2}, {"c": 4773, "w": 7}, {"c": 4780, "w": 2}, {"c": 4782, "w": 8}, {"c": 4790, "w": 12}, {"c": 4802, "w": 9}, {"c": 4811, "w": 7}, {"c": 4818, "w": 6}, {"c": 4824, "w": 3}, {"c": 4827, "w": 13}, {"c": 4840, "w": 20}, {"c": 4860, "w": 8}, {"c": 4868, "w": 3}, {"c": 4871, "w": 7}, {"c": 4878, "w": 4}, {"c": 4882, "w": 2}, {"c": 4884, "w": 5}, {"c": 4889, "w": 7}, {"c": 4896, "w": 3}, {"c": 4899, "w": 8}, {"c": 4907, "w": 3}, {"c": 4910, "w": 8}, {"c": 4918, "w": 4}, {"c": 4922, "w": 2}, {"c": 4924, "w": 6}, {"c": 4930, "w": 4}, {"c": 4934, "w": 3}, {"c": 4937, "w": 7}, {"c": 4944, "w": 4}, {"c": 4948, "w": 2}, {"c": 4950, "w": 5}, {"c": 4955, "w": 12}, {"c": 4967, "w": 2}, {"c": 4969, "w": 12}, {"c": 4981, "w": 9}, {"c": 4990, "w": 7}, {"c": 4997, "w": 3}, {"c": 5000, "w": 10}, {"c": 5010, "w": 2}, {"c": 5012, "w": 3}, {"c": 5015, "w": 7}, {"c": 5022, "w": 5}, {"c": 5027, "w": 2}, {"c": 5029, "w": 7}, {"c": 5036, "w": 1}, {"c": 5037, "w": 7}, {"c": 5044, "w": 4}, {"c": 5048, "w": 6}, {"c": 5054, "w": 5}, {"c": 5059, "w": 1}, {"c": 5060, "w": 8}, {"c": 5068, "w": 4}, {"c": 5072, "w": 8}, {"c": 5080, "w": 3}, {"c": 5083, "w": 4}, {"c": 5087, "w": 2}, {"c": 5089, "w": 6}, {"c": 5095, "w": 6}, {"c": 5101, "w": 8}, {"c": 5109, "w": 10}, {"c": 5119, "w": 2}, {"c": 5121, "w": 13}, {"c": 5134, "w": 7}, {"c": 5141, "w": 5}, {"c": 5146, "w": 5}, {"c": 5151, "w": 7}, {"c": 5158, "w": 4}, {"c": 5162, "w": 1}, {"c": 5163, "w": 4}, {"c": 5167, "w": 7}, {"c": 5174, "w": 2}, {"c": 5176, "w": 5}, {"c": 5181, "w": 7}, {"c": 5188, "w": 10}, {"c": 5198, "w": 7}, {"c": 5205, "w": 9}, {"c": 5214, "w": 8}, {"c": 5222, "w": 9}, {"c": 5231, "w": 2}, {"c": 5233, "w": 6}, {"c": 5239, "w": 7}, {"c": 5246, "w": 3}, {"c": 5249, "w": 7}, {"c": 5256, "w": 6}, {"c": 5262, "w": 2}, {"c": 5264, "w": 3}, {"c": 5267, "w": 4}, {"c": 5271, "w": 6}, {"c": 5277, "w": 4}, {"c": 5281, "w": 4}, {"c": 5285, "w": 8}, {"c": 5293, "w": 5}, {"c": 5298, "w": 3}, {"c": 5301, "w": 10}, {"c": 5311, "w": 5}, {"c": 5316, "w": 9}, {"c": 5325, "w": 4}, {"c": 5329, "w": 4}, {"c": 5333, "w": 4}, {"c": 5337, "w": 6}, {"c": 5343, "w": 3}, {"c": 5346, "w": 2}, {"c": 5348, "w": 1}, {"c": 5349, "w": 9}, {"c": 5358, "w": 3}, {"c": 5361, "w": 6}, {"c": 5367, "w": 13}, {"c": 5380, "w": 3}, {"c": 5383, "w": 8}, {"c": 5391, "w": 9}, {"c": 5400, "w": 5}, {"c": 5405, "w": 6}, {"c": 5411, "w": 5}, {"c": 5416, "w": 4}, {"c": 5420, "w": 4}, {"c": 5424, "w": 3}, {"c": 5427, "w": 2}, {"c": 5429, "w": 5}, {"c": 5434, "w": 5}, {"c": 5439, "w": 7}, {"c": 5446, "w": 3}, {"c": 5449, "w": 10}, {"c": 5459, "w": 4}, {"c": 5463, "w": 4}, {"c": 5467, "w": 7}, {"c": 5474, "w": 2}, {"c": 5476, "w": 3}, {"c": 5479, "w": 8}, {"c": 5487, "w": 9}, {"c": 5496, "w": 3}, {"c": 5499, "w": 6}, {"c": 5505, "w": 2}, {"c": 5507, "w": 9}, {"c": 5516, "w": 2}, {"c": 5518, "w": 3}, {"c": 5521, "w": 6}, {"c": 5527, "w": 5}, {"c": 5532, "w": 3}, {"c": 5535, "w": 5}, {"c": 5540, "w": 7}, {"c": 5547, "w": 2}, {"c": 5549, "w": 7}, {"c": 5556, "w": 9}, {"c": 5565, "w": 7}, {"c": 5572, "w": 2}, {"c": 5574, "w": 8}, {"c": 5582, "w": 5}, {"c": 5587, "w": 3}, {"c": 5590, "w": 12}, {"c": 5602, "w": 6}, {"c": 5608, "w": 10}, {"c": 5618, "w": 9}, {"c": 5627, "w": 2}, {"c": 5629, "w": 3}, {"c": 5632, "w": 5}, {"c": 5637, "w": 10}, {"c": 5647, "w": 3}, {"c": 5650, "w": 11}, {"c": 5661, "w": 3}, {"c": 5664, "w": 9}, {"c": 5673, "w": 4}, {"c": 5677, "w": 2}, {"c": 5679, "w": 3}, {"c": 5682, "w": 11}, {"c": 5693, "w": 2}, {"c": 5695, "w": 1}, {"c": 5696, "w": 9}, {"c": 5705, "w": 6}, {"c": 5711, "w": 10}, {"c": 5721, "w": 2}, {"c": 5723, "w": 3}, {"c": 5726, "w": 5}, {"c": 5731, "w": 8}, {"c": 5739, "w": 5}, {"c": 5744, "w": 3}, {"c": 5747, "w": 3}, {"c": 5750, "w": 8}, {"c": 5758, "w": 2}, {"c": 5760, "w": 3}, {"c": 5763, "w": 15}, {"c": 5778, "w": 11}, {"c": 5789, "w": 7}, {"c": 5796, "w": 3}, {"c": 5799, "w": 6}, {"c": 5805, "w": 11}, {"c": 5816, "w": 8}, {"c": 5824, "w": 4}, {"c": 5828, "w": 2}, {"c": 5830, "w": 2}, {"c": 5832, "w": 5}, {"c": 5837, "w": 4}, {"c": 5841, "w": 7}, {"c": 5848, "w": 9}, {"c": 5857, "w": 1}, {"c": 5858, "w": 4}, {"c": 5862, "w": 3}, {"c": 5865, "w": 3}, {"c": 5868, "w": 6}, {"c": 5874, "w": 3}, {"c": 5877, "w": 4}, {"c": 5881, "w": 3}, {"c": 5884, "w": 4}, {"c": 5888, "w": 7}, {"c": 5895, "w": 3}, {"c": 5898, "w": 4}, {"c": 5902, "w": 7}, {"c": 5909, "w": 2}, {"c": 5911, "w": 6}, {"c": 5917, "w": 4}, {"c": 5921, "w": 10}, {"c": 5931, "w": 13}, {"c": 5944, "w": 3}, {"c": 5947, "w": 4}, {"c": 5951, "w": 8}, {"c": 5959, "w": 3}, {"c": 5962, "w": 7}, {"c": 5969, "w": 7}, {"c": 5976, "w": 2}, {"c": 5978, "w": 5}, {"c": 5983, "w": 7}, {"c": 5990, "w": 6}, {"c": 5996, "w": 2}, {"c": 5998, "w": 3}, {"c": 6001, "w": 8}, {"c": 6009, "w": 3}, {"c": 6012, "w": 6}, {"c": 6018, "w": 3}, {"c": 6021, "w": 4}, {"c": 6025, "w": 13}, {"c": 6038, "w": 6}, {"c": 6044, "w": 5}, {"c": 6049, "w": 4}, {"c": 6053, "w": 3}, {"c": 6056, "w": 2}, {"c": 6058, "w": 10}, {"c": 6068, "w": 6}, {"c": 6074, "w": 9}, {"c": 6083, "w": 5}, {"c": 6088, "w": 6}, {"c": 6094, "w": 7}, {"c": 6101, "w": 2}, {"c": 6103, "w": 3}, {"c": 6106, "w": 10}, {"c": 6116, "w": 8}, {"c": 6124, "w": 2}, {"c": 6126, "w": 5}, {"c": 6131, "w": 9}, {"c": 6140, "w": 4}, {"c": 6144, "w": 3}, {"c": 6147, "w": 5}, {"c": 6152, "w": 6}, {"c": 6158, "w": 11}, {"c": 6169, "w": 4}, {"c": 6173, "w": 3}, {"c": 6176, "w": 4}, {"c": 6180, "w": 2}, {"c": 6182, "w": 8}, {"c": 6190, "w": 3}, {"c": 6193, "w": 8}, {"c": 6201, "w": 6}, {"c": 6207, "w": 12}, {"c": 6219, "w": 6}, {"c": 6225, "w": 3}, {"c": 6228, "w": 10}, {"c": 6238, "w": 6}, {"c": 6244, "w": 2}, {"c": 6246, "w": 5}, {"c": 6251, "w": 2}, {"c": 6253, "w": 6}, {"c": 6259, "w": 3}, {"c": 6262, "w": 5}, {"c": 6267, "w": 5}, {"c": 6272, "w": 2}, {"c": 6274, "w": 3}, {"c": 6277, "w": 7}, {"c": 6284, "w": 3}, {"c": 6287, "w": 5}, {"c": 6292, "w": 2}, {"c": 6294, "w": 7}, {"c": 6301, "w": 4}, {"c": 6305, "w": 3}, {"c": 6308, "w": 8}, {"c": 6316, "w": 3}, {"c": 6319, "w": 6}, {"c": 6325, "w": 15}, {"c": 6340, "w": 3}, {"c": 6343, "w": 2}, {"c": 6345, "w": 3}, {"c": 6348, "w": 4}, {"c": 6352, "w": 4}, {"c": 6356, "w": 3}, {"c": 6359, "w": 7}, {"c": 6366, "w": 3}, {"c": 6369, "w": 11}, {"c": 6380, "w": 3}, {"c": 6383, "w": 3}, {"c": 6386, "w": 6}, {"c": 6392, "w": 2}, {"c": 6394, "w": 3}, {"c": 6397, "w": 12}, {"c": 6409, "w": 6}, {"c": 6415, "w": 8}, {"c": 6423, "w": 9}, {"c": 6432, "w": 4}, {"c": 6436, "w": 5}, {"c": 6441, "w": 10}, {"c": 6451, "w": 3}, {"c": 6454, "w": 10}, {"c": 6464, "w": 8}, {"c": 6472, "w": 3}, {"c": 6475, "w": 3}, {"c": 6478, "w": 4}, {"c": 6482, "w": 8}, {"c": 6490, "w": 5}, {"c": 6495, "w": 7}, {"c": 6502, "w": 2}, {"c": 6504, "w": 2}, {"c": 6506, "w": 3}, {"c": 6509, "w": 1}, {"c": 6510, "w": 7}, {"c": 6517, "w": 8}, {"c": 6525, "w": 2}, {"c": 6527, "w": 6}, {"c": 6533, "w": 10}, {"c": 6543, "w": 2}, {"c": 6545, "w": 3}, {"c": 6548, "w": 4}, {"c": 6552, "w": 4}, {"c": 6556, "w": 2}, {"c": 6558, "w": 3}, {"c": 6561, "w": 8}, {"c": 6569, "w": 2}, {"c": 6571, "w": 5}, {"c": 6576, "w": 6}, {"c": 6582, "w": 3}, {"c": 6585, "w": 9}, {"c": 6594, "w": 7}, {"c": 6601, "w": 7}, {"c": 6608, "w": 3}, {"c": 6611, "w": 6}, {"c": 6617, "w": 2}, {"c": 6619, "w": 10}, {"c": 6629, "w": 3}, {"c": 6632, "w": 9}, {"c": 6641, "w": 3}, {"c": 6644, "w": 8}, {"c": 6652, "w": 3}, {"c": 6655, "w": 3}, {"c": 6658, "w": 5}, {"c": 6663, "w": 15}, {"c": 6678, "w": 5}, {"c": 6683, "w": 6}, {"c": 6689, "w": 8}, {"c": 6697, "w": 3}, {"c": 6700, "w": 11}, {"c": 6711, "w": 7}, {"c": 6718, "w": 4}, {"c": 6722, "w": 3}, {"c": 6725, "w": 8}, {"c": 6733, "w": 9}, {"c": 6742, "w": 2}, {"c": 6744, "w": 1}, {"c": 6745, "w": 7}, {"c": 6752, "w": 7}, {"c": 6759, "w": 9}, {"c": 6768, "w": 8}, {"c": 6776, "w": 4}, {"c": 6780, "w": 3}, {"c": 6783, "w": 10}, {"c": 6793, "w": 2}, {"c": 6795, "w": 9}, {"c": 6804, "w": 7}, {"c": 6811, "w": 10}, {"c": 6821, "w": 3}, {"c": 6824, "w": 4}, {"c": 6828, "w": 2}, {"c": 6830, "w": 6}, {"c": 6836, "w": 2}, {"c": 6838, "w": 10}, {"c": 6848, "w": 8}, {"c": 6856, "w": 1}, {"c": 6857, "w": 4}, {"c": 6861, "w": 1}, {"c": 6862, "w": 7}, {"c": 6869, "w": 1}, {"c": 6870, "w": 12}, {"c": 6882, "w": 3}, {"c": 6885, "w": 3}, {"c": 6888, "w": 8}, {"c": 6896, "w": 8}, {"c": 6904, "w": 2}, {"c": 6906, "w": 1}, {"c": 6907, "w": 7}, {"c": 6914, "w": 10}, {"c": 6924, "w": 2}, {"c": 6926, "w": 3}, {"c": 6929, "w": 10}, {"c": 6939, "w": 3}, {"c": 6942, "w": 8}, {"c": 6950, "w": 7}, {"c": 6957, "w": 3}, {"c": 6960, "w": 3}, {"c": 6963, "w": 8}, {"c": 6971, "w": 10}, {"c": 6981, "w": 2}, {"c": 6983, "w": 7}, {"c": 6990, "w": 7}, {"c": 6997, "w": 3}, {"c": 7000, "w": 13}, {"c": 7013, "w": 9}, {"c": 7022, "w": 2}, {"c": 7024, "w": 3}, {"c": 7027, "w": 8}, {"c": 7035, "w": 7}, {"c": 7042, "w": 3}, {"c": 7045, "w": 11}, {"c": 7056, "w": 5}, {"c": 7061, "w": 6}, {"c": 7067, "w": 9}, {"c": 7076, "w": 2}, {"c": 7078, "w": 10}, {"c": 7088, "w": 3}, {"c": 7091, "w": 5}, {"c": 7096, "w": 3}, {"c": 7099, "w": 3}, {"c": 7102, "w": 14}, {"c": 7116, "w": 2}, {"c": 7118, "w": 12}, {"c": 7130, "w": 5}, {"c": 7135, "w": 4}, {"c": 7139, "w": 10}, {"c": 7149, "w": 9}, {"c": 7158, "w": 3}, {"c": 7161, "w": 11}, {"c": 7172, "w": 9}, {"c": 7181, "w": 4}, {"c": 7185, "w": 7}, {"c": 7192, "w": 7}, {"c": 7199, "w": 2}, {"c": 7201, "w": 8}, {"c": 7209, "w": 2}, {"c": 7211, "w": 1}, {"c": 7212, "w": 3}, {"c": 7215, "w": 8}, {"c": 7223, "w": 5}, {"c": 7228, "w": 11}, {"c": 7239, "w": 9}, {"c": 7248, "w": 3}, {"c": 7251, "w": 11}, {"c": 7262, "w": 8}, {"c": 7270, "w": 3}, {"c": 7273, "w": 10}, {"c": 7283, "w": 2}, {"c": 7285, "w": 4}, {"c": 7289, "w": 4}, {"c": 7293, "w": 5}, {"c": 7298, "w": 9}, {"c": 7307, "w": 2}, {"c": 7309, "w": 3}, {"c": 7312, "w": 5}, {"c": 7317, "w": 6}, {"c": 7323, "w": 2}, {"c": 7325, "w": 3}, {"c": 7328, "w": 7}, {"c": 7335, "w": 1}, {"c": 7336, "w": 5}, {"c": 7341, "w": 3}, {"c": 7344, "w": 10}, {"c": 7354, "w": 8}, {"c": 7362, "w": 2}, {"c": 7364, "w": 5}, {"c": 7369, "w": 9}, {"c": 7378, "w": 4}, {"c": 7382, "w": 6}, {"c": 7388, "w": 21}, {"c": 7409, "w": 6}, {"c": 7415, "w": 8}, {"c": 7423, "w": 2}, {"c": 7425, "w": 5}, {"c": 7430, "w": 2}, {"c": 7432, "w": 9}, {"c": 7441, "w": 9}, {"c": 7450, "w": 1}, {"c": 7451, "w": 4}, {"c": 7455, "w": 3}, {"c": 7458, "w": 7}, {"c": 7465, "w": 3}, {"c": 7468, "w": 9}, {"c": 7477, "w": 9}, {"c": 7486, "w": 2}, {"c": 7488, "w": 4}, {"c": 7492, "w": 3}, {"c": 7495, "w": 5}, {"c": 7500, "w": 7}, {"c": 7507, "w": 4}, {"c": 7511, "w": 2}, {"c": 7513, "w": 7}, {"c": 7520, "w": 2}, {"c": 7522, "w": 5}, {"c": 7527, "w": 2}, {"c": 7529, "w": 1}, {"c": 7530, "w": 5}, {"c": 7535, "w": 2}, {"c": 7537, "w": 3}, {"c": 7540, "w": 3}, {"c": 7543, "w": 5}, {"c": 7548, "w": 10}, {"c": 7558, "w": 7}, {"c": 7565, "w": 2}, {"c": 7567, "w": 7}, {"c": 7574, "w": 3}, {"c": 7577, "w": 8}, {"c": 7585, "w": 6}, {"c": 7591, "w": 4}, {"c": 7595, "w": 11}, {"c": 7606, "w": 2}, {"c": 7608, "w": 5}, {"c": 7613, "w": 3}, {"c": 7616, "w": 3}, {"c": 7619, "w": 6}, {"c": 7625, "w": 8}, {"c": 7633, "w": 3}, {"c": 7636, "w": 3}, {"c": 7639, "w": 11}, {"c": 7650, "w": 10}, {"c": 7660, "w": 5}, {"c": 7665, "w": 2}, {"c": 7667, "w": 3}, {"c": 7670, "w": 10}, {"c": 7680, "w": 4}, {"c": 7684, "w": 4}, {"c": 7688, "w": 2}, {"c": 7690, "w": 4}, {"c": 7694, "w": 3}, {"c": 7697, "w": 2}, {"c": 7699, "w": 3}, {"c": 7702, "w": 15}, {"c": 7717, "w": 2}, {"c": 7719, "w": 3}, {"c": 7722, "w": 10}, {"c": 7732, "w": 2}, {"c": 7734, "w": 3}, {"c": 7737, "w": 7}, {"c": 7744, "w": 3}, {"c": 7747, "w": 3}, {"c": 7750, "w": 4}, {"c": 7754, "w": 14}, {"c": 7768, "w": 2}, {"c": 7770, "w": 3}, {"c": 7773, "w": 3}, {"c": 7776, "w": 7}, {"c": 7783, "w": 8}, {"c": 7791, "w": 2}, {"c": 7793, "w": 6}, {"c": 7799, "w": 8}, {"c": 7807, "w": 3}, {"c": 7810, "w": 9}, {"c": 7819, "w": 3}, {"c": 7822, "w": 5}, {"c": 7827, "w": 8}, {"c": 7835, "w": 11}, {"c": 7846, "w": 2}, {"c": 7848, "w": 4}, {"c": 7852, "w": 2}, {"c": 7854, "w": 3}, {"c": 7857, "w": 4}, {"c": 7861, "w": 5}, {"c": 7866, "w": 2}, {"c": 7868, "w": 1}, {"c": 7869, "w": 7}, {"c": 7876, "w": 5}, {"c": 7881, "w": 11}, {"c": 7892, "w": 2}, {"c": 7894, "w": 3}, {"c": 7897, "w": 4}, {"c": 7901, "w": 8}, {"c": 7909, "w": 2}, {"c": 7911, "w": 3}, {"c": 7914, "w": 12}, {"c": 7926, "w": 2}, {"c": 7928, "w": 6}, {"c": 7934, "w": 12}, {"c": 7946, "w": 14}, {"c": 7960, "w": 6}, {"c": 7966, "w": 4}, {"c": 7970, "w": 2}, {"c": 7972, "w": 4}, {"c": 7976, "w": 8}, {"c": 7984, "w": 5}, {"c": 7989, "w": 4}, {"c": 7993, "w": 3}, {"c": 7996, "w": 7}, {"c": 8003, "w": 2}, {"c": 8005, "w": 7}, {"c": 8012, "w": 3}, {"c": 8015, "w": 6}, {"c": 8021, "w": 10}, {"c": 8031, "w": 3}, {"c": 8034, "w": 7}, {"c": 8041, "w": 7}, {"c": 8048, "w": 2}, {"c": 8050, "w": 6}, {"c": 8056, "w": 3}, {"c": 8059, "w": 7}, {"c": 8066, "w": 6}, {"c": 8072, "w": 3}, {"c": 8075, "w": 4}, {"c": 8079, "w": 3}, {"c": 8082, "w": 6}, {"c": 8088, "w": 7}, {"c": 8095, "w": 5}, {"c": 8100, "w": 6}, {"c": 8106, "w": 4}, {"c": 8110, "w": 3}, {"c": 8113, "w": 8}, {"c": 8121, "w": 4}, {"c": 8125, "w": 2}, {"c": 8127, "w": 7}, {"c": 8134, "w": 10}, {"c": 8144, "w": 2}, {"c": 8146, "w": 3}, {"c": 8149, "w": 8}, {"c": 8157, "w": 9}, {"c": 8166, "w": 2}, {"c": 8168, "w": 1}, {"c": 8169, "w": 3}, {"c": 8172, "w": 8}, {"c": 8180, "w": 3}, {"c": 8183, "w": 7}, {"c": 8190, "w": 3}, {"c": 8193, "w": 9}, {"c": 8202, "w": 2}, {"c": 8204, "w": 3}, {"c": 8207, "w": 5}, {"c": 8212, "w": 5}, {"c": 8217, "w": 2}, {"c": 8219, "w": 3}, {"c": 8222, "w": 7}, {"c": 8229, "w": 6}, {"c": 8235, "w": 1}, {"c": 8236, "w": 5}, {"c": 8241, "w": 4}, {"c": 8245, "w": 5}, {"c": 8250, "w": 3}, {"c": 8253, "w": 2}, {"c": 8255, "w": 7}, {"c": 8262, "w": 4}, {"c": 8266, "w": 3}, {"c": 8269, "w": 9}, {"c": 8278, "w": 7}, {"c": 8285, "w": 3}, {"c": 8288, "w": 13}, {"c": 8301, "w": 11}, {"c": 8312, "w": 2}, {"c": 8314, "w": 8}, {"c": 8322, "w": 5}, {"c": 8327, "w": 5}, {"c": 8332, "w": 2}, {"c": 8334, "w": 6}, {"c": 8340, "w": 2}, {"c": 8342, "w": 4}, {"c": 8346, "w": 1}, {"c": 8347, "w": 6}, {"c": 8353, "w": 3}, {"c": 8356, "w": 5}, {"c": 8361, "w": 3}, {"c": 8364, "w": 10}, {"c": 8374, "w": 9}, {"c": 8383, "w": 2}, {"c": 8385, "w": 3}, {"c": 8388, "w": 5}, {"c": 8393, "w": 12}, {"c": 8405, "w": 3}, {"c": 8408, "w": 12}, {"c": 8420, "w": 2}, {"c": 8422, "w": 3}, {"c": 8425, "w": 8}, {"c": 8433, "w": 4}, {"c": 8437, "w": 2}, {"c": 8439, "w": 6}, {"c": 8445, "w": 2}, {"c": 8447, "w": 9}, {"c": 8456, "w": 5}, {"c": 8461, "w": 2}, {"c": 8463, "w": 4}, {"c": 8467, "w": 2}, {"c": 8469, "w": 3}, {"c": 8472, "w": 11}, {"c": 8483, "w": 1}, {"c": 8484, "w": 8}, {"c": 8492, "w": 11}, {"c": 8503, "w": 3}, {"c": 8506, "w": 9}, {"c": 8515, "w": 9}, {"c": 8524, "w": 2}, {"c": 8526, "w": 3}, {"c": 8529, "w": 5}, {"c": 8534, "w": 1}, {"c": 8535, "w": 7}, {"c": 8542, "w": 2}, {"c": 8544, "w": 3}, {"c": 8547, "w": 4}, {"c": 8551, "w": 7}, {"c": 8558, "w": 3}, {"c": 8561, "w": 1}, {"c": 8562, "w": 8}, {"c": 8570, "w": 5}, {"c": 8575, "w": 137}, {"c": 8712, "w": 1}, {"c": 8713, "w": 1}, {"c": 8714, "w": 4}, {"c": 8718, "w": 5}, {"c": 8723, "w": 141}];
+    const TOTAL_WEIGHT = 8864;
+
+    let audioEl = document.getElementById("playerAudio");
+    let activeBlobUrl = null;
+    let audioLoaded = false;
+    let karaokeActive = false;
+    let activeWordIdx = -1;
+    let readerFontSize = 1.12;
+
+    function showToast(msg) {
+      const t = document.getElementById("toastMsg");
+      t.textContent = msg;
+      t.classList.remove("active");
+      void t.offsetWidth;
+      t.classList.add("active");
+      setTimeout(() => t.classList.remove("active"), 2500);
+    }
+
+    function formatSeconds(sec) {
+      if (!sec || isNaN(sec)) return "0:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m}:${s < 10 ? "0" : ""}${s}`;
+    }
+
+    let _screenWakeLock = null;
+    async function requestScreenWakeLock() {
+      try {
+        if ("wakeLock" in navigator && !(_screenWakeLock && !_screenWakeLock.released)) {
+          _screenWakeLock = await navigator.wakeLock.request("screen");
+        }
+      } catch (e) {}
+    }
+
+    function syncPlayButtonUi(isPlaying) {
+      const bBtn = document.getElementById("btnBottomPlay");
+      const tBtn = document.getElementById("btnTopListen");
+      if (bBtn) bBtn.textContent = isPlaying ? "⏸" : "▶";
+      if (tBtn) tBtn.textContent = isPlaying ? "⏸ Pause" : "▶️ Listen";
+    }
+
+    async function toggleAudioPlay() {
+      if (!AUDIO_URL) {
+        showToast("Voice track not yet available for this chapter.");
+        return;
+      }
+
+      if (!audioEl.paused && audioLoaded) {
+        audioEl.pause();
+        return;
+      }
+
+      if (audioLoaded && audioEl.paused && audioEl.src) {
+        try {
+          await audioEl.play();
+          return;
+        } catch (e) {
+          console.warn("Resume failed, reloading src...", e);
+        }
+      }
+
+      showToast("Loading voice track...");
+      let resolvedSrc = null;
+
+      // 1. Try CacheStorage
+      if ("caches" in window) {
+        try {
+          const cache = await caches.open(CACHE_NAME);
+          const cached = await cache.match(AUDIO_URL);
+          if (cached) {
+            const blob = await cached.blob();
+            activeBlobUrl = URL.createObjectURL(blob);
+            resolvedSrc = activeBlobUrl;
+          }
+        } catch (ce) {}
+      }
+
+      // 2. If not in cache, try direct URL
+      if (!resolvedSrc) {
+        resolvedSrc = AUDIO_URL;
+      }
+
+      audioEl.src = resolvedSrc;
+      audioEl.load();
+
+      try {
+        await audioEl.play();
+        audioLoaded = true;
+        karaokeActive = true;
+        requestScreenWakeLock();
+      } catch (err) {
+        console.warn("Direct play failed, trying Blob fetch fallback (iOS Safari / octet-stream workaround)...", err);
+        try {
+          const resp = await fetch(AUDIO_URL, { mode: "cors" });
+          if (resp.ok) {
+            const buf = await resp.arrayBuffer();
+            const audioBlob = new Blob([buf], { type: "audio/mpeg" });
+            activeBlobUrl = URL.createObjectURL(audioBlob);
+            audioEl.src = activeBlobUrl;
+            audioEl.load();
+            await audioEl.play();
+            audioLoaded = true;
+            karaokeActive = true;
+            requestScreenWakeLock();
+
+            // Save to CacheStorage for offline flights
+            if ("caches" in window) {
+              caches.open(CACHE_NAME).then(c => c.put(AUDIO_URL, new Response(audioBlob)));
+            }
+          } else {
+            throw new Error("HTTP " + resp.status);
+          }
+        } catch (blobErr) {
+          console.error("Audio playback error:", blobErr);
+          showToast("⚠️ Could not load audio. Check internet or tap ⚙️ in Library.");
+        }
+      }
+    }
+
+    // Sync Karaoke Word
+    function syncKaraokeWord() {
+      if (!karaokeActive || !WORDS_DATA.length || TOTAL_WEIGHT <= 0) return;
+      const dur = audioEl.duration;
+      if (!Number.isFinite(dur) || dur <= 0) return;
+      const cur = audioEl.currentTime;
+      const progress = Math.min(1.0, Math.max(0, cur / dur));
+      const targetWeight = progress * TOTAL_WEIGHT;
+
+      let low = 0;
+      let high = WORDS_DATA.length - 1;
+      let foundIdx = 0;
+      while (low <= high) {
+        const mid = (low + high) >> 1;
+        if (WORDS_DATA[mid].c <= targetWeight) {
+          foundIdx = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      if (foundIdx !== activeWordIdx) {
+        if (activeWordIdx >= 0) {
+          const prev = document.getElementById(`w_${activeWordIdx}`);
+          if (prev) prev.classList.remove("active-word");
+        }
+        activeWordIdx = foundIdx;
+        const curEl = document.getElementById(`w_${activeWordIdx}`);
+        if (curEl) {
+          curEl.classList.add("active-word");
+          const r = curEl.getBoundingClientRect();
+          const targetY = window.innerHeight * 0.40;
+          if (r.top < 80 || r.top > window.innerHeight * 0.65) {
+            window.scrollBy({
+              top: r.top - targetY,
+              behavior: "smooth"
+            });
+          }
+        }
+      }
+    }
+
+    // Audio Listeners
+    audioEl.addEventListener("play", () => {
+      syncPlayButtonUi(true);
+      karaokeActive = true;
+    });
+    audioEl.addEventListener("pause", () => {
+      syncPlayButtonUi(false);
+    });
+    audioEl.addEventListener("ended", () => {
+      syncPlayButtonUi(false);
+      karaokeActive = false;
+      if (activeWordIdx >= 0) {
+        const prev = document.getElementById(`w_${activeWordIdx}`);
+        if (prev) prev.classList.remove("active-word");
+      }
+      showToast("Chapter complete.");
+    });
+    audioEl.addEventListener("timeupdate", () => {
+      const cur = audioEl.currentTime || 0;
+      const dur = audioEl.duration || 0;
+      document.getElementById("playerCurrentTime").textContent = formatSeconds(cur);
+      document.getElementById("playerTotalTime").textContent = formatSeconds(dur);
+      if (dur > 0) {
+        document.getElementById("playerScrubber").value = (cur / dur) * 100;
+      }
+      if (karaokeActive) {
+        syncKaraokeWord();
+      }
+    });
+
+    // Scrubber
+    document.getElementById("playerScrubber").addEventListener("input", (e) => {
+      const dur = audioEl.duration || 0;
+      if (dur > 0) {
+        audioEl.currentTime = (e.target.value / 100) * dur;
+      }
+    });
+    document.getElementById("btnRewind15").addEventListener("click", () => {
+      audioEl.currentTime = Math.max(0, audioEl.currentTime - 15);
+    });
+    document.getElementById("btnForward15").addEventListener("click", () => {
+      audioEl.currentTime = Math.min(audioEl.duration || 0, audioEl.currentTime + 15);
+    });
+
+    // Tap/Click any word to seek audio
+    document.getElementById("proseBody").addEventListener("click", (e) => {
+      const span = e.target.closest(".k-word");
+      if (!span) return;
+      const wIdx = parseInt(span.getAttribute("data-word-idx"), 10);
+      if (Number.isFinite(wIdx) && WORDS_DATA[wIdx]) {
+        const dur = audioEl.duration;
+        if (Number.isFinite(dur) && dur > 0 && TOTAL_WEIGHT > 0) {
+          const targetTime = (WORDS_DATA[wIdx].c / TOTAL_WEIGHT) * dur;
+          audioEl.currentTime = targetTime;
+          if (audioEl.paused) {
+            toggleAudioPlay();
+          }
+        } else if (!audioLoaded) {
+          toggleAudioPlay();
+        }
+      }
+    });
+
+    // Font Controls
+    document.getElementById("btnFontSmaller").addEventListener("click", () => {
+      readerFontSize = Math.max(0.9, readerFontSize - 0.1);
+      document.getElementById("proseBody").style.fontSize = `${readerFontSize}rem`;
+    });
+    document.getElementById("btnFontLarger").addEventListener("click", () => {
+      readerFontSize = Math.min(1.5, readerFontSize + 0.1);
+      document.getElementById("proseBody").style.fontSize = `${readerFontSize}rem`;
+    });
+
+    // Theme Toggle
+    document.getElementById("btnToggleTheme").addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      const isDark = document.body.classList.contains("dark-mode");
+      localStorage.setItem("kortex_theme", isDark ? "dark" : "light");
+    });
+    if (localStorage.getItem("kortex_theme") === "dark") {
+      document.body.classList.add("dark-mode");
+    }
+
+    // GitHub Preview Link Hydration
+    (function hydratePageLinks() {
+      try {
+        if (typeof location === "undefined" || typeof document === "undefined") return;
+        const isHtmlPreview = /htmlpreview\.github\.io/i.test(location.hostname || "") || /github\.com[\/]kouSeek[\/]portfolio[\/]blob[\/]/i.test(location.search || "");
+        if (!isHtmlPreview) return;
+        const m = (location.search || "").match(/https:[\/][\/]github\.com[\/]kouSeek[\/]portfolio[\/]blob[\/]([^/]+)[\/]/i);
+        const branch = (m && m[1]) ? m[1] : "kalyani-reels";
+        
+        document.querySelectorAll("a[href]").forEach(a => {
+          const href = a.getAttribute("href");
+          if (!href || href.startsWith("http") || href.startsWith("#")) return;
+          // Resolve relative path against current directory: chapters/<clean_slug>/
+          let targetPath = "";
+          if (href.startsWith("../../")) {
+            targetPath = href.replace("../../", "");
+          } else {
+            targetPath = "chapters/the-communist-manifesto-karl-marx/" + href;
+          }
+          a.href = "https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/" + branch + "/" + targetPath;
+        });
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>
