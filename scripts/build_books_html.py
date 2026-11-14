@@ -43,6 +43,12 @@ def generate_books_html() -> None:
     audio_index_json = AUDIO_INDEX_PATH.read_text(encoding="utf-8") if AUDIO_INDEX_PATH.is_file() else "{}"
 
     catalog_list = json.loads(catalog_json)
+    total_books = len(catalog_list)
+    cat_counts = {"all": total_books}
+    for b in catalog_list:
+        cat = b.get("wing_category") or b.get("category", "")
+        if cat:
+            cat_counts[cat] = cat_counts.get(cat, 0) + 1
     all_chapter_files = []
     for b in catalog_list:
         slug = get_clean_book_slug_py(b)
@@ -1102,16 +1108,16 @@ def generate_books_html() -> None:
           <div class="category-collapsible-header" onclick="toggleCategoryCollapsible()">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span>📂 Browse by Pillar</span>
-              <span class="track-badge" id="activeCategoryBadge">All Books (29)</span>
+              <span class="track-badge" id="activeCategoryBadge">All Books ({total_books})</span>
             </div>
             <span class="category-chevron" id="categoryChevron">▼</span>
           </div>
           <div class="category-pills" id="categoryPills">
-            <button class="filter-chip active" data-cat="all">All Books <span class="filter-chip-count">29</span></button>
-            <button class="filter-chip" data-cat="Science & Cosmos">🧬 Science & Cosmos <span class="filter-chip-count">8</span></button>
-            <button class="filter-chip" data-cat="Mind & Consciousness">🧠 Mind & Consciousness <span class="filter-chip-count">5</span></button>
-            <button class="filter-chip" data-cat="Power & Philosophy">⚔️ Power & Philosophy <span class="filter-chip-count">7</span></button>
-            <button class="filter-chip" data-cat="Imagination & Wonder">🪄 Imagination & Wonder <span class="filter-chip-count">9</span></button>
+            <button class="filter-chip active" data-cat="all">All Books <span class="filter-chip-count">{total_books}</span></button>
+            <button class="filter-chip" data-cat="Science & Cosmos">🧬 Science & Cosmos <span class="filter-chip-count">{cat_counts.get('Science & Cosmos', 0)}</span></button>
+            <button class="filter-chip" data-cat="Mind & Consciousness">🧠 Mind & Consciousness <span class="filter-chip-count">{cat_counts.get('Mind & Consciousness', 0)}</span></button>
+            <button class="filter-chip" data-cat="Power & Philosophy">⚔️ Power & Philosophy <span class="filter-chip-count">{cat_counts.get('Power & Philosophy', 0)}</span></button>
+            <button class="filter-chip" data-cat="Imagination & Wonder">🪄 Imagination & Wonder <span class="filter-chip-count">{cat_counts.get('Imagination & Wonder', 0)}</span></button>
           </div>
         </div>
       </div>
@@ -1205,7 +1211,7 @@ def generate_books_html() -> None:
       </div>
 
       <p style="font-size: 0.85rem; color: var(--ink-muted); line-height: 1.5;">
-        Save all 29 books, chapter summaries, and neural voice files to your phone's browser cache for 100% offline reading and listening during flights.
+        Save all {total_books} books, chapter summaries, and neural voice files to your phone's browser cache for 100% offline reading and listening during flights.
       </p>
 
       <!-- Progress Box -->
@@ -1229,11 +1235,11 @@ def generate_books_html() -> None:
         <div style="font-weight: 700; font-size: 0.88rem; margin-bottom: 8px;">📊 Offline Storage Status</div>
         <div class="storage-stat-line">
           <span>📚 Total Books</span>
-          <span>29 volumes (Inlined)</span>
+          <span id="statModalVolumesCount">{total_books} volumes (Inlined)</span>
         </div>
         <div class="storage-stat-line">
           <span>📄 Chapter HTML Pages</span>
-          <span id="statModalChaptersCount">279 chapters</span>
+          <span id="statModalChaptersCount">{len(all_chapter_files)} chapters</span>
         </div>
         <div class="storage-stat-line">
           <span>🎙️ Available Voice Tracks</span>
@@ -2331,7 +2337,7 @@ def generate_books_html() -> None:
           pFill.style.width = "100%";
           pPct.textContent = "100%";
           pTitle.textContent = "✓ Already Up to Date";
-          pSub.textContent = `All ${{total}} files (279 chapters + audio) are already saved in offline cache.`;
+          pSub.textContent = `All ${{total}} files (${{CHAPTER_FILES.length}} chapters + audio) are already saved in offline cache.`;
           showToast(`✓ All ${{total}} files are already cached.`);
           setTimeout(() => {{
             btnSync.disabled = false;
@@ -2344,7 +2350,7 @@ def generate_books_html() -> None:
         let newlyDownloaded = 0;
         let processedCount = status.cached;
 
-        // 1. Download Chapter HTML files (All 279 chapters across all 29 books)
+        // 1. Download Chapter HTML files (All ${{CHAPTER_FILES.length}} chapters across all ${{BOOKS_DATA.length}} books)
         for (let i = 0; i < missingChapters.length; i++) {{
           const item = missingChapters[i];
           const ch = item.chapter;
@@ -2424,7 +2430,7 @@ def generate_books_html() -> None:
         pFill.style.width = "100%";
         pPct.textContent = "100%";
         pTitle.textContent = "✓ 100% Offline Ready!";
-        pSub.textContent = `Downloaded ${{newlyDownloaded}} files. All 279 chapters & audio are saved for flights.`;
+        pSub.textContent = `Downloaded ${{newlyDownloaded}} files. All ${{CHAPTER_FILES.length}} chapters & audio are saved for flights.`;
         showToast(`✓ All chapters and voices downloaded for offline flights!`);
 
         setTimeout(() => {{
@@ -2622,10 +2628,12 @@ def generate_books_html() -> None:
       chip.addEventListener("click", () => {{
         document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
         chip.classList.add("active");
-        activeCategory = chip.getAttribute("data-cat");
+        const cat = chip.getAttribute("data-cat");
+        activeCategory = cat;
+        const matchingCount = (cat === "all") ? BOOKS_DATA.length : (BOOKS_DATA.filter(b => (b.wing_category || b.category) === cat).length);
         const badge = document.getElementById("activeCategoryBadge");
         if (badge) {{
-          badge.textContent = chip.textContent.trim();
+          badge.textContent = (cat === "all") ? `All Books (${{matchingCount}})` : `${{cat}} (${{matchingCount}})`;
         }}
         renderBooksGrid();
       }});
@@ -2725,7 +2733,33 @@ def generate_books_html() -> None:
       navigator.serviceWorker.register("kalyani-sw.js").catch(() => {{}});
     }}
 
+    function updateDynamicCounts() {{
+      const counts = {{ all: BOOKS_DATA.length }};
+      let totalCh = 0;
+      BOOKS_DATA.forEach(b => {{
+        const cat = b.wing_category || b.category;
+        if (cat) counts[cat] = (counts[cat] || 0) + 1;
+        totalCh += (b.adhd_segments || []).length + (b.author_chapters || []).length;
+      }});
+      document.querySelectorAll(".filter-chip").forEach(chip => {{
+        const cat = chip.getAttribute("data-cat");
+        const countEl = chip.querySelector(".filter-chip-count");
+        if (countEl && counts[cat] !== undefined) {{
+          countEl.textContent = counts[cat];
+        }}
+      }});
+      const badge = document.getElementById("activeCategoryBadge");
+      if (badge && activeCategory === "all") {{
+        badge.textContent = `All Books (${{BOOKS_DATA.length}})`;
+      }}
+      const statVols = document.getElementById("statModalVolumesCount");
+      if (statVols) statVols.textContent = `${{BOOKS_DATA.length}} volumes (Inlined)`;
+      const statChaps = document.getElementById("statModalChaptersCount");
+      if (statChaps) statChaps.textContent = `${{totalCh}} chapters`;
+    }}
+
     // Render immediately from inlined data
+    updateDynamicCounts();
     renderBooksGrid();
     updateOfflineStatus();
     updateStorageMetrics();
