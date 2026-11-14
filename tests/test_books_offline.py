@@ -122,6 +122,44 @@ class TestBooksOfflineFlightMode(unittest.TestCase):
         chapter_files = json.loads(match.group(1))
         self.assertEqual(len(chapter_files), 279, "Expected 279 chapter files in CHAPTER_FILES")
 
+    def test_books_html_script_syntax_and_eval_clean(self) -> None:
+        """Verify books.html inlined JavaScript parses cleanly with 0 syntax errors in Node.js."""
+        html = BOOKS_HTML_PATH.read_text(encoding="utf-8")
+        match = re.search(r"<script>([\s\S]*?)</script>", html)
+        self.assertIsNotNone(match, "No <script> tag found in books.html")
+        script_code = match.group(1)
+
+        node_script = r"""
+        const fs = require('fs');
+        const vm = require('vm');
+        const html = fs.readFileSync(process.argv[1], 'utf8');
+        const scriptMatch = html.match(/<script>([\s\S]*?)<\/script>/);
+        if (!scriptMatch) {
+            console.error('No script tag found!');
+            process.exit(1);
+        }
+        try {
+            new vm.Script(scriptMatch[1], { filename: 'books.js' });
+            console.log('SUCCESS_SYNTAX_VALID');
+        } catch (e) {
+            console.error('SYNTAX_ERROR:', e);
+            process.exit(1);
+        }
+        """
+
+        res = subprocess.run(
+            [NODE_BIN, "-e", node_script, str(BOOKS_HTML_PATH)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(
+            res.returncode,
+            0,
+            f"books.html JavaScript failed to parse:\nSTDOUT:\n{res.stdout}\nSTDERR:\n{res.stderr}",
+        )
+        self.assertIn("SUCCESS_SYNTAX_VALID", res.stdout)
+
     def test_service_worker_cache_first_fetch_interceptor(self) -> None:
         """Verify kalyani-sw.js has Cache-First strategy to serve cached chapters and audio offline."""
         sw_code = SW_PATH.read_text(encoding="utf-8")

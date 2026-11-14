@@ -2058,11 +2058,6 @@ def generate_books_html() -> None:
         updateStorageMetrics();
       }}
     }}
-        btnSync.disabled = false;
-        isDownloading = false;
-        updateStorageMetrics();
-      }}
-    }}
 
     async function clearOfflineCache() {{
       if (confirm("Clear offline library cache? You can re-download anytime before a flight.")) {{
