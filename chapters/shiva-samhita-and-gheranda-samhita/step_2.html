@@ -52,8 +52,11 @@
       display: flex;
       flex-direction: column;
       padding-top: calc(var(--safe-top) + 56px);
-      padding-bottom: calc(var(--safe-bottom) + 110px);
+      padding-bottom: calc(var(--safe-bottom) + 36px);
       transition: background 0.2s ease, color 0.2s ease;
+    }
+    body.has-active-player {
+      padding-bottom: calc(var(--safe-bottom) + 110px);
     }
     /* Topbar */
     .topbar {
@@ -283,7 +286,19 @@
       font-style: italic;
     }
 
-    /* Karaoke Highlighting */
+    /* Sentence Chunking & Karaoke Highlighting */
+    .k-chunk {
+      display: inline;
+      border-radius: 6px;
+      transition: background-color 0.18s ease;
+    }
+    .k-chunk.active-chunk {
+      background-color: rgba(99, 102, 241, 0.08);
+      border-radius: 6px;
+    }
+    body.dark-mode .k-chunk.active-chunk {
+      background-color: rgba(99, 102, 241, 0.18);
+    }
     .k-word {
       display: inline;
       border-radius: 4px;
@@ -335,7 +350,7 @@
       border-color: var(--accent);
     }
 
-    /* Sticky Bottom Player Bar */
+    /* Sticky Bottom Player Bar (only shown when audio is playing/active) */
     .sticky-player {
       position: fixed;
       bottom: 0;
@@ -346,9 +361,12 @@
       padding: 10px 16px calc(var(--safe-bottom) + 10px);
       z-index: 60;
       box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
-      display: flex;
+      display: none;
       flex-direction: column;
       gap: 8px;
+    }
+    body.has-active-player .sticky-player {
+      display: flex;
     }
     .player-progress-wrap {
       display: flex;
@@ -467,7 +485,7 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="back-btn" id="navBackBtn" href="../../books.html">← Library</a>
+    <a class="back-btn" id="navBackBtn" href="../../books.html#book=shiva-samhita-and-gheranda-samhita">← Library</a>
     <div class="top-title">Shiva Samhita &amp; Gheranda Samhita: Esoteric Yogic Treatises</div>
     <div class="top-actions">
       <button class="btn-icon" id="btnFontSmaller">A-</button>
@@ -498,6 +516,7 @@
         </div>
       </div>
       <div class="hero-curation-pill">⚡ ADHD Core Cut: 42 pages total (45m) · 86.5% filler pruned for maximum flow</div>
+      <div class="hero-curation-pill" style="color:var(--accent);background:var(--accent-light);border-color:rgba(79,70,229,0.25);">🏛️ Author Chapter Structure: Shiva Samhita (5 Patalas: Nadis, Vayus &amp; Mudras) + Gheranda Samhita (7 Saptasadhana: Shatkarma, Asana, Mudra, Pratyahara, Pranayama, Dhyana, Samadhi) · 12 Chapters (2 Treatises)</div>
 
       <div class="hero-brief"><strong>Core Takeaway:</strong> Sage Gheranda teaches King Chandakapali the science of the human &#x27;clay pot&#x27; (Ghata): seven sequential limbs from physical purification to unshakeable samadhi.</div>
 
@@ -525,25 +544,25 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Step</span> <span class="k-word" data-word-idx="1" id="w_1">2</span> <span class="k-word" data-word-idx="2" id="w_2">·</span> <span class="k-word" data-word-idx="3" id="w_3">Ghatastha</span> <span class="k-word" data-word-idx="4" id="w_4">Yoga</span> <span class="k-word" data-word-idx="5" id="w_5">—</span> <span class="k-word" data-word-idx="6" id="w_6">The</span> <span class="k-word" data-word-idx="7" id="w_7">Seven</span> <span class="k-word" data-word-idx="8" id="w_8">Limbs</span> <span class="k-word" data-word-idx="9" id="w_9">of</span> <span class="k-word" data-word-idx="10" id="w_10">the</span> <span class="k-word" data-word-idx="11" id="w_11">Living</span> <span class="k-word" data-word-idx="12" id="w_12">Vessel</span></h2>
+      <h2 class="chapter-prose-title"><span class="k-chunk" id="kchunk_0" data-chunk-idx="0"><span class="k-word" data-word-idx="0" id="w_0">Step</span> <span class="k-word" data-word-idx="1" id="w_1">2</span> <span class="k-word" data-word-idx="2" id="w_2">·</span> <span class="k-word" data-word-idx="3" id="w_3">Ghatastha</span> <span class="k-word" data-word-idx="4" id="w_4">Yoga</span> <span class="k-word" data-word-idx="5" id="w_5">—</span> <span class="k-word" data-word-idx="6" id="w_6">The</span> <span class="k-word" data-word-idx="7" id="w_7">Seven</span> <span class="k-word" data-word-idx="8" id="w_8">Limbs</span> <span class="k-word" data-word-idx="9" id="w_9">of</span> <span class="k-word" data-word-idx="10" id="w_10">the</span> <span class="k-word" data-word-idx="11" id="w_11">Living</span> <span class="k-word" data-word-idx="12" id="w_12">Vessel</span></span></h2>
 <blockquote class="chapter-spoken-brief">
-<p><span class="k-word" data-word-idx="13" id="w_13">&quot;Just</span> <span class="k-word" data-word-idx="14" id="w_14">as</span> <span class="k-word" data-word-idx="15" id="w_15">an</span> <span class="k-word" data-word-idx="16" id="w_16">unbaked</span> <span class="k-word" data-word-idx="17" id="w_17">earthen</span> <span class="k-word" data-word-idx="18" id="w_18">pot</span> <span class="k-word" data-word-idx="19" id="w_19">decays</span> <span class="k-word" data-word-idx="20" id="w_20">when</span> <span class="k-word" data-word-idx="21" id="w_21">immersed</span> <span class="k-word" data-word-idx="22" id="w_22">in</span> <span class="k-word" data-word-idx="23" id="w_23">water,</span> <span class="k-word" data-word-idx="24" id="w_24">so</span> <span class="k-word" data-word-idx="25" id="w_25">does</span> <span class="k-word" data-word-idx="26" id="w_26">this</span> <span class="k-word" data-word-idx="27" id="w_27">body</span> <span class="k-word" data-word-idx="28" id="w_28">decay.</span> <span class="k-word" data-word-idx="29" id="w_29">Bake</span> <span class="k-word" data-word-idx="30" id="w_30">it</span> <span class="k-word" data-word-idx="31" id="w_31">in</span> <span class="k-word" data-word-idx="32" id="w_32">the</span> <span class="k-word" data-word-idx="33" id="w_33">fire</span> <span class="k-word" data-word-idx="34" id="w_34">of</span> <span class="k-word" data-word-idx="35" id="w_35">yoga</span> <span class="k-word" data-word-idx="36" id="w_36">to</span> <span class="k-word" data-word-idx="37" id="w_37">strengthen</span> <span class="k-word" data-word-idx="38" id="w_38">and</span> <span class="k-word" data-word-idx="39" id="w_39">purify</span> <span class="k-word" data-word-idx="40" id="w_40">it.&quot;</span></p>
-<p><span class="k-word" data-word-idx="41" id="w_41">—</span> <span class="k-word" data-word-idx="42" id="w_42">*Gheranda</span> <span class="k-word" data-word-idx="43" id="w_43">Samhita*</span> <span class="k-word" data-word-idx="44" id="w_44">1.8</span></p>
+<p><span class="k-chunk" id="kchunk_1" data-chunk-idx="1"><span class="k-word" data-word-idx="13" id="w_13">&quot;Just</span> <span class="k-word" data-word-idx="14" id="w_14">as</span> <span class="k-word" data-word-idx="15" id="w_15">an</span> <span class="k-word" data-word-idx="16" id="w_16">unbaked</span> <span class="k-word" data-word-idx="17" id="w_17">earthen</span> <span class="k-word" data-word-idx="18" id="w_18">pot</span> <span class="k-word" data-word-idx="19" id="w_19">decays</span> <span class="k-word" data-word-idx="20" id="w_20">when</span> <span class="k-word" data-word-idx="21" id="w_21">immersed</span> <span class="k-word" data-word-idx="22" id="w_22">in</span> <span class="k-word" data-word-idx="23" id="w_23">water,</span> <span class="k-word" data-word-idx="24" id="w_24">so</span> <span class="k-word" data-word-idx="25" id="w_25">does</span> <span class="k-word" data-word-idx="26" id="w_26">this</span> <span class="k-word" data-word-idx="27" id="w_27">body</span> <span class="k-word" data-word-idx="28" id="w_28">decay.</span> <span class="k-word" data-word-idx="29" id="w_29">Bake</span> <span class="k-word" data-word-idx="30" id="w_30">it</span> <span class="k-word" data-word-idx="31" id="w_31">in</span> <span class="k-word" data-word-idx="32" id="w_32">the</span> <span class="k-word" data-word-idx="33" id="w_33">fire</span> <span class="k-word" data-word-idx="34" id="w_34">of</span> <span class="k-word" data-word-idx="35" id="w_35">yoga</span> <span class="k-word" data-word-idx="36" id="w_36">to</span> <span class="k-word" data-word-idx="37" id="w_37">strengthen</span> <span class="k-word" data-word-idx="38" id="w_38">and</span> <span class="k-word" data-word-idx="39" id="w_39">purify</span> <span class="k-word" data-word-idx="40" id="w_40">it.&quot;</span></span></p>
+<p><span class="k-chunk" id="kchunk_2" data-chunk-idx="2"><span class="k-word" data-word-idx="41" id="w_41">—</span> <span class="k-word" data-word-idx="42" id="w_42">*Gheranda</span> <span class="k-word" data-word-idx="43" id="w_43">Samhita*</span> <span class="k-word" data-word-idx="44" id="w_44">1.8</span></span></p>
 </blockquote>
-<h3 class="section-heading"><span class="k-word" data-word-idx="45" id="w_45">The</span> <span class="k-word" data-word-idx="46" id="w_46">Seven-Fold</span> <span class="k-word" data-word-idx="47" id="w_47">Discipline</span></h3>
-<p><span class="k-word" data-word-idx="48" id="w_48">Unlike</span> <span class="k-word" data-word-idx="49" id="w_49">Patanjali&#x27;s</span> <span class="k-word" data-word-idx="50" id="w_50">eight-limbed</span> <span class="k-word" data-word-idx="51" id="w_51">(*Ashtanga*)</span> <span class="k-word" data-word-idx="52" id="w_52">system,</span> <span class="k-word" data-word-idx="53" id="w_53">Sage</span> <span class="k-word" data-word-idx="54" id="w_54">Gheranda</span> <span class="k-word" data-word-idx="55" id="w_55">presents</span> <span class="k-word" data-word-idx="56" id="w_56">a</span> <span class="k-word" data-word-idx="57" id="w_57">physiological</span> <span class="k-word" data-word-idx="58" id="w_58">seven-limbed</span> <span class="k-word" data-word-idx="59" id="w_59">discipline</span> <span class="k-word" data-word-idx="60" id="w_60">(*Saptanga</span> <span class="k-word" data-word-idx="61" id="w_61">Yoga*),</span> <span class="k-word" data-word-idx="62" id="w_62">comparing</span> <span class="k-word" data-word-idx="63" id="w_63">the</span> <span class="k-word" data-word-idx="64" id="w_64">human</span> <span class="k-word" data-word-idx="65" id="w_65">organism</span> <span class="k-word" data-word-idx="66" id="w_66">to</span> <span class="k-word" data-word-idx="67" id="w_67">an</span> <span class="k-word" data-word-idx="68" id="w_68">unbaked</span> <span class="k-word" data-word-idx="69" id="w_69">clay</span> <span class="k-word" data-word-idx="70" id="w_70">pot</span> <span class="k-word" data-word-idx="71" id="w_71">(*Ghata*):</span></p>
-<p><span class="k-word" data-word-idx="72" id="w_72">1.</span> <span class="k-word" data-word-idx="73" id="w_73">**Shodhana</span> <span class="k-word" data-word-idx="74" id="w_74">(Purification</span> <span class="k-word" data-word-idx="75" id="w_75">by</span> <span class="k-word" data-word-idx="76" id="w_76">Shatkarmas):**</span> <span class="k-word" data-word-idx="77" id="w_77">Cleanses</span> <span class="k-word" data-word-idx="78" id="w_78">toxins</span> <span class="k-word" data-word-idx="79" id="w_79">from</span> <span class="k-word" data-word-idx="80" id="w_80">the</span> <span class="k-word" data-word-idx="81" id="w_81">six</span> <span class="k-word" data-word-idx="82" id="w_82">physiological</span> <span class="k-word" data-word-idx="83" id="w_83">regions.</span></p>
-<p><span class="k-word" data-word-idx="84" id="w_84">2.</span> <span class="k-word" data-word-idx="85" id="w_85">**Dridhata</span> <span class="k-word" data-word-idx="86" id="w_86">(Strengthening</span> <span class="k-word" data-word-idx="87" id="w_87">by</span> <span class="k-word" data-word-idx="88" id="w_88">Asana):**</span> <span class="k-word" data-word-idx="89" id="w_89">Thirty-two</span> <span class="k-word" data-word-idx="90" id="w_90">classic</span> <span class="k-word" data-word-idx="91" id="w_91">postures</span> <span class="k-word" data-word-idx="92" id="w_92">that</span> <span class="k-word" data-word-idx="93" id="w_93">give</span> <span class="k-word" data-word-idx="94" id="w_94">physical</span> <span class="k-word" data-word-idx="95" id="w_95">fortitude</span> <span class="k-word" data-word-idx="96" id="w_96">and</span> <span class="k-word" data-word-idx="97" id="w_97">postural</span> <span class="k-word" data-word-idx="98" id="w_98">symmetry.</span></p>
-<p><span class="k-word" data-word-idx="99" id="w_99">3.</span> <span class="k-word" data-word-idx="100" id="w_100">**Sthirata</span> <span class="k-word" data-word-idx="101" id="w_101">(Stability</span> <span class="k-word" data-word-idx="102" id="w_102">by</span> <span class="k-word" data-word-idx="103" id="w_103">Mudra):**</span> <span class="k-word" data-word-idx="104" id="w_104">Twenty-five</span> <span class="k-word" data-word-idx="105" id="w_105">mudras</span> <span class="k-word" data-word-idx="106" id="w_106">that</span> <span class="k-word" data-word-idx="107" id="w_107">lock</span> <span class="k-word" data-word-idx="108" id="w_108">autonomic</span> <span class="k-word" data-word-idx="109" id="w_109">nervous</span> <span class="k-word" data-word-idx="110" id="w_110">currents</span> <span class="k-word" data-word-idx="111" id="w_111">and</span> <span class="k-word" data-word-idx="112" id="w_112">seal</span> <span class="k-word" data-word-idx="113" id="w_113">pranic</span> <span class="k-word" data-word-idx="114" id="w_114">energy</span> <span class="k-word" data-word-idx="115" id="w_115">within.</span></p>
-<p><span class="k-word" data-word-idx="116" id="w_116">4.</span> <span class="k-word" data-word-idx="117" id="w_117">**Dhairya</span> <span class="k-word" data-word-idx="118" id="w_118">(Steadiness</span> <span class="k-word" data-word-idx="119" id="w_119">by</span> <span class="k-word" data-word-idx="120" id="w_120">Pratyahara):**</span> <span class="k-word" data-word-idx="121" id="w_121">Sensory</span> <span class="k-word" data-word-idx="122" id="w_122">withdrawal</span> <span class="k-word" data-word-idx="123" id="w_123">that</span> <span class="k-word" data-word-idx="124" id="w_124">frees</span> <span class="k-word" data-word-idx="125" id="w_125">the</span> <span class="k-word" data-word-idx="126" id="w_126">mind</span> <span class="k-word" data-word-idx="127" id="w_127">from</span> <span class="k-word" data-word-idx="128" id="w_128">external</span> <span class="k-word" data-word-idx="129" id="w_129">emotional</span> <span class="k-word" data-word-idx="130" id="w_130">tugs.</span></p>
-<p><span class="k-word" data-word-idx="131" id="w_131">5.</span> <span class="k-word" data-word-idx="132" id="w_132">**Laghava</span> <span class="k-word" data-word-idx="133" id="w_133">(Lightness</span> <span class="k-word" data-word-idx="134" id="w_134">by</span> <span class="k-word" data-word-idx="135" id="w_135">Pranayama):**</span> <span class="k-word" data-word-idx="136" id="w_136">Regulating</span> <span class="k-word" data-word-idx="137" id="w_137">the</span> <span class="k-word" data-word-idx="138" id="w_138">life</span> <span class="k-word" data-word-idx="139" id="w_139">breath</span> <span class="k-word" data-word-idx="140" id="w_140">to</span> <span class="k-word" data-word-idx="141" id="w_141">clear</span> <span class="k-word" data-word-idx="142" id="w_142">heaviness,</span> <span class="k-word" data-word-idx="143" id="w_143">dullness,</span> <span class="k-word" data-word-idx="144" id="w_144">and</span> <span class="k-word" data-word-idx="145" id="w_145">metabolic</span> <span class="k-word" data-word-idx="146" id="w_146">sluggishness.</span></p>
-<p><span class="k-word" data-word-idx="147" id="w_147">6.</span> <span class="k-word" data-word-idx="148" id="w_148">**Pratyaksha</span> <span class="k-word" data-word-idx="149" id="w_149">(Direct</span> <span class="k-word" data-word-idx="150" id="w_150">Perception</span> <span class="k-word" data-word-idx="151" id="w_151">by</span> <span class="k-word" data-word-idx="152" id="w_152">Dhyana):**</span> <span class="k-word" data-word-idx="153" id="w_153">Continuous</span> <span class="k-word" data-word-idx="154" id="w_154">absorption</span> <span class="k-word" data-word-idx="155" id="w_155">in</span> <span class="k-word" data-word-idx="156" id="w_156">the</span> <span class="k-word" data-word-idx="157" id="w_157">heart</span> <span class="k-word" data-word-idx="158" id="w_158">lotus</span> <span class="k-word" data-word-idx="159" id="w_159">to</span> <span class="k-word" data-word-idx="160" id="w_160">perceive</span> <span class="k-word" data-word-idx="161" id="w_161">the</span> <span class="k-word" data-word-idx="162" id="w_162">pure</span> <span class="k-word" data-word-idx="163" id="w_163">inner</span> <span class="k-word" data-word-idx="164" id="w_164">light.</span></p>
-<p><span class="k-word" data-word-idx="165" id="w_165">7.</span> <span class="k-word" data-word-idx="166" id="w_166">**Nirliptata</span> <span class="k-word" data-word-idx="167" id="w_167">(Detachment</span> <span class="k-word" data-word-idx="168" id="w_168">by</span> <span class="k-word" data-word-idx="169" id="w_169">Samadhi):**</span> <span class="k-word" data-word-idx="170" id="w_170">Complete</span> <span class="k-word" data-word-idx="171" id="w_171">spiritual</span> <span class="k-word" data-word-idx="172" id="w_172">liberation,</span> <span class="k-word" data-word-idx="173" id="w_173">where</span> <span class="k-word" data-word-idx="174" id="w_174">the</span> <span class="k-word" data-word-idx="175" id="w_175">individual</span> <span class="k-word" data-word-idx="176" id="w_176">consciousness</span> <span class="k-word" data-word-idx="177" id="w_177">abides</span> <span class="k-word" data-word-idx="178" id="w_178">in</span> <span class="k-word" data-word-idx="179" id="w_179">blissful</span> <span class="k-word" data-word-idx="180" id="w_180">detachment</span> <span class="k-word" data-word-idx="181" id="w_181">from</span> <span class="k-word" data-word-idx="182" id="w_182">all</span> <span class="k-word" data-word-idx="183" id="w_183">worldly</span> <span class="k-word" data-word-idx="184" id="w_184">turmoil.</span></p>
+<h3 class="section-heading"><span class="k-chunk" id="kchunk_3" data-chunk-idx="3"><span class="k-word" data-word-idx="45" id="w_45">The</span> <span class="k-word" data-word-idx="46" id="w_46">Seven-Fold</span> <span class="k-word" data-word-idx="47" id="w_47">Discipline</span></span></h3>
+<p><span class="k-chunk" id="kchunk_4" data-chunk-idx="4"><span class="k-word" data-word-idx="48" id="w_48">Unlike</span> <span class="k-word" data-word-idx="49" id="w_49">Patanjali&#x27;s</span> <span class="k-word" data-word-idx="50" id="w_50">eight-limbed</span> <span class="k-word" data-word-idx="51" id="w_51">(*Ashtanga*)</span> <span class="k-word" data-word-idx="52" id="w_52">system,</span> <span class="k-word" data-word-idx="53" id="w_53">Sage</span> <span class="k-word" data-word-idx="54" id="w_54">Gheranda</span> <span class="k-word" data-word-idx="55" id="w_55">presents</span> <span class="k-word" data-word-idx="56" id="w_56">a</span> <span class="k-word" data-word-idx="57" id="w_57">physiological</span> <span class="k-word" data-word-idx="58" id="w_58">seven-limbed</span> <span class="k-word" data-word-idx="59" id="w_59">discipline</span> <span class="k-word" data-word-idx="60" id="w_60">(*Saptanga</span> <span class="k-word" data-word-idx="61" id="w_61">Yoga*),</span> <span class="k-word" data-word-idx="62" id="w_62">comparing</span> <span class="k-word" data-word-idx="63" id="w_63">the</span> <span class="k-word" data-word-idx="64" id="w_64">human</span> <span class="k-word" data-word-idx="65" id="w_65">organism</span> <span class="k-word" data-word-idx="66" id="w_66">to</span> <span class="k-word" data-word-idx="67" id="w_67">an</span> <span class="k-word" data-word-idx="68" id="w_68">unbaked</span> <span class="k-word" data-word-idx="69" id="w_69">clay</span> <span class="k-word" data-word-idx="70" id="w_70">pot</span> <span class="k-word" data-word-idx="71" id="w_71">(*Ghata*):</span></span></p>
+<p><span class="k-chunk" id="kchunk_5" data-chunk-idx="5"><span class="k-word" data-word-idx="72" id="w_72">1.</span> <span class="k-word" data-word-idx="73" id="w_73">**Shodhana</span> <span class="k-word" data-word-idx="74" id="w_74">(Purification</span> <span class="k-word" data-word-idx="75" id="w_75">by</span> <span class="k-word" data-word-idx="76" id="w_76">Shatkarmas):**</span> <span class="k-word" data-word-idx="77" id="w_77">Cleanses</span> <span class="k-word" data-word-idx="78" id="w_78">toxins</span> <span class="k-word" data-word-idx="79" id="w_79">from</span> <span class="k-word" data-word-idx="80" id="w_80">the</span> <span class="k-word" data-word-idx="81" id="w_81">six</span> <span class="k-word" data-word-idx="82" id="w_82">physiological</span> <span class="k-word" data-word-idx="83" id="w_83">regions.</span></span></p>
+<p><span class="k-chunk" id="kchunk_6" data-chunk-idx="6"><span class="k-word" data-word-idx="84" id="w_84">2.</span> <span class="k-word" data-word-idx="85" id="w_85">**Dridhata</span> <span class="k-word" data-word-idx="86" id="w_86">(Strengthening</span> <span class="k-word" data-word-idx="87" id="w_87">by</span> <span class="k-word" data-word-idx="88" id="w_88">Asana):**</span> <span class="k-word" data-word-idx="89" id="w_89">Thirty-two</span> <span class="k-word" data-word-idx="90" id="w_90">classic</span> <span class="k-word" data-word-idx="91" id="w_91">postures</span> <span class="k-word" data-word-idx="92" id="w_92">that</span> <span class="k-word" data-word-idx="93" id="w_93">give</span> <span class="k-word" data-word-idx="94" id="w_94">physical</span> <span class="k-word" data-word-idx="95" id="w_95">fortitude</span> <span class="k-word" data-word-idx="96" id="w_96">and</span> <span class="k-word" data-word-idx="97" id="w_97">postural</span> <span class="k-word" data-word-idx="98" id="w_98">symmetry.</span></span></p>
+<p><span class="k-chunk" id="kchunk_7" data-chunk-idx="7"><span class="k-word" data-word-idx="99" id="w_99">3.</span> <span class="k-word" data-word-idx="100" id="w_100">**Sthirata</span> <span class="k-word" data-word-idx="101" id="w_101">(Stability</span> <span class="k-word" data-word-idx="102" id="w_102">by</span> <span class="k-word" data-word-idx="103" id="w_103">Mudra):**</span> <span class="k-word" data-word-idx="104" id="w_104">Twenty-five</span> <span class="k-word" data-word-idx="105" id="w_105">mudras</span> <span class="k-word" data-word-idx="106" id="w_106">that</span> <span class="k-word" data-word-idx="107" id="w_107">lock</span> <span class="k-word" data-word-idx="108" id="w_108">autonomic</span> <span class="k-word" data-word-idx="109" id="w_109">nervous</span> <span class="k-word" data-word-idx="110" id="w_110">currents</span> <span class="k-word" data-word-idx="111" id="w_111">and</span> <span class="k-word" data-word-idx="112" id="w_112">seal</span> <span class="k-word" data-word-idx="113" id="w_113">pranic</span> <span class="k-word" data-word-idx="114" id="w_114">energy</span> <span class="k-word" data-word-idx="115" id="w_115">within.</span></span></p>
+<p><span class="k-chunk" id="kchunk_8" data-chunk-idx="8"><span class="k-word" data-word-idx="116" id="w_116">4.</span> <span class="k-word" data-word-idx="117" id="w_117">**Dhairya</span> <span class="k-word" data-word-idx="118" id="w_118">(Steadiness</span> <span class="k-word" data-word-idx="119" id="w_119">by</span> <span class="k-word" data-word-idx="120" id="w_120">Pratyahara):**</span> <span class="k-word" data-word-idx="121" id="w_121">Sensory</span> <span class="k-word" data-word-idx="122" id="w_122">withdrawal</span> <span class="k-word" data-word-idx="123" id="w_123">that</span> <span class="k-word" data-word-idx="124" id="w_124">frees</span> <span class="k-word" data-word-idx="125" id="w_125">the</span> <span class="k-word" data-word-idx="126" id="w_126">mind</span> <span class="k-word" data-word-idx="127" id="w_127">from</span> <span class="k-word" data-word-idx="128" id="w_128">external</span> <span class="k-word" data-word-idx="129" id="w_129">emotional</span> <span class="k-word" data-word-idx="130" id="w_130">tugs.</span></span></p>
+<p><span class="k-chunk" id="kchunk_9" data-chunk-idx="9"><span class="k-word" data-word-idx="131" id="w_131">5.</span> <span class="k-word" data-word-idx="132" id="w_132">**Laghava</span> <span class="k-word" data-word-idx="133" id="w_133">(Lightness</span> <span class="k-word" data-word-idx="134" id="w_134">by</span> <span class="k-word" data-word-idx="135" id="w_135">Pranayama):**</span> <span class="k-word" data-word-idx="136" id="w_136">Regulating</span> <span class="k-word" data-word-idx="137" id="w_137">the</span> <span class="k-word" data-word-idx="138" id="w_138">life</span> <span class="k-word" data-word-idx="139" id="w_139">breath</span> <span class="k-word" data-word-idx="140" id="w_140">to</span> <span class="k-word" data-word-idx="141" id="w_141">clear</span> <span class="k-word" data-word-idx="142" id="w_142">heaviness,</span> <span class="k-word" data-word-idx="143" id="w_143">dullness,</span> <span class="k-word" data-word-idx="144" id="w_144">and</span> <span class="k-word" data-word-idx="145" id="w_145">metabolic</span> <span class="k-word" data-word-idx="146" id="w_146">sluggishness.</span></span></p>
+<p><span class="k-chunk" id="kchunk_10" data-chunk-idx="10"><span class="k-word" data-word-idx="147" id="w_147">6.</span> <span class="k-word" data-word-idx="148" id="w_148">**Pratyaksha</span> <span class="k-word" data-word-idx="149" id="w_149">(Direct</span> <span class="k-word" data-word-idx="150" id="w_150">Perception</span> <span class="k-word" data-word-idx="151" id="w_151">by</span> <span class="k-word" data-word-idx="152" id="w_152">Dhyana):**</span> <span class="k-word" data-word-idx="153" id="w_153">Continuous</span> <span class="k-word" data-word-idx="154" id="w_154">absorption</span> <span class="k-word" data-word-idx="155" id="w_155">in</span> <span class="k-word" data-word-idx="156" id="w_156">the</span> <span class="k-word" data-word-idx="157" id="w_157">heart</span> <span class="k-word" data-word-idx="158" id="w_158">lotus</span> <span class="k-word" data-word-idx="159" id="w_159">to</span> <span class="k-word" data-word-idx="160" id="w_160">perceive</span> <span class="k-word" data-word-idx="161" id="w_161">the</span> <span class="k-word" data-word-idx="162" id="w_162">pure</span> <span class="k-word" data-word-idx="163" id="w_163">inner</span> <span class="k-word" data-word-idx="164" id="w_164">light.</span></span></p>
+<p><span class="k-chunk" id="kchunk_11" data-chunk-idx="11"><span class="k-word" data-word-idx="165" id="w_165">7.</span> <span class="k-word" data-word-idx="166" id="w_166">**Nirliptata</span> <span class="k-word" data-word-idx="167" id="w_167">(Detachment</span> <span class="k-word" data-word-idx="168" id="w_168">by</span> <span class="k-word" data-word-idx="169" id="w_169">Samadhi):**</span> <span class="k-word" data-word-idx="170" id="w_170">Complete</span> <span class="k-word" data-word-idx="171" id="w_171">spiritual</span> <span class="k-word" data-word-idx="172" id="w_172">liberation,</span> <span class="k-word" data-word-idx="173" id="w_173">where</span> <span class="k-word" data-word-idx="174" id="w_174">the</span> <span class="k-word" data-word-idx="175" id="w_175">individual</span> <span class="k-word" data-word-idx="176" id="w_176">consciousness</span> <span class="k-word" data-word-idx="177" id="w_177">abides</span> <span class="k-word" data-word-idx="178" id="w_178">in</span> <span class="k-word" data-word-idx="179" id="w_179">blissful</span> <span class="k-word" data-word-idx="180" id="w_180">detachment</span> <span class="k-word" data-word-idx="181" id="w_181">from</span> <span class="k-word" data-word-idx="182" id="w_182">all</span> <span class="k-word" data-word-idx="183" id="w_183">worldly</span> <span class="k-word" data-word-idx="184" id="w_184">turmoil.</span></span></p>
     </section>
 
     <nav class="nav-footer">
       <a href="step_1.html">← Previous Chapter</a>
-      <a class="primary" href="../../books.html">📚 All Books</a>
+      <a class="primary" href="../../books.html#book=shiva-samhita-and-gheranda-samhita">📚 All Books</a>
       <a href="step_3.html">Next Chapter →</a>
     </nav>
   </main>
@@ -611,121 +630,68 @@
     const AUDIO_SILENCES = [[0.732, 1.746], [2.696, 3.129], [4.848, 5.661], [9.222, 9.773], [11.119, 11.764], [16.564, 17.09], [18.258, 18.947], [21.487, 21.927], [25.063, 25.582], [26.467, 26.906], [29.612, 30.311], [30.674, 31.46], [31.782, 32.399], [32.888, 33.369], [34.849, 35.368], [37.841, 38.611], [41.213, 41.87], [45.962, 47.014], [47.299, 47.776], [48.373, 48.773], [49.877, 50.561], [54.977, 56.122], [56.449, 56.947], [57.476, 58.44], [59.774, 60.488], [63.898, 64.738], [65.88, 66.265], [67.783, 68.733], [72.204, 72.581], [74.198, 75.397], [76.005, 76.77], [77.454, 78.146], [79.844, 80.726], [84.63, 85.708], [87.428, 88.03], [89.455, 90.17], [92.017, 92.436]];
     const CACHE_NAME = "kortex-books-v1";
     const WORDS_DATA = [{"c": 0, "w": 4, "s": 0}, {"c": 4, "w": 3, "s": 0}, {"c": 7, "w": 5, "s": 0}, {"c": 12, "w": 9, "s": 0}, {"c": 21, "w": 4, "s": 0}, {"c": 25, "w": 5, "s": 0}, {"c": 30, "w": 3, "s": 0}, {"c": 33, "w": 5, "s": 0}, {"c": 38, "w": 5, "s": 0}, {"c": 43, "w": 3, "s": 0}, {"c": 46, "w": 3, "s": 0}, {"c": 49, "w": 6, "s": 0}, {"c": 55, "w": 10, "s": 1}, {"c": 65, "w": 5, "s": 0}, {"c": 70, "w": 3, "s": 0}, {"c": 73, "w": 3, "s": 0}, {"c": 76, "w": 7, "s": 0}, {"c": 83, "w": 7, "s": 0}, {"c": 90, "w": 3, "s": 0}, {"c": 93, "w": 6, "s": 0}, {"c": 99, "w": 4, "s": 0}, {"c": 103, "w": 8, "s": 0}, {"c": 111, "w": 3, "s": 0}, {"c": 114, "w": 8, "s": 0}, {"c": 122, "w": 3, "s": 0}, {"c": 125, "w": 4, "s": 0}, {"c": 129, "w": 4, "s": 0}, {"c": 133, "w": 4, "s": 0}, {"c": 137, "w": 10, "s": 1}, {"c": 147, "w": 4, "s": 0}, {"c": 151, "w": 3, "s": 0}, {"c": 154, "w": 3, "s": 0}, {"c": 157, "w": 3, "s": 0}, {"c": 160, "w": 4, "s": 0}, {"c": 164, "w": 3, "s": 0}, {"c": 167, "w": 4, "s": 0}, {"c": 171, "w": 3, "s": 0}, {"c": 174, "w": 10, "s": 0}, {"c": 184, "w": 3, "s": 0}, {"c": 187, "w": 6, "s": 0}, {"c": 193, "w": 8, "s": 1}, {"c": 201, "w": 5, "s": 0}, {"c": 206, "w": 8, "s": 0}, {"c": 214, "w": 7, "s": 0}, {"c": 221, "w": 7, "s": 1}, {"c": 228, "w": 3, "s": 0}, {"c": 231, "w": 10, "s": 0}, {"c": 241, "w": 14, "s": 1}, {"c": 255, "w": 6, "s": 0}, {"c": 261, "w": 11, "s": 0}, {"c": 272, "w": 12, "s": 0}, {"c": 284, "w": 8, "s": 0}, {"c": 292, "w": 9, "s": 0}, {"c": 301, "w": 4, "s": 0}, {"c": 305, "w": 8, "s": 0}, {"c": 313, "w": 8, "s": 0}, {"c": 321, "w": 3, "s": 0}, {"c": 324, "w": 13, "s": 0}, {"c": 337, "w": 12, "s": 0}, {"c": 349, "w": 10, "s": 0}, {"c": 359, "w": 8, "s": 0}, {"c": 367, "w": 7, "s": 0}, {"c": 374, "w": 9, "s": 0}, {"c": 383, "w": 3, "s": 0}, {"c": 386, "w": 5, "s": 0}, {"c": 391, "w": 8, "s": 0}, {"c": 399, "w": 3, "s": 0}, {"c": 402, "w": 3, "s": 0}, {"c": 405, "w": 7, "s": 0}, {"c": 412, "w": 4, "s": 0}, {"c": 416, "w": 3, "s": 0}, {"c": 419, "w": 10, "s": 1}, {"c": 429, "w": 7, "s": 1}, {"c": 436, "w": 8, "s": 0}, {"c": 444, "w": 12, "s": 0}, {"c": 456, "w": 3, "s": 0}, {"c": 459, "w": 11, "s": 0}, {"c": 470, "w": 8, "s": 0}, {"c": 478, "w": 6, "s": 0}, {"c": 484, "w": 4, "s": 0}, {"c": 488, "w": 3, "s": 0}, {"c": 491, "w": 3, "s": 0}, {"c": 494, "w": 13, "s": 0}, {"c": 507, "w": 12, "s": 1}, {"c": 519, "w": 7, "s": 1}, {"c": 526, "w": 8, "s": 0}, {"c": 534, "w": 13, "s": 0}, {"c": 547, "w": 3, "s": 0}, {"c": 550, "w": 6, "s": 0}, {"c": 556, "w": 10, "s": 0}, {"c": 566, "w": 7, "s": 0}, {"c": 573, "w": 8, "s": 0}, {"c": 581, "w": 4, "s": 0}, {"c": 585, "w": 4, "s": 0}, {"c": 589, "w": 8, "s": 0}, {"c": 597, "w": 9, "s": 0}, {"c": 606, "w": 3, "s": 0}, {"c": 609, "w": 8, "s": 0}, {"c": 617, "w": 13, "s": 1}, {"c": 630, "w": 7, "s": 1}, {"c": 637, "w": 8, "s": 0}, {"c": 645, "w": 9, "s": 0}, {"c": 654, "w": 3, "s": 0}, {"c": 657, "w": 6, "s": 0}, {"c": 663, "w": 11, "s": 0}, {"c": 674, "w": 6, "s": 0}, {"c": 680, "w": 4, "s": 0}, {"c": 684, "w": 4, "s": 0}, {"c": 688, "w": 9, "s": 0}, {"c": 697, "w": 7, "s": 0}, {"c": 704, "w": 8, "s": 0}, {"c": 712, "w": 3, "s": 0}, {"c": 715, "w": 4, "s": 0}, {"c": 719, "w": 6, "s": 0}, {"c": 725, "w": 6, "s": 0}, {"c": 731, "w": 11, "s": 1}, {"c": 742, "w": 7, "s": 1}, {"c": 749, "w": 7, "s": 0}, {"c": 756, "w": 10, "s": 0}, {"c": 766, "w": 3, "s": 0}, {"c": 769, "w": 11, "s": 0}, {"c": 780, "w": 7, "s": 0}, {"c": 787, "w": 10, "s": 0}, {"c": 797, "w": 4, "s": 0}, {"c": 801, "w": 5, "s": 0}, {"c": 806, "w": 3, "s": 0}, {"c": 809, "w": 4, "s": 0}, {"c": 813, "w": 4, "s": 0}, {"c": 817, "w": 8, "s": 0}, {"c": 825, "w": 9, "s": 0}, {"c": 834, "w": 9, "s": 1}, {"c": 843, "w": 7, "s": 1}, {"c": 850, "w": 7, "s": 0}, {"c": 857, "w": 9, "s": 0}, {"c": 866, "w": 3, "s": 0}, {"c": 869, "w": 10, "s": 0}, {"c": 879, "w": 10, "s": 0}, {"c": 889, "w": 3, "s": 0}, {"c": 892, "w": 4, "s": 0}, {"c": 896, "w": 6, "s": 0}, {"c": 902, "w": 3, "s": 0}, {"c": 905, "w": 5, "s": 0}, {"c": 910, "w": 12, "s": 0}, {"c": 922, "w": 11, "s": 0}, {"c": 933, "w": 3, "s": 0}, {"c": 936, "w": 9, "s": 0}, {"c": 945, "w": 17, "s": 1}, {"c": 962, "w": 7, "s": 1}, {"c": 969, "w": 10, "s": 0}, {"c": 979, "w": 6, "s": 0}, {"c": 985, "w": 10, "s": 0}, {"c": 995, "w": 3, "s": 0}, {"c": 998, "w": 7, "s": 0}, {"c": 1005, "w": 10, "s": 0}, {"c": 1015, "w": 10, "s": 0}, {"c": 1025, "w": 3, "s": 0}, {"c": 1028, "w": 3, "s": 0}, {"c": 1031, "w": 5, "s": 0}, {"c": 1036, "w": 5, "s": 0}, {"c": 1041, "w": 3, "s": 0}, {"c": 1044, "w": 8, "s": 0}, {"c": 1052, "w": 3, "s": 0}, {"c": 1055, "w": 4, "s": 0}, {"c": 1059, "w": 5, "s": 0}, {"c": 1064, "w": 10, "s": 1}, {"c": 1074, "w": 7, "s": 1}, {"c": 1081, "w": 10, "s": 0}, {"c": 1091, "w": 10, "s": 0}, {"c": 1101, "w": 3, "s": 0}, {"c": 1104, "w": 8, "s": 0}, {"c": 1112, "w": 8, "s": 0}, {"c": 1120, "w": 9, "s": 0}, {"c": 1129, "w": 13, "s": 0}, {"c": 1142, "w": 5, "s": 0}, {"c": 1147, "w": 3, "s": 0}, {"c": 1150, "w": 10, "s": 0}, {"c": 1160, "w": 13, "s": 0}, {"c": 1173, "w": 6, "s": 0}, {"c": 1179, "w": 3, "s": 0}, {"c": 1182, "w": 8, "s": 0}, {"c": 1190, "w": 10, "s": 0}, {"c": 1200, "w": 4, "s": 0}, {"c": 1204, "w": 3, "s": 0}, {"c": 1207, "w": 7, "s": 0}, {"c": 1214, "w": 12, "s": 1}];
+    const CHUNKS_DATA = [{"idx": 0, "w0": 0, "w1": 12, "weight": 65, "cum": 0}, {"idx": 1, "w0": 13, "w1": 40, "weight": 136, "cum": 65}, {"idx": 2, "w0": 41, "w1": 44, "weight": 27, "cum": 201}, {"idx": 3, "w0": 45, "w1": 47, "weight": 27, "cum": 228}, {"idx": 4, "w0": 48, "w1": 71, "weight": 174, "cum": 255}, {"idx": 5, "w0": 72, "w1": 83, "weight": 90, "cum": 429}, {"idx": 6, "w0": 84, "w1": 98, "weight": 111, "cum": 519}, {"idx": 7, "w0": 99, "w1": 115, "weight": 112, "cum": 630}, {"idx": 8, "w0": 116, "w1": 130, "weight": 101, "cum": 742}, {"idx": 9, "w0": 131, "w1": 146, "weight": 119, "cum": 843}, {"idx": 10, "w0": 147, "w1": 164, "weight": 112, "cum": 962}, {"idx": 11, "w0": 165, "w1": 184, "weight": 152, "cum": 1074}];
+    const TIMELINE_DATA = null;
     const TOTAL_WEIGHT = 1226;
     let timelineCalibrated = false;
 
-    function buildAcousticWordTimeline(words, totalWeight, audioMeta) {
-      if (!words || !words.length || totalWeight <= 0) return;
+    function buildAcousticWordTimeline(words, chunks, totalWeight, audioMeta) {
+      if (!words || !words.length || !chunks || !chunks.length || totalWeight <= 0) return;
       const totalDur = (audioMeta && Number(audioMeta.dur) > 0.5)
         ? Number(audioMeta.dur)
         : (audioEl && audioEl.duration > 0 ? audioEl.duration : AUDIO_DURATION);
       if (totalDur <= 0) return;
 
       const rawSilences = (audioMeta && Array.isArray(audioMeta.silences)) ? audioMeta.silences : (AUDIO_SILENCES || []);
-      if (!rawSilences.length) {
-        for (let i = 0; i < words.length; i++) {
-          words[i].startSec = (words[i].c / totalWeight) * totalDur;
-          words[i].endSec = ((words[i].c + words[i].w) / totalWeight) * totalDur;
+
+      // 1. Anchor 1-2 sentence chunk boundaries
+      if (Array.isArray(TIMELINE_DATA) && TIMELINE_DATA.length === chunks.length) {
+        for (let i = 0; i < chunks.length; i++) {
+          chunks[i].startSec = Number(TIMELINE_DATA[i].startSec || TIMELINE_DATA[i].start || 0);
+          chunks[i].endSec = Number(TIMELINE_DATA[i].endSec || TIMELINE_DATA[i].end || totalDur);
         }
-        timelineCalibrated = true;
-        return;
-      }
+      } else {
+        let lastEnd = 0.0;
+        for (let i = 0; i < chunks.length; i++) {
+          const ch = chunks[i];
+          ch.startSec = lastEnd;
+          if (i === chunks.length - 1) {
+            ch.endSec = totalDur;
+          } else {
+            const nextCum = ch.cum + ch.weight;
+            const targetT = (nextCum / totalWeight) * totalDur;
 
-      function voicedTimeAt(t) {
-        const clamped = Math.max(0, Math.min(totalDur, t));
-        let v = clamped;
-        for (let i = 0; i < rawSilences.length; i++) {
-          const s = rawSilences[i][0];
-          const e = rawSilences[i][1];
-          if (clamped <= s) break;
-          v -= (Math.min(clamped, e) - s);
-        }
-        return Math.max(0, v);
-      }
-
-      function invVoicedTime(targetV) {
-        let lo = 0;
-        let hi = totalDur;
-        for (let iter = 0; iter < 28; iter++) {
-          const mid = (lo + hi) * 0.5;
-          if (voicedTimeAt(mid) < targetV) lo = mid;
-          else hi = mid;
-        }
-        return (lo + hi) * 0.5;
-      }
-
-      const totalVoiced = voicedTimeAt(totalDur);
-      if (totalVoiced <= 0) return;
-
-      // 1. Sentence boundary word indices
-      const sentEndIndices = [];
-      for (let i = 0; i < words.length; i++) {
-        if (words[i].s) sentEndIndices.push(i);
-      }
-      if (!sentEndIndices.length || sentEndIndices[sentEndIndices.length - 1] !== words.length - 1) {
-        sentEndIndices.push(words.length - 1);
-      }
-
-      // 2. Anchor every K sentences (K=2 sentences per anchor)
-      const K = 2;
-      const anchorIndices = [];
-      for (let i = K - 1; i < sentEndIndices.length; i += K) {
-        anchorIndices.push(sentEndIndices[i]);
-      }
-      if (!anchorIndices.length || anchorIndices[anchorIndices.length - 1] !== words.length - 1) {
-        anchorIndices.push(words.length - 1);
-      }
-
-      // 3. Compute anchor timestamps snapped to acoustic silences
-      const anchors = [{ wordIdx: -1, timeSec: 0.0 }];
-      for (let a = 0; a < anchorIndices.length; a++) {
-        const idx = anchorIndices[a];
-        const w = words[idx];
-        const cumW = w.c + w.w;
-        const frac = cumW / totalWeight;
-        const targetV = frac * totalVoiced;
-        const tEst = invVoicedTime(targetV);
-
-        let bestSilStart = null;
-        let minDist = 1.6;
-        for (let s = 0; s < rawSilences.length; s++) {
-          const dist = Math.abs(rawSilences[s][0] - tEst);
-          if (dist < minDist) {
-            minDist = dist;
-            bestSilStart = rawSilences[s][0];
+            let bestSil = null;
+            let minDist = 2.5;
+            for (let s = 0; s < rawSilences.length; s++) {
+              const silT = rawSilences[s][0];
+              if (silT > lastEnd + 0.6 && silT < totalDur - 0.5) {
+                const d = Math.abs(silT - targetT);
+                if (d < minDist) {
+                  minDist = d;
+                  bestSil = silT;
+                }
+              }
+            }
+            const boundary = bestSil !== null ? bestSil : Math.max(lastEnd + 0.6, targetT);
+            ch.endSec = boundary;
+            lastEnd = boundary;
           }
         }
-        const aTime = bestSilStart !== null ? bestSilStart : tEst;
-        anchors.push({
-          wordIdx: idx,
-          timeSec: Math.max(0.1, aTime)
-        });
       }
 
-      for (let a = 1; a < anchors.length; a++) {
-        if (anchors[a].timeSec <= anchors[a - 1].timeSec) {
-          anchors[a].timeSec = anchors[a - 1].timeSec + 0.3;
-        }
-      }
-      anchors[anchors.length - 1].timeSec = totalDur;
-
-      // 4. Interpolate words strictly within each 2-sentence anchor interval
-      for (let a = 0; a < anchors.length - 1; a++) {
-        const startWIdx = anchors[a].wordIdx + 1;
-        const endWIdx = anchors[a + 1].wordIdx;
-        if (startWIdx > endWIdx) continue;
-
-        const tStart = anchors[a].timeSec;
-        const tEnd = anchors[a + 1].timeSec;
-        const baseC = words[startWIdx].c;
-        const spanW = Math.max(1, (words[endWIdx].c + words[endWIdx].w) - baseC);
-        const spanT = Math.max(0.05, tEnd - tStart);
-
-        for (let i = startWIdx; i <= endWIdx; i++) {
-          const fracS = (words[i].c - baseC) / spanW;
-          const fracE = ((words[i].c + words[i].w) - baseC) / spanW;
-          words[i].startSec = tStart + fracS * spanT;
-          words[i].endSec = tStart + fracE * spanT;
+      // 2. Interpolate words strictly inside each 1-2 sentence chunk
+      for (let c = 0; c < chunks.length; c++) {
+        const ch = chunks[c];
+        const spanT = Math.max(0.05, ch.endSec - ch.startSec);
+        const baseC = words[ch.w0].c;
+        const spanW = Math.max(1, (words[ch.w1].c + words[ch.w1].w) - baseC);
+        for (let w = ch.w0; w <= ch.w1; w++) {
+          const fracS = (words[w].c - baseC) / spanW;
+          const fracE = ((words[w].c + words[w].w) - baseC) / spanW;
+          words[w].startSec = ch.startSec + fracS * spanT;
+          words[w].endSec = ch.startSec + fracE * spanT;
+          words[w].chunkIdx = c;
         }
       }
 
@@ -771,6 +737,11 @@
       const tBtn = document.getElementById("btnTopListen");
       if (bBtn) bBtn.textContent = isPlaying ? "⏸" : "▶";
       if (tBtn) tBtn.textContent = isPlaying ? "⏸ Pause" : "▶️ Listen";
+      if (isPlaying) {
+        document.body.classList.add("has-active-player");
+        const sp = document.getElementById("stickyPlayer");
+        if (sp) sp.style.display = "flex";
+      }
     }
 
     async function toggleAudioPlay() {
@@ -851,35 +822,22 @@
       }
     }
 
-    // Sync Karaoke Word
+    // Sync Karaoke Sentence Chunk & Word
+    let activeChunkIdx = -1;
     function syncKaraokeWord() {
       if (!karaokeActive || !WORDS_DATA.length || TOTAL_WEIGHT <= 0) return;
       const dur = (audioEl && audioEl.duration > 0) ? audioEl.duration : AUDIO_DURATION;
       if (!Number.isFinite(dur) || dur <= 0) return;
       const cur = audioEl.currentTime;
 
-      let foundIdx = 0;
-      if (WORDS_DATA[0].startSec !== undefined) {
-        let low = 0;
-        let high = WORDS_DATA.length - 1;
+      // 1. Binary search active chunk
+      let cIdx = 0;
+      if (CHUNKS_DATA && CHUNKS_DATA.length && CHUNKS_DATA[0].startSec !== undefined) {
+        let low = 0, high = CHUNKS_DATA.length - 1;
         while (low <= high) {
           const mid = (low + high) >> 1;
-          if (WORDS_DATA[mid].startSec <= cur) {
-            foundIdx = mid;
-            low = mid + 1;
-          } else {
-            high = mid - 1;
-          }
-        }
-      } else {
-        const progress = Math.min(1.0, Math.max(0, cur / dur));
-        const targetWeight = progress * TOTAL_WEIGHT;
-        let low = 0;
-        let high = WORDS_DATA.length - 1;
-        while (low <= high) {
-          const mid = (low + high) >> 1;
-          if (WORDS_DATA[mid].c <= targetWeight) {
-            foundIdx = mid;
+          if (CHUNKS_DATA[mid].startSec <= cur) {
+            cIdx = mid;
             low = mid + 1;
           } else {
             high = mid - 1;
@@ -887,23 +845,45 @@
         }
       }
 
-      if (foundIdx !== activeWordIdx) {
+      if (cIdx !== activeChunkIdx) {
+        if (activeChunkIdx >= 0) {
+          const prevChunkEl = document.getElementById(`kchunk_${activeChunkIdx}`);
+          if (prevChunkEl) prevChunkEl.classList.remove("active-chunk");
+        }
+        const curChunkEl = document.getElementById(`kchunk_${cIdx}`);
+        if (curChunkEl) {
+          curChunkEl.classList.add("active-chunk");
+          const rect = curChunkEl.getBoundingClientRect();
+          if (rect.top < 80 || rect.bottom > window.innerHeight - 100) {
+            curChunkEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }
+        activeChunkIdx = cIdx;
+      }
+
+      // 2. Binary search active word strictly within active chunk
+      const curChunk = (CHUNKS_DATA && CHUNKS_DATA[cIdx]) ? CHUNKS_DATA[cIdx] : { w0: 0, w1: WORDS_DATA.length - 1 };
+      let foundWordIdx = curChunk.w0;
+      let low = curChunk.w0, high = curChunk.w1;
+      while (low <= high) {
+        const mid = (low + high) >> 1;
+        if (WORDS_DATA[mid].startSec <= cur) {
+          foundWordIdx = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      if (foundWordIdx !== activeWordIdx) {
         if (activeWordIdx >= 0) {
           const prev = document.getElementById(`w_${activeWordIdx}`);
           if (prev) prev.classList.remove("active-word");
         }
-        activeWordIdx = foundIdx;
+        activeWordIdx = foundWordIdx;
         const curEl = document.getElementById(`w_${activeWordIdx}`);
         if (curEl) {
           curEl.classList.add("active-word");
-          const r = curEl.getBoundingClientRect();
-          const targetY = window.innerHeight * 0.40;
-          if (r.top < 80 || r.top > window.innerHeight * 0.65) {
-            window.scrollBy({
-              top: r.top - targetY,
-              behavior: "smooth"
-            });
-          }
         }
       }
     }
@@ -913,11 +893,11 @@
       syncPlayButtonUi(true);
       karaokeActive = true;
       if (!timelineCalibrated) {
-        buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
+        buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
       }
     });
     audioEl.addEventListener("loadedmetadata", () => {
-      buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
+      buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
     });
     audioEl.addEventListener("pause", () => {
       syncPlayButtonUi(false);

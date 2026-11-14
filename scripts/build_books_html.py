@@ -2080,7 +2080,8 @@ def generate_books_html() -> None:
         card.onclick = () => openBookDetail(b.slug || b.filename);
 
         const adhdCount = (b.adhd_segments || []).length;
-        const fullCount = (b.author_chapters || []).length;
+        const fullCount = b.actual_chapters_count || (b.author_chapters || []).length;
+        const fullLabel = b.actual_chapters_label || `${{fullCount}} Chapters`;
         const cleanAdhdTime = cleanEffortStr(b.adhd_time_label);
         const cleanFullTime = cleanEffortStr(b.full_time_label);
         const adhdPages = b.adhd_total_pages ? `${{b.adhd_total_pages}}p` : "";
@@ -2105,7 +2106,7 @@ def generate_books_html() -> None:
           <div>
             <div class="book-card-stats">
               <span class="badge-chip adhd">⚡ ${{adhdCount}} Steps ${{adhdPages ? `· ${{adhdPages}}` : ""}} ${{adhdVol ? `(${{adhdVol}})` : ""}} ${{cleanAdhdTime ? `· ⏱️ ${{cleanAdhdTime}}` : ""}}</span>
-              <span class="badge-chip full">📖 ${{fullCount}} Ch ${{fullPages ? `· ${{fullPages}}` : ""}} ${{cleanFullTime ? `· ⏱️ ${{cleanFullTime}}` : ""}}</span>
+              <span class="badge-chip full" title="${{escapeHtml(b.actual_chapters_structure || '')}}">📖 ${{escapeHtml(fullLabel)}} ${{fullPages ? `· ${{fullPages}}` : ""}} ${{cleanFullTime ? `· ⏱️ ${{cleanFullTime}}` : ""}}</span>
               ${{hasAudio ? `<span class="badge-chip voice">🎙️ Audio Ready</span>` : ""}}
             </div>
           </div>
@@ -2156,10 +2157,12 @@ def generate_books_html() -> None:
       const fullPages = book.full_book_pages || book.pages ? `${{book.full_book_pages || book.pages}} pages` : "";
       const pillarBadge = book.wing || book.category || "";
 
+      const fullCount = book.actual_chapters_count || (book.author_chapters || []).length;
+      const fullLabel = book.actual_chapters_label || `${{fullCount}} Chapters`;
       document.getElementById("detailBadges").innerHTML = `
         ${{pillarBadge ? `<span class="badge-chip" style="background:var(--surface-subtle);color:var(--ink);border:1px solid var(--border);">${{escapeHtml(pillarBadge)}}</span>` : ""}}
         <span class="badge-chip adhd">⚡ ${{(book.adhd_segments || []).length}} Steps ${{adhdPages ? `· ${{adhdPages}}` : ""}} ${{adhdVol ? `· ${{adhdVol}}` : ""}} ${{prunedInfo ? `(${{prunedInfo}})` : ""}} ${{adhdTime ? `· ⏱️ ${{adhdTime}}` : ""}}</span>
-        <span class="badge-chip full">📖 ${{(book.author_chapters || []).length}} Chapters ${{fullPages ? `· ${{fullPages}}` : ""}} ${{fullTime ? `· ⏱️ ${{fullTime}}` : ""}}</span>
+        <span class="badge-chip full" title="${{escapeHtml(book.actual_chapters_structure || '')}}">📖 ${{escapeHtml(fullLabel)}} ${{fullPages ? `· ${{fullPages}}` : ""}} ${{fullTime ? `· ⏱️ ${{fullTime}}` : ""}}</span>
       `;
 
       // Render ADHD track
@@ -2218,11 +2221,15 @@ def generate_books_html() -> None:
       const fullSec = document.getElementById("fullTrackSection");
       if (fullSec) fullSec.classList.add("collapsed");
       const fullBody = document.getElementById("fullTrackBody");
-      fullBody.innerHTML = bookDesc
-        ? `<div class="track-book-desc"><strong>📖 About ${{escapeHtml(book.title)}}:</strong> ${{escapeHtml(bookDesc)}}</div>`
+      const structureBanner = book.actual_chapters_structure
+        ? `<div class="track-structure-banner" style="padding:8px 12px;margin:6px 0 10px;background:var(--surface-subtle);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;font-size:0.82rem;color:var(--ink);line-height:1.5;">🏛️ <strong>Author Chapter Structure:</strong> ${{escapeHtml(book.actual_chapters_structure)}}</div>`
         : "";
+      fullBody.innerHTML = (bookDesc
+        ? `<div class="track-book-desc"><strong>📖 About ${{escapeHtml(book.title)}}:</strong> ${{escapeHtml(bookDesc)}}</div>`
+        : "") + structureBanner;
       const fullItems = book.author_chapters || [];
-      document.getElementById("fullTrackBadge").textContent = `${{fullItems.length}} chapters · Tap to expand`;
+      const fullTrackText = book.actual_chapters_label || `${{fullItems.length}} chapters`;
+      document.getElementById("fullTrackBadge").textContent = `${{fullTrackText}} · Tap to expand`;
 
       fullItems.forEach((item, idx) => {{
         const chNum = idx + 1;

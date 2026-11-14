@@ -52,8 +52,11 @@
       display: flex;
       flex-direction: column;
       padding-top: calc(var(--safe-top) + 56px);
-      padding-bottom: calc(var(--safe-bottom) + 110px);
+      padding-bottom: calc(var(--safe-bottom) + 36px);
       transition: background 0.2s ease, color 0.2s ease;
+    }
+    body.has-active-player {
+      padding-bottom: calc(var(--safe-bottom) + 110px);
     }
     /* Topbar */
     .topbar {
@@ -283,7 +286,19 @@
       font-style: italic;
     }
 
-    /* Karaoke Highlighting */
+    /* Sentence Chunking & Karaoke Highlighting */
+    .k-chunk {
+      display: inline;
+      border-radius: 6px;
+      transition: background-color 0.18s ease;
+    }
+    .k-chunk.active-chunk {
+      background-color: rgba(99, 102, 241, 0.08);
+      border-radius: 6px;
+    }
+    body.dark-mode .k-chunk.active-chunk {
+      background-color: rgba(99, 102, 241, 0.18);
+    }
     .k-word {
       display: inline;
       border-radius: 4px;
@@ -335,7 +350,7 @@
       border-color: var(--accent);
     }
 
-    /* Sticky Bottom Player Bar */
+    /* Sticky Bottom Player Bar (only shown when audio is playing/active) */
     .sticky-player {
       position: fixed;
       bottom: 0;
@@ -346,9 +361,12 @@
       padding: 10px 16px calc(var(--safe-bottom) + 10px);
       z-index: 60;
       box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
-      display: flex;
+      display: none;
       flex-direction: column;
       gap: 8px;
+    }
+    body.has-active-player .sticky-player {
+      display: flex;
     }
     .player-progress-wrap {
       display: flex;
@@ -467,7 +485,7 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="back-btn" id="navBackBtn" href="../../books.html">← Library</a>
+    <a class="back-btn" id="navBackBtn" href="../../books.html#book=charaka-samhita-ayurveda">← Library</a>
     <div class="top-title">Charaka Samhita: Foundations of Ayurveda</div>
     <div class="top-actions">
       <button class="btn-icon" id="btnFontSmaller">A-</button>
@@ -498,6 +516,7 @@
         </div>
       </div>
       <div class="hero-curation-pill">⚡ ADHD Core Cut: 56 pages total (1h 00m) · 93.4% filler pruned for maximum flow</div>
+      <div class="hero-curation-pill" style="color:var(--accent);background:var(--accent-light);border-color:rgba(79,70,229,0.25);">🏛️ Author Chapter Structure: 8 Sthanas (120 Adhyayas): Sutra (30), Nidana (8), Vimana (8), Sharira (8), Indriya (12), Chikitsa (30), Kalpa (12), Siddhi (12) · 120 Chapters (8 Sthanas)</div>
 
       <div class="hero-brief"><strong>Core Takeaway:</strong> The central engine of vitality: why all physical illness begins with impaired digestive fire (Agni), how undigested residue (Ama) poisons the tissues, and how clean digestion distills Ojas.</div>
 
@@ -525,29 +544,29 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Step</span> <span class="k-word" data-word-idx="1" id="w_1">2</span> <span class="k-word" data-word-idx="2" id="w_2">·</span> <span class="k-word" data-word-idx="3" id="w_3">Agni,</span> <span class="k-word" data-word-idx="4" id="w_4">Ama</span> <span class="k-word" data-word-idx="5" id="w_5">&amp;</span> <span class="k-word" data-word-idx="6" id="w_6">Ojas</span> <span class="k-word" data-word-idx="7" id="w_7">—</span> <span class="k-word" data-word-idx="8" id="w_8">The</span> <span class="k-word" data-word-idx="9" id="w_9">Gut</span> <span class="k-word" data-word-idx="10" id="w_10">Furnace</span> <span class="k-word" data-word-idx="11" id="w_11">and</span> <span class="k-word" data-word-idx="12" id="w_12">Immunity</span></h2>
+      <h2 class="chapter-prose-title"><span class="k-chunk" id="kchunk_0" data-chunk-idx="0"><span class="k-word" data-word-idx="0" id="w_0">Step</span> <span class="k-word" data-word-idx="1" id="w_1">2</span> <span class="k-word" data-word-idx="2" id="w_2">·</span> <span class="k-word" data-word-idx="3" id="w_3">Agni,</span> <span class="k-word" data-word-idx="4" id="w_4">Ama</span> <span class="k-word" data-word-idx="5" id="w_5">&amp;</span> <span class="k-word" data-word-idx="6" id="w_6">Ojas</span> <span class="k-word" data-word-idx="7" id="w_7">—</span> <span class="k-word" data-word-idx="8" id="w_8">The</span> <span class="k-word" data-word-idx="9" id="w_9">Gut</span> <span class="k-word" data-word-idx="10" id="w_10">Furnace</span> <span class="k-word" data-word-idx="11" id="w_11">and</span> <span class="k-word" data-word-idx="12" id="w_12">Immunity</span></span></h2>
 <blockquote class="chapter-spoken-brief">
-<p><span class="k-word" data-word-idx="13" id="w_13">&quot;Longevity,</span> <span class="k-word" data-word-idx="14" id="w_14">complexion,</span> <span class="k-word" data-word-idx="15" id="w_15">strength,</span> <span class="k-word" data-word-idx="16" id="w_16">health,</span> <span class="k-word" data-word-idx="17" id="w_17">enthusiasm,</span> <span class="k-word" data-word-idx="18" id="w_18">corpulence,</span> <span class="k-word" data-word-idx="19" id="w_19">luster,</span> <span class="k-word" data-word-idx="20" id="w_20">ojas,</span> <span class="k-word" data-word-idx="21" id="w_21">tejas,</span> <span class="k-word" data-word-idx="22" id="w_22">and</span> <span class="k-word" data-word-idx="23" id="w_23">the</span> <span class="k-word" data-word-idx="24" id="w_24">life</span> <span class="k-word" data-word-idx="25" id="w_25">breaths</span> <span class="k-word" data-word-idx="26" id="w_26">all</span> <span class="k-word" data-word-idx="27" id="w_27">depend</span> <span class="k-word" data-word-idx="28" id="w_28">upon</span> <span class="k-word" data-word-idx="29" id="w_29">the</span> <span class="k-word" data-word-idx="30" id="w_30">digestive</span> <span class="k-word" data-word-idx="31" id="w_31">fire</span> <span class="k-word" data-word-idx="32" id="w_32">(Agni).</span> <span class="k-word" data-word-idx="33" id="w_33">When</span> <span class="k-word" data-word-idx="34" id="w_34">this</span> <span class="k-word" data-word-idx="35" id="w_35">fire</span> <span class="k-word" data-word-idx="36" id="w_36">is</span> <span class="k-word" data-word-idx="37" id="w_37">extinguished,</span> <span class="k-word" data-word-idx="38" id="w_38">the</span> <span class="k-word" data-word-idx="39" id="w_39">person</span> <span class="k-word" data-word-idx="40" id="w_40">dies.&quot;</span></p>
-<p><span class="k-word" data-word-idx="41" id="w_41">—</span> <span class="k-word" data-word-idx="42" id="w_42">*Charaka</span> <span class="k-word" data-word-idx="43" id="w_43">Samhita*,</span> <span class="k-word" data-word-idx="44" id="w_44">Chikitsasthana</span> <span class="k-word" data-word-idx="45" id="w_45">15.3–4</span></p>
+<p><span class="k-chunk" id="kchunk_1" data-chunk-idx="1"><span class="k-word" data-word-idx="13" id="w_13">&quot;Longevity,</span> <span class="k-word" data-word-idx="14" id="w_14">complexion,</span> <span class="k-word" data-word-idx="15" id="w_15">strength,</span> <span class="k-word" data-word-idx="16" id="w_16">health,</span> <span class="k-word" data-word-idx="17" id="w_17">enthusiasm,</span> <span class="k-word" data-word-idx="18" id="w_18">corpulence,</span> <span class="k-word" data-word-idx="19" id="w_19">luster,</span> <span class="k-word" data-word-idx="20" id="w_20">ojas,</span> <span class="k-word" data-word-idx="21" id="w_21">tejas,</span> <span class="k-word" data-word-idx="22" id="w_22">and</span> <span class="k-word" data-word-idx="23" id="w_23">the</span> <span class="k-word" data-word-idx="24" id="w_24">life</span> <span class="k-word" data-word-idx="25" id="w_25">breaths</span> <span class="k-word" data-word-idx="26" id="w_26">all</span> <span class="k-word" data-word-idx="27" id="w_27">depend</span> <span class="k-word" data-word-idx="28" id="w_28">upon</span> <span class="k-word" data-word-idx="29" id="w_29">the</span> <span class="k-word" data-word-idx="30" id="w_30">digestive</span> <span class="k-word" data-word-idx="31" id="w_31">fire</span> <span class="k-word" data-word-idx="32" id="w_32">(Agni).</span></span> <span class="k-chunk" id="kchunk_2" data-chunk-idx="2"><span class="k-word" data-word-idx="33" id="w_33">When</span> <span class="k-word" data-word-idx="34" id="w_34">this</span> <span class="k-word" data-word-idx="35" id="w_35">fire</span> <span class="k-word" data-word-idx="36" id="w_36">is</span> <span class="k-word" data-word-idx="37" id="w_37">extinguished,</span> <span class="k-word" data-word-idx="38" id="w_38">the</span> <span class="k-word" data-word-idx="39" id="w_39">person</span> <span class="k-word" data-word-idx="40" id="w_40">dies.&quot;</span></span></p>
+<p><span class="k-chunk" id="kchunk_3" data-chunk-idx="3"><span class="k-word" data-word-idx="41" id="w_41">—</span> <span class="k-word" data-word-idx="42" id="w_42">*Charaka</span> <span class="k-word" data-word-idx="43" id="w_43">Samhita*,</span> <span class="k-word" data-word-idx="44" id="w_44">Chikitsasthana</span> <span class="k-word" data-word-idx="45" id="w_45">15.3–4</span></span></p>
 </blockquote>
-<h3 class="section-heading"><span class="k-word" data-word-idx="46" id="w_46">1.</span> <span class="k-word" data-word-idx="47" id="w_47">Agni:</span> <span class="k-word" data-word-idx="48" id="w_48">The</span> <span class="k-word" data-word-idx="49" id="w_49">Biological</span> <span class="k-word" data-word-idx="50" id="w_50">Digestive</span> <span class="k-word" data-word-idx="51" id="w_51">Fire</span></h3>
-<p><span class="k-word" data-word-idx="52" id="w_52">Charaka</span> <span class="k-word" data-word-idx="53" id="w_53">posits</span> <span class="k-word" data-word-idx="54" id="w_54">that</span> <span class="k-word" data-word-idx="55" id="w_55">the</span> <span class="k-word" data-word-idx="56" id="w_56">root</span> <span class="k-word" data-word-idx="57" id="w_57">cause</span> <span class="k-word" data-word-idx="58" id="w_58">of</span> <span class="k-word" data-word-idx="59" id="w_59">almost</span> <span class="k-word" data-word-idx="60" id="w_60">every</span> <span class="k-word" data-word-idx="61" id="w_61">chronic</span> <span class="k-word" data-word-idx="62" id="w_62">disease</span> <span class="k-word" data-word-idx="63" id="w_63">is</span> <span class="k-word" data-word-idx="64" id="w_64">weak,</span> <span class="k-word" data-word-idx="65" id="w_65">irregular,</span> <span class="k-word" data-word-idx="66" id="w_66">or</span> <span class="k-word" data-word-idx="67" id="w_67">overwhelmed</span> <span class="k-word" data-word-idx="68" id="w_68">digestive</span> <span class="k-word" data-word-idx="69" id="w_69">fire</span> <span class="k-word" data-word-idx="70" id="w_70">(*Jathara-Agni*).</span> <span class="k-word" data-word-idx="71" id="w_71">Food</span> <span class="k-word" data-word-idx="72" id="w_72">is</span> <span class="k-word" data-word-idx="73" id="w_73">not</span> <span class="k-word" data-word-idx="74" id="w_74">nutrition</span> <span class="k-word" data-word-idx="75" id="w_75">until</span> <span class="k-word" data-word-idx="76" id="w_76">it</span> <span class="k-word" data-word-idx="77" id="w_77">is</span> <span class="k-word" data-word-idx="78" id="w_78">properly</span> <span class="k-word" data-word-idx="79" id="w_79">burned</span> <span class="k-word" data-word-idx="80" id="w_80">and</span> <span class="k-word" data-word-idx="81" id="w_81">transformed.</span></p>
-<p><span class="k-word" data-word-idx="82" id="w_82">-</span> <span class="k-word" data-word-idx="83" id="w_83">When</span> <span class="k-word" data-word-idx="84" id="w_84">Agni</span> <span class="k-word" data-word-idx="85" id="w_85">is</span> <span class="k-word" data-word-idx="86" id="w_86">balanced</span> <span class="k-word" data-word-idx="87" id="w_87">(*Sama</span> <span class="k-word" data-word-idx="88" id="w_88">Agni*),</span> <span class="k-word" data-word-idx="89" id="w_89">digestion</span> <span class="k-word" data-word-idx="90" id="w_90">is</span> <span class="k-word" data-word-idx="91" id="w_91">effortless,</span> <span class="k-word" data-word-idx="92" id="w_92">gas</span> <span class="k-word" data-word-idx="93" id="w_93">and</span> <span class="k-word" data-word-idx="94" id="w_94">bloating</span> <span class="k-word" data-word-idx="95" id="w_95">are</span> <span class="k-word" data-word-idx="96" id="w_96">absent,</span> <span class="k-word" data-word-idx="97" id="w_97">and</span> <span class="k-word" data-word-idx="98" id="w_98">energy</span> <span class="k-word" data-word-idx="99" id="w_99">is</span> <span class="k-word" data-word-idx="100" id="w_100">steady.</span></p>
-<p><span class="k-word" data-word-idx="101" id="w_101">-</span> <span class="k-word" data-word-idx="102" id="w_102">When</span> <span class="k-word" data-word-idx="103" id="w_103">Agni</span> <span class="k-word" data-word-idx="104" id="w_104">is</span> <span class="k-word" data-word-idx="105" id="w_105">erratic</span> <span class="k-word" data-word-idx="106" id="w_106">(*Vishama</span> <span class="k-word" data-word-idx="107" id="w_107">Agni*,</span> <span class="k-word" data-word-idx="108" id="w_108">typical</span> <span class="k-word" data-word-idx="109" id="w_109">of</span> <span class="k-word" data-word-idx="110" id="w_110">Vata),</span> <span class="k-word" data-word-idx="111" id="w_111">digestion</span> <span class="k-word" data-word-idx="112" id="w_112">alternates</span> <span class="k-word" data-word-idx="113" id="w_113">unpredictably</span> <span class="k-word" data-word-idx="114" id="w_114">between</span> <span class="k-word" data-word-idx="115" id="w_115">voracious</span> <span class="k-word" data-word-idx="116" id="w_116">hunger</span> <span class="k-word" data-word-idx="117" id="w_117">and</span> <span class="k-word" data-word-idx="118" id="w_118">painful</span> <span class="k-word" data-word-idx="119" id="w_119">bloating.</span></p>
-<p><span class="k-word" data-word-idx="120" id="w_120">-</span> <span class="k-word" data-word-idx="121" id="w_121">When</span> <span class="k-word" data-word-idx="122" id="w_122">Agni</span> <span class="k-word" data-word-idx="123" id="w_123">is</span> <span class="k-word" data-word-idx="124" id="w_124">hyperactive</span> <span class="k-word" data-word-idx="125" id="w_125">(*Tikshna</span> <span class="k-word" data-word-idx="126" id="w_126">Agni*,</span> <span class="k-word" data-word-idx="127" id="w_127">typical</span> <span class="k-word" data-word-idx="128" id="w_128">of</span> <span class="k-word" data-word-idx="129" id="w_129">Pitta),</span> <span class="k-word" data-word-idx="130" id="w_130">it</span> <span class="k-word" data-word-idx="131" id="w_131">burns</span> <span class="k-word" data-word-idx="132" id="w_132">food</span> <span class="k-word" data-word-idx="133" id="w_133">too</span> <span class="k-word" data-word-idx="134" id="w_134">quickly,</span> <span class="k-word" data-word-idx="135" id="w_135">creating</span> <span class="k-word" data-word-idx="136" id="w_136">burning</span> <span class="k-word" data-word-idx="137" id="w_137">sensations,</span> <span class="k-word" data-word-idx="138" id="w_138">acid</span> <span class="k-word" data-word-idx="139" id="w_139">reflux,</span> <span class="k-word" data-word-idx="140" id="w_140">and</span> <span class="k-word" data-word-idx="141" id="w_141">tissue</span> <span class="k-word" data-word-idx="142" id="w_142">inflammation.</span></p>
-<p><span class="k-word" data-word-idx="143" id="w_143">-</span> <span class="k-word" data-word-idx="144" id="w_144">When</span> <span class="k-word" data-word-idx="145" id="w_145">Agni</span> <span class="k-word" data-word-idx="146" id="w_146">is</span> <span class="k-word" data-word-idx="147" id="w_147">sluggish</span> <span class="k-word" data-word-idx="148" id="w_148">(*Manda</span> <span class="k-word" data-word-idx="149" id="w_149">Agni*,</span> <span class="k-word" data-word-idx="150" id="w_150">typical</span> <span class="k-word" data-word-idx="151" id="w_151">of</span> <span class="k-word" data-word-idx="152" id="w_152">Kapha),</span> <span class="k-word" data-word-idx="153" id="w_153">food</span> <span class="k-word" data-word-idx="154" id="w_154">sits</span> <span class="k-word" data-word-idx="155" id="w_155">undigested</span> <span class="k-word" data-word-idx="156" id="w_156">for</span> <span class="k-word" data-word-idx="157" id="w_157">hours,</span> <span class="k-word" data-word-idx="158" id="w_158">causing</span> <span class="k-word" data-word-idx="159" id="w_159">heaviness,</span> <span class="k-word" data-word-idx="160" id="w_160">coated</span> <span class="k-word" data-word-idx="161" id="w_161">tongue,</span> <span class="k-word" data-word-idx="162" id="w_162">and</span> <span class="k-word" data-word-idx="163" id="w_163">fatigue</span> <span class="k-word" data-word-idx="164" id="w_164">after</span> <span class="k-word" data-word-idx="165" id="w_165">meals.</span></p>
-<h3 class="section-heading"><span class="k-word" data-word-idx="166" id="w_166">2.</span> <span class="k-word" data-word-idx="167" id="w_167">Ama:</span> <span class="k-word" data-word-idx="168" id="w_168">The</span> <span class="k-word" data-word-idx="169" id="w_169">Toxic</span> <span class="k-word" data-word-idx="170" id="w_170">Sludge</span> <span class="k-word" data-word-idx="171" id="w_171">of</span> <span class="k-word" data-word-idx="172" id="w_172">Incomplete</span> <span class="k-word" data-word-idx="173" id="w_173">Digestion</span></h3>
-<p><span class="k-word" data-word-idx="174" id="w_174">When</span> <span class="k-word" data-word-idx="175" id="w_175">you</span> <span class="k-word" data-word-idx="176" id="w_176">eat</span> <span class="k-word" data-word-idx="177" id="w_177">while</span> <span class="k-word" data-word-idx="178" id="w_178">stressed,</span> <span class="k-word" data-word-idx="179" id="w_179">eat</span> <span class="k-word" data-word-idx="180" id="w_180">incompatible</span> <span class="k-word" data-word-idx="181" id="w_181">food</span> <span class="k-word" data-word-idx="182" id="w_182">combinations,</span> <span class="k-word" data-word-idx="183" id="w_183">or</span> <span class="k-word" data-word-idx="184" id="w_184">eat</span> <span class="k-word" data-word-idx="185" id="w_185">before</span> <span class="k-word" data-word-idx="186" id="w_186">the</span> <span class="k-word" data-word-idx="187" id="w_187">previous</span> <span class="k-word" data-word-idx="188" id="w_188">meal</span> <span class="k-word" data-word-idx="189" id="w_189">has</span> <span class="k-word" data-word-idx="190" id="w_190">fully</span> <span class="k-word" data-word-idx="191" id="w_191">digested,</span> <span class="k-word" data-word-idx="192" id="w_192">the</span> <span class="k-word" data-word-idx="193" id="w_193">digestive</span> <span class="k-word" data-word-idx="194" id="w_194">furnace</span> <span class="k-word" data-word-idx="195" id="w_195">fails</span> <span class="k-word" data-word-idx="196" id="w_196">to</span> <span class="k-word" data-word-idx="197" id="w_197">break</span> <span class="k-word" data-word-idx="198" id="w_198">down</span> <span class="k-word" data-word-idx="199" id="w_199">the</span> <span class="k-word" data-word-idx="200" id="w_200">food</span> <span class="k-word" data-word-idx="201" id="w_201">bolus.</span> <span class="k-word" data-word-idx="202" id="w_202">This</span> <span class="k-word" data-word-idx="203" id="w_203">undigested,</span> <span class="k-word" data-word-idx="204" id="w_204">fermenting,</span> <span class="k-word" data-word-idx="205" id="w_205">sticky</span> <span class="k-word" data-word-idx="206" id="w_206">residue</span> <span class="k-word" data-word-idx="207" id="w_207">is</span> <span class="k-word" data-word-idx="208" id="w_208">called</span> <span class="k-word" data-word-idx="209" id="w_209">**Ama**.</span></p>
-<p><span class="k-word" data-word-idx="210" id="w_210">Ama</span> <span class="k-word" data-word-idx="211" id="w_211">enters</span> <span class="k-word" data-word-idx="212" id="w_212">the</span> <span class="k-word" data-word-idx="213" id="w_213">lymphatic</span> <span class="k-word" data-word-idx="214" id="w_214">and</span> <span class="k-word" data-word-idx="215" id="w_215">circulatory</span> <span class="k-word" data-word-idx="216" id="w_216">channels</span> <span class="k-word" data-word-idx="217" id="w_217">(*Srotas*),</span> <span class="k-word" data-word-idx="218" id="w_218">coating</span> <span class="k-word" data-word-idx="219" id="w_219">channel</span> <span class="k-word" data-word-idx="220" id="w_220">walls,</span> <span class="k-word" data-word-idx="221" id="w_221">dulling</span> <span class="k-word" data-word-idx="222" id="w_222">sensory</span> <span class="k-word" data-word-idx="223" id="w_223">perception,</span> <span class="k-word" data-word-idx="224" id="w_224">creating</span> <span class="k-word" data-word-idx="225" id="w_225">joint</span> <span class="k-word" data-word-idx="226" id="w_226">stiffness,</span> <span class="k-word" data-word-idx="227" id="w_227">mental</span> <span class="k-word" data-word-idx="228" id="w_228">brain-fog,</span> <span class="k-word" data-word-idx="229" id="w_229">and</span> <span class="k-word" data-word-idx="230" id="w_230">triggering</span> <span class="k-word" data-word-idx="231" id="w_231">autoimmune</span> <span class="k-word" data-word-idx="232" id="w_232">reactivity.</span></p>
-<h3 class="section-heading"><span class="k-word" data-word-idx="233" id="w_233">3.</span> <span class="k-word" data-word-idx="234" id="w_234">Ojas:</span> <span class="k-word" data-word-idx="235" id="w_235">The</span> <span class="k-word" data-word-idx="236" id="w_236">Golden</span> <span class="k-word" data-word-idx="237" id="w_237">Essence</span> <span class="k-word" data-word-idx="238" id="w_238">of</span> <span class="k-word" data-word-idx="239" id="w_239">Resilience</span></h3>
-<p><span class="k-word" data-word-idx="240" id="w_240">When</span> <span class="k-word" data-word-idx="241" id="w_241">Agni</span> <span class="k-word" data-word-idx="242" id="w_242">functions</span> <span class="k-word" data-word-idx="243" id="w_243">cleanly,</span> <span class="k-word" data-word-idx="244" id="w_244">nutrients</span> <span class="k-word" data-word-idx="245" id="w_245">pass</span> <span class="k-word" data-word-idx="246" id="w_246">sequentially</span> <span class="k-word" data-word-idx="247" id="w_247">through</span> <span class="k-word" data-word-idx="248" id="w_248">the</span> <span class="k-word" data-word-idx="249" id="w_249">seven</span> <span class="k-word" data-word-idx="250" id="w_250">bodily</span> <span class="k-word" data-word-idx="251" id="w_251">tissues</span> <span class="k-word" data-word-idx="252" id="w_252">(*Dhatus*):</span> <span class="k-word" data-word-idx="253" id="w_253">plasma</span> <span class="k-word" data-word-idx="254" id="w_254">(*Rasa*),</span> <span class="k-word" data-word-idx="255" id="w_255">blood</span> <span class="k-word" data-word-idx="256" id="w_256">(*Rakta*),</span> <span class="k-word" data-word-idx="257" id="w_257">muscle</span> <span class="k-word" data-word-idx="258" id="w_258">(*Mamsa*),</span> <span class="k-word" data-word-idx="259" id="w_259">fat</span> <span class="k-word" data-word-idx="260" id="w_260">(*Meda*),</span> <span class="k-word" data-word-idx="261" id="w_261">bone</span> <span class="k-word" data-word-idx="262" id="w_262">(*Asthi*),</span> <span class="k-word" data-word-idx="263" id="w_263">marrow/nerves</span> <span class="k-word" data-word-idx="264" id="w_264">(*Majja*),</span> <span class="k-word" data-word-idx="265" id="w_265">and</span> <span class="k-word" data-word-idx="266" id="w_266">reproductive</span> <span class="k-word" data-word-idx="267" id="w_267">tissue</span> <span class="k-word" data-word-idx="268" id="w_268">(*Shukra*).</span></p>
-<p><span class="k-word" data-word-idx="269" id="w_269">At</span> <span class="k-word" data-word-idx="270" id="w_270">the</span> <span class="k-word" data-word-idx="271" id="w_271">end</span> <span class="k-word" data-word-idx="272" id="w_272">of</span> <span class="k-word" data-word-idx="273" id="w_273">this</span> <span class="k-word" data-word-idx="274" id="w_274">30-day</span> <span class="k-word" data-word-idx="275" id="w_275">biological</span> <span class="k-word" data-word-idx="276" id="w_276">distillation,</span> <span class="k-word" data-word-idx="277" id="w_277">the</span> <span class="k-word" data-word-idx="278" id="w_278">ultimate</span> <span class="k-word" data-word-idx="279" id="w_279">nectar</span> <span class="k-word" data-word-idx="280" id="w_280">is</span> <span class="k-word" data-word-idx="281" id="w_281">produced:</span> <span class="k-word" data-word-idx="282" id="w_282">**Ojas**.</span></p>
-<p><span class="k-word" data-word-idx="283" id="w_283">Ojas</span> <span class="k-word" data-word-idx="284" id="w_284">is</span> <span class="k-word" data-word-idx="285" id="w_285">physical</span> <span class="k-word" data-word-idx="286" id="w_286">immunity,</span> <span class="k-word" data-word-idx="287" id="w_287">neurological</span> <span class="k-word" data-word-idx="288" id="w_288">calmness,</span> <span class="k-word" data-word-idx="289" id="w_289">emotional</span> <span class="k-word" data-word-idx="290" id="w_290">groundedness,</span> <span class="k-word" data-word-idx="291" id="w_291">and</span> <span class="k-word" data-word-idx="292" id="w_292">spiritual</span> <span class="k-word" data-word-idx="293" id="w_293">luster.</span> <span class="k-word" data-word-idx="294" id="w_294">When</span> <span class="k-word" data-word-idx="295" id="w_295">Ojas</span> <span class="k-word" data-word-idx="296" id="w_296">is</span> <span class="k-word" data-word-idx="297" id="w_297">rich,</span> <span class="k-word" data-word-idx="298" id="w_298">a</span> <span class="k-word" data-word-idx="299" id="w_299">person</span> <span class="k-word" data-word-idx="300" id="w_300">does</span> <span class="k-word" data-word-idx="301" id="w_301">not</span> <span class="k-word" data-word-idx="302" id="w_302">catch</span> <span class="k-word" data-word-idx="303" id="w_303">seasonal</span> <span class="k-word" data-word-idx="304" id="w_304">infections,</span> <span class="k-word" data-word-idx="305" id="w_305">their</span> <span class="k-word" data-word-idx="306" id="w_306">nervous</span> <span class="k-word" data-word-idx="307" id="w_307">system</span> <span class="k-word" data-word-idx="308" id="w_308">remains</span> <span class="k-word" data-word-idx="309" id="w_309">unshakeable</span> <span class="k-word" data-word-idx="310" id="w_310">in</span> <span class="k-word" data-word-idx="311" id="w_311">crises,</span> <span class="k-word" data-word-idx="312" id="w_312">and</span> <span class="k-word" data-word-idx="313" id="w_313">their</span> <span class="k-word" data-word-idx="314" id="w_314">skin</span> <span class="k-word" data-word-idx="315" id="w_315">glows</span> <span class="k-word" data-word-idx="316" id="w_316">with</span> <span class="k-word" data-word-idx="317" id="w_317">natural</span> <span class="k-word" data-word-idx="318" id="w_318">vitality.</span></p>
+<h3 class="section-heading"><span class="k-chunk" id="kchunk_4" data-chunk-idx="4"><span class="k-word" data-word-idx="46" id="w_46">1.</span> <span class="k-word" data-word-idx="47" id="w_47">Agni:</span> <span class="k-word" data-word-idx="48" id="w_48">The</span> <span class="k-word" data-word-idx="49" id="w_49">Biological</span> <span class="k-word" data-word-idx="50" id="w_50">Digestive</span> <span class="k-word" data-word-idx="51" id="w_51">Fire</span></span></h3>
+<p><span class="k-chunk" id="kchunk_5" data-chunk-idx="5"><span class="k-word" data-word-idx="52" id="w_52">Charaka</span> <span class="k-word" data-word-idx="53" id="w_53">posits</span> <span class="k-word" data-word-idx="54" id="w_54">that</span> <span class="k-word" data-word-idx="55" id="w_55">the</span> <span class="k-word" data-word-idx="56" id="w_56">root</span> <span class="k-word" data-word-idx="57" id="w_57">cause</span> <span class="k-word" data-word-idx="58" id="w_58">of</span> <span class="k-word" data-word-idx="59" id="w_59">almost</span> <span class="k-word" data-word-idx="60" id="w_60">every</span> <span class="k-word" data-word-idx="61" id="w_61">chronic</span> <span class="k-word" data-word-idx="62" id="w_62">disease</span> <span class="k-word" data-word-idx="63" id="w_63">is</span> <span class="k-word" data-word-idx="64" id="w_64">weak,</span> <span class="k-word" data-word-idx="65" id="w_65">irregular,</span> <span class="k-word" data-word-idx="66" id="w_66">or</span> <span class="k-word" data-word-idx="67" id="w_67">overwhelmed</span> <span class="k-word" data-word-idx="68" id="w_68">digestive</span> <span class="k-word" data-word-idx="69" id="w_69">fire</span> <span class="k-word" data-word-idx="70" id="w_70">(*Jathara-Agni*).</span></span> <span class="k-chunk" id="kchunk_6" data-chunk-idx="6"><span class="k-word" data-word-idx="71" id="w_71">Food</span> <span class="k-word" data-word-idx="72" id="w_72">is</span> <span class="k-word" data-word-idx="73" id="w_73">not</span> <span class="k-word" data-word-idx="74" id="w_74">nutrition</span> <span class="k-word" data-word-idx="75" id="w_75">until</span> <span class="k-word" data-word-idx="76" id="w_76">it</span> <span class="k-word" data-word-idx="77" id="w_77">is</span> <span class="k-word" data-word-idx="78" id="w_78">properly</span> <span class="k-word" data-word-idx="79" id="w_79">burned</span> <span class="k-word" data-word-idx="80" id="w_80">and</span> <span class="k-word" data-word-idx="81" id="w_81">transformed.</span></span></p>
+<p><span class="k-chunk" id="kchunk_7" data-chunk-idx="7"><span class="k-word" data-word-idx="82" id="w_82">-</span> <span class="k-word" data-word-idx="83" id="w_83">When</span> <span class="k-word" data-word-idx="84" id="w_84">Agni</span> <span class="k-word" data-word-idx="85" id="w_85">is</span> <span class="k-word" data-word-idx="86" id="w_86">balanced</span> <span class="k-word" data-word-idx="87" id="w_87">(*Sama</span> <span class="k-word" data-word-idx="88" id="w_88">Agni*),</span> <span class="k-word" data-word-idx="89" id="w_89">digestion</span> <span class="k-word" data-word-idx="90" id="w_90">is</span> <span class="k-word" data-word-idx="91" id="w_91">effortless,</span> <span class="k-word" data-word-idx="92" id="w_92">gas</span> <span class="k-word" data-word-idx="93" id="w_93">and</span> <span class="k-word" data-word-idx="94" id="w_94">bloating</span> <span class="k-word" data-word-idx="95" id="w_95">are</span> <span class="k-word" data-word-idx="96" id="w_96">absent,</span> <span class="k-word" data-word-idx="97" id="w_97">and</span> <span class="k-word" data-word-idx="98" id="w_98">energy</span> <span class="k-word" data-word-idx="99" id="w_99">is</span> <span class="k-word" data-word-idx="100" id="w_100">steady.</span></span></p>
+<p><span class="k-chunk" id="kchunk_8" data-chunk-idx="8"><span class="k-word" data-word-idx="101" id="w_101">-</span> <span class="k-word" data-word-idx="102" id="w_102">When</span> <span class="k-word" data-word-idx="103" id="w_103">Agni</span> <span class="k-word" data-word-idx="104" id="w_104">is</span> <span class="k-word" data-word-idx="105" id="w_105">erratic</span> <span class="k-word" data-word-idx="106" id="w_106">(*Vishama</span> <span class="k-word" data-word-idx="107" id="w_107">Agni*,</span> <span class="k-word" data-word-idx="108" id="w_108">typical</span> <span class="k-word" data-word-idx="109" id="w_109">of</span> <span class="k-word" data-word-idx="110" id="w_110">Vata),</span> <span class="k-word" data-word-idx="111" id="w_111">digestion</span> <span class="k-word" data-word-idx="112" id="w_112">alternates</span> <span class="k-word" data-word-idx="113" id="w_113">unpredictably</span> <span class="k-word" data-word-idx="114" id="w_114">between</span> <span class="k-word" data-word-idx="115" id="w_115">voracious</span> <span class="k-word" data-word-idx="116" id="w_116">hunger</span> <span class="k-word" data-word-idx="117" id="w_117">and</span> <span class="k-word" data-word-idx="118" id="w_118">painful</span> <span class="k-word" data-word-idx="119" id="w_119">bloating.</span></span></p>
+<p><span class="k-chunk" id="kchunk_9" data-chunk-idx="9"><span class="k-word" data-word-idx="120" id="w_120">-</span> <span class="k-word" data-word-idx="121" id="w_121">When</span> <span class="k-word" data-word-idx="122" id="w_122">Agni</span> <span class="k-word" data-word-idx="123" id="w_123">is</span> <span class="k-word" data-word-idx="124" id="w_124">hyperactive</span> <span class="k-word" data-word-idx="125" id="w_125">(*Tikshna</span> <span class="k-word" data-word-idx="126" id="w_126">Agni*,</span> <span class="k-word" data-word-idx="127" id="w_127">typical</span> <span class="k-word" data-word-idx="128" id="w_128">of</span> <span class="k-word" data-word-idx="129" id="w_129">Pitta),</span> <span class="k-word" data-word-idx="130" id="w_130">it</span> <span class="k-word" data-word-idx="131" id="w_131">burns</span> <span class="k-word" data-word-idx="132" id="w_132">food</span> <span class="k-word" data-word-idx="133" id="w_133">too</span> <span class="k-word" data-word-idx="134" id="w_134">quickly,</span> <span class="k-word" data-word-idx="135" id="w_135">creating</span> <span class="k-word" data-word-idx="136" id="w_136">burning</span> <span class="k-word" data-word-idx="137" id="w_137">sensations,</span> <span class="k-word" data-word-idx="138" id="w_138">acid</span> <span class="k-word" data-word-idx="139" id="w_139">reflux,</span> <span class="k-word" data-word-idx="140" id="w_140">and</span> <span class="k-word" data-word-idx="141" id="w_141">tissue</span> <span class="k-word" data-word-idx="142" id="w_142">inflammation.</span></span></p>
+<p><span class="k-chunk" id="kchunk_10" data-chunk-idx="10"><span class="k-word" data-word-idx="143" id="w_143">-</span> <span class="k-word" data-word-idx="144" id="w_144">When</span> <span class="k-word" data-word-idx="145" id="w_145">Agni</span> <span class="k-word" data-word-idx="146" id="w_146">is</span> <span class="k-word" data-word-idx="147" id="w_147">sluggish</span> <span class="k-word" data-word-idx="148" id="w_148">(*Manda</span> <span class="k-word" data-word-idx="149" id="w_149">Agni*,</span> <span class="k-word" data-word-idx="150" id="w_150">typical</span> <span class="k-word" data-word-idx="151" id="w_151">of</span> <span class="k-word" data-word-idx="152" id="w_152">Kapha),</span> <span class="k-word" data-word-idx="153" id="w_153">food</span> <span class="k-word" data-word-idx="154" id="w_154">sits</span> <span class="k-word" data-word-idx="155" id="w_155">undigested</span> <span class="k-word" data-word-idx="156" id="w_156">for</span> <span class="k-word" data-word-idx="157" id="w_157">hours,</span> <span class="k-word" data-word-idx="158" id="w_158">causing</span> <span class="k-word" data-word-idx="159" id="w_159">heaviness,</span> <span class="k-word" data-word-idx="160" id="w_160">coated</span> <span class="k-word" data-word-idx="161" id="w_161">tongue,</span> <span class="k-word" data-word-idx="162" id="w_162">and</span> <span class="k-word" data-word-idx="163" id="w_163">fatigue</span> <span class="k-word" data-word-idx="164" id="w_164">after</span> <span class="k-word" data-word-idx="165" id="w_165">meals.</span></span></p>
+<h3 class="section-heading"><span class="k-chunk" id="kchunk_11" data-chunk-idx="11"><span class="k-word" data-word-idx="166" id="w_166">2.</span> <span class="k-word" data-word-idx="167" id="w_167">Ama:</span> <span class="k-word" data-word-idx="168" id="w_168">The</span> <span class="k-word" data-word-idx="169" id="w_169">Toxic</span> <span class="k-word" data-word-idx="170" id="w_170">Sludge</span> <span class="k-word" data-word-idx="171" id="w_171">of</span> <span class="k-word" data-word-idx="172" id="w_172">Incomplete</span> <span class="k-word" data-word-idx="173" id="w_173">Digestion</span></span></h3>
+<p><span class="k-chunk" id="kchunk_12" data-chunk-idx="12"><span class="k-word" data-word-idx="174" id="w_174">When</span> <span class="k-word" data-word-idx="175" id="w_175">you</span> <span class="k-word" data-word-idx="176" id="w_176">eat</span> <span class="k-word" data-word-idx="177" id="w_177">while</span> <span class="k-word" data-word-idx="178" id="w_178">stressed,</span> <span class="k-word" data-word-idx="179" id="w_179">eat</span> <span class="k-word" data-word-idx="180" id="w_180">incompatible</span> <span class="k-word" data-word-idx="181" id="w_181">food</span> <span class="k-word" data-word-idx="182" id="w_182">combinations,</span> <span class="k-word" data-word-idx="183" id="w_183">or</span> <span class="k-word" data-word-idx="184" id="w_184">eat</span> <span class="k-word" data-word-idx="185" id="w_185">before</span> <span class="k-word" data-word-idx="186" id="w_186">the</span> <span class="k-word" data-word-idx="187" id="w_187">previous</span> <span class="k-word" data-word-idx="188" id="w_188">meal</span> <span class="k-word" data-word-idx="189" id="w_189">has</span> <span class="k-word" data-word-idx="190" id="w_190">fully</span> <span class="k-word" data-word-idx="191" id="w_191">digested,</span> <span class="k-word" data-word-idx="192" id="w_192">the</span> <span class="k-word" data-word-idx="193" id="w_193">digestive</span> <span class="k-word" data-word-idx="194" id="w_194">furnace</span> <span class="k-word" data-word-idx="195" id="w_195">fails</span> <span class="k-word" data-word-idx="196" id="w_196">to</span> <span class="k-word" data-word-idx="197" id="w_197">break</span> <span class="k-word" data-word-idx="198" id="w_198">down</span> <span class="k-word" data-word-idx="199" id="w_199">the</span> <span class="k-word" data-word-idx="200" id="w_200">food</span> <span class="k-word" data-word-idx="201" id="w_201">bolus.</span></span> <span class="k-chunk" id="kchunk_13" data-chunk-idx="13"><span class="k-word" data-word-idx="202" id="w_202">This</span> <span class="k-word" data-word-idx="203" id="w_203">undigested,</span> <span class="k-word" data-word-idx="204" id="w_204">fermenting,</span> <span class="k-word" data-word-idx="205" id="w_205">sticky</span> <span class="k-word" data-word-idx="206" id="w_206">residue</span> <span class="k-word" data-word-idx="207" id="w_207">is</span> <span class="k-word" data-word-idx="208" id="w_208">called</span> <span class="k-word" data-word-idx="209" id="w_209">**Ama**.</span></span></p>
+<p><span class="k-chunk" id="kchunk_14" data-chunk-idx="14"><span class="k-word" data-word-idx="210" id="w_210">Ama</span> <span class="k-word" data-word-idx="211" id="w_211">enters</span> <span class="k-word" data-word-idx="212" id="w_212">the</span> <span class="k-word" data-word-idx="213" id="w_213">lymphatic</span> <span class="k-word" data-word-idx="214" id="w_214">and</span> <span class="k-word" data-word-idx="215" id="w_215">circulatory</span> <span class="k-word" data-word-idx="216" id="w_216">channels</span> <span class="k-word" data-word-idx="217" id="w_217">(*Srotas*),</span> <span class="k-word" data-word-idx="218" id="w_218">coating</span> <span class="k-word" data-word-idx="219" id="w_219">channel</span> <span class="k-word" data-word-idx="220" id="w_220">walls,</span> <span class="k-word" data-word-idx="221" id="w_221">dulling</span> <span class="k-word" data-word-idx="222" id="w_222">sensory</span> <span class="k-word" data-word-idx="223" id="w_223">perception,</span> <span class="k-word" data-word-idx="224" id="w_224">creating</span> <span class="k-word" data-word-idx="225" id="w_225">joint</span> <span class="k-word" data-word-idx="226" id="w_226">stiffness,</span> <span class="k-word" data-word-idx="227" id="w_227">mental</span> <span class="k-word" data-word-idx="228" id="w_228">brain-fog,</span> <span class="k-word" data-word-idx="229" id="w_229">and</span> <span class="k-word" data-word-idx="230" id="w_230">triggering</span> <span class="k-word" data-word-idx="231" id="w_231">autoimmune</span> <span class="k-word" data-word-idx="232" id="w_232">reactivity.</span></span></p>
+<h3 class="section-heading"><span class="k-chunk" id="kchunk_15" data-chunk-idx="15"><span class="k-word" data-word-idx="233" id="w_233">3.</span> <span class="k-word" data-word-idx="234" id="w_234">Ojas:</span> <span class="k-word" data-word-idx="235" id="w_235">The</span> <span class="k-word" data-word-idx="236" id="w_236">Golden</span> <span class="k-word" data-word-idx="237" id="w_237">Essence</span> <span class="k-word" data-word-idx="238" id="w_238">of</span> <span class="k-word" data-word-idx="239" id="w_239">Resilience</span></span></h3>
+<p><span class="k-chunk" id="kchunk_16" data-chunk-idx="16"><span class="k-word" data-word-idx="240" id="w_240">When</span> <span class="k-word" data-word-idx="241" id="w_241">Agni</span> <span class="k-word" data-word-idx="242" id="w_242">functions</span> <span class="k-word" data-word-idx="243" id="w_243">cleanly,</span> <span class="k-word" data-word-idx="244" id="w_244">nutrients</span> <span class="k-word" data-word-idx="245" id="w_245">pass</span> <span class="k-word" data-word-idx="246" id="w_246">sequentially</span> <span class="k-word" data-word-idx="247" id="w_247">through</span> <span class="k-word" data-word-idx="248" id="w_248">the</span> <span class="k-word" data-word-idx="249" id="w_249">seven</span> <span class="k-word" data-word-idx="250" id="w_250">bodily</span> <span class="k-word" data-word-idx="251" id="w_251">tissues</span> <span class="k-word" data-word-idx="252" id="w_252">(*Dhatus*):</span> <span class="k-word" data-word-idx="253" id="w_253">plasma</span> <span class="k-word" data-word-idx="254" id="w_254">(*Rasa*),</span> <span class="k-word" data-word-idx="255" id="w_255">blood</span> <span class="k-word" data-word-idx="256" id="w_256">(*Rakta*),</span> <span class="k-word" data-word-idx="257" id="w_257">muscle</span> <span class="k-word" data-word-idx="258" id="w_258">(*Mamsa*),</span> <span class="k-word" data-word-idx="259" id="w_259">fat</span> <span class="k-word" data-word-idx="260" id="w_260">(*Meda*),</span> <span class="k-word" data-word-idx="261" id="w_261">bone</span> <span class="k-word" data-word-idx="262" id="w_262">(*Asthi*),</span> <span class="k-word" data-word-idx="263" id="w_263">marrow/nerves</span> <span class="k-word" data-word-idx="264" id="w_264">(*Majja*),</span> <span class="k-word" data-word-idx="265" id="w_265">and</span> <span class="k-word" data-word-idx="266" id="w_266">reproductive</span> <span class="k-word" data-word-idx="267" id="w_267">tissue</span> <span class="k-word" data-word-idx="268" id="w_268">(*Shukra*).</span></span></p>
+<p><span class="k-chunk" id="kchunk_17" data-chunk-idx="17"><span class="k-word" data-word-idx="269" id="w_269">At</span> <span class="k-word" data-word-idx="270" id="w_270">the</span> <span class="k-word" data-word-idx="271" id="w_271">end</span> <span class="k-word" data-word-idx="272" id="w_272">of</span> <span class="k-word" data-word-idx="273" id="w_273">this</span> <span class="k-word" data-word-idx="274" id="w_274">30-day</span> <span class="k-word" data-word-idx="275" id="w_275">biological</span> <span class="k-word" data-word-idx="276" id="w_276">distillation,</span> <span class="k-word" data-word-idx="277" id="w_277">the</span> <span class="k-word" data-word-idx="278" id="w_278">ultimate</span> <span class="k-word" data-word-idx="279" id="w_279">nectar</span> <span class="k-word" data-word-idx="280" id="w_280">is</span> <span class="k-word" data-word-idx="281" id="w_281">produced:</span> <span class="k-word" data-word-idx="282" id="w_282">**Ojas**.</span></span></p>
+<p><span class="k-chunk" id="kchunk_18" data-chunk-idx="18"><span class="k-word" data-word-idx="283" id="w_283">Ojas</span> <span class="k-word" data-word-idx="284" id="w_284">is</span> <span class="k-word" data-word-idx="285" id="w_285">physical</span> <span class="k-word" data-word-idx="286" id="w_286">immunity,</span> <span class="k-word" data-word-idx="287" id="w_287">neurological</span> <span class="k-word" data-word-idx="288" id="w_288">calmness,</span> <span class="k-word" data-word-idx="289" id="w_289">emotional</span> <span class="k-word" data-word-idx="290" id="w_290">groundedness,</span> <span class="k-word" data-word-idx="291" id="w_291">and</span> <span class="k-word" data-word-idx="292" id="w_292">spiritual</span> <span class="k-word" data-word-idx="293" id="w_293">luster.</span> <span class="k-word" data-word-idx="294" id="w_294">When</span> <span class="k-word" data-word-idx="295" id="w_295">Ojas</span> <span class="k-word" data-word-idx="296" id="w_296">is</span> <span class="k-word" data-word-idx="297" id="w_297">rich,</span> <span class="k-word" data-word-idx="298" id="w_298">a</span> <span class="k-word" data-word-idx="299" id="w_299">person</span> <span class="k-word" data-word-idx="300" id="w_300">does</span> <span class="k-word" data-word-idx="301" id="w_301">not</span> <span class="k-word" data-word-idx="302" id="w_302">catch</span> <span class="k-word" data-word-idx="303" id="w_303">seasonal</span> <span class="k-word" data-word-idx="304" id="w_304">infections,</span> <span class="k-word" data-word-idx="305" id="w_305">their</span> <span class="k-word" data-word-idx="306" id="w_306">nervous</span> <span class="k-word" data-word-idx="307" id="w_307">system</span> <span class="k-word" data-word-idx="308" id="w_308">remains</span> <span class="k-word" data-word-idx="309" id="w_309">unshakeable</span> <span class="k-word" data-word-idx="310" id="w_310">in</span> <span class="k-word" data-word-idx="311" id="w_311">crises,</span> <span class="k-word" data-word-idx="312" id="w_312">and</span> <span class="k-word" data-word-idx="313" id="w_313">their</span> <span class="k-word" data-word-idx="314" id="w_314">skin</span> <span class="k-word" data-word-idx="315" id="w_315">glows</span> <span class="k-word" data-word-idx="316" id="w_316">with</span> <span class="k-word" data-word-idx="317" id="w_317">natural</span> <span class="k-word" data-word-idx="318" id="w_318">vitality.</span></span></p>
     </section>
 
     <nav class="nav-footer">
       <a href="step_1.html">← Previous Chapter</a>
-      <a class="primary" href="../../books.html">📚 All Books</a>
+      <a class="primary" href="../../books.html#book=charaka-samhita-ayurveda">📚 All Books</a>
       <a href="step_3.html">Next Chapter →</a>
     </nav>
   </main>
@@ -615,121 +634,68 @@
     const AUDIO_SILENCES = [[0.652, 1.466], [3.248, 3.891], [5.326, 6.141], [11.105, 11.551], [12.853, 13.245], [17.857, 18.612], [21.242, 22.041], [25.498, 25.858], [27.325, 28.016], [33.67, 34.079], [34.678, 35.055], [37.667, 38.418], [41.608, 42.39], [44.406, 44.866], [46.101, 46.561], [49.222, 49.59], [51.014, 51.544], [52.397, 52.763], [53.661, 54.409], [58.844, 59.96], [61.527, 61.894], [63.828, 64.482], [65.906, 66.369], [67.996, 68.474], [72.54, 73.088], [73.916, 74.289], [75.212, 75.929], [77.957, 78.479], [79.399, 79.85], [80.607, 81.054], [82.495, 83.348], [84.205, 84.685], [87.071, 88.157], [89.343, 89.856], [94.401, 94.862], [97.847, 98.591], [106.069, 106.537], [108.907, 109.258], [110.721, 111.151], [112.696, 113.119], [116.562, 117.581], [118.689, 119.218], [121.066, 121.962], [123.507, 123.964], [127.108, 128.047], [128.625, 129.101], [129.55, 130.078], [130.5, 131.074], [131.362, 131.72], [132.162, 132.82], [133.98, 134.617], [134.945, 135.403], [135.812, 136.433], [136.769, 137.193], [137.661, 138.115], [138.923, 139.379], [139.812, 140.279], [141.541, 141.912], [142.342, 143.516], [146.162, 146.598], [149.761, 150.211], [151.677, 152.152], [155.186, 156.169], [160.425, 160.85], [163.757, 164.337]];
     const CACHE_NAME = "kortex-books-v1";
     const WORDS_DATA = [{"c": 0, "w": 4, "s": 0}, {"c": 4, "w": 3, "s": 0}, {"c": 7, "w": 5, "s": 0}, {"c": 12, "w": 7, "s": 0}, {"c": 19, "w": 3, "s": 0}, {"c": 22, "w": 3, "s": 0}, {"c": 25, "w": 4, "s": 0}, {"c": 29, "w": 5, "s": 0}, {"c": 34, "w": 3, "s": 0}, {"c": 37, "w": 3, "s": 0}, {"c": 40, "w": 7, "s": 0}, {"c": 47, "w": 3, "s": 0}, {"c": 50, "w": 12, "s": 1}, {"c": 62, "w": 13, "s": 0}, {"c": 75, "w": 13, "s": 0}, {"c": 88, "w": 11, "s": 0}, {"c": 99, "w": 9, "s": 0}, {"c": 108, "w": 13, "s": 0}, {"c": 121, "w": 13, "s": 0}, {"c": 134, "w": 9, "s": 0}, {"c": 143, "w": 7, "s": 0}, {"c": 150, "w": 8, "s": 0}, {"c": 158, "w": 3, "s": 0}, {"c": 161, "w": 3, "s": 0}, {"c": 164, "w": 4, "s": 0}, {"c": 168, "w": 7, "s": 0}, {"c": 175, "w": 3, "s": 0}, {"c": 178, "w": 6, "s": 0}, {"c": 184, "w": 4, "s": 0}, {"c": 188, "w": 3, "s": 0}, {"c": 191, "w": 9, "s": 0}, {"c": 200, "w": 4, "s": 0}, {"c": 204, "w": 9, "s": 1}, {"c": 213, "w": 4, "s": 0}, {"c": 217, "w": 4, "s": 0}, {"c": 221, "w": 4, "s": 0}, {"c": 225, "w": 3, "s": 0}, {"c": 228, "w": 15, "s": 0}, {"c": 243, "w": 3, "s": 0}, {"c": 246, "w": 6, "s": 0}, {"c": 252, "w": 10, "s": 1}, {"c": 262, "w": 5, "s": 0}, {"c": 267, "w": 7, "s": 0}, {"c": 274, "w": 10, "s": 0}, {"c": 284, "w": 14, "s": 0}, {"c": 298, "w": 10, "s": 1}, {"c": 308, "w": 7, "s": 1}, {"c": 315, "w": 7, "s": 0}, {"c": 322, "w": 3, "s": 0}, {"c": 325, "w": 10, "s": 0}, {"c": 335, "w": 9, "s": 0}, {"c": 344, "w": 8, "s": 1}, {"c": 352, "w": 7, "s": 0}, {"c": 359, "w": 6, "s": 0}, {"c": 365, "w": 4, "s": 0}, {"c": 369, "w": 3, "s": 0}, {"c": 372, "w": 4, "s": 0}, {"c": 376, "w": 5, "s": 0}, {"c": 381, "w": 3, "s": 0}, {"c": 384, "w": 6, "s": 0}, {"c": 390, "w": 5, "s": 0}, {"c": 395, "w": 7, "s": 0}, {"c": 402, "w": 7, "s": 0}, {"c": 409, "w": 3, "s": 0}, {"c": 412, "w": 7, "s": 0}, {"c": 419, "w": 12, "s": 0}, {"c": 431, "w": 3, "s": 0}, {"c": 434, "w": 11, "s": 0}, {"c": 445, "w": 9, "s": 0}, {"c": 454, "w": 4, "s": 0}, {"c": 458, "w": 17, "s": 1}, {"c": 475, "w": 4, "s": 0}, {"c": 479, "w": 3, "s": 0}, {"c": 482, "w": 3, "s": 0}, {"c": 485, "w": 9, "s": 0}, {"c": 494, "w": 5, "s": 0}, {"c": 499, "w": 3, "s": 0}, {"c": 502, "w": 3, "s": 0}, {"c": 505, "w": 8, "s": 0}, {"c": 513, "w": 6, "s": 0}, {"c": 519, "w": 3, "s": 0}, {"c": 522, "w": 16, "s": 1}, {"c": 538, "w": 3, "s": 0}, {"c": 541, "w": 4, "s": 0}, {"c": 545, "w": 4, "s": 0}, {"c": 549, "w": 3, "s": 0}, {"c": 552, "w": 8, "s": 0}, {"c": 560, "w": 4, "s": 0}, {"c": 564, "w": 7, "s": 0}, {"c": 571, "w": 9, "s": 0}, {"c": 580, "w": 3, "s": 0}, {"c": 583, "w": 13, "s": 0}, {"c": 596, "w": 3, "s": 0}, {"c": 599, "w": 3, "s": 0}, {"c": 602, "w": 8, "s": 0}, {"c": 610, "w": 3, "s": 0}, {"c": 613, "w": 9, "s": 0}, {"c": 622, "w": 3, "s": 0}, {"c": 625, "w": 6, "s": 0}, {"c": 631, "w": 3, "s": 0}, {"c": 634, "w": 11, "s": 1}, {"c": 645, "w": 3, "s": 0}, {"c": 648, "w": 4, "s": 0}, {"c": 652, "w": 4, "s": 0}, {"c": 656, "w": 3, "s": 0}, {"c": 659, "w": 7, "s": 0}, {"c": 666, "w": 7, "s": 0}, {"c": 673, "w": 7, "s": 0}, {"c": 680, "w": 7, "s": 0}, {"c": 687, "w": 3, "s": 0}, {"c": 690, "w": 7, "s": 0}, {"c": 697, "w": 9, "s": 0}, {"c": 706, "w": 10, "s": 0}, {"c": 716, "w": 13, "s": 0}, {"c": 729, "w": 7, "s": 0}, {"c": 736, "w": 9, "s": 0}, {"c": 745, "w": 6, "s": 0}, {"c": 751, "w": 3, "s": 0}, {"c": 754, "w": 7, "s": 0}, {"c": 761, "w": 13, "s": 1}, {"c": 774, "w": 3, "s": 0}, {"c": 777, "w": 4, "s": 0}, {"c": 781, "w": 4, "s": 0}, {"c": 785, "w": 3, "s": 0}, {"c": 788, "w": 11, "s": 0}, {"c": 799, "w": 7, "s": 0}, {"c": 806, "w": 7, "s": 0}, {"c": 813, "w": 7, "s": 0}, {"c": 820, "w": 3, "s": 0}, {"c": 823, "w": 8, "s": 0}, {"c": 831, "w": 3, "s": 0}, {"c": 834, "w": 5, "s": 0}, {"c": 839, "w": 4, "s": 0}, {"c": 843, "w": 3, "s": 0}, {"c": 846, "w": 10, "s": 0}, {"c": 856, "w": 8, "s": 0}, {"c": 864, "w": 7, "s": 0}, {"c": 871, "w": 13, "s": 0}, {"c": 884, "w": 4, "s": 0}, {"c": 888, "w": 9, "s": 0}, {"c": 897, "w": 3, "s": 0}, {"c": 900, "w": 6, "s": 0}, {"c": 906, "w": 17, "s": 1}, {"c": 923, "w": 3, "s": 0}, {"c": 926, "w": 4, "s": 0}, {"c": 930, "w": 4, "s": 0}, {"c": 934, "w": 3, "s": 0}, {"c": 937, "w": 8, "s": 0}, {"c": 945, "w": 5, "s": 0}, {"c": 950, "w": 7, "s": 0}, {"c": 957, "w": 7, "s": 0}, {"c": 964, "w": 3, "s": 0}, {"c": 967, "w": 8, "s": 0}, {"c": 975, "w": 4, "s": 0}, {"c": 979, "w": 4, "s": 0}, {"c": 983, "w": 10, "s": 0}, {"c": 993, "w": 3, "s": 0}, {"c": 996, "w": 8, "s": 0}, {"c": 1004, "w": 7, "s": 0}, {"c": 1011, "w": 12, "s": 0}, {"c": 1023, "w": 6, "s": 0}, {"c": 1029, "w": 9, "s": 0}, {"c": 1038, "w": 3, "s": 0}, {"c": 1041, "w": 7, "s": 0}, {"c": 1048, "w": 5, "s": 0}, {"c": 1053, "w": 10, "s": 1}, {"c": 1063, "w": 7, "s": 1}, {"c": 1070, "w": 6, "s": 0}, {"c": 1076, "w": 3, "s": 0}, {"c": 1079, "w": 5, "s": 0}, {"c": 1084, "w": 6, "s": 0}, {"c": 1090, "w": 3, "s": 0}, {"c": 1093, "w": 10, "s": 0}, {"c": 1103, "w": 13, "s": 1}, {"c": 1116, "w": 4, "s": 0}, {"c": 1120, "w": 3, "s": 0}, {"c": 1123, "w": 3, "s": 0}, {"c": 1126, "w": 5, "s": 0}, {"c": 1131, "w": 11, "s": 0}, {"c": 1142, "w": 3, "s": 0}, {"c": 1145, "w": 12, "s": 0}, {"c": 1157, "w": 4, "s": 0}, {"c": 1161, "w": 15, "s": 0}, {"c": 1176, "w": 3, "s": 0}, {"c": 1179, "w": 3, "s": 0}, {"c": 1182, "w": 6, "s": 0}, {"c": 1188, "w": 3, "s": 0}, {"c": 1191, "w": 8, "s": 0}, {"c": 1199, "w": 4, "s": 0}, {"c": 1203, "w": 3, "s": 0}, {"c": 1206, "w": 5, "s": 0}, {"c": 1211, "w": 11, "s": 0}, {"c": 1222, "w": 3, "s": 0}, {"c": 1225, "w": 9, "s": 0}, {"c": 1234, "w": 7, "s": 0}, {"c": 1241, "w": 5, "s": 0}, {"c": 1246, "w": 3, "s": 0}, {"c": 1249, "w": 5, "s": 0}, {"c": 1254, "w": 4, "s": 0}, {"c": 1258, "w": 3, "s": 0}, {"c": 1261, "w": 4, "s": 0}, {"c": 1265, "w": 10, "s": 1}, {"c": 1275, "w": 4, "s": 0}, {"c": 1279, "w": 13, "s": 0}, {"c": 1292, "w": 13, "s": 0}, {"c": 1305, "w": 6, "s": 0}, {"c": 1311, "w": 7, "s": 0}, {"c": 1318, "w": 3, "s": 0}, {"c": 1321, "w": 6, "s": 0}, {"c": 1327, "w": 8, "s": 1}, {"c": 1335, "w": 3, "s": 0}, {"c": 1338, "w": 6, "s": 0}, {"c": 1344, "w": 3, "s": 0}, {"c": 1347, "w": 9, "s": 0}, {"c": 1356, "w": 3, "s": 0}, {"c": 1359, "w": 11, "s": 0}, {"c": 1370, "w": 8, "s": 0}, {"c": 1378, "w": 9, "s": 0}, {"c": 1387, "w": 7, "s": 0}, {"c": 1394, "w": 7, "s": 0}, {"c": 1401, "w": 8, "s": 0}, {"c": 1409, "w": 7, "s": 0}, {"c": 1416, "w": 7, "s": 0}, {"c": 1423, "w": 13, "s": 0}, {"c": 1436, "w": 8, "s": 0}, {"c": 1444, "w": 5, "s": 0}, {"c": 1449, "w": 12, "s": 0}, {"c": 1461, "w": 6, "s": 0}, {"c": 1467, "w": 12, "s": 0}, {"c": 1479, "w": 3, "s": 0}, {"c": 1482, "w": 10, "s": 0}, {"c": 1492, "w": 10, "s": 0}, {"c": 1502, "w": 15, "s": 1}, {"c": 1517, "w": 7, "s": 1}, {"c": 1524, "w": 7, "s": 0}, {"c": 1531, "w": 3, "s": 0}, {"c": 1534, "w": 6, "s": 0}, {"c": 1540, "w": 7, "s": 0}, {"c": 1547, "w": 3, "s": 0}, {"c": 1550, "w": 14, "s": 1}, {"c": 1564, "w": 4, "s": 0}, {"c": 1568, "w": 4, "s": 0}, {"c": 1572, "w": 9, "s": 0}, {"c": 1581, "w": 10, "s": 0}, {"c": 1591, "w": 9, "s": 0}, {"c": 1600, "w": 4, "s": 0}, {"c": 1604, "w": 12, "s": 0}, {"c": 1616, "w": 7, "s": 0}, {"c": 1623, "w": 3, "s": 0}, {"c": 1626, "w": 5, "s": 0}, {"c": 1631, "w": 6, "s": 0}, {"c": 1637, "w": 7, "s": 0}, {"c": 1644, "w": 9, "s": 0}, {"c": 1653, "w": 6, "s": 0}, {"c": 1659, "w": 7, "s": 0}, {"c": 1666, "w": 5, "s": 0}, {"c": 1671, "w": 8, "s": 0}, {"c": 1679, "w": 6, "s": 0}, {"c": 1685, "w": 8, "s": 0}, {"c": 1693, "w": 3, "s": 0}, {"c": 1696, "w": 7, "s": 0}, {"c": 1703, "w": 4, "s": 0}, {"c": 1707, "w": 8, "s": 0}, {"c": 1715, "w": 13, "s": 0}, {"c": 1728, "w": 8, "s": 0}, {"c": 1736, "w": 3, "s": 0}, {"c": 1739, "w": 12, "s": 0}, {"c": 1751, "w": 6, "s": 0}, {"c": 1757, "w": 11, "s": 1}, {"c": 1768, "w": 3, "s": 0}, {"c": 1771, "w": 3, "s": 0}, {"c": 1774, "w": 3, "s": 0}, {"c": 1777, "w": 3, "s": 0}, {"c": 1780, "w": 4, "s": 0}, {"c": 1784, "w": 6, "s": 0}, {"c": 1790, "w": 10, "s": 0}, {"c": 1800, "w": 15, "s": 0}, {"c": 1815, "w": 3, "s": 0}, {"c": 1818, "w": 8, "s": 0}, {"c": 1826, "w": 6, "s": 0}, {"c": 1832, "w": 3, "s": 0}, {"c": 1835, "w": 11, "s": 0}, {"c": 1846, "w": 9, "s": 1}, {"c": 1855, "w": 4, "s": 0}, {"c": 1859, "w": 3, "s": 0}, {"c": 1862, "w": 8, "s": 0}, {"c": 1870, "w": 11, "s": 0}, {"c": 1881, "w": 12, "s": 0}, {"c": 1893, "w": 11, "s": 0}, {"c": 1904, "w": 9, "s": 0}, {"c": 1913, "w": 15, "s": 0}, {"c": 1928, "w": 3, "s": 0}, {"c": 1931, "w": 9, "s": 0}, {"c": 1940, "w": 11, "s": 1}, {"c": 1951, "w": 4, "s": 0}, {"c": 1955, "w": 4, "s": 0}, {"c": 1959, "w": 3, "s": 0}, {"c": 1962, "w": 7, "s": 0}, {"c": 1969, "w": 3, "s": 0}, {"c": 1972, "w": 6, "s": 0}, {"c": 1978, "w": 4, "s": 0}, {"c": 1982, "w": 3, "s": 0}, {"c": 1985, "w": 5, "s": 0}, {"c": 1990, "w": 8, "s": 0}, {"c": 1998, "w": 13, "s": 0}, {"c": 2011, "w": 5, "s": 0}, {"c": 2016, "w": 7, "s": 0}, {"c": 2023, "w": 6, "s": 0}, {"c": 2029, "w": 7, "s": 0}, {"c": 2036, "w": 11, "s": 0}, {"c": 2047, "w": 3, "s": 0}, {"c": 2050, "w": 9, "s": 0}, {"c": 2059, "w": 3, "s": 0}, {"c": 2062, "w": 5, "s": 0}, {"c": 2067, "w": 4, "s": 0}, {"c": 2071, "w": 5, "s": 0}, {"c": 2076, "w": 4, "s": 0}, {"c": 2080, "w": 7, "s": 0}, {"c": 2087, "w": 13, "s": 1}];
+    const CHUNKS_DATA = [{"idx": 0, "w0": 0, "w1": 12, "weight": 62, "cum": 0}, {"idx": 1, "w0": 13, "w1": 32, "weight": 151, "cum": 62}, {"idx": 2, "w0": 33, "w1": 40, "weight": 49, "cum": 213}, {"idx": 3, "w0": 41, "w1": 45, "weight": 46, "cum": 262}, {"idx": 4, "w0": 46, "w1": 51, "weight": 44, "cum": 308}, {"idx": 5, "w0": 52, "w1": 70, "weight": 123, "cum": 352}, {"idx": 6, "w0": 71, "w1": 81, "weight": 63, "cum": 475}, {"idx": 7, "w0": 82, "w1": 100, "weight": 107, "cum": 538}, {"idx": 8, "w0": 101, "w1": 119, "weight": 129, "cum": 645}, {"idx": 9, "w0": 120, "w1": 142, "weight": 149, "cum": 774}, {"idx": 10, "w0": 143, "w1": 165, "weight": 140, "cum": 923}, {"idx": 11, "w0": 166, "w1": 173, "weight": 53, "cum": 1063}, {"idx": 12, "w0": 174, "w1": 201, "weight": 159, "cum": 1116}, {"idx": 13, "w0": 202, "w1": 209, "weight": 60, "cum": 1275}, {"idx": 14, "w0": 210, "w1": 232, "weight": 182, "cum": 1335}, {"idx": 15, "w0": 233, "w1": 239, "weight": 47, "cum": 1517}, {"idx": 16, "w0": 240, "w1": 268, "weight": 204, "cum": 1564}, {"idx": 17, "w0": 269, "w1": 282, "weight": 87, "cum": 1768}, {"idx": 18, "w0": 283, "w1": 318, "weight": 245, "cum": 1855}];
+    const TIMELINE_DATA = null;
     const TOTAL_WEIGHT = 2100;
     let timelineCalibrated = false;
 
-    function buildAcousticWordTimeline(words, totalWeight, audioMeta) {
-      if (!words || !words.length || totalWeight <= 0) return;
+    function buildAcousticWordTimeline(words, chunks, totalWeight, audioMeta) {
+      if (!words || !words.length || !chunks || !chunks.length || totalWeight <= 0) return;
       const totalDur = (audioMeta && Number(audioMeta.dur) > 0.5)
         ? Number(audioMeta.dur)
         : (audioEl && audioEl.duration > 0 ? audioEl.duration : AUDIO_DURATION);
       if (totalDur <= 0) return;
 
       const rawSilences = (audioMeta && Array.isArray(audioMeta.silences)) ? audioMeta.silences : (AUDIO_SILENCES || []);
-      if (!rawSilences.length) {
-        for (let i = 0; i < words.length; i++) {
-          words[i].startSec = (words[i].c / totalWeight) * totalDur;
-          words[i].endSec = ((words[i].c + words[i].w) / totalWeight) * totalDur;
+
+      // 1. Anchor 1-2 sentence chunk boundaries
+      if (Array.isArray(TIMELINE_DATA) && TIMELINE_DATA.length === chunks.length) {
+        for (let i = 0; i < chunks.length; i++) {
+          chunks[i].startSec = Number(TIMELINE_DATA[i].startSec || TIMELINE_DATA[i].start || 0);
+          chunks[i].endSec = Number(TIMELINE_DATA[i].endSec || TIMELINE_DATA[i].end || totalDur);
         }
-        timelineCalibrated = true;
-        return;
-      }
+      } else {
+        let lastEnd = 0.0;
+        for (let i = 0; i < chunks.length; i++) {
+          const ch = chunks[i];
+          ch.startSec = lastEnd;
+          if (i === chunks.length - 1) {
+            ch.endSec = totalDur;
+          } else {
+            const nextCum = ch.cum + ch.weight;
+            const targetT = (nextCum / totalWeight) * totalDur;
 
-      function voicedTimeAt(t) {
-        const clamped = Math.max(0, Math.min(totalDur, t));
-        let v = clamped;
-        for (let i = 0; i < rawSilences.length; i++) {
-          const s = rawSilences[i][0];
-          const e = rawSilences[i][1];
-          if (clamped <= s) break;
-          v -= (Math.min(clamped, e) - s);
-        }
-        return Math.max(0, v);
-      }
-
-      function invVoicedTime(targetV) {
-        let lo = 0;
-        let hi = totalDur;
-        for (let iter = 0; iter < 28; iter++) {
-          const mid = (lo + hi) * 0.5;
-          if (voicedTimeAt(mid) < targetV) lo = mid;
-          else hi = mid;
-        }
-        return (lo + hi) * 0.5;
-      }
-
-      const totalVoiced = voicedTimeAt(totalDur);
-      if (totalVoiced <= 0) return;
-
-      // 1. Sentence boundary word indices
-      const sentEndIndices = [];
-      for (let i = 0; i < words.length; i++) {
-        if (words[i].s) sentEndIndices.push(i);
-      }
-      if (!sentEndIndices.length || sentEndIndices[sentEndIndices.length - 1] !== words.length - 1) {
-        sentEndIndices.push(words.length - 1);
-      }
-
-      // 2. Anchor every K sentences (K=2 sentences per anchor)
-      const K = 2;
-      const anchorIndices = [];
-      for (let i = K - 1; i < sentEndIndices.length; i += K) {
-        anchorIndices.push(sentEndIndices[i]);
-      }
-      if (!anchorIndices.length || anchorIndices[anchorIndices.length - 1] !== words.length - 1) {
-        anchorIndices.push(words.length - 1);
-      }
-
-      // 3. Compute anchor timestamps snapped to acoustic silences
-      const anchors = [{ wordIdx: -1, timeSec: 0.0 }];
-      for (let a = 0; a < anchorIndices.length; a++) {
-        const idx = anchorIndices[a];
-        const w = words[idx];
-        const cumW = w.c + w.w;
-        const frac = cumW / totalWeight;
-        const targetV = frac * totalVoiced;
-        const tEst = invVoicedTime(targetV);
-
-        let bestSilStart = null;
-        let minDist = 1.6;
-        for (let s = 0; s < rawSilences.length; s++) {
-          const dist = Math.abs(rawSilences[s][0] - tEst);
-          if (dist < minDist) {
-            minDist = dist;
-            bestSilStart = rawSilences[s][0];
+            let bestSil = null;
+            let minDist = 2.5;
+            for (let s = 0; s < rawSilences.length; s++) {
+              const silT = rawSilences[s][0];
+              if (silT > lastEnd + 0.6 && silT < totalDur - 0.5) {
+                const d = Math.abs(silT - targetT);
+                if (d < minDist) {
+                  minDist = d;
+                  bestSil = silT;
+                }
+              }
+            }
+            const boundary = bestSil !== null ? bestSil : Math.max(lastEnd + 0.6, targetT);
+            ch.endSec = boundary;
+            lastEnd = boundary;
           }
         }
-        const aTime = bestSilStart !== null ? bestSilStart : tEst;
-        anchors.push({
-          wordIdx: idx,
-          timeSec: Math.max(0.1, aTime)
-        });
       }
 
-      for (let a = 1; a < anchors.length; a++) {
-        if (anchors[a].timeSec <= anchors[a - 1].timeSec) {
-          anchors[a].timeSec = anchors[a - 1].timeSec + 0.3;
-        }
-      }
-      anchors[anchors.length - 1].timeSec = totalDur;
-
-      // 4. Interpolate words strictly within each 2-sentence anchor interval
-      for (let a = 0; a < anchors.length - 1; a++) {
-        const startWIdx = anchors[a].wordIdx + 1;
-        const endWIdx = anchors[a + 1].wordIdx;
-        if (startWIdx > endWIdx) continue;
-
-        const tStart = anchors[a].timeSec;
-        const tEnd = anchors[a + 1].timeSec;
-        const baseC = words[startWIdx].c;
-        const spanW = Math.max(1, (words[endWIdx].c + words[endWIdx].w) - baseC);
-        const spanT = Math.max(0.05, tEnd - tStart);
-
-        for (let i = startWIdx; i <= endWIdx; i++) {
-          const fracS = (words[i].c - baseC) / spanW;
-          const fracE = ((words[i].c + words[i].w) - baseC) / spanW;
-          words[i].startSec = tStart + fracS * spanT;
-          words[i].endSec = tStart + fracE * spanT;
+      // 2. Interpolate words strictly inside each 1-2 sentence chunk
+      for (let c = 0; c < chunks.length; c++) {
+        const ch = chunks[c];
+        const spanT = Math.max(0.05, ch.endSec - ch.startSec);
+        const baseC = words[ch.w0].c;
+        const spanW = Math.max(1, (words[ch.w1].c + words[ch.w1].w) - baseC);
+        for (let w = ch.w0; w <= ch.w1; w++) {
+          const fracS = (words[w].c - baseC) / spanW;
+          const fracE = ((words[w].c + words[w].w) - baseC) / spanW;
+          words[w].startSec = ch.startSec + fracS * spanT;
+          words[w].endSec = ch.startSec + fracE * spanT;
+          words[w].chunkIdx = c;
         }
       }
 
@@ -775,6 +741,11 @@
       const tBtn = document.getElementById("btnTopListen");
       if (bBtn) bBtn.textContent = isPlaying ? "⏸" : "▶";
       if (tBtn) tBtn.textContent = isPlaying ? "⏸ Pause" : "▶️ Listen";
+      if (isPlaying) {
+        document.body.classList.add("has-active-player");
+        const sp = document.getElementById("stickyPlayer");
+        if (sp) sp.style.display = "flex";
+      }
     }
 
     async function toggleAudioPlay() {
@@ -855,35 +826,22 @@
       }
     }
 
-    // Sync Karaoke Word
+    // Sync Karaoke Sentence Chunk & Word
+    let activeChunkIdx = -1;
     function syncKaraokeWord() {
       if (!karaokeActive || !WORDS_DATA.length || TOTAL_WEIGHT <= 0) return;
       const dur = (audioEl && audioEl.duration > 0) ? audioEl.duration : AUDIO_DURATION;
       if (!Number.isFinite(dur) || dur <= 0) return;
       const cur = audioEl.currentTime;
 
-      let foundIdx = 0;
-      if (WORDS_DATA[0].startSec !== undefined) {
-        let low = 0;
-        let high = WORDS_DATA.length - 1;
+      // 1. Binary search active chunk
+      let cIdx = 0;
+      if (CHUNKS_DATA && CHUNKS_DATA.length && CHUNKS_DATA[0].startSec !== undefined) {
+        let low = 0, high = CHUNKS_DATA.length - 1;
         while (low <= high) {
           const mid = (low + high) >> 1;
-          if (WORDS_DATA[mid].startSec <= cur) {
-            foundIdx = mid;
-            low = mid + 1;
-          } else {
-            high = mid - 1;
-          }
-        }
-      } else {
-        const progress = Math.min(1.0, Math.max(0, cur / dur));
-        const targetWeight = progress * TOTAL_WEIGHT;
-        let low = 0;
-        let high = WORDS_DATA.length - 1;
-        while (low <= high) {
-          const mid = (low + high) >> 1;
-          if (WORDS_DATA[mid].c <= targetWeight) {
-            foundIdx = mid;
+          if (CHUNKS_DATA[mid].startSec <= cur) {
+            cIdx = mid;
             low = mid + 1;
           } else {
             high = mid - 1;
@@ -891,23 +849,45 @@
         }
       }
 
-      if (foundIdx !== activeWordIdx) {
+      if (cIdx !== activeChunkIdx) {
+        if (activeChunkIdx >= 0) {
+          const prevChunkEl = document.getElementById(`kchunk_${activeChunkIdx}`);
+          if (prevChunkEl) prevChunkEl.classList.remove("active-chunk");
+        }
+        const curChunkEl = document.getElementById(`kchunk_${cIdx}`);
+        if (curChunkEl) {
+          curChunkEl.classList.add("active-chunk");
+          const rect = curChunkEl.getBoundingClientRect();
+          if (rect.top < 80 || rect.bottom > window.innerHeight - 100) {
+            curChunkEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }
+        activeChunkIdx = cIdx;
+      }
+
+      // 2. Binary search active word strictly within active chunk
+      const curChunk = (CHUNKS_DATA && CHUNKS_DATA[cIdx]) ? CHUNKS_DATA[cIdx] : { w0: 0, w1: WORDS_DATA.length - 1 };
+      let foundWordIdx = curChunk.w0;
+      let low = curChunk.w0, high = curChunk.w1;
+      while (low <= high) {
+        const mid = (low + high) >> 1;
+        if (WORDS_DATA[mid].startSec <= cur) {
+          foundWordIdx = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      if (foundWordIdx !== activeWordIdx) {
         if (activeWordIdx >= 0) {
           const prev = document.getElementById(`w_${activeWordIdx}`);
           if (prev) prev.classList.remove("active-word");
         }
-        activeWordIdx = foundIdx;
+        activeWordIdx = foundWordIdx;
         const curEl = document.getElementById(`w_${activeWordIdx}`);
         if (curEl) {
           curEl.classList.add("active-word");
-          const r = curEl.getBoundingClientRect();
-          const targetY = window.innerHeight * 0.40;
-          if (r.top < 80 || r.top > window.innerHeight * 0.65) {
-            window.scrollBy({
-              top: r.top - targetY,
-              behavior: "smooth"
-            });
-          }
         }
       }
     }
@@ -917,11 +897,11 @@
       syncPlayButtonUi(true);
       karaokeActive = true;
       if (!timelineCalibrated) {
-        buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
+        buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
       }
     });
     audioEl.addEventListener("loadedmetadata", () => {
-      buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
+      buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
     });
     audioEl.addEventListener("pause", () => {
       syncPlayButtonUi(false);

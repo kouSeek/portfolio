@@ -52,8 +52,11 @@
       display: flex;
       flex-direction: column;
       padding-top: calc(var(--safe-top) + 56px);
-      padding-bottom: calc(var(--safe-bottom) + 110px);
+      padding-bottom: calc(var(--safe-bottom) + 36px);
       transition: background 0.2s ease, color 0.2s ease;
+    }
+    body.has-active-player {
+      padding-bottom: calc(var(--safe-bottom) + 110px);
     }
     /* Topbar */
     .topbar {
@@ -283,7 +286,19 @@
       font-style: italic;
     }
 
-    /* Karaoke Highlighting */
+    /* Sentence Chunking & Karaoke Highlighting */
+    .k-chunk {
+      display: inline;
+      border-radius: 6px;
+      transition: background-color 0.18s ease;
+    }
+    .k-chunk.active-chunk {
+      background-color: rgba(99, 102, 241, 0.08);
+      border-radius: 6px;
+    }
+    body.dark-mode .k-chunk.active-chunk {
+      background-color: rgba(99, 102, 241, 0.18);
+    }
     .k-word {
       display: inline;
       border-radius: 4px;
@@ -335,7 +350,7 @@
       border-color: var(--accent);
     }
 
-    /* Sticky Bottom Player Bar */
+    /* Sticky Bottom Player Bar (only shown when audio is playing/active) */
     .sticky-player {
       position: fixed;
       bottom: 0;
@@ -346,9 +361,12 @@
       padding: 10px 16px calc(var(--safe-bottom) + 10px);
       z-index: 60;
       box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
-      display: flex;
+      display: none;
       flex-direction: column;
       gap: 8px;
+    }
+    body.has-active-player .sticky-player {
+      display: flex;
     }
     .player-progress-wrap {
       display: flex;
@@ -467,7 +485,7 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="back-btn" id="navBackBtn" href="../../books.html">← Library</a>
+    <a class="back-btn" id="navBackBtn" href="../../books.html#book=the-drunkards-walk-leonard-mlodinow">← Library</a>
     <div class="top-title">The Drunkard&#x27;s Walk: How Randomness Rules Our Lives</div>
     <div class="top-actions">
       <button class="btn-icon" id="btnFontSmaller">A-</button>
@@ -498,6 +516,7 @@
         </div>
       </div>
       
+      <div class="hero-curation-pill" style="color:var(--accent);background:var(--accent-light);border-color:rgba(79,70,229,0.25);">🏛️ Author Chapter Structure: 10 Illuminating Chapters: Randomness, Law of Large Numbers, False Positives, Bell Curve &amp; Order in Chaos · 10 Chapters</div>
 
       <div class="hero-brief"><strong>Core Takeaway:</strong> Laplace and Gauss uncover the normal distribution and show how sums of independent errors produce universal symmetry.</div>
 
@@ -519,13 +538,13 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">4</span> <span class="k-word" data-word-idx="2" id="w_2">·</span> <span class="k-word" data-word-idx="3" id="w_3">The</span> <span class="k-word" data-word-idx="4" id="w_4">Bell</span> <span class="k-word" data-word-idx="5" id="w_5">Curve</span> <span class="k-word" data-word-idx="6" id="w_6">and</span> <span class="k-word" data-word-idx="7" id="w_7">the</span> <span class="k-word" data-word-idx="8" id="w_8">Central</span> <span class="k-word" data-word-idx="9" id="w_9">Limit</span> <span class="k-word" data-word-idx="10" id="w_10">Theorem</span></h2>
-<p><span class="k-word" data-word-idx="11" id="w_11">When</span> <span class="k-word" data-word-idx="12" id="w_12">astronomers</span> <span class="k-word" data-word-idx="13" id="w_13">attempted</span> <span class="k-word" data-word-idx="14" id="w_14">to</span> <span class="k-word" data-word-idx="15" id="w_15">measure</span> <span class="k-word" data-word-idx="16" id="w_16">planetary</span> <span class="k-word" data-word-idx="17" id="w_17">orbits,</span> <span class="k-word" data-word-idx="18" id="w_18">their</span> <span class="k-word" data-word-idx="19" id="w_19">telescope</span> <span class="k-word" data-word-idx="20" id="w_20">measurements</span> <span class="k-word" data-word-idx="21" id="w_21">never</span> <span class="k-word" data-word-idx="22" id="w_22">agreed.</span> <span class="k-word" data-word-idx="23" id="w_23">Gauss</span> <span class="k-word" data-word-idx="24" id="w_24">showed</span> <span class="k-word" data-word-idx="25" id="w_25">that</span> <span class="k-word" data-word-idx="26" id="w_26">errors</span> <span class="k-word" data-word-idx="27" id="w_27">in</span> <span class="k-word" data-word-idx="28" id="w_28">measurement</span> <span class="k-word" data-word-idx="29" id="w_29">behave</span> <span class="k-word" data-word-idx="30" id="w_30">like</span> <span class="k-word" data-word-idx="31" id="w_31">coins</span> <span class="k-word" data-word-idx="32" id="w_32">tossed</span> <span class="k-word" data-word-idx="33" id="w_33">in</span> <span class="k-word" data-word-idx="34" id="w_34">a</span> <span class="k-word" data-word-idx="35" id="w_35">box:</span> <span class="k-word" data-word-idx="36" id="w_36">positive</span> <span class="k-word" data-word-idx="37" id="w_37">and</span> <span class="k-word" data-word-idx="38" id="w_38">negative</span> <span class="k-word" data-word-idx="39" id="w_39">errors</span> <span class="k-word" data-word-idx="40" id="w_40">cancel</span> <span class="k-word" data-word-idx="41" id="w_41">out,</span> <span class="k-word" data-word-idx="42" id="w_42">clustering</span> <span class="k-word" data-word-idx="43" id="w_43">around</span> <span class="k-word" data-word-idx="44" id="w_44">the</span> <span class="k-word" data-word-idx="45" id="w_45">true</span> <span class="k-word" data-word-idx="46" id="w_46">physical</span> <span class="k-word" data-word-idx="47" id="w_47">location</span> <span class="k-word" data-word-idx="48" id="w_48">in</span> <span class="k-word" data-word-idx="49" id="w_49">a</span> <span class="k-word" data-word-idx="50" id="w_50">bell</span> <span class="k-word" data-word-idx="51" id="w_51">curve.</span> <span class="k-word" data-word-idx="52" id="w_52">Laplace</span> <span class="k-word" data-word-idx="53" id="w_53">generalized</span> <span class="k-word" data-word-idx="54" id="w_54">this</span> <span class="k-word" data-word-idx="55" id="w_55">into</span> <span class="k-word" data-word-idx="56" id="w_56">the</span> <span class="k-word" data-word-idx="57" id="w_57">Central</span> <span class="k-word" data-word-idx="58" id="w_58">Limit</span> <span class="k-word" data-word-idx="59" id="w_59">Theorem,</span> <span class="k-word" data-word-idx="60" id="w_60">proving</span> <span class="k-word" data-word-idx="61" id="w_61">that</span> <span class="k-word" data-word-idx="62" id="w_62">any</span> <span class="k-word" data-word-idx="63" id="w_63">composite</span> <span class="k-word" data-word-idx="64" id="w_64">variable</span> <span class="k-word" data-word-idx="65" id="w_65">formed</span> <span class="k-word" data-word-idx="66" id="w_66">by</span> <span class="k-word" data-word-idx="67" id="w_67">adding</span> <span class="k-word" data-word-idx="68" id="w_68">numerous</span> <span class="k-word" data-word-idx="69" id="w_69">small</span> <span class="k-word" data-word-idx="70" id="w_70">random</span> <span class="k-word" data-word-idx="71" id="w_71">effects</span> <span class="k-word" data-word-idx="72" id="w_72">will</span> <span class="k-word" data-word-idx="73" id="w_73">converge</span> <span class="k-word" data-word-idx="74" id="w_74">to</span> <span class="k-word" data-word-idx="75" id="w_75">the</span> <span class="k-word" data-word-idx="76" id="w_76">normal</span> <span class="k-word" data-word-idx="77" id="w_77">distribution.</span></p>
+      <h2 class="chapter-prose-title"><span class="k-chunk" id="kchunk_0" data-chunk-idx="0"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">4</span> <span class="k-word" data-word-idx="2" id="w_2">·</span> <span class="k-word" data-word-idx="3" id="w_3">The</span> <span class="k-word" data-word-idx="4" id="w_4">Bell</span> <span class="k-word" data-word-idx="5" id="w_5">Curve</span> <span class="k-word" data-word-idx="6" id="w_6">and</span> <span class="k-word" data-word-idx="7" id="w_7">the</span> <span class="k-word" data-word-idx="8" id="w_8">Central</span> <span class="k-word" data-word-idx="9" id="w_9">Limit</span> <span class="k-word" data-word-idx="10" id="w_10">Theorem</span></span></h2>
+<p><span class="k-chunk" id="kchunk_1" data-chunk-idx="1"><span class="k-word" data-word-idx="11" id="w_11">When</span> <span class="k-word" data-word-idx="12" id="w_12">astronomers</span> <span class="k-word" data-word-idx="13" id="w_13">attempted</span> <span class="k-word" data-word-idx="14" id="w_14">to</span> <span class="k-word" data-word-idx="15" id="w_15">measure</span> <span class="k-word" data-word-idx="16" id="w_16">planetary</span> <span class="k-word" data-word-idx="17" id="w_17">orbits,</span> <span class="k-word" data-word-idx="18" id="w_18">their</span> <span class="k-word" data-word-idx="19" id="w_19">telescope</span> <span class="k-word" data-word-idx="20" id="w_20">measurements</span> <span class="k-word" data-word-idx="21" id="w_21">never</span> <span class="k-word" data-word-idx="22" id="w_22">agreed.</span> <span class="k-word" data-word-idx="23" id="w_23">Gauss</span> <span class="k-word" data-word-idx="24" id="w_24">showed</span> <span class="k-word" data-word-idx="25" id="w_25">that</span> <span class="k-word" data-word-idx="26" id="w_26">errors</span> <span class="k-word" data-word-idx="27" id="w_27">in</span> <span class="k-word" data-word-idx="28" id="w_28">measurement</span> <span class="k-word" data-word-idx="29" id="w_29">behave</span> <span class="k-word" data-word-idx="30" id="w_30">like</span> <span class="k-word" data-word-idx="31" id="w_31">coins</span> <span class="k-word" data-word-idx="32" id="w_32">tossed</span> <span class="k-word" data-word-idx="33" id="w_33">in</span> <span class="k-word" data-word-idx="34" id="w_34">a</span> <span class="k-word" data-word-idx="35" id="w_35">box:</span> <span class="k-word" data-word-idx="36" id="w_36">positive</span> <span class="k-word" data-word-idx="37" id="w_37">and</span> <span class="k-word" data-word-idx="38" id="w_38">negative</span> <span class="k-word" data-word-idx="39" id="w_39">errors</span> <span class="k-word" data-word-idx="40" id="w_40">cancel</span> <span class="k-word" data-word-idx="41" id="w_41">out,</span> <span class="k-word" data-word-idx="42" id="w_42">clustering</span> <span class="k-word" data-word-idx="43" id="w_43">around</span> <span class="k-word" data-word-idx="44" id="w_44">the</span> <span class="k-word" data-word-idx="45" id="w_45">true</span> <span class="k-word" data-word-idx="46" id="w_46">physical</span> <span class="k-word" data-word-idx="47" id="w_47">location</span> <span class="k-word" data-word-idx="48" id="w_48">in</span> <span class="k-word" data-word-idx="49" id="w_49">a</span> <span class="k-word" data-word-idx="50" id="w_50">bell</span> <span class="k-word" data-word-idx="51" id="w_51">curve.</span></span> <span class="k-chunk" id="kchunk_2" data-chunk-idx="2"><span class="k-word" data-word-idx="52" id="w_52">Laplace</span> <span class="k-word" data-word-idx="53" id="w_53">generalized</span> <span class="k-word" data-word-idx="54" id="w_54">this</span> <span class="k-word" data-word-idx="55" id="w_55">into</span> <span class="k-word" data-word-idx="56" id="w_56">the</span> <span class="k-word" data-word-idx="57" id="w_57">Central</span> <span class="k-word" data-word-idx="58" id="w_58">Limit</span> <span class="k-word" data-word-idx="59" id="w_59">Theorem,</span> <span class="k-word" data-word-idx="60" id="w_60">proving</span> <span class="k-word" data-word-idx="61" id="w_61">that</span> <span class="k-word" data-word-idx="62" id="w_62">any</span> <span class="k-word" data-word-idx="63" id="w_63">composite</span> <span class="k-word" data-word-idx="64" id="w_64">variable</span> <span class="k-word" data-word-idx="65" id="w_65">formed</span> <span class="k-word" data-word-idx="66" id="w_66">by</span> <span class="k-word" data-word-idx="67" id="w_67">adding</span> <span class="k-word" data-word-idx="68" id="w_68">numerous</span> <span class="k-word" data-word-idx="69" id="w_69">small</span> <span class="k-word" data-word-idx="70" id="w_70">random</span> <span class="k-word" data-word-idx="71" id="w_71">effects</span> <span class="k-word" data-word-idx="72" id="w_72">will</span> <span class="k-word" data-word-idx="73" id="w_73">converge</span> <span class="k-word" data-word-idx="74" id="w_74">to</span> <span class="k-word" data-word-idx="75" id="w_75">the</span> <span class="k-word" data-word-idx="76" id="w_76">normal</span> <span class="k-word" data-word-idx="77" id="w_77">distribution.</span></span></p>
     </section>
 
     <nav class="nav-footer">
       <a href="ch_3.html">← Previous Chapter</a>
-      <a class="primary" href="../../books.html">📚 All Books</a>
+      <a class="primary" href="../../books.html#book=the-drunkards-walk-leonard-mlodinow">📚 All Books</a>
       <a href="ch_5.html">Next Chapter →</a>
     </nav>
   </main>
@@ -593,121 +612,68 @@
     const AUDIO_SILENCES = [];
     const CACHE_NAME = "kortex-books-v1";
     const WORDS_DATA = [{"c": 0, "w": 7, "s": 1}, {"c": 7, "w": 3, "s": 0}, {"c": 10, "w": 5, "s": 0}, {"c": 15, "w": 3, "s": 0}, {"c": 18, "w": 4, "s": 0}, {"c": 22, "w": 5, "s": 0}, {"c": 27, "w": 3, "s": 0}, {"c": 30, "w": 3, "s": 0}, {"c": 33, "w": 7, "s": 0}, {"c": 40, "w": 5, "s": 0}, {"c": 45, "w": 11, "s": 1}, {"c": 56, "w": 4, "s": 0}, {"c": 60, "w": 11, "s": 0}, {"c": 71, "w": 9, "s": 0}, {"c": 80, "w": 3, "s": 0}, {"c": 83, "w": 7, "s": 0}, {"c": 90, "w": 9, "s": 0}, {"c": 99, "w": 9, "s": 0}, {"c": 108, "w": 5, "s": 0}, {"c": 113, "w": 9, "s": 0}, {"c": 122, "w": 12, "s": 0}, {"c": 134, "w": 5, "s": 0}, {"c": 139, "w": 11, "s": 1}, {"c": 150, "w": 5, "s": 0}, {"c": 155, "w": 6, "s": 0}, {"c": 161, "w": 4, "s": 0}, {"c": 165, "w": 6, "s": 0}, {"c": 171, "w": 3, "s": 0}, {"c": 174, "w": 11, "s": 0}, {"c": 185, "w": 6, "s": 0}, {"c": 191, "w": 4, "s": 0}, {"c": 195, "w": 5, "s": 0}, {"c": 200, "w": 6, "s": 0}, {"c": 206, "w": 3, "s": 0}, {"c": 209, "w": 3, "s": 0}, {"c": 212, "w": 6, "s": 0}, {"c": 218, "w": 8, "s": 0}, {"c": 226, "w": 3, "s": 0}, {"c": 229, "w": 8, "s": 0}, {"c": 237, "w": 6, "s": 0}, {"c": 243, "w": 6, "s": 0}, {"c": 249, "w": 6, "s": 0}, {"c": 255, "w": 10, "s": 0}, {"c": 265, "w": 6, "s": 0}, {"c": 271, "w": 3, "s": 0}, {"c": 274, "w": 4, "s": 0}, {"c": 278, "w": 8, "s": 0}, {"c": 286, "w": 8, "s": 0}, {"c": 294, "w": 3, "s": 0}, {"c": 297, "w": 3, "s": 0}, {"c": 300, "w": 4, "s": 0}, {"c": 304, "w": 10, "s": 1}, {"c": 314, "w": 7, "s": 0}, {"c": 321, "w": 11, "s": 0}, {"c": 332, "w": 4, "s": 0}, {"c": 336, "w": 4, "s": 0}, {"c": 340, "w": 3, "s": 0}, {"c": 343, "w": 7, "s": 0}, {"c": 350, "w": 5, "s": 0}, {"c": 355, "w": 10, "s": 0}, {"c": 365, "w": 7, "s": 0}, {"c": 372, "w": 4, "s": 0}, {"c": 376, "w": 3, "s": 0}, {"c": 379, "w": 9, "s": 0}, {"c": 388, "w": 8, "s": 0}, {"c": 396, "w": 6, "s": 0}, {"c": 402, "w": 3, "s": 0}, {"c": 405, "w": 6, "s": 0}, {"c": 411, "w": 8, "s": 0}, {"c": 419, "w": 5, "s": 0}, {"c": 424, "w": 6, "s": 0}, {"c": 430, "w": 7, "s": 0}, {"c": 437, "w": 4, "s": 0}, {"c": 441, "w": 8, "s": 0}, {"c": 449, "w": 3, "s": 0}, {"c": 452, "w": 3, "s": 0}, {"c": 455, "w": 6, "s": 0}, {"c": 461, "w": 17, "s": 1}];
+    const CHUNKS_DATA = [{"idx": 0, "w0": 0, "w1": 10, "weight": 56, "cum": 0}, {"idx": 1, "w0": 11, "w1": 51, "weight": 258, "cum": 56}, {"idx": 2, "w0": 52, "w1": 77, "weight": 164, "cum": 314}];
+    const TIMELINE_DATA = null;
     const TOTAL_WEIGHT = 478;
     let timelineCalibrated = false;
 
-    function buildAcousticWordTimeline(words, totalWeight, audioMeta) {
-      if (!words || !words.length || totalWeight <= 0) return;
+    function buildAcousticWordTimeline(words, chunks, totalWeight, audioMeta) {
+      if (!words || !words.length || !chunks || !chunks.length || totalWeight <= 0) return;
       const totalDur = (audioMeta && Number(audioMeta.dur) > 0.5)
         ? Number(audioMeta.dur)
         : (audioEl && audioEl.duration > 0 ? audioEl.duration : AUDIO_DURATION);
       if (totalDur <= 0) return;
 
       const rawSilences = (audioMeta && Array.isArray(audioMeta.silences)) ? audioMeta.silences : (AUDIO_SILENCES || []);
-      if (!rawSilences.length) {
-        for (let i = 0; i < words.length; i++) {
-          words[i].startSec = (words[i].c / totalWeight) * totalDur;
-          words[i].endSec = ((words[i].c + words[i].w) / totalWeight) * totalDur;
+
+      // 1. Anchor 1-2 sentence chunk boundaries
+      if (Array.isArray(TIMELINE_DATA) && TIMELINE_DATA.length === chunks.length) {
+        for (let i = 0; i < chunks.length; i++) {
+          chunks[i].startSec = Number(TIMELINE_DATA[i].startSec || TIMELINE_DATA[i].start || 0);
+          chunks[i].endSec = Number(TIMELINE_DATA[i].endSec || TIMELINE_DATA[i].end || totalDur);
         }
-        timelineCalibrated = true;
-        return;
-      }
+      } else {
+        let lastEnd = 0.0;
+        for (let i = 0; i < chunks.length; i++) {
+          const ch = chunks[i];
+          ch.startSec = lastEnd;
+          if (i === chunks.length - 1) {
+            ch.endSec = totalDur;
+          } else {
+            const nextCum = ch.cum + ch.weight;
+            const targetT = (nextCum / totalWeight) * totalDur;
 
-      function voicedTimeAt(t) {
-        const clamped = Math.max(0, Math.min(totalDur, t));
-        let v = clamped;
-        for (let i = 0; i < rawSilences.length; i++) {
-          const s = rawSilences[i][0];
-          const e = rawSilences[i][1];
-          if (clamped <= s) break;
-          v -= (Math.min(clamped, e) - s);
-        }
-        return Math.max(0, v);
-      }
-
-      function invVoicedTime(targetV) {
-        let lo = 0;
-        let hi = totalDur;
-        for (let iter = 0; iter < 28; iter++) {
-          const mid = (lo + hi) * 0.5;
-          if (voicedTimeAt(mid) < targetV) lo = mid;
-          else hi = mid;
-        }
-        return (lo + hi) * 0.5;
-      }
-
-      const totalVoiced = voicedTimeAt(totalDur);
-      if (totalVoiced <= 0) return;
-
-      // 1. Sentence boundary word indices
-      const sentEndIndices = [];
-      for (let i = 0; i < words.length; i++) {
-        if (words[i].s) sentEndIndices.push(i);
-      }
-      if (!sentEndIndices.length || sentEndIndices[sentEndIndices.length - 1] !== words.length - 1) {
-        sentEndIndices.push(words.length - 1);
-      }
-
-      // 2. Anchor every K sentences (K=2 sentences per anchor)
-      const K = 2;
-      const anchorIndices = [];
-      for (let i = K - 1; i < sentEndIndices.length; i += K) {
-        anchorIndices.push(sentEndIndices[i]);
-      }
-      if (!anchorIndices.length || anchorIndices[anchorIndices.length - 1] !== words.length - 1) {
-        anchorIndices.push(words.length - 1);
-      }
-
-      // 3. Compute anchor timestamps snapped to acoustic silences
-      const anchors = [{ wordIdx: -1, timeSec: 0.0 }];
-      for (let a = 0; a < anchorIndices.length; a++) {
-        const idx = anchorIndices[a];
-        const w = words[idx];
-        const cumW = w.c + w.w;
-        const frac = cumW / totalWeight;
-        const targetV = frac * totalVoiced;
-        const tEst = invVoicedTime(targetV);
-
-        let bestSilStart = null;
-        let minDist = 1.6;
-        for (let s = 0; s < rawSilences.length; s++) {
-          const dist = Math.abs(rawSilences[s][0] - tEst);
-          if (dist < minDist) {
-            minDist = dist;
-            bestSilStart = rawSilences[s][0];
+            let bestSil = null;
+            let minDist = 2.5;
+            for (let s = 0; s < rawSilences.length; s++) {
+              const silT = rawSilences[s][0];
+              if (silT > lastEnd + 0.6 && silT < totalDur - 0.5) {
+                const d = Math.abs(silT - targetT);
+                if (d < minDist) {
+                  minDist = d;
+                  bestSil = silT;
+                }
+              }
+            }
+            const boundary = bestSil !== null ? bestSil : Math.max(lastEnd + 0.6, targetT);
+            ch.endSec = boundary;
+            lastEnd = boundary;
           }
         }
-        const aTime = bestSilStart !== null ? bestSilStart : tEst;
-        anchors.push({
-          wordIdx: idx,
-          timeSec: Math.max(0.1, aTime)
-        });
       }
 
-      for (let a = 1; a < anchors.length; a++) {
-        if (anchors[a].timeSec <= anchors[a - 1].timeSec) {
-          anchors[a].timeSec = anchors[a - 1].timeSec + 0.3;
-        }
-      }
-      anchors[anchors.length - 1].timeSec = totalDur;
-
-      // 4. Interpolate words strictly within each 2-sentence anchor interval
-      for (let a = 0; a < anchors.length - 1; a++) {
-        const startWIdx = anchors[a].wordIdx + 1;
-        const endWIdx = anchors[a + 1].wordIdx;
-        if (startWIdx > endWIdx) continue;
-
-        const tStart = anchors[a].timeSec;
-        const tEnd = anchors[a + 1].timeSec;
-        const baseC = words[startWIdx].c;
-        const spanW = Math.max(1, (words[endWIdx].c + words[endWIdx].w) - baseC);
-        const spanT = Math.max(0.05, tEnd - tStart);
-
-        for (let i = startWIdx; i <= endWIdx; i++) {
-          const fracS = (words[i].c - baseC) / spanW;
-          const fracE = ((words[i].c + words[i].w) - baseC) / spanW;
-          words[i].startSec = tStart + fracS * spanT;
-          words[i].endSec = tStart + fracE * spanT;
+      // 2. Interpolate words strictly inside each 1-2 sentence chunk
+      for (let c = 0; c < chunks.length; c++) {
+        const ch = chunks[c];
+        const spanT = Math.max(0.05, ch.endSec - ch.startSec);
+        const baseC = words[ch.w0].c;
+        const spanW = Math.max(1, (words[ch.w1].c + words[ch.w1].w) - baseC);
+        for (let w = ch.w0; w <= ch.w1; w++) {
+          const fracS = (words[w].c - baseC) / spanW;
+          const fracE = ((words[w].c + words[w].w) - baseC) / spanW;
+          words[w].startSec = ch.startSec + fracS * spanT;
+          words[w].endSec = ch.startSec + fracE * spanT;
+          words[w].chunkIdx = c;
         }
       }
 
@@ -753,6 +719,11 @@
       const tBtn = document.getElementById("btnTopListen");
       if (bBtn) bBtn.textContent = isPlaying ? "⏸" : "▶";
       if (tBtn) tBtn.textContent = isPlaying ? "⏸ Pause" : "▶️ Listen";
+      if (isPlaying) {
+        document.body.classList.add("has-active-player");
+        const sp = document.getElementById("stickyPlayer");
+        if (sp) sp.style.display = "flex";
+      }
     }
 
     async function toggleAudioPlay() {
@@ -833,35 +804,22 @@
       }
     }
 
-    // Sync Karaoke Word
+    // Sync Karaoke Sentence Chunk & Word
+    let activeChunkIdx = -1;
     function syncKaraokeWord() {
       if (!karaokeActive || !WORDS_DATA.length || TOTAL_WEIGHT <= 0) return;
       const dur = (audioEl && audioEl.duration > 0) ? audioEl.duration : AUDIO_DURATION;
       if (!Number.isFinite(dur) || dur <= 0) return;
       const cur = audioEl.currentTime;
 
-      let foundIdx = 0;
-      if (WORDS_DATA[0].startSec !== undefined) {
-        let low = 0;
-        let high = WORDS_DATA.length - 1;
+      // 1. Binary search active chunk
+      let cIdx = 0;
+      if (CHUNKS_DATA && CHUNKS_DATA.length && CHUNKS_DATA[0].startSec !== undefined) {
+        let low = 0, high = CHUNKS_DATA.length - 1;
         while (low <= high) {
           const mid = (low + high) >> 1;
-          if (WORDS_DATA[mid].startSec <= cur) {
-            foundIdx = mid;
-            low = mid + 1;
-          } else {
-            high = mid - 1;
-          }
-        }
-      } else {
-        const progress = Math.min(1.0, Math.max(0, cur / dur));
-        const targetWeight = progress * TOTAL_WEIGHT;
-        let low = 0;
-        let high = WORDS_DATA.length - 1;
-        while (low <= high) {
-          const mid = (low + high) >> 1;
-          if (WORDS_DATA[mid].c <= targetWeight) {
-            foundIdx = mid;
+          if (CHUNKS_DATA[mid].startSec <= cur) {
+            cIdx = mid;
             low = mid + 1;
           } else {
             high = mid - 1;
@@ -869,23 +827,45 @@
         }
       }
 
-      if (foundIdx !== activeWordIdx) {
+      if (cIdx !== activeChunkIdx) {
+        if (activeChunkIdx >= 0) {
+          const prevChunkEl = document.getElementById(`kchunk_${activeChunkIdx}`);
+          if (prevChunkEl) prevChunkEl.classList.remove("active-chunk");
+        }
+        const curChunkEl = document.getElementById(`kchunk_${cIdx}`);
+        if (curChunkEl) {
+          curChunkEl.classList.add("active-chunk");
+          const rect = curChunkEl.getBoundingClientRect();
+          if (rect.top < 80 || rect.bottom > window.innerHeight - 100) {
+            curChunkEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }
+        activeChunkIdx = cIdx;
+      }
+
+      // 2. Binary search active word strictly within active chunk
+      const curChunk = (CHUNKS_DATA && CHUNKS_DATA[cIdx]) ? CHUNKS_DATA[cIdx] : { w0: 0, w1: WORDS_DATA.length - 1 };
+      let foundWordIdx = curChunk.w0;
+      let low = curChunk.w0, high = curChunk.w1;
+      while (low <= high) {
+        const mid = (low + high) >> 1;
+        if (WORDS_DATA[mid].startSec <= cur) {
+          foundWordIdx = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      if (foundWordIdx !== activeWordIdx) {
         if (activeWordIdx >= 0) {
           const prev = document.getElementById(`w_${activeWordIdx}`);
           if (prev) prev.classList.remove("active-word");
         }
-        activeWordIdx = foundIdx;
+        activeWordIdx = foundWordIdx;
         const curEl = document.getElementById(`w_${activeWordIdx}`);
         if (curEl) {
           curEl.classList.add("active-word");
-          const r = curEl.getBoundingClientRect();
-          const targetY = window.innerHeight * 0.40;
-          if (r.top < 80 || r.top > window.innerHeight * 0.65) {
-            window.scrollBy({
-              top: r.top - targetY,
-              behavior: "smooth"
-            });
-          }
         }
       }
     }
@@ -895,11 +875,11 @@
       syncPlayButtonUi(true);
       karaokeActive = true;
       if (!timelineCalibrated) {
-        buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
+        buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
       }
     });
     audioEl.addEventListener("loadedmetadata", () => {
-      buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
+      buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
     });
     audioEl.addEventListener("pause", () => {
       syncPlayButtonUi(false);

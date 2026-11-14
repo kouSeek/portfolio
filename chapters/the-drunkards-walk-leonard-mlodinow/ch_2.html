@@ -52,8 +52,11 @@
       display: flex;
       flex-direction: column;
       padding-top: calc(var(--safe-top) + 56px);
-      padding-bottom: calc(var(--safe-bottom) + 110px);
+      padding-bottom: calc(var(--safe-bottom) + 36px);
       transition: background 0.2s ease, color 0.2s ease;
+    }
+    body.has-active-player {
+      padding-bottom: calc(var(--safe-bottom) + 110px);
     }
     /* Topbar */
     .topbar {
@@ -283,7 +286,19 @@
       font-style: italic;
     }
 
-    /* Karaoke Highlighting */
+    /* Sentence Chunking & Karaoke Highlighting */
+    .k-chunk {
+      display: inline;
+      border-radius: 6px;
+      transition: background-color 0.18s ease;
+    }
+    .k-chunk.active-chunk {
+      background-color: rgba(99, 102, 241, 0.08);
+      border-radius: 6px;
+    }
+    body.dark-mode .k-chunk.active-chunk {
+      background-color: rgba(99, 102, 241, 0.18);
+    }
     .k-word {
       display: inline;
       border-radius: 4px;
@@ -335,7 +350,7 @@
       border-color: var(--accent);
     }
 
-    /* Sticky Bottom Player Bar */
+    /* Sticky Bottom Player Bar (only shown when audio is playing/active) */
     .sticky-player {
       position: fixed;
       bottom: 0;
@@ -346,9 +361,12 @@
       padding: 10px 16px calc(var(--safe-bottom) + 10px);
       z-index: 60;
       box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
-      display: flex;
+      display: none;
       flex-direction: column;
       gap: 8px;
+    }
+    body.has-active-player .sticky-player {
+      display: flex;
     }
     .player-progress-wrap {
       display: flex;
@@ -467,7 +485,7 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="back-btn" id="navBackBtn" href="../../books.html">← Library</a>
+    <a class="back-btn" id="navBackBtn" href="../../books.html#book=the-drunkards-walk-leonard-mlodinow">← Library</a>
     <div class="top-title">The Drunkard&#x27;s Walk: How Randomness Rules Our Lives</div>
     <div class="top-actions">
       <button class="btn-icon" id="btnFontSmaller">A-</button>
@@ -498,6 +516,7 @@
         </div>
       </div>
       
+      <div class="hero-curation-pill" style="color:var(--accent);background:var(--accent-light);border-color:rgba(79,70,229,0.25);">🏛️ Author Chapter Structure: 10 Illuminating Chapters: Randomness, Law of Large Numbers, False Positives, Bell Curve &amp; Order in Chaos · 10 Chapters</div>
 
       <div class="hero-brief"><strong>Core Takeaway:</strong> The historical drama of seventeenth-century gambling dens and the letters between Pascal and Fermat that invented probability theory.</div>
 
@@ -519,14 +538,14 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">2</span> <span class="k-word" data-word-idx="2" id="w_2">·</span> <span class="k-word" data-word-idx="3" id="w_3">The</span> <span class="k-word" data-word-idx="4" id="w_4">Geometry</span> <span class="k-word" data-word-idx="5" id="w_5">of</span> <span class="k-word" data-word-idx="6" id="w_6">Probability:</span> <span class="k-word" data-word-idx="7" id="w_7">Fermat,</span> <span class="k-word" data-word-idx="8" id="w_8">Pascal</span> <span class="k-word" data-word-idx="9" id="w_9">&amp;</span> <span class="k-word" data-word-idx="10" id="w_10">Cardano</span></h2>
-<p><span class="k-word" data-word-idx="11" id="w_11">Before</span> <span class="k-word" data-word-idx="12" id="w_12">Cardano,</span> <span class="k-word" data-word-idx="13" id="w_13">Pascal,</span> <span class="k-word" data-word-idx="14" id="w_14">and</span> <span class="k-word" data-word-idx="15" id="w_15">Fermat,</span> <span class="k-word" data-word-idx="16" id="w_16">games</span> <span class="k-word" data-word-idx="17" id="w_17">of</span> <span class="k-word" data-word-idx="18" id="w_18">dice</span> <span class="k-word" data-word-idx="19" id="w_19">were</span> <span class="k-word" data-word-idx="20" id="w_20">viewed</span> <span class="k-word" data-word-idx="21" id="w_21">as</span> <span class="k-word" data-word-idx="22" id="w_22">the</span> <span class="k-word" data-word-idx="23" id="w_23">direct</span> <span class="k-word" data-word-idx="24" id="w_24">intervention</span> <span class="k-word" data-word-idx="25" id="w_25">of</span> <span class="k-word" data-word-idx="26" id="w_26">the</span> <span class="k-word" data-word-idx="27" id="w_27">gods</span> <span class="k-word" data-word-idx="28" id="w_28">or</span> <span class="k-word" data-word-idx="29" id="w_29">blind</span> <span class="k-word" data-word-idx="30" id="w_30">fate.</span> <span class="k-word" data-word-idx="31" id="w_31">Gerolamo</span> <span class="k-word" data-word-idx="32" id="w_32">Cardano,</span> <span class="k-word" data-word-idx="33" id="w_33">a</span> <span class="k-word" data-word-idx="34" id="w_34">Renaissance</span> <span class="k-word" data-word-idx="35" id="w_35">physician</span> <span class="k-word" data-word-idx="36" id="w_36">and</span> <span class="k-word" data-word-idx="37" id="w_37">compulsive</span> <span class="k-word" data-word-idx="38" id="w_38">gambler,</span> <span class="k-word" data-word-idx="39" id="w_39">was</span> <span class="k-word" data-word-idx="40" id="w_40">the</span> <span class="k-word" data-word-idx="41" id="w_41">first</span> <span class="k-word" data-word-idx="42" id="w_42">to</span> <span class="k-word" data-word-idx="43" id="w_43">define</span> <span class="k-word" data-word-idx="44" id="w_44">sample</span> <span class="k-word" data-word-idx="45" id="w_45">space—the</span> <span class="k-word" data-word-idx="46" id="w_46">idea</span> <span class="k-word" data-word-idx="47" id="w_47">that</span> <span class="k-word" data-word-idx="48" id="w_48">if</span> <span class="k-word" data-word-idx="49" id="w_49">a</span> <span class="k-word" data-word-idx="50" id="w_50">die</span> <span class="k-word" data-word-idx="51" id="w_51">has</span> <span class="k-word" data-word-idx="52" id="w_52">six</span> <span class="k-word" data-word-idx="53" id="w_53">faces,</span> <span class="k-word" data-word-idx="54" id="w_54">each</span> <span class="k-word" data-word-idx="55" id="w_55">face</span> <span class="k-word" data-word-idx="56" id="w_56">has</span> <span class="k-word" data-word-idx="57" id="w_57">an</span> <span class="k-word" data-word-idx="58" id="w_58">equal</span> <span class="k-word" data-word-idx="59" id="w_59">1/6</span> <span class="k-word" data-word-idx="60" id="w_60">claim</span> <span class="k-word" data-word-idx="61" id="w_61">on</span> <span class="k-word" data-word-idx="62" id="w_62">reality.</span></p>
-<p><span class="k-word" data-word-idx="63" id="w_63">In</span> <span class="k-word" data-word-idx="64" id="w_64">1654,</span> <span class="k-word" data-word-idx="65" id="w_65">Antoine</span> <span class="k-word" data-word-idx="66" id="w_66">Gombaud</span> <span class="k-word" data-word-idx="67" id="w_67">(the</span> <span class="k-word" data-word-idx="68" id="w_68">Chevalier</span> <span class="k-word" data-word-idx="69" id="w_69">de</span> <span class="k-word" data-word-idx="70" id="w_70">Méré)</span> <span class="k-word" data-word-idx="71" id="w_71">posed</span> <span class="k-word" data-word-idx="72" id="w_72">the</span> <span class="k-word" data-word-idx="73" id="w_73">&#x27;Problem</span> <span class="k-word" data-word-idx="74" id="w_74">of</span> <span class="k-word" data-word-idx="75" id="w_75">Points&#x27;:</span> <span class="k-word" data-word-idx="76" id="w_76">if</span> <span class="k-word" data-word-idx="77" id="w_77">a</span> <span class="k-word" data-word-idx="78" id="w_78">game</span> <span class="k-word" data-word-idx="79" id="w_79">of</span> <span class="k-word" data-word-idx="80" id="w_80">chance</span> <span class="k-word" data-word-idx="81" id="w_81">is</span> <span class="k-word" data-word-idx="82" id="w_82">interrupted</span> <span class="k-word" data-word-idx="83" id="w_83">before</span> <span class="k-word" data-word-idx="84" id="w_84">it</span> <span class="k-word" data-word-idx="85" id="w_85">finishes,</span> <span class="k-word" data-word-idx="86" id="w_86">how</span> <span class="k-word" data-word-idx="87" id="w_87">should</span> <span class="k-word" data-word-idx="88" id="w_88">the</span> <span class="k-word" data-word-idx="89" id="w_89">pot</span> <span class="k-word" data-word-idx="90" id="w_90">be</span> <span class="k-word" data-word-idx="91" id="w_91">divided</span> <span class="k-word" data-word-idx="92" id="w_92">fairly?</span> <span class="k-word" data-word-idx="93" id="w_93">Pascal</span> <span class="k-word" data-word-idx="94" id="w_94">and</span> <span class="k-word" data-word-idx="95" id="w_95">Fermat</span> <span class="k-word" data-word-idx="96" id="w_96">solved</span> <span class="k-word" data-word-idx="97" id="w_97">this</span> <span class="k-word" data-word-idx="98" id="w_98">through</span> <span class="k-word" data-word-idx="99" id="w_99">a</span> <span class="k-word" data-word-idx="100" id="w_100">historic</span> <span class="k-word" data-word-idx="101" id="w_101">correspondence,</span> <span class="k-word" data-word-idx="102" id="w_102">constructing</span> <span class="k-word" data-word-idx="103" id="w_103">the</span> <span class="k-word" data-word-idx="104" id="w_104">arithmetic</span> <span class="k-word" data-word-idx="105" id="w_105">triangle</span> <span class="k-word" data-word-idx="106" id="w_106">(Pascal&#x27;s</span> <span class="k-word" data-word-idx="107" id="w_107">Triangle)</span> <span class="k-word" data-word-idx="108" id="w_108">and</span> <span class="k-word" data-word-idx="109" id="w_109">laying</span> <span class="k-word" data-word-idx="110" id="w_110">the</span> <span class="k-word" data-word-idx="111" id="w_111">bedrock</span> <span class="k-word" data-word-idx="112" id="w_112">of</span> <span class="k-word" data-word-idx="113" id="w_113">modern</span> <span class="k-word" data-word-idx="114" id="w_114">combinatorial</span> <span class="k-word" data-word-idx="115" id="w_115">probability.</span></p>
+      <h2 class="chapter-prose-title"><span class="k-chunk" id="kchunk_0" data-chunk-idx="0"><span class="k-word" data-word-idx="0" id="w_0">Ch.</span> <span class="k-word" data-word-idx="1" id="w_1">2</span> <span class="k-word" data-word-idx="2" id="w_2">·</span> <span class="k-word" data-word-idx="3" id="w_3">The</span> <span class="k-word" data-word-idx="4" id="w_4">Geometry</span> <span class="k-word" data-word-idx="5" id="w_5">of</span> <span class="k-word" data-word-idx="6" id="w_6">Probability:</span> <span class="k-word" data-word-idx="7" id="w_7">Fermat,</span> <span class="k-word" data-word-idx="8" id="w_8">Pascal</span> <span class="k-word" data-word-idx="9" id="w_9">&amp;</span> <span class="k-word" data-word-idx="10" id="w_10">Cardano</span></span></h2>
+<p><span class="k-chunk" id="kchunk_1" data-chunk-idx="1"><span class="k-word" data-word-idx="11" id="w_11">Before</span> <span class="k-word" data-word-idx="12" id="w_12">Cardano,</span> <span class="k-word" data-word-idx="13" id="w_13">Pascal,</span> <span class="k-word" data-word-idx="14" id="w_14">and</span> <span class="k-word" data-word-idx="15" id="w_15">Fermat,</span> <span class="k-word" data-word-idx="16" id="w_16">games</span> <span class="k-word" data-word-idx="17" id="w_17">of</span> <span class="k-word" data-word-idx="18" id="w_18">dice</span> <span class="k-word" data-word-idx="19" id="w_19">were</span> <span class="k-word" data-word-idx="20" id="w_20">viewed</span> <span class="k-word" data-word-idx="21" id="w_21">as</span> <span class="k-word" data-word-idx="22" id="w_22">the</span> <span class="k-word" data-word-idx="23" id="w_23">direct</span> <span class="k-word" data-word-idx="24" id="w_24">intervention</span> <span class="k-word" data-word-idx="25" id="w_25">of</span> <span class="k-word" data-word-idx="26" id="w_26">the</span> <span class="k-word" data-word-idx="27" id="w_27">gods</span> <span class="k-word" data-word-idx="28" id="w_28">or</span> <span class="k-word" data-word-idx="29" id="w_29">blind</span> <span class="k-word" data-word-idx="30" id="w_30">fate.</span></span> <span class="k-chunk" id="kchunk_2" data-chunk-idx="2"><span class="k-word" data-word-idx="31" id="w_31">Gerolamo</span> <span class="k-word" data-word-idx="32" id="w_32">Cardano,</span> <span class="k-word" data-word-idx="33" id="w_33">a</span> <span class="k-word" data-word-idx="34" id="w_34">Renaissance</span> <span class="k-word" data-word-idx="35" id="w_35">physician</span> <span class="k-word" data-word-idx="36" id="w_36">and</span> <span class="k-word" data-word-idx="37" id="w_37">compulsive</span> <span class="k-word" data-word-idx="38" id="w_38">gambler,</span> <span class="k-word" data-word-idx="39" id="w_39">was</span> <span class="k-word" data-word-idx="40" id="w_40">the</span> <span class="k-word" data-word-idx="41" id="w_41">first</span> <span class="k-word" data-word-idx="42" id="w_42">to</span> <span class="k-word" data-word-idx="43" id="w_43">define</span> <span class="k-word" data-word-idx="44" id="w_44">sample</span> <span class="k-word" data-word-idx="45" id="w_45">space—the</span> <span class="k-word" data-word-idx="46" id="w_46">idea</span> <span class="k-word" data-word-idx="47" id="w_47">that</span> <span class="k-word" data-word-idx="48" id="w_48">if</span> <span class="k-word" data-word-idx="49" id="w_49">a</span> <span class="k-word" data-word-idx="50" id="w_50">die</span> <span class="k-word" data-word-idx="51" id="w_51">has</span> <span class="k-word" data-word-idx="52" id="w_52">six</span> <span class="k-word" data-word-idx="53" id="w_53">faces,</span> <span class="k-word" data-word-idx="54" id="w_54">each</span> <span class="k-word" data-word-idx="55" id="w_55">face</span> <span class="k-word" data-word-idx="56" id="w_56">has</span> <span class="k-word" data-word-idx="57" id="w_57">an</span> <span class="k-word" data-word-idx="58" id="w_58">equal</span> <span class="k-word" data-word-idx="59" id="w_59">1/6</span> <span class="k-word" data-word-idx="60" id="w_60">claim</span> <span class="k-word" data-word-idx="61" id="w_61">on</span> <span class="k-word" data-word-idx="62" id="w_62">reality.</span></span></p>
+<p><span class="k-chunk" id="kchunk_3" data-chunk-idx="3"><span class="k-word" data-word-idx="63" id="w_63">In</span> <span class="k-word" data-word-idx="64" id="w_64">1654,</span> <span class="k-word" data-word-idx="65" id="w_65">Antoine</span> <span class="k-word" data-word-idx="66" id="w_66">Gombaud</span> <span class="k-word" data-word-idx="67" id="w_67">(the</span> <span class="k-word" data-word-idx="68" id="w_68">Chevalier</span> <span class="k-word" data-word-idx="69" id="w_69">de</span> <span class="k-word" data-word-idx="70" id="w_70">Méré)</span> <span class="k-word" data-word-idx="71" id="w_71">posed</span> <span class="k-word" data-word-idx="72" id="w_72">the</span> <span class="k-word" data-word-idx="73" id="w_73">&#x27;Problem</span> <span class="k-word" data-word-idx="74" id="w_74">of</span> <span class="k-word" data-word-idx="75" id="w_75">Points&#x27;:</span> <span class="k-word" data-word-idx="76" id="w_76">if</span> <span class="k-word" data-word-idx="77" id="w_77">a</span> <span class="k-word" data-word-idx="78" id="w_78">game</span> <span class="k-word" data-word-idx="79" id="w_79">of</span> <span class="k-word" data-word-idx="80" id="w_80">chance</span> <span class="k-word" data-word-idx="81" id="w_81">is</span> <span class="k-word" data-word-idx="82" id="w_82">interrupted</span> <span class="k-word" data-word-idx="83" id="w_83">before</span> <span class="k-word" data-word-idx="84" id="w_84">it</span> <span class="k-word" data-word-idx="85" id="w_85">finishes,</span> <span class="k-word" data-word-idx="86" id="w_86">how</span> <span class="k-word" data-word-idx="87" id="w_87">should</span> <span class="k-word" data-word-idx="88" id="w_88">the</span> <span class="k-word" data-word-idx="89" id="w_89">pot</span> <span class="k-word" data-word-idx="90" id="w_90">be</span> <span class="k-word" data-word-idx="91" id="w_91">divided</span> <span class="k-word" data-word-idx="92" id="w_92">fairly?</span></span> <span class="k-chunk" id="kchunk_4" data-chunk-idx="4"><span class="k-word" data-word-idx="93" id="w_93">Pascal</span> <span class="k-word" data-word-idx="94" id="w_94">and</span> <span class="k-word" data-word-idx="95" id="w_95">Fermat</span> <span class="k-word" data-word-idx="96" id="w_96">solved</span> <span class="k-word" data-word-idx="97" id="w_97">this</span> <span class="k-word" data-word-idx="98" id="w_98">through</span> <span class="k-word" data-word-idx="99" id="w_99">a</span> <span class="k-word" data-word-idx="100" id="w_100">historic</span> <span class="k-word" data-word-idx="101" id="w_101">correspondence,</span> <span class="k-word" data-word-idx="102" id="w_102">constructing</span> <span class="k-word" data-word-idx="103" id="w_103">the</span> <span class="k-word" data-word-idx="104" id="w_104">arithmetic</span> <span class="k-word" data-word-idx="105" id="w_105">triangle</span> <span class="k-word" data-word-idx="106" id="w_106">(Pascal&#x27;s</span> <span class="k-word" data-word-idx="107" id="w_107">Triangle)</span> <span class="k-word" data-word-idx="108" id="w_108">and</span> <span class="k-word" data-word-idx="109" id="w_109">laying</span> <span class="k-word" data-word-idx="110" id="w_110">the</span> <span class="k-word" data-word-idx="111" id="w_111">bedrock</span> <span class="k-word" data-word-idx="112" id="w_112">of</span> <span class="k-word" data-word-idx="113" id="w_113">modern</span> <span class="k-word" data-word-idx="114" id="w_114">combinatorial</span> <span class="k-word" data-word-idx="115" id="w_115">probability.</span></span></p>
     </section>
 
     <nav class="nav-footer">
       <a href="ch_1.html">← Previous Chapter</a>
-      <a class="primary" href="../../books.html">📚 All Books</a>
+      <a class="primary" href="../../books.html#book=the-drunkards-walk-leonard-mlodinow">📚 All Books</a>
       <a href="ch_3.html">Next Chapter →</a>
     </nav>
   </main>
@@ -594,121 +613,68 @@
     const AUDIO_SILENCES = [];
     const CACHE_NAME = "kortex-books-v1";
     const WORDS_DATA = [{"c": 0, "w": 7, "s": 1}, {"c": 7, "w": 3, "s": 0}, {"c": 10, "w": 5, "s": 0}, {"c": 15, "w": 3, "s": 0}, {"c": 18, "w": 8, "s": 0}, {"c": 26, "w": 3, "s": 0}, {"c": 29, "w": 14, "s": 0}, {"c": 43, "w": 9, "s": 0}, {"c": 52, "w": 6, "s": 0}, {"c": 58, "w": 3, "s": 0}, {"c": 61, "w": 11, "s": 1}, {"c": 72, "w": 6, "s": 0}, {"c": 78, "w": 10, "s": 0}, {"c": 88, "w": 9, "s": 0}, {"c": 97, "w": 3, "s": 0}, {"c": 100, "w": 9, "s": 0}, {"c": 109, "w": 5, "s": 0}, {"c": 114, "w": 3, "s": 0}, {"c": 117, "w": 4, "s": 0}, {"c": 121, "w": 4, "s": 0}, {"c": 125, "w": 6, "s": 0}, {"c": 131, "w": 3, "s": 0}, {"c": 134, "w": 3, "s": 0}, {"c": 137, "w": 6, "s": 0}, {"c": 143, "w": 12, "s": 0}, {"c": 155, "w": 3, "s": 0}, {"c": 158, "w": 3, "s": 0}, {"c": 161, "w": 4, "s": 0}, {"c": 165, "w": 3, "s": 0}, {"c": 168, "w": 5, "s": 0}, {"c": 173, "w": 9, "s": 1}, {"c": 182, "w": 8, "s": 0}, {"c": 190, "w": 10, "s": 0}, {"c": 200, "w": 3, "s": 0}, {"c": 203, "w": 11, "s": 0}, {"c": 214, "w": 9, "s": 0}, {"c": 223, "w": 3, "s": 0}, {"c": 226, "w": 10, "s": 0}, {"c": 236, "w": 10, "s": 0}, {"c": 246, "w": 3, "s": 0}, {"c": 249, "w": 3, "s": 0}, {"c": 252, "w": 5, "s": 0}, {"c": 257, "w": 3, "s": 0}, {"c": 260, "w": 6, "s": 0}, {"c": 266, "w": 6, "s": 0}, {"c": 272, "w": 9, "s": 0}, {"c": 281, "w": 4, "s": 0}, {"c": 285, "w": 4, "s": 0}, {"c": 289, "w": 3, "s": 0}, {"c": 292, "w": 3, "s": 0}, {"c": 295, "w": 3, "s": 0}, {"c": 298, "w": 3, "s": 0}, {"c": 301, "w": 3, "s": 0}, {"c": 304, "w": 8, "s": 0}, {"c": 312, "w": 4, "s": 0}, {"c": 316, "w": 4, "s": 0}, {"c": 320, "w": 3, "s": 0}, {"c": 323, "w": 3, "s": 0}, {"c": 326, "w": 5, "s": 0}, {"c": 331, "w": 3, "s": 0}, {"c": 334, "w": 5, "s": 0}, {"c": 339, "w": 3, "s": 0}, {"c": 342, "w": 12, "s": 1}, {"c": 354, "w": 3, "s": 0}, {"c": 357, "w": 7, "s": 0}, {"c": 364, "w": 7, "s": 0}, {"c": 371, "w": 7, "s": 0}, {"c": 378, "w": 3, "s": 0}, {"c": 381, "w": 9, "s": 0}, {"c": 390, "w": 3, "s": 0}, {"c": 393, "w": 4, "s": 0}, {"c": 397, "w": 5, "s": 0}, {"c": 402, "w": 3, "s": 0}, {"c": 405, "w": 8, "s": 0}, {"c": 413, "w": 3, "s": 0}, {"c": 416, "w": 10, "s": 0}, {"c": 426, "w": 3, "s": 0}, {"c": 429, "w": 3, "s": 0}, {"c": 432, "w": 4, "s": 0}, {"c": 436, "w": 3, "s": 0}, {"c": 439, "w": 6, "s": 0}, {"c": 445, "w": 3, "s": 0}, {"c": 448, "w": 11, "s": 0}, {"c": 459, "w": 6, "s": 0}, {"c": 465, "w": 3, "s": 0}, {"c": 468, "w": 11, "s": 0}, {"c": 479, "w": 3, "s": 0}, {"c": 482, "w": 6, "s": 0}, {"c": 488, "w": 3, "s": 0}, {"c": 491, "w": 3, "s": 0}, {"c": 494, "w": 3, "s": 0}, {"c": 497, "w": 7, "s": 0}, {"c": 504, "w": 11, "s": 1}, {"c": 515, "w": 6, "s": 0}, {"c": 521, "w": 3, "s": 0}, {"c": 524, "w": 6, "s": 0}, {"c": 530, "w": 6, "s": 0}, {"c": 536, "w": 4, "s": 0}, {"c": 540, "w": 7, "s": 0}, {"c": 547, "w": 3, "s": 0}, {"c": 550, "w": 8, "s": 0}, {"c": 558, "w": 17, "s": 0}, {"c": 575, "w": 12, "s": 0}, {"c": 587, "w": 3, "s": 0}, {"c": 590, "w": 10, "s": 0}, {"c": 600, "w": 8, "s": 0}, {"c": 608, "w": 8, "s": 0}, {"c": 616, "w": 8, "s": 0}, {"c": 624, "w": 3, "s": 0}, {"c": 627, "w": 6, "s": 0}, {"c": 633, "w": 3, "s": 0}, {"c": 636, "w": 7, "s": 0}, {"c": 643, "w": 3, "s": 0}, {"c": 646, "w": 6, "s": 0}, {"c": 652, "w": 13, "s": 0}, {"c": 665, "w": 16, "s": 1}];
+    const CHUNKS_DATA = [{"idx": 0, "w0": 0, "w1": 10, "weight": 72, "cum": 0}, {"idx": 1, "w0": 11, "w1": 30, "weight": 110, "cum": 72}, {"idx": 2, "w0": 31, "w1": 62, "weight": 172, "cum": 182}, {"idx": 3, "w0": 63, "w1": 92, "weight": 161, "cum": 354}, {"idx": 4, "w0": 93, "w1": 115, "weight": 166, "cum": 515}];
+    const TIMELINE_DATA = null;
     const TOTAL_WEIGHT = 681;
     let timelineCalibrated = false;
 
-    function buildAcousticWordTimeline(words, totalWeight, audioMeta) {
-      if (!words || !words.length || totalWeight <= 0) return;
+    function buildAcousticWordTimeline(words, chunks, totalWeight, audioMeta) {
+      if (!words || !words.length || !chunks || !chunks.length || totalWeight <= 0) return;
       const totalDur = (audioMeta && Number(audioMeta.dur) > 0.5)
         ? Number(audioMeta.dur)
         : (audioEl && audioEl.duration > 0 ? audioEl.duration : AUDIO_DURATION);
       if (totalDur <= 0) return;
 
       const rawSilences = (audioMeta && Array.isArray(audioMeta.silences)) ? audioMeta.silences : (AUDIO_SILENCES || []);
-      if (!rawSilences.length) {
-        for (let i = 0; i < words.length; i++) {
-          words[i].startSec = (words[i].c / totalWeight) * totalDur;
-          words[i].endSec = ((words[i].c + words[i].w) / totalWeight) * totalDur;
+
+      // 1. Anchor 1-2 sentence chunk boundaries
+      if (Array.isArray(TIMELINE_DATA) && TIMELINE_DATA.length === chunks.length) {
+        for (let i = 0; i < chunks.length; i++) {
+          chunks[i].startSec = Number(TIMELINE_DATA[i].startSec || TIMELINE_DATA[i].start || 0);
+          chunks[i].endSec = Number(TIMELINE_DATA[i].endSec || TIMELINE_DATA[i].end || totalDur);
         }
-        timelineCalibrated = true;
-        return;
-      }
+      } else {
+        let lastEnd = 0.0;
+        for (let i = 0; i < chunks.length; i++) {
+          const ch = chunks[i];
+          ch.startSec = lastEnd;
+          if (i === chunks.length - 1) {
+            ch.endSec = totalDur;
+          } else {
+            const nextCum = ch.cum + ch.weight;
+            const targetT = (nextCum / totalWeight) * totalDur;
 
-      function voicedTimeAt(t) {
-        const clamped = Math.max(0, Math.min(totalDur, t));
-        let v = clamped;
-        for (let i = 0; i < rawSilences.length; i++) {
-          const s = rawSilences[i][0];
-          const e = rawSilences[i][1];
-          if (clamped <= s) break;
-          v -= (Math.min(clamped, e) - s);
-        }
-        return Math.max(0, v);
-      }
-
-      function invVoicedTime(targetV) {
-        let lo = 0;
-        let hi = totalDur;
-        for (let iter = 0; iter < 28; iter++) {
-          const mid = (lo + hi) * 0.5;
-          if (voicedTimeAt(mid) < targetV) lo = mid;
-          else hi = mid;
-        }
-        return (lo + hi) * 0.5;
-      }
-
-      const totalVoiced = voicedTimeAt(totalDur);
-      if (totalVoiced <= 0) return;
-
-      // 1. Sentence boundary word indices
-      const sentEndIndices = [];
-      for (let i = 0; i < words.length; i++) {
-        if (words[i].s) sentEndIndices.push(i);
-      }
-      if (!sentEndIndices.length || sentEndIndices[sentEndIndices.length - 1] !== words.length - 1) {
-        sentEndIndices.push(words.length - 1);
-      }
-
-      // 2. Anchor every K sentences (K=2 sentences per anchor)
-      const K = 2;
-      const anchorIndices = [];
-      for (let i = K - 1; i < sentEndIndices.length; i += K) {
-        anchorIndices.push(sentEndIndices[i]);
-      }
-      if (!anchorIndices.length || anchorIndices[anchorIndices.length - 1] !== words.length - 1) {
-        anchorIndices.push(words.length - 1);
-      }
-
-      // 3. Compute anchor timestamps snapped to acoustic silences
-      const anchors = [{ wordIdx: -1, timeSec: 0.0 }];
-      for (let a = 0; a < anchorIndices.length; a++) {
-        const idx = anchorIndices[a];
-        const w = words[idx];
-        const cumW = w.c + w.w;
-        const frac = cumW / totalWeight;
-        const targetV = frac * totalVoiced;
-        const tEst = invVoicedTime(targetV);
-
-        let bestSilStart = null;
-        let minDist = 1.6;
-        for (let s = 0; s < rawSilences.length; s++) {
-          const dist = Math.abs(rawSilences[s][0] - tEst);
-          if (dist < minDist) {
-            minDist = dist;
-            bestSilStart = rawSilences[s][0];
+            let bestSil = null;
+            let minDist = 2.5;
+            for (let s = 0; s < rawSilences.length; s++) {
+              const silT = rawSilences[s][0];
+              if (silT > lastEnd + 0.6 && silT < totalDur - 0.5) {
+                const d = Math.abs(silT - targetT);
+                if (d < minDist) {
+                  minDist = d;
+                  bestSil = silT;
+                }
+              }
+            }
+            const boundary = bestSil !== null ? bestSil : Math.max(lastEnd + 0.6, targetT);
+            ch.endSec = boundary;
+            lastEnd = boundary;
           }
         }
-        const aTime = bestSilStart !== null ? bestSilStart : tEst;
-        anchors.push({
-          wordIdx: idx,
-          timeSec: Math.max(0.1, aTime)
-        });
       }
 
-      for (let a = 1; a < anchors.length; a++) {
-        if (anchors[a].timeSec <= anchors[a - 1].timeSec) {
-          anchors[a].timeSec = anchors[a - 1].timeSec + 0.3;
-        }
-      }
-      anchors[anchors.length - 1].timeSec = totalDur;
-
-      // 4. Interpolate words strictly within each 2-sentence anchor interval
-      for (let a = 0; a < anchors.length - 1; a++) {
-        const startWIdx = anchors[a].wordIdx + 1;
-        const endWIdx = anchors[a + 1].wordIdx;
-        if (startWIdx > endWIdx) continue;
-
-        const tStart = anchors[a].timeSec;
-        const tEnd = anchors[a + 1].timeSec;
-        const baseC = words[startWIdx].c;
-        const spanW = Math.max(1, (words[endWIdx].c + words[endWIdx].w) - baseC);
-        const spanT = Math.max(0.05, tEnd - tStart);
-
-        for (let i = startWIdx; i <= endWIdx; i++) {
-          const fracS = (words[i].c - baseC) / spanW;
-          const fracE = ((words[i].c + words[i].w) - baseC) / spanW;
-          words[i].startSec = tStart + fracS * spanT;
-          words[i].endSec = tStart + fracE * spanT;
+      // 2. Interpolate words strictly inside each 1-2 sentence chunk
+      for (let c = 0; c < chunks.length; c++) {
+        const ch = chunks[c];
+        const spanT = Math.max(0.05, ch.endSec - ch.startSec);
+        const baseC = words[ch.w0].c;
+        const spanW = Math.max(1, (words[ch.w1].c + words[ch.w1].w) - baseC);
+        for (let w = ch.w0; w <= ch.w1; w++) {
+          const fracS = (words[w].c - baseC) / spanW;
+          const fracE = ((words[w].c + words[w].w) - baseC) / spanW;
+          words[w].startSec = ch.startSec + fracS * spanT;
+          words[w].endSec = ch.startSec + fracE * spanT;
+          words[w].chunkIdx = c;
         }
       }
 
@@ -754,6 +720,11 @@
       const tBtn = document.getElementById("btnTopListen");
       if (bBtn) bBtn.textContent = isPlaying ? "⏸" : "▶";
       if (tBtn) tBtn.textContent = isPlaying ? "⏸ Pause" : "▶️ Listen";
+      if (isPlaying) {
+        document.body.classList.add("has-active-player");
+        const sp = document.getElementById("stickyPlayer");
+        if (sp) sp.style.display = "flex";
+      }
     }
 
     async function toggleAudioPlay() {
@@ -834,35 +805,22 @@
       }
     }
 
-    // Sync Karaoke Word
+    // Sync Karaoke Sentence Chunk & Word
+    let activeChunkIdx = -1;
     function syncKaraokeWord() {
       if (!karaokeActive || !WORDS_DATA.length || TOTAL_WEIGHT <= 0) return;
       const dur = (audioEl && audioEl.duration > 0) ? audioEl.duration : AUDIO_DURATION;
       if (!Number.isFinite(dur) || dur <= 0) return;
       const cur = audioEl.currentTime;
 
-      let foundIdx = 0;
-      if (WORDS_DATA[0].startSec !== undefined) {
-        let low = 0;
-        let high = WORDS_DATA.length - 1;
+      // 1. Binary search active chunk
+      let cIdx = 0;
+      if (CHUNKS_DATA && CHUNKS_DATA.length && CHUNKS_DATA[0].startSec !== undefined) {
+        let low = 0, high = CHUNKS_DATA.length - 1;
         while (low <= high) {
           const mid = (low + high) >> 1;
-          if (WORDS_DATA[mid].startSec <= cur) {
-            foundIdx = mid;
-            low = mid + 1;
-          } else {
-            high = mid - 1;
-          }
-        }
-      } else {
-        const progress = Math.min(1.0, Math.max(0, cur / dur));
-        const targetWeight = progress * TOTAL_WEIGHT;
-        let low = 0;
-        let high = WORDS_DATA.length - 1;
-        while (low <= high) {
-          const mid = (low + high) >> 1;
-          if (WORDS_DATA[mid].c <= targetWeight) {
-            foundIdx = mid;
+          if (CHUNKS_DATA[mid].startSec <= cur) {
+            cIdx = mid;
             low = mid + 1;
           } else {
             high = mid - 1;
@@ -870,23 +828,45 @@
         }
       }
 
-      if (foundIdx !== activeWordIdx) {
+      if (cIdx !== activeChunkIdx) {
+        if (activeChunkIdx >= 0) {
+          const prevChunkEl = document.getElementById(`kchunk_${activeChunkIdx}`);
+          if (prevChunkEl) prevChunkEl.classList.remove("active-chunk");
+        }
+        const curChunkEl = document.getElementById(`kchunk_${cIdx}`);
+        if (curChunkEl) {
+          curChunkEl.classList.add("active-chunk");
+          const rect = curChunkEl.getBoundingClientRect();
+          if (rect.top < 80 || rect.bottom > window.innerHeight - 100) {
+            curChunkEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }
+        activeChunkIdx = cIdx;
+      }
+
+      // 2. Binary search active word strictly within active chunk
+      const curChunk = (CHUNKS_DATA && CHUNKS_DATA[cIdx]) ? CHUNKS_DATA[cIdx] : { w0: 0, w1: WORDS_DATA.length - 1 };
+      let foundWordIdx = curChunk.w0;
+      let low = curChunk.w0, high = curChunk.w1;
+      while (low <= high) {
+        const mid = (low + high) >> 1;
+        if (WORDS_DATA[mid].startSec <= cur) {
+          foundWordIdx = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      if (foundWordIdx !== activeWordIdx) {
         if (activeWordIdx >= 0) {
           const prev = document.getElementById(`w_${activeWordIdx}`);
           if (prev) prev.classList.remove("active-word");
         }
-        activeWordIdx = foundIdx;
+        activeWordIdx = foundWordIdx;
         const curEl = document.getElementById(`w_${activeWordIdx}`);
         if (curEl) {
           curEl.classList.add("active-word");
-          const r = curEl.getBoundingClientRect();
-          const targetY = window.innerHeight * 0.40;
-          if (r.top < 80 || r.top > window.innerHeight * 0.65) {
-            window.scrollBy({
-              top: r.top - targetY,
-              behavior: "smooth"
-            });
-          }
         }
       }
     }
@@ -896,11 +876,11 @@
       syncPlayButtonUi(true);
       karaokeActive = true;
       if (!timelineCalibrated) {
-        buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
+        buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
       }
     });
     audioEl.addEventListener("loadedmetadata", () => {
-      buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
+      buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
     });
     audioEl.addEventListener("pause", () => {
       syncPlayButtonUi(false);

@@ -52,8 +52,11 @@
       display: flex;
       flex-direction: column;
       padding-top: calc(var(--safe-top) + 56px);
-      padding-bottom: calc(var(--safe-bottom) + 110px);
+      padding-bottom: calc(var(--safe-bottom) + 36px);
       transition: background 0.2s ease, color 0.2s ease;
+    }
+    body.has-active-player {
+      padding-bottom: calc(var(--safe-bottom) + 110px);
     }
     /* Topbar */
     .topbar {
@@ -283,7 +286,19 @@
       font-style: italic;
     }
 
-    /* Karaoke Highlighting */
+    /* Sentence Chunking & Karaoke Highlighting */
+    .k-chunk {
+      display: inline;
+      border-radius: 6px;
+      transition: background-color 0.18s ease;
+    }
+    .k-chunk.active-chunk {
+      background-color: rgba(99, 102, 241, 0.08);
+      border-radius: 6px;
+    }
+    body.dark-mode .k-chunk.active-chunk {
+      background-color: rgba(99, 102, 241, 0.18);
+    }
     .k-word {
       display: inline;
       border-radius: 4px;
@@ -335,7 +350,7 @@
       border-color: var(--accent);
     }
 
-    /* Sticky Bottom Player Bar */
+    /* Sticky Bottom Player Bar (only shown when audio is playing/active) */
     .sticky-player {
       position: fixed;
       bottom: 0;
@@ -346,9 +361,12 @@
       padding: 10px 16px calc(var(--safe-bottom) + 10px);
       z-index: 60;
       box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
-      display: flex;
+      display: none;
       flex-direction: column;
       gap: 8px;
+    }
+    body.has-active-player .sticky-player {
+      display: flex;
     }
     .player-progress-wrap {
       display: flex;
@@ -467,7 +485,7 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="back-btn" id="navBackBtn" href="../../books.html">← Library</a>
+    <a class="back-btn" id="navBackBtn" href="../../books.html#book=ishwar-chandra-vidyasagar-reforms">← Library</a>
     <div class="top-title">Selected Social &amp; Educational Reforms: Reason, Courage &amp; Human Dignity</div>
     <div class="top-actions">
       <button class="btn-icon" id="btnFontSmaller">A-</button>
@@ -498,6 +516,7 @@
         </div>
       </div>
       <div class="hero-curation-pill">⚡ ADHD Core Cut: 42 pages total (45m) · 83.8% filler pruned for maximum flow</div>
+      <div class="hero-curation-pill" style="color:var(--accent);background:var(--accent-light);border-color:rgba(79,70,229,0.25);">🏛️ Author Chapter Structure: 6 Historic Works: Widow Remarriage (Tracts 1 &amp; 2), Ban on Kulin Polygamy (Tracts 1 &amp; 2), Sanskrit College Charter, Female Education Memoranda · 6 Treatises &amp; Charters</div>
 
       <div class="hero-brief"><strong>Core Takeaway:</strong> The incredible moral courage of an incorruptible scholar who walked barefoot in a coarse dhoti into the dens of orthodox power, defending reason, truth, and human dignity.</div>
 
@@ -525,24 +544,24 @@
     </article>
 
     <section class="prose-body" id="proseBody">
-      <h2 class="chapter-prose-title"><span class="k-word" data-word-idx="0" id="w_0">Step</span> <span class="k-word" data-word-idx="1" id="w_1">1</span> <span class="k-word" data-word-idx="2" id="w_2">·</span> <span class="k-word" data-word-idx="3" id="w_3">The</span> <span class="k-word" data-word-idx="4" id="w_4">Lone</span> <span class="k-word" data-word-idx="5" id="w_5">Lion</span> <span class="k-word" data-word-idx="6" id="w_6">of</span> <span class="k-word" data-word-idx="7" id="w_7">Bengal</span> <span class="k-word" data-word-idx="8" id="w_8">—</span> <span class="k-word" data-word-idx="9" id="w_9">Breaking</span> <span class="k-word" data-word-idx="10" id="w_10">Medieval</span> <span class="k-word" data-word-idx="11" id="w_11">Dogma</span> <span class="k-word" data-word-idx="12" id="w_12">with</span> <span class="k-word" data-word-idx="13" id="w_13">Moral</span> <span class="k-word" data-word-idx="14" id="w_14">Integrity</span> <span class="k-word" data-word-idx="15" id="w_15">(Start</span> <span class="k-word" data-word-idx="16" id="w_16">Here)</span></h2>
+      <h2 class="chapter-prose-title"><span class="k-chunk" id="kchunk_0" data-chunk-idx="0"><span class="k-word" data-word-idx="0" id="w_0">Step</span> <span class="k-word" data-word-idx="1" id="w_1">1</span> <span class="k-word" data-word-idx="2" id="w_2">·</span> <span class="k-word" data-word-idx="3" id="w_3">The</span> <span class="k-word" data-word-idx="4" id="w_4">Lone</span> <span class="k-word" data-word-idx="5" id="w_5">Lion</span> <span class="k-word" data-word-idx="6" id="w_6">of</span> <span class="k-word" data-word-idx="7" id="w_7">Bengal</span> <span class="k-word" data-word-idx="8" id="w_8">—</span> <span class="k-word" data-word-idx="9" id="w_9">Breaking</span> <span class="k-word" data-word-idx="10" id="w_10">Medieval</span> <span class="k-word" data-word-idx="11" id="w_11">Dogma</span> <span class="k-word" data-word-idx="12" id="w_12">with</span> <span class="k-word" data-word-idx="13" id="w_13">Moral</span> <span class="k-word" data-word-idx="14" id="w_14">Integrity</span> <span class="k-word" data-word-idx="15" id="w_15">(Start</span> <span class="k-word" data-word-idx="16" id="w_16">Here)</span></span></h2>
 <blockquote class="chapter-spoken-brief">
-<p><span class="k-word" data-word-idx="17" id="w_17">&quot;He</span> <span class="k-word" data-word-idx="18" id="w_18">who</span> <span class="k-word" data-word-idx="19" id="w_19">has</span> <span class="k-word" data-word-idx="20" id="w_20">not</span> <span class="k-word" data-word-idx="21" id="w_21">the</span> <span class="k-word" data-word-idx="22" id="w_22">courage</span> <span class="k-word" data-word-idx="23" id="w_23">to</span> <span class="k-word" data-word-idx="24" id="w_24">speak</span> <span class="k-word" data-word-idx="25" id="w_25">the</span> <span class="k-word" data-word-idx="26" id="w_26">truth</span> <span class="k-word" data-word-idx="27" id="w_27">in</span> <span class="k-word" data-word-idx="28" id="w_28">the</span> <span class="k-word" data-word-idx="29" id="w_29">face</span> <span class="k-word" data-word-idx="30" id="w_30">of</span> <span class="k-word" data-word-idx="31" id="w_31">tyranny,</span> <span class="k-word" data-word-idx="32" id="w_32">he</span> <span class="k-word" data-word-idx="33" id="w_33">who</span> <span class="k-word" data-word-idx="34" id="w_34">panders</span> <span class="k-word" data-word-idx="35" id="w_35">to</span> <span class="k-word" data-word-idx="36" id="w_36">superstition</span> <span class="k-word" data-word-idx="37" id="w_37">to</span> <span class="k-word" data-word-idx="38" id="w_38">please</span> <span class="k-word" data-word-idx="39" id="w_39">the</span> <span class="k-word" data-word-idx="40" id="w_40">crowd,</span> <span class="k-word" data-word-idx="41" id="w_41">is</span> <span class="k-word" data-word-idx="42" id="w_42">a</span> <span class="k-word" data-word-idx="43" id="w_43">traitor</span> <span class="k-word" data-word-idx="44" id="w_44">to</span> <span class="k-word" data-word-idx="45" id="w_45">humanity.&quot;</span></p>
-<p><span class="k-word" data-word-idx="46" id="w_46">—</span> <span class="k-word" data-word-idx="47" id="w_47">Ishwar</span> <span class="k-word" data-word-idx="48" id="w_48">Chandra</span> <span class="k-word" data-word-idx="49" id="w_49">Vidyasagar</span></p>
+<p><span class="k-chunk" id="kchunk_1" data-chunk-idx="1"><span class="k-word" data-word-idx="17" id="w_17">&quot;He</span> <span class="k-word" data-word-idx="18" id="w_18">who</span> <span class="k-word" data-word-idx="19" id="w_19">has</span> <span class="k-word" data-word-idx="20" id="w_20">not</span> <span class="k-word" data-word-idx="21" id="w_21">the</span> <span class="k-word" data-word-idx="22" id="w_22">courage</span> <span class="k-word" data-word-idx="23" id="w_23">to</span> <span class="k-word" data-word-idx="24" id="w_24">speak</span> <span class="k-word" data-word-idx="25" id="w_25">the</span> <span class="k-word" data-word-idx="26" id="w_26">truth</span> <span class="k-word" data-word-idx="27" id="w_27">in</span> <span class="k-word" data-word-idx="28" id="w_28">the</span> <span class="k-word" data-word-idx="29" id="w_29">face</span> <span class="k-word" data-word-idx="30" id="w_30">of</span> <span class="k-word" data-word-idx="31" id="w_31">tyranny,</span> <span class="k-word" data-word-idx="32" id="w_32">he</span> <span class="k-word" data-word-idx="33" id="w_33">who</span> <span class="k-word" data-word-idx="34" id="w_34">panders</span> <span class="k-word" data-word-idx="35" id="w_35">to</span> <span class="k-word" data-word-idx="36" id="w_36">superstition</span> <span class="k-word" data-word-idx="37" id="w_37">to</span> <span class="k-word" data-word-idx="38" id="w_38">please</span> <span class="k-word" data-word-idx="39" id="w_39">the</span> <span class="k-word" data-word-idx="40" id="w_40">crowd,</span> <span class="k-word" data-word-idx="41" id="w_41">is</span> <span class="k-word" data-word-idx="42" id="w_42">a</span> <span class="k-word" data-word-idx="43" id="w_43">traitor</span> <span class="k-word" data-word-idx="44" id="w_44">to</span> <span class="k-word" data-word-idx="45" id="w_45">humanity.&quot;</span></span></p>
+<p><span class="k-chunk" id="kchunk_2" data-chunk-idx="2"><span class="k-word" data-word-idx="46" id="w_46">—</span> <span class="k-word" data-word-idx="47" id="w_47">Ishwar</span> <span class="k-word" data-word-idx="48" id="w_48">Chandra</span> <span class="k-word" data-word-idx="49" id="w_49">Vidyasagar</span></span></p>
 </blockquote>
-<h3 class="section-heading"><span class="k-word" data-word-idx="50" id="w_50">The</span> <span class="k-word" data-word-idx="51" id="w_51">Incorruptible</span> <span class="k-word" data-word-idx="52" id="w_52">Force</span> <span class="k-word" data-word-idx="53" id="w_53">of</span> <span class="k-word" data-word-idx="54" id="w_54">the</span> <span class="k-word" data-word-idx="55" id="w_55">Bengal</span> <span class="k-word" data-word-idx="56" id="w_56">Renaissance</span></h3>
-<p><span class="k-word" data-word-idx="57" id="w_57">In</span> <span class="k-word" data-word-idx="58" id="w_58">nineteenth-century</span> <span class="k-word" data-word-idx="59" id="w_59">Bengal,</span> <span class="k-word" data-word-idx="60" id="w_60">society</span> <span class="k-word" data-word-idx="61" id="w_61">was</span> <span class="k-word" data-word-idx="62" id="w_62">suffocating</span> <span class="k-word" data-word-idx="63" id="w_63">under</span> <span class="k-word" data-word-idx="64" id="w_64">a</span> <span class="k-word" data-word-idx="65" id="w_65">crushing</span> <span class="k-word" data-word-idx="66" id="w_66">weight</span> <span class="k-word" data-word-idx="67" id="w_67">of</span> <span class="k-word" data-word-idx="68" id="w_68">medieval</span> <span class="k-word" data-word-idx="69" id="w_69">darkness:</span> <span class="k-word" data-word-idx="70" id="w_70">child</span> <span class="k-word" data-word-idx="71" id="w_71">marriage,</span> <span class="k-word" data-word-idx="72" id="w_72">female</span> <span class="k-word" data-word-idx="73" id="w_73">illiteracy,</span> <span class="k-word" data-word-idx="74" id="w_74">caste</span> <span class="k-word" data-word-idx="75" id="w_75">untouchability,</span> <span class="k-word" data-word-idx="76" id="w_76">and</span> <span class="k-word" data-word-idx="77" id="w_77">the</span> <span class="k-word" data-word-idx="78" id="w_78">horrific</span> <span class="k-word" data-word-idx="79" id="w_79">plight</span> <span class="k-word" data-word-idx="80" id="w_80">of</span> <span class="k-word" data-word-idx="81" id="w_81">child-widows</span> <span class="k-word" data-word-idx="82" id="w_82">who</span> <span class="k-word" data-word-idx="83" id="w_83">were</span> <span class="k-word" data-word-idx="84" id="w_84">condemned</span> <span class="k-word" data-word-idx="85" id="w_85">to</span> <span class="k-word" data-word-idx="86" id="w_86">lifelong</span> <span class="k-word" data-word-idx="87" id="w_87">torture,</span> <span class="k-word" data-word-idx="88" id="w_88">starvation,</span> <span class="k-word" data-word-idx="89" id="w_89">and</span> <span class="k-word" data-word-idx="90" id="w_90">social</span> <span class="k-word" data-word-idx="91" id="w_91">ostracization.</span></p>
-<p><span class="k-word" data-word-idx="92" id="w_92">Out</span> <span class="k-word" data-word-idx="93" id="w_93">of</span> <span class="k-word" data-word-idx="94" id="w_94">extreme</span> <span class="k-word" data-word-idx="95" id="w_95">poverty</span> <span class="k-word" data-word-idx="96" id="w_96">in</span> <span class="k-word" data-word-idx="97" id="w_97">the</span> <span class="k-word" data-word-idx="98" id="w_98">village</span> <span class="k-word" data-word-idx="99" id="w_99">of</span> <span class="k-word" data-word-idx="100" id="w_100">Birsingha</span> <span class="k-word" data-word-idx="101" id="w_101">rose</span> <span class="k-word" data-word-idx="102" id="w_102">a</span> <span class="k-word" data-word-idx="103" id="w_103">young</span> <span class="k-word" data-word-idx="104" id="w_104">Brahmin</span> <span class="k-word" data-word-idx="105" id="w_105">boy</span> <span class="k-word" data-word-idx="106" id="w_106">named</span> <span class="k-word" data-word-idx="107" id="w_107">**Ishwar</span> <span class="k-word" data-word-idx="108" id="w_108">Chandra</span> <span class="k-word" data-word-idx="109" id="w_109">Bandyopadhyay**.</span> <span class="k-word" data-word-idx="110" id="w_110">He</span> <span class="k-word" data-word-idx="111" id="w_111">walked</span> <span class="k-word" data-word-idx="112" id="w_112">miles</span> <span class="k-word" data-word-idx="113" id="w_113">to</span> <span class="k-word" data-word-idx="114" id="w_114">Kolkata,</span> <span class="k-word" data-word-idx="115" id="w_115">studied</span> <span class="k-word" data-word-idx="116" id="w_116">under</span> <span class="k-word" data-word-idx="117" id="w_117">street</span> <span class="k-word" data-word-idx="118" id="w_118">lamps</span> <span class="k-word" data-word-idx="119" id="w_119">because</span> <span class="k-word" data-word-idx="120" id="w_120">he</span> <span class="k-word" data-word-idx="121" id="w_121">had</span> <span class="k-word" data-word-idx="122" id="w_122">no</span> <span class="k-word" data-word-idx="123" id="w_123">money</span> <span class="k-word" data-word-idx="124" id="w_124">for</span> <span class="k-word" data-word-idx="125" id="w_125">oil,</span> <span class="k-word" data-word-idx="126" id="w_126">and</span> <span class="k-word" data-word-idx="127" id="w_127">mastered</span> <span class="k-word" data-word-idx="128" id="w_128">Sanskrit</span> <span class="k-word" data-word-idx="129" id="w_129">grammar,</span> <span class="k-word" data-word-idx="130" id="w_130">logic,</span> <span class="k-word" data-word-idx="131" id="w_131">and</span> <span class="k-word" data-word-idx="132" id="w_132">philosophy</span> <span class="k-word" data-word-idx="133" id="w_133">with</span> <span class="k-word" data-word-idx="134" id="w_134">such</span> <span class="k-word" data-word-idx="135" id="w_135">astonishing</span> <span class="k-word" data-word-idx="136" id="w_136">speed</span> <span class="k-word" data-word-idx="137" id="w_137">that</span> <span class="k-word" data-word-idx="138" id="w_138">the</span> <span class="k-word" data-word-idx="139" id="w_139">scholars</span> <span class="k-word" data-word-idx="140" id="w_140">of</span> <span class="k-word" data-word-idx="141" id="w_141">Sanskrit</span> <span class="k-word" data-word-idx="142" id="w_142">College</span> <span class="k-word" data-word-idx="143" id="w_143">bestowed</span> <span class="k-word" data-word-idx="144" id="w_144">upon</span> <span class="k-word" data-word-idx="145" id="w_145">him</span> <span class="k-word" data-word-idx="146" id="w_146">the</span> <span class="k-word" data-word-idx="147" id="w_147">title</span> <span class="k-word" data-word-idx="148" id="w_148">**Vidyasagar**</span> <span class="k-word" data-word-idx="149" id="w_149">(*Ocean</span> <span class="k-word" data-word-idx="150" id="w_150">of</span> <span class="k-word" data-word-idx="151" id="w_151">Knowledge*).</span></p>
-<p><span class="k-word" data-word-idx="152" id="w_152">Yet,</span> <span class="k-word" data-word-idx="153" id="w_153">unlike</span> <span class="k-word" data-word-idx="154" id="w_154">other</span> <span class="k-word" data-word-idx="155" id="w_155">orthodox</span> <span class="k-word" data-word-idx="156" id="w_156">pandits</span> <span class="k-word" data-word-idx="157" id="w_157">who</span> <span class="k-word" data-word-idx="158" id="w_158">used</span> <span class="k-word" data-word-idx="159" id="w_159">their</span> <span class="k-word" data-word-idx="160" id="w_160">learning</span> <span class="k-word" data-word-idx="161" id="w_161">to</span> <span class="k-word" data-word-idx="162" id="w_162">defend</span> <span class="k-word" data-word-idx="163" id="w_163">rigid</span> <span class="k-word" data-word-idx="164" id="w_164">ritualism</span> <span class="k-word" data-word-idx="165" id="w_165">and</span> <span class="k-word" data-word-idx="166" id="w_166">social</span> <span class="k-word" data-word-idx="167" id="w_167">privilege,</span> <span class="k-word" data-word-idx="168" id="w_168">Vidyasagar</span> <span class="k-word" data-word-idx="169" id="w_169">possessed</span> <span class="k-word" data-word-idx="170" id="w_170">an</span> <span class="k-word" data-word-idx="171" id="w_171">unshakeable</span> <span class="k-word" data-word-idx="172" id="w_172">moral</span> <span class="k-word" data-word-idx="173" id="w_173">compass.</span> <span class="k-word" data-word-idx="174" id="w_174">Michael</span> <span class="k-word" data-word-idx="175" id="w_175">Madhusudan</span> <span class="k-word" data-word-idx="176" id="w_176">Dutt</span> <span class="k-word" data-word-idx="177" id="w_177">wrote</span> <span class="k-word" data-word-idx="178" id="w_178">of</span> <span class="k-word" data-word-idx="179" id="w_179">him:</span></p>
+<h3 class="section-heading"><span class="k-chunk" id="kchunk_3" data-chunk-idx="3"><span class="k-word" data-word-idx="50" id="w_50">The</span> <span class="k-word" data-word-idx="51" id="w_51">Incorruptible</span> <span class="k-word" data-word-idx="52" id="w_52">Force</span> <span class="k-word" data-word-idx="53" id="w_53">of</span> <span class="k-word" data-word-idx="54" id="w_54">the</span> <span class="k-word" data-word-idx="55" id="w_55">Bengal</span> <span class="k-word" data-word-idx="56" id="w_56">Renaissance</span></span></h3>
+<p><span class="k-chunk" id="kchunk_4" data-chunk-idx="4"><span class="k-word" data-word-idx="57" id="w_57">In</span> <span class="k-word" data-word-idx="58" id="w_58">nineteenth-century</span> <span class="k-word" data-word-idx="59" id="w_59">Bengal,</span> <span class="k-word" data-word-idx="60" id="w_60">society</span> <span class="k-word" data-word-idx="61" id="w_61">was</span> <span class="k-word" data-word-idx="62" id="w_62">suffocating</span> <span class="k-word" data-word-idx="63" id="w_63">under</span> <span class="k-word" data-word-idx="64" id="w_64">a</span> <span class="k-word" data-word-idx="65" id="w_65">crushing</span> <span class="k-word" data-word-idx="66" id="w_66">weight</span> <span class="k-word" data-word-idx="67" id="w_67">of</span> <span class="k-word" data-word-idx="68" id="w_68">medieval</span> <span class="k-word" data-word-idx="69" id="w_69">darkness:</span> <span class="k-word" data-word-idx="70" id="w_70">child</span> <span class="k-word" data-word-idx="71" id="w_71">marriage,</span> <span class="k-word" data-word-idx="72" id="w_72">female</span> <span class="k-word" data-word-idx="73" id="w_73">illiteracy,</span> <span class="k-word" data-word-idx="74" id="w_74">caste</span> <span class="k-word" data-word-idx="75" id="w_75">untouchability,</span> <span class="k-word" data-word-idx="76" id="w_76">and</span> <span class="k-word" data-word-idx="77" id="w_77">the</span> <span class="k-word" data-word-idx="78" id="w_78">horrific</span> <span class="k-word" data-word-idx="79" id="w_79">plight</span> <span class="k-word" data-word-idx="80" id="w_80">of</span> <span class="k-word" data-word-idx="81" id="w_81">child-widows</span> <span class="k-word" data-word-idx="82" id="w_82">who</span> <span class="k-word" data-word-idx="83" id="w_83">were</span> <span class="k-word" data-word-idx="84" id="w_84">condemned</span> <span class="k-word" data-word-idx="85" id="w_85">to</span> <span class="k-word" data-word-idx="86" id="w_86">lifelong</span> <span class="k-word" data-word-idx="87" id="w_87">torture,</span> <span class="k-word" data-word-idx="88" id="w_88">starvation,</span> <span class="k-word" data-word-idx="89" id="w_89">and</span> <span class="k-word" data-word-idx="90" id="w_90">social</span> <span class="k-word" data-word-idx="91" id="w_91">ostracization.</span></span></p>
+<p><span class="k-chunk" id="kchunk_5" data-chunk-idx="5"><span class="k-word" data-word-idx="92" id="w_92">Out</span> <span class="k-word" data-word-idx="93" id="w_93">of</span> <span class="k-word" data-word-idx="94" id="w_94">extreme</span> <span class="k-word" data-word-idx="95" id="w_95">poverty</span> <span class="k-word" data-word-idx="96" id="w_96">in</span> <span class="k-word" data-word-idx="97" id="w_97">the</span> <span class="k-word" data-word-idx="98" id="w_98">village</span> <span class="k-word" data-word-idx="99" id="w_99">of</span> <span class="k-word" data-word-idx="100" id="w_100">Birsingha</span> <span class="k-word" data-word-idx="101" id="w_101">rose</span> <span class="k-word" data-word-idx="102" id="w_102">a</span> <span class="k-word" data-word-idx="103" id="w_103">young</span> <span class="k-word" data-word-idx="104" id="w_104">Brahmin</span> <span class="k-word" data-word-idx="105" id="w_105">boy</span> <span class="k-word" data-word-idx="106" id="w_106">named</span> <span class="k-word" data-word-idx="107" id="w_107">**Ishwar</span> <span class="k-word" data-word-idx="108" id="w_108">Chandra</span> <span class="k-word" data-word-idx="109" id="w_109">Bandyopadhyay**.</span></span> <span class="k-chunk" id="kchunk_6" data-chunk-idx="6"><span class="k-word" data-word-idx="110" id="w_110">He</span> <span class="k-word" data-word-idx="111" id="w_111">walked</span> <span class="k-word" data-word-idx="112" id="w_112">miles</span> <span class="k-word" data-word-idx="113" id="w_113">to</span> <span class="k-word" data-word-idx="114" id="w_114">Kolkata,</span> <span class="k-word" data-word-idx="115" id="w_115">studied</span> <span class="k-word" data-word-idx="116" id="w_116">under</span> <span class="k-word" data-word-idx="117" id="w_117">street</span> <span class="k-word" data-word-idx="118" id="w_118">lamps</span> <span class="k-word" data-word-idx="119" id="w_119">because</span> <span class="k-word" data-word-idx="120" id="w_120">he</span> <span class="k-word" data-word-idx="121" id="w_121">had</span> <span class="k-word" data-word-idx="122" id="w_122">no</span> <span class="k-word" data-word-idx="123" id="w_123">money</span> <span class="k-word" data-word-idx="124" id="w_124">for</span> <span class="k-word" data-word-idx="125" id="w_125">oil,</span> <span class="k-word" data-word-idx="126" id="w_126">and</span> <span class="k-word" data-word-idx="127" id="w_127">mastered</span> <span class="k-word" data-word-idx="128" id="w_128">Sanskrit</span> <span class="k-word" data-word-idx="129" id="w_129">grammar,</span> <span class="k-word" data-word-idx="130" id="w_130">logic,</span> <span class="k-word" data-word-idx="131" id="w_131">and</span> <span class="k-word" data-word-idx="132" id="w_132">philosophy</span> <span class="k-word" data-word-idx="133" id="w_133">with</span> <span class="k-word" data-word-idx="134" id="w_134">such</span> <span class="k-word" data-word-idx="135" id="w_135">astonishing</span> <span class="k-word" data-word-idx="136" id="w_136">speed</span> <span class="k-word" data-word-idx="137" id="w_137">that</span> <span class="k-word" data-word-idx="138" id="w_138">the</span> <span class="k-word" data-word-idx="139" id="w_139">scholars</span> <span class="k-word" data-word-idx="140" id="w_140">of</span> <span class="k-word" data-word-idx="141" id="w_141">Sanskrit</span> <span class="k-word" data-word-idx="142" id="w_142">College</span> <span class="k-word" data-word-idx="143" id="w_143">bestowed</span> <span class="k-word" data-word-idx="144" id="w_144">upon</span> <span class="k-word" data-word-idx="145" id="w_145">him</span> <span class="k-word" data-word-idx="146" id="w_146">the</span> <span class="k-word" data-word-idx="147" id="w_147">title</span> <span class="k-word" data-word-idx="148" id="w_148">**Vidyasagar**</span> <span class="k-word" data-word-idx="149" id="w_149">(*Ocean</span> <span class="k-word" data-word-idx="150" id="w_150">of</span> <span class="k-word" data-word-idx="151" id="w_151">Knowledge*).</span></span></p>
+<p><span class="k-chunk" id="kchunk_7" data-chunk-idx="7"><span class="k-word" data-word-idx="152" id="w_152">Yet,</span> <span class="k-word" data-word-idx="153" id="w_153">unlike</span> <span class="k-word" data-word-idx="154" id="w_154">other</span> <span class="k-word" data-word-idx="155" id="w_155">orthodox</span> <span class="k-word" data-word-idx="156" id="w_156">pandits</span> <span class="k-word" data-word-idx="157" id="w_157">who</span> <span class="k-word" data-word-idx="158" id="w_158">used</span> <span class="k-word" data-word-idx="159" id="w_159">their</span> <span class="k-word" data-word-idx="160" id="w_160">learning</span> <span class="k-word" data-word-idx="161" id="w_161">to</span> <span class="k-word" data-word-idx="162" id="w_162">defend</span> <span class="k-word" data-word-idx="163" id="w_163">rigid</span> <span class="k-word" data-word-idx="164" id="w_164">ritualism</span> <span class="k-word" data-word-idx="165" id="w_165">and</span> <span class="k-word" data-word-idx="166" id="w_166">social</span> <span class="k-word" data-word-idx="167" id="w_167">privilege,</span> <span class="k-word" data-word-idx="168" id="w_168">Vidyasagar</span> <span class="k-word" data-word-idx="169" id="w_169">possessed</span> <span class="k-word" data-word-idx="170" id="w_170">an</span> <span class="k-word" data-word-idx="171" id="w_171">unshakeable</span> <span class="k-word" data-word-idx="172" id="w_172">moral</span> <span class="k-word" data-word-idx="173" id="w_173">compass.</span></span> <span class="k-chunk" id="kchunk_8" data-chunk-idx="8"><span class="k-word" data-word-idx="174" id="w_174">Michael</span> <span class="k-word" data-word-idx="175" id="w_175">Madhusudan</span> <span class="k-word" data-word-idx="176" id="w_176">Dutt</span> <span class="k-word" data-word-idx="177" id="w_177">wrote</span> <span class="k-word" data-word-idx="178" id="w_178">of</span> <span class="k-word" data-word-idx="179" id="w_179">him:</span></span></p>
 <blockquote class="chapter-spoken-brief">
-<p><span class="k-word" data-word-idx="180" id="w_180">*&quot;He</span> <span class="k-word" data-word-idx="181" id="w_181">had</span> <span class="k-word" data-word-idx="182" id="w_182">the</span> <span class="k-word" data-word-idx="183" id="w_183">genius</span> <span class="k-word" data-word-idx="184" id="w_184">and</span> <span class="k-word" data-word-idx="185" id="w_185">wisdom</span> <span class="k-word" data-word-idx="186" id="w_186">of</span> <span class="k-word" data-word-idx="187" id="w_187">an</span> <span class="k-word" data-word-idx="188" id="w_188">ancient</span> <span class="k-word" data-word-idx="189" id="w_189">sage,</span> <span class="k-word" data-word-idx="190" id="w_190">the</span> <span class="k-word" data-word-idx="191" id="w_191">energy</span> <span class="k-word" data-word-idx="192" id="w_192">of</span> <span class="k-word" data-word-idx="193" id="w_193">an</span> <span class="k-word" data-word-idx="194" id="w_194">Englishman,</span> <span class="k-word" data-word-idx="195" id="w_195">and</span> <span class="k-word" data-word-idx="196" id="w_196">the</span> <span class="k-word" data-word-idx="197" id="w_197">tender</span> <span class="k-word" data-word-idx="198" id="w_198">heart</span> <span class="k-word" data-word-idx="199" id="w_199">of</span> <span class="k-word" data-word-idx="200" id="w_200">a</span> <span class="k-word" data-word-idx="201" id="w_201">Bengali</span> <span class="k-word" data-word-idx="202" id="w_202">mother.&quot;*</span></p>
+<p><span class="k-chunk" id="kchunk_9" data-chunk-idx="9"><span class="k-word" data-word-idx="180" id="w_180">*&quot;He</span> <span class="k-word" data-word-idx="181" id="w_181">had</span> <span class="k-word" data-word-idx="182" id="w_182">the</span> <span class="k-word" data-word-idx="183" id="w_183">genius</span> <span class="k-word" data-word-idx="184" id="w_184">and</span> <span class="k-word" data-word-idx="185" id="w_185">wisdom</span> <span class="k-word" data-word-idx="186" id="w_186">of</span> <span class="k-word" data-word-idx="187" id="w_187">an</span> <span class="k-word" data-word-idx="188" id="w_188">ancient</span> <span class="k-word" data-word-idx="189" id="w_189">sage,</span> <span class="k-word" data-word-idx="190" id="w_190">the</span> <span class="k-word" data-word-idx="191" id="w_191">energy</span> <span class="k-word" data-word-idx="192" id="w_192">of</span> <span class="k-word" data-word-idx="193" id="w_193">an</span> <span class="k-word" data-word-idx="194" id="w_194">Englishman,</span> <span class="k-word" data-word-idx="195" id="w_195">and</span> <span class="k-word" data-word-idx="196" id="w_196">the</span> <span class="k-word" data-word-idx="197" id="w_197">tender</span> <span class="k-word" data-word-idx="198" id="w_198">heart</span> <span class="k-word" data-word-idx="199" id="w_199">of</span> <span class="k-word" data-word-idx="200" id="w_200">a</span> <span class="k-word" data-word-idx="201" id="w_201">Bengali</span> <span class="k-word" data-word-idx="202" id="w_202">mother.&quot;*</span></span></p>
 </blockquote>
-<p><span class="k-word" data-word-idx="203" id="w_203">Vidyasagar</span> <span class="k-word" data-word-idx="204" id="w_204">was</span> <span class="k-word" data-word-idx="205" id="w_205">utterly</span> <span class="k-word" data-word-idx="206" id="w_206">fearless.</span> <span class="k-word" data-word-idx="207" id="w_207">When</span> <span class="k-word" data-word-idx="208" id="w_208">the</span> <span class="k-word" data-word-idx="209" id="w_209">British</span> <span class="k-word" data-word-idx="210" id="w_210">Council</span> <span class="k-word" data-word-idx="211" id="w_211">of</span> <span class="k-word" data-word-idx="212" id="w_212">Education</span> <span class="k-word" data-word-idx="213" id="w_213">attempted</span> <span class="k-word" data-word-idx="214" id="w_214">to</span> <span class="k-word" data-word-idx="215" id="w_215">dictate</span> <span class="k-word" data-word-idx="216" id="w_216">colonial</span> <span class="k-word" data-word-idx="217" id="w_217">curricula,</span> <span class="k-word" data-word-idx="218" id="w_218">he</span> <span class="k-word" data-word-idx="219" id="w_219">resigned</span> <span class="k-word" data-word-idx="220" id="w_220">his</span> <span class="k-word" data-word-idx="221" id="w_221">high-paying</span> <span class="k-word" data-word-idx="222" id="w_222">post</span> <span class="k-word" data-word-idx="223" id="w_223">as</span> <span class="k-word" data-word-idx="224" id="w_224">Principal</span> <span class="k-word" data-word-idx="225" id="w_225">of</span> <span class="k-word" data-word-idx="226" id="w_226">Sanskrit</span> <span class="k-word" data-word-idx="227" id="w_227">College</span> <span class="k-word" data-word-idx="228" id="w_228">rather</span> <span class="k-word" data-word-idx="229" id="w_229">than</span> <span class="k-word" data-word-idx="230" id="w_230">compromise</span> <span class="k-word" data-word-idx="231" id="w_231">his</span> <span class="k-word" data-word-idx="232" id="w_232">intellectual</span> <span class="k-word" data-word-idx="233" id="w_233">integrity.</span> <span class="k-word" data-word-idx="234" id="w_234">He</span> <span class="k-word" data-word-idx="235" id="w_235">walked</span> <span class="k-word" data-word-idx="236" id="w_236">with</span> <span class="k-word" data-word-idx="237" id="w_237">absolute</span> <span class="k-word" data-word-idx="238" id="w_238">dignity—barefoot,</span> <span class="k-word" data-word-idx="239" id="w_239">wearing</span> <span class="k-word" data-word-idx="240" id="w_240">a</span> <span class="k-word" data-word-idx="241" id="w_241">simple</span> <span class="k-word" data-word-idx="242" id="w_242">coarse</span> <span class="k-word" data-word-idx="243" id="w_243">cotton</span> <span class="k-word" data-word-idx="244" id="w_244">dhoti</span> <span class="k-word" data-word-idx="245" id="w_245">and</span> <span class="k-word" data-word-idx="246" id="w_246">chadar—whether</span> <span class="k-word" data-word-idx="247" id="w_247">meeting</span> <span class="k-word" data-word-idx="248" id="w_248">the</span> <span class="k-word" data-word-idx="249" id="w_249">British</span> <span class="k-word" data-word-idx="250" id="w_250">Governor-General</span> <span class="k-word" data-word-idx="251" id="w_251">or</span> <span class="k-word" data-word-idx="252" id="w_252">helping</span> <span class="k-word" data-word-idx="253" id="w_253">a</span> <span class="k-word" data-word-idx="254" id="w_254">cholera</span> <span class="k-word" data-word-idx="255" id="w_255">patient</span> <span class="k-word" data-word-idx="256" id="w_256">in</span> <span class="k-word" data-word-idx="257" id="w_257">a</span> <span class="k-word" data-word-idx="258" id="w_258">rural</span> <span class="k-word" data-word-idx="259" id="w_259">hut.</span></p>
+<p><span class="k-chunk" id="kchunk_10" data-chunk-idx="10"><span class="k-word" data-word-idx="203" id="w_203">Vidyasagar</span> <span class="k-word" data-word-idx="204" id="w_204">was</span> <span class="k-word" data-word-idx="205" id="w_205">utterly</span> <span class="k-word" data-word-idx="206" id="w_206">fearless.</span> <span class="k-word" data-word-idx="207" id="w_207">When</span> <span class="k-word" data-word-idx="208" id="w_208">the</span> <span class="k-word" data-word-idx="209" id="w_209">British</span> <span class="k-word" data-word-idx="210" id="w_210">Council</span> <span class="k-word" data-word-idx="211" id="w_211">of</span> <span class="k-word" data-word-idx="212" id="w_212">Education</span> <span class="k-word" data-word-idx="213" id="w_213">attempted</span> <span class="k-word" data-word-idx="214" id="w_214">to</span> <span class="k-word" data-word-idx="215" id="w_215">dictate</span> <span class="k-word" data-word-idx="216" id="w_216">colonial</span> <span class="k-word" data-word-idx="217" id="w_217">curricula,</span> <span class="k-word" data-word-idx="218" id="w_218">he</span> <span class="k-word" data-word-idx="219" id="w_219">resigned</span> <span class="k-word" data-word-idx="220" id="w_220">his</span> <span class="k-word" data-word-idx="221" id="w_221">high-paying</span> <span class="k-word" data-word-idx="222" id="w_222">post</span> <span class="k-word" data-word-idx="223" id="w_223">as</span> <span class="k-word" data-word-idx="224" id="w_224">Principal</span> <span class="k-word" data-word-idx="225" id="w_225">of</span> <span class="k-word" data-word-idx="226" id="w_226">Sanskrit</span> <span class="k-word" data-word-idx="227" id="w_227">College</span> <span class="k-word" data-word-idx="228" id="w_228">rather</span> <span class="k-word" data-word-idx="229" id="w_229">than</span> <span class="k-word" data-word-idx="230" id="w_230">compromise</span> <span class="k-word" data-word-idx="231" id="w_231">his</span> <span class="k-word" data-word-idx="232" id="w_232">intellectual</span> <span class="k-word" data-word-idx="233" id="w_233">integrity.</span></span> <span class="k-chunk" id="kchunk_11" data-chunk-idx="11"><span class="k-word" data-word-idx="234" id="w_234">He</span> <span class="k-word" data-word-idx="235" id="w_235">walked</span> <span class="k-word" data-word-idx="236" id="w_236">with</span> <span class="k-word" data-word-idx="237" id="w_237">absolute</span> <span class="k-word" data-word-idx="238" id="w_238">dignity—barefoot,</span> <span class="k-word" data-word-idx="239" id="w_239">wearing</span> <span class="k-word" data-word-idx="240" id="w_240">a</span> <span class="k-word" data-word-idx="241" id="w_241">simple</span> <span class="k-word" data-word-idx="242" id="w_242">coarse</span> <span class="k-word" data-word-idx="243" id="w_243">cotton</span> <span class="k-word" data-word-idx="244" id="w_244">dhoti</span> <span class="k-word" data-word-idx="245" id="w_245">and</span> <span class="k-word" data-word-idx="246" id="w_246">chadar—whether</span> <span class="k-word" data-word-idx="247" id="w_247">meeting</span> <span class="k-word" data-word-idx="248" id="w_248">the</span> <span class="k-word" data-word-idx="249" id="w_249">British</span> <span class="k-word" data-word-idx="250" id="w_250">Governor-General</span> <span class="k-word" data-word-idx="251" id="w_251">or</span> <span class="k-word" data-word-idx="252" id="w_252">helping</span> <span class="k-word" data-word-idx="253" id="w_253">a</span> <span class="k-word" data-word-idx="254" id="w_254">cholera</span> <span class="k-word" data-word-idx="255" id="w_255">patient</span> <span class="k-word" data-word-idx="256" id="w_256">in</span> <span class="k-word" data-word-idx="257" id="w_257">a</span> <span class="k-word" data-word-idx="258" id="w_258">rural</span> <span class="k-word" data-word-idx="259" id="w_259">hut.</span></span></p>
     </section>
 
     <nav class="nav-footer">
       <span style="flex:1;"></span>
-      <a class="primary" href="../../books.html">📚 All Books</a>
+      <a class="primary" href="../../books.html#book=ishwar-chandra-vidyasagar-reforms">📚 All Books</a>
       <a href="step_2.html">Next Chapter →</a>
     </nav>
   </main>
@@ -610,121 +629,68 @@
     const AUDIO_SILENCES = [[0.716, 1.333], [2.781, 3.402], [5.753, 6.134], [6.693, 7.508], [10.517, 11.124], [13.538, 14.018], [19.614, 20.319], [21.395, 21.805], [22.331, 22.71], [26.268, 26.891], [27.738, 28.169], [29.244, 29.811], [30.98, 31.53], [35.411, 35.78], [41.381, 41.955], [47.391, 47.923], [50.914, 51.502], [54.956, 55.439], [57.12, 57.503], [59.118, 59.514], [60.944, 61.35], [62.118, 62.603], [70.074, 70.618], [73.802, 74.888], [77.145, 77.788], [82.055, 82.419], [84.411, 85.102], [91.199, 91.676], [93.517, 93.916], [95.618, 96.196], [100.709, 101.352], [101.867, 102.315], [105.028, 105.648]];
     const CACHE_NAME = "kortex-books-v1";
     const WORDS_DATA = [{"c": 0, "w": 4, "s": 0}, {"c": 4, "w": 3, "s": 0}, {"c": 7, "w": 5, "s": 0}, {"c": 12, "w": 3, "s": 0}, {"c": 15, "w": 4, "s": 0}, {"c": 19, "w": 4, "s": 0}, {"c": 23, "w": 3, "s": 0}, {"c": 26, "w": 6, "s": 0}, {"c": 32, "w": 5, "s": 0}, {"c": 37, "w": 8, "s": 0}, {"c": 45, "w": 8, "s": 0}, {"c": 53, "w": 5, "s": 0}, {"c": 58, "w": 4, "s": 0}, {"c": 62, "w": 5, "s": 0}, {"c": 67, "w": 9, "s": 0}, {"c": 76, "w": 5, "s": 0}, {"c": 81, "w": 8, "s": 1}, {"c": 89, "w": 3, "s": 0}, {"c": 92, "w": 3, "s": 0}, {"c": 95, "w": 3, "s": 0}, {"c": 98, "w": 3, "s": 0}, {"c": 101, "w": 3, "s": 0}, {"c": 104, "w": 7, "s": 0}, {"c": 111, "w": 3, "s": 0}, {"c": 114, "w": 5, "s": 0}, {"c": 119, "w": 3, "s": 0}, {"c": 122, "w": 5, "s": 0}, {"c": 127, "w": 3, "s": 0}, {"c": 130, "w": 3, "s": 0}, {"c": 133, "w": 4, "s": 0}, {"c": 137, "w": 3, "s": 0}, {"c": 140, "w": 10, "s": 0}, {"c": 150, "w": 3, "s": 0}, {"c": 153, "w": 3, "s": 0}, {"c": 156, "w": 7, "s": 0}, {"c": 163, "w": 3, "s": 0}, {"c": 166, "w": 12, "s": 0}, {"c": 178, "w": 3, "s": 0}, {"c": 181, "w": 6, "s": 0}, {"c": 187, "w": 3, "s": 0}, {"c": 190, "w": 8, "s": 0}, {"c": 198, "w": 3, "s": 0}, {"c": 201, "w": 3, "s": 0}, {"c": 204, "w": 7, "s": 0}, {"c": 211, "w": 3, "s": 0}, {"c": 214, "w": 14, "s": 1}, {"c": 228, "w": 5, "s": 0}, {"c": 233, "w": 6, "s": 0}, {"c": 239, "w": 7, "s": 0}, {"c": 246, "w": 14, "s": 1}, {"c": 260, "w": 3, "s": 0}, {"c": 263, "w": 13, "s": 0}, {"c": 276, "w": 5, "s": 0}, {"c": 281, "w": 3, "s": 0}, {"c": 284, "w": 3, "s": 0}, {"c": 287, "w": 6, "s": 0}, {"c": 293, "w": 15, "s": 1}, {"c": 308, "w": 3, "s": 0}, {"c": 311, "w": 18, "s": 0}, {"c": 329, "w": 9, "s": 0}, {"c": 338, "w": 7, "s": 0}, {"c": 345, "w": 3, "s": 0}, {"c": 348, "w": 11, "s": 0}, {"c": 359, "w": 5, "s": 0}, {"c": 364, "w": 3, "s": 0}, {"c": 367, "w": 8, "s": 0}, {"c": 375, "w": 6, "s": 0}, {"c": 381, "w": 3, "s": 0}, {"c": 384, "w": 8, "s": 0}, {"c": 392, "w": 11, "s": 0}, {"c": 403, "w": 5, "s": 0}, {"c": 408, "w": 11, "s": 0}, {"c": 419, "w": 6, "s": 0}, {"c": 425, "w": 13, "s": 0}, {"c": 438, "w": 5, "s": 0}, {"c": 443, "w": 17, "s": 0}, {"c": 460, "w": 3, "s": 0}, {"c": 463, "w": 3, "s": 0}, {"c": 466, "w": 8, "s": 0}, {"c": 474, "w": 6, "s": 0}, {"c": 480, "w": 3, "s": 0}, {"c": 483, "w": 12, "s": 0}, {"c": 495, "w": 3, "s": 0}, {"c": 498, "w": 4, "s": 0}, {"c": 502, "w": 9, "s": 0}, {"c": 511, "w": 3, "s": 0}, {"c": 514, "w": 8, "s": 0}, {"c": 522, "w": 10, "s": 0}, {"c": 532, "w": 13, "s": 0}, {"c": 545, "w": 3, "s": 0}, {"c": 548, "w": 6, "s": 0}, {"c": 554, "w": 18, "s": 1}, {"c": 572, "w": 3, "s": 0}, {"c": 575, "w": 3, "s": 0}, {"c": 578, "w": 7, "s": 0}, {"c": 585, "w": 7, "s": 0}, {"c": 592, "w": 3, "s": 0}, {"c": 595, "w": 3, "s": 0}, {"c": 598, "w": 7, "s": 0}, {"c": 605, "w": 3, "s": 0}, {"c": 608, "w": 9, "s": 0}, {"c": 617, "w": 4, "s": 0}, {"c": 621, "w": 3, "s": 0}, {"c": 624, "w": 5, "s": 0}, {"c": 629, "w": 7, "s": 0}, {"c": 636, "w": 3, "s": 0}, {"c": 639, "w": 5, "s": 0}, {"c": 644, "w": 6, "s": 0}, {"c": 650, "w": 7, "s": 0}, {"c": 657, "w": 18, "s": 1}, {"c": 675, "w": 3, "s": 0}, {"c": 678, "w": 6, "s": 0}, {"c": 684, "w": 5, "s": 0}, {"c": 689, "w": 3, "s": 0}, {"c": 692, "w": 10, "s": 0}, {"c": 702, "w": 7, "s": 0}, {"c": 709, "w": 5, "s": 0}, {"c": 714, "w": 6, "s": 0}, {"c": 720, "w": 5, "s": 0}, {"c": 725, "w": 7, "s": 0}, {"c": 732, "w": 3, "s": 0}, {"c": 735, "w": 3, "s": 0}, {"c": 738, "w": 3, "s": 0}, {"c": 741, "w": 5, "s": 0}, {"c": 746, "w": 3, "s": 0}, {"c": 749, "w": 6, "s": 0}, {"c": 755, "w": 3, "s": 0}, {"c": 758, "w": 8, "s": 0}, {"c": 766, "w": 8, "s": 0}, {"c": 774, "w": 10, "s": 0}, {"c": 784, "w": 8, "s": 0}, {"c": 792, "w": 3, "s": 0}, {"c": 795, "w": 10, "s": 0}, {"c": 805, "w": 4, "s": 0}, {"c": 809, "w": 4, "s": 0}, {"c": 813, "w": 11, "s": 0}, {"c": 824, "w": 5, "s": 0}, {"c": 829, "w": 4, "s": 0}, {"c": 833, "w": 3, "s": 0}, {"c": 836, "w": 8, "s": 0}, {"c": 844, "w": 3, "s": 0}, {"c": 847, "w": 8, "s": 0}, {"c": 855, "w": 7, "s": 0}, {"c": 862, "w": 8, "s": 0}, {"c": 870, "w": 4, "s": 0}, {"c": 874, "w": 3, "s": 0}, {"c": 877, "w": 3, "s": 0}, {"c": 880, "w": 5, "s": 0}, {"c": 885, "w": 10, "s": 0}, {"c": 895, "w": 5, "s": 0}, {"c": 900, "w": 3, "s": 0}, {"c": 903, "w": 14, "s": 1}, {"c": 917, "w": 6, "s": 0}, {"c": 923, "w": 6, "s": 0}, {"c": 929, "w": 5, "s": 0}, {"c": 934, "w": 8, "s": 0}, {"c": 942, "w": 7, "s": 0}, {"c": 949, "w": 3, "s": 0}, {"c": 952, "w": 4, "s": 0}, {"c": 956, "w": 5, "s": 0}, {"c": 961, "w": 8, "s": 0}, {"c": 969, "w": 3, "s": 0}, {"c": 972, "w": 6, "s": 0}, {"c": 978, "w": 5, "s": 0}, {"c": 983, "w": 9, "s": 0}, {"c": 992, "w": 3, "s": 0}, {"c": 995, "w": 6, "s": 0}, {"c": 1001, "w": 12, "s": 0}, {"c": 1013, "w": 10, "s": 0}, {"c": 1023, "w": 9, "s": 0}, {"c": 1032, "w": 3, "s": 0}, {"c": 1035, "w": 11, "s": 0}, {"c": 1046, "w": 5, "s": 0}, {"c": 1051, "w": 12, "s": 1}, {"c": 1063, "w": 7, "s": 0}, {"c": 1070, "w": 10, "s": 0}, {"c": 1080, "w": 4, "s": 0}, {"c": 1084, "w": 5, "s": 0}, {"c": 1089, "w": 3, "s": 0}, {"c": 1092, "w": 8, "s": 1}, {"c": 1100, "w": 3, "s": 0}, {"c": 1103, "w": 3, "s": 0}, {"c": 1106, "w": 3, "s": 0}, {"c": 1109, "w": 6, "s": 0}, {"c": 1115, "w": 3, "s": 0}, {"c": 1118, "w": 6, "s": 0}, {"c": 1124, "w": 3, "s": 0}, {"c": 1127, "w": 3, "s": 0}, {"c": 1130, "w": 7, "s": 0}, {"c": 1137, "w": 7, "s": 0}, {"c": 1144, "w": 3, "s": 0}, {"c": 1147, "w": 6, "s": 0}, {"c": 1153, "w": 3, "s": 0}, {"c": 1156, "w": 3, "s": 0}, {"c": 1159, "w": 13, "s": 0}, {"c": 1172, "w": 3, "s": 0}, {"c": 1175, "w": 3, "s": 0}, {"c": 1178, "w": 6, "s": 0}, {"c": 1184, "w": 5, "s": 0}, {"c": 1189, "w": 3, "s": 0}, {"c": 1192, "w": 3, "s": 0}, {"c": 1195, "w": 7, "s": 0}, {"c": 1202, "w": 12, "s": 1}, {"c": 1214, "w": 10, "s": 0}, {"c": 1224, "w": 3, "s": 0}, {"c": 1227, "w": 7, "s": 0}, {"c": 1234, "w": 13, "s": 1}, {"c": 1247, "w": 4, "s": 0}, {"c": 1251, "w": 3, "s": 0}, {"c": 1254, "w": 7, "s": 0}, {"c": 1261, "w": 7, "s": 0}, {"c": 1268, "w": 3, "s": 0}, {"c": 1271, "w": 9, "s": 0}, {"c": 1280, "w": 9, "s": 0}, {"c": 1289, "w": 3, "s": 0}, {"c": 1292, "w": 7, "s": 0}, {"c": 1299, "w": 8, "s": 0}, {"c": 1307, "w": 12, "s": 0}, {"c": 1319, "w": 3, "s": 0}, {"c": 1322, "w": 8, "s": 0}, {"c": 1330, "w": 3, "s": 0}, {"c": 1333, "w": 11, "s": 0}, {"c": 1344, "w": 4, "s": 0}, {"c": 1348, "w": 3, "s": 0}, {"c": 1351, "w": 9, "s": 0}, {"c": 1360, "w": 3, "s": 0}, {"c": 1363, "w": 8, "s": 0}, {"c": 1371, "w": 7, "s": 0}, {"c": 1378, "w": 6, "s": 0}, {"c": 1384, "w": 4, "s": 0}, {"c": 1388, "w": 10, "s": 0}, {"c": 1398, "w": 3, "s": 0}, {"c": 1401, "w": 12, "s": 0}, {"c": 1413, "w": 14, "s": 1}, {"c": 1427, "w": 3, "s": 0}, {"c": 1430, "w": 6, "s": 0}, {"c": 1436, "w": 4, "s": 0}, {"c": 1440, "w": 8, "s": 0}, {"c": 1448, "w": 19, "s": 0}, {"c": 1467, "w": 7, "s": 0}, {"c": 1474, "w": 3, "s": 0}, {"c": 1477, "w": 6, "s": 0}, {"c": 1483, "w": 6, "s": 0}, {"c": 1489, "w": 6, "s": 0}, {"c": 1495, "w": 5, "s": 0}, {"c": 1500, "w": 3, "s": 0}, {"c": 1503, "w": 14, "s": 0}, {"c": 1517, "w": 7, "s": 0}, {"c": 1524, "w": 3, "s": 0}, {"c": 1527, "w": 7, "s": 0}, {"c": 1534, "w": 16, "s": 0}, {"c": 1550, "w": 3, "s": 0}, {"c": 1553, "w": 7, "s": 0}, {"c": 1560, "w": 3, "s": 0}, {"c": 1563, "w": 7, "s": 0}, {"c": 1570, "w": 7, "s": 0}, {"c": 1577, "w": 3, "s": 0}, {"c": 1580, "w": 3, "s": 0}, {"c": 1583, "w": 5, "s": 0}, {"c": 1588, "w": 8, "s": 1}];
+    const CHUNKS_DATA = [{"idx": 0, "w0": 0, "w1": 16, "weight": 89, "cum": 0}, {"idx": 1, "w0": 17, "w1": 45, "weight": 139, "cum": 89}, {"idx": 2, "w0": 46, "w1": 49, "weight": 32, "cum": 228}, {"idx": 3, "w0": 50, "w1": 56, "weight": 48, "cum": 260}, {"idx": 4, "w0": 57, "w1": 91, "weight": 264, "cum": 308}, {"idx": 5, "w0": 92, "w1": 109, "weight": 103, "cum": 572}, {"idx": 6, "w0": 110, "w1": 151, "weight": 242, "cum": 675}, {"idx": 7, "w0": 152, "w1": 173, "weight": 146, "cum": 917}, {"idx": 8, "w0": 174, "w1": 179, "weight": 37, "cum": 1063}, {"idx": 9, "w0": 180, "w1": 202, "weight": 114, "cum": 1100}, {"idx": 10, "w0": 203, "w1": 233, "weight": 213, "cum": 1214}, {"idx": 11, "w0": 234, "w1": 259, "weight": 169, "cum": 1427}];
+    const TIMELINE_DATA = null;
     const TOTAL_WEIGHT = 1596;
     let timelineCalibrated = false;
 
-    function buildAcousticWordTimeline(words, totalWeight, audioMeta) {
-      if (!words || !words.length || totalWeight <= 0) return;
+    function buildAcousticWordTimeline(words, chunks, totalWeight, audioMeta) {
+      if (!words || !words.length || !chunks || !chunks.length || totalWeight <= 0) return;
       const totalDur = (audioMeta && Number(audioMeta.dur) > 0.5)
         ? Number(audioMeta.dur)
         : (audioEl && audioEl.duration > 0 ? audioEl.duration : AUDIO_DURATION);
       if (totalDur <= 0) return;
 
       const rawSilences = (audioMeta && Array.isArray(audioMeta.silences)) ? audioMeta.silences : (AUDIO_SILENCES || []);
-      if (!rawSilences.length) {
-        for (let i = 0; i < words.length; i++) {
-          words[i].startSec = (words[i].c / totalWeight) * totalDur;
-          words[i].endSec = ((words[i].c + words[i].w) / totalWeight) * totalDur;
+
+      // 1. Anchor 1-2 sentence chunk boundaries
+      if (Array.isArray(TIMELINE_DATA) && TIMELINE_DATA.length === chunks.length) {
+        for (let i = 0; i < chunks.length; i++) {
+          chunks[i].startSec = Number(TIMELINE_DATA[i].startSec || TIMELINE_DATA[i].start || 0);
+          chunks[i].endSec = Number(TIMELINE_DATA[i].endSec || TIMELINE_DATA[i].end || totalDur);
         }
-        timelineCalibrated = true;
-        return;
-      }
+      } else {
+        let lastEnd = 0.0;
+        for (let i = 0; i < chunks.length; i++) {
+          const ch = chunks[i];
+          ch.startSec = lastEnd;
+          if (i === chunks.length - 1) {
+            ch.endSec = totalDur;
+          } else {
+            const nextCum = ch.cum + ch.weight;
+            const targetT = (nextCum / totalWeight) * totalDur;
 
-      function voicedTimeAt(t) {
-        const clamped = Math.max(0, Math.min(totalDur, t));
-        let v = clamped;
-        for (let i = 0; i < rawSilences.length; i++) {
-          const s = rawSilences[i][0];
-          const e = rawSilences[i][1];
-          if (clamped <= s) break;
-          v -= (Math.min(clamped, e) - s);
-        }
-        return Math.max(0, v);
-      }
-
-      function invVoicedTime(targetV) {
-        let lo = 0;
-        let hi = totalDur;
-        for (let iter = 0; iter < 28; iter++) {
-          const mid = (lo + hi) * 0.5;
-          if (voicedTimeAt(mid) < targetV) lo = mid;
-          else hi = mid;
-        }
-        return (lo + hi) * 0.5;
-      }
-
-      const totalVoiced = voicedTimeAt(totalDur);
-      if (totalVoiced <= 0) return;
-
-      // 1. Sentence boundary word indices
-      const sentEndIndices = [];
-      for (let i = 0; i < words.length; i++) {
-        if (words[i].s) sentEndIndices.push(i);
-      }
-      if (!sentEndIndices.length || sentEndIndices[sentEndIndices.length - 1] !== words.length - 1) {
-        sentEndIndices.push(words.length - 1);
-      }
-
-      // 2. Anchor every K sentences (K=2 sentences per anchor)
-      const K = 2;
-      const anchorIndices = [];
-      for (let i = K - 1; i < sentEndIndices.length; i += K) {
-        anchorIndices.push(sentEndIndices[i]);
-      }
-      if (!anchorIndices.length || anchorIndices[anchorIndices.length - 1] !== words.length - 1) {
-        anchorIndices.push(words.length - 1);
-      }
-
-      // 3. Compute anchor timestamps snapped to acoustic silences
-      const anchors = [{ wordIdx: -1, timeSec: 0.0 }];
-      for (let a = 0; a < anchorIndices.length; a++) {
-        const idx = anchorIndices[a];
-        const w = words[idx];
-        const cumW = w.c + w.w;
-        const frac = cumW / totalWeight;
-        const targetV = frac * totalVoiced;
-        const tEst = invVoicedTime(targetV);
-
-        let bestSilStart = null;
-        let minDist = 1.6;
-        for (let s = 0; s < rawSilences.length; s++) {
-          const dist = Math.abs(rawSilences[s][0] - tEst);
-          if (dist < minDist) {
-            minDist = dist;
-            bestSilStart = rawSilences[s][0];
+            let bestSil = null;
+            let minDist = 2.5;
+            for (let s = 0; s < rawSilences.length; s++) {
+              const silT = rawSilences[s][0];
+              if (silT > lastEnd + 0.6 && silT < totalDur - 0.5) {
+                const d = Math.abs(silT - targetT);
+                if (d < minDist) {
+                  minDist = d;
+                  bestSil = silT;
+                }
+              }
+            }
+            const boundary = bestSil !== null ? bestSil : Math.max(lastEnd + 0.6, targetT);
+            ch.endSec = boundary;
+            lastEnd = boundary;
           }
         }
-        const aTime = bestSilStart !== null ? bestSilStart : tEst;
-        anchors.push({
-          wordIdx: idx,
-          timeSec: Math.max(0.1, aTime)
-        });
       }
 
-      for (let a = 1; a < anchors.length; a++) {
-        if (anchors[a].timeSec <= anchors[a - 1].timeSec) {
-          anchors[a].timeSec = anchors[a - 1].timeSec + 0.3;
-        }
-      }
-      anchors[anchors.length - 1].timeSec = totalDur;
-
-      // 4. Interpolate words strictly within each 2-sentence anchor interval
-      for (let a = 0; a < anchors.length - 1; a++) {
-        const startWIdx = anchors[a].wordIdx + 1;
-        const endWIdx = anchors[a + 1].wordIdx;
-        if (startWIdx > endWIdx) continue;
-
-        const tStart = anchors[a].timeSec;
-        const tEnd = anchors[a + 1].timeSec;
-        const baseC = words[startWIdx].c;
-        const spanW = Math.max(1, (words[endWIdx].c + words[endWIdx].w) - baseC);
-        const spanT = Math.max(0.05, tEnd - tStart);
-
-        for (let i = startWIdx; i <= endWIdx; i++) {
-          const fracS = (words[i].c - baseC) / spanW;
-          const fracE = ((words[i].c + words[i].w) - baseC) / spanW;
-          words[i].startSec = tStart + fracS * spanT;
-          words[i].endSec = tStart + fracE * spanT;
+      // 2. Interpolate words strictly inside each 1-2 sentence chunk
+      for (let c = 0; c < chunks.length; c++) {
+        const ch = chunks[c];
+        const spanT = Math.max(0.05, ch.endSec - ch.startSec);
+        const baseC = words[ch.w0].c;
+        const spanW = Math.max(1, (words[ch.w1].c + words[ch.w1].w) - baseC);
+        for (let w = ch.w0; w <= ch.w1; w++) {
+          const fracS = (words[w].c - baseC) / spanW;
+          const fracE = ((words[w].c + words[w].w) - baseC) / spanW;
+          words[w].startSec = ch.startSec + fracS * spanT;
+          words[w].endSec = ch.startSec + fracE * spanT;
+          words[w].chunkIdx = c;
         }
       }
 
@@ -770,6 +736,11 @@
       const tBtn = document.getElementById("btnTopListen");
       if (bBtn) bBtn.textContent = isPlaying ? "⏸" : "▶";
       if (tBtn) tBtn.textContent = isPlaying ? "⏸ Pause" : "▶️ Listen";
+      if (isPlaying) {
+        document.body.classList.add("has-active-player");
+        const sp = document.getElementById("stickyPlayer");
+        if (sp) sp.style.display = "flex";
+      }
     }
 
     async function toggleAudioPlay() {
@@ -850,35 +821,22 @@
       }
     }
 
-    // Sync Karaoke Word
+    // Sync Karaoke Sentence Chunk & Word
+    let activeChunkIdx = -1;
     function syncKaraokeWord() {
       if (!karaokeActive || !WORDS_DATA.length || TOTAL_WEIGHT <= 0) return;
       const dur = (audioEl && audioEl.duration > 0) ? audioEl.duration : AUDIO_DURATION;
       if (!Number.isFinite(dur) || dur <= 0) return;
       const cur = audioEl.currentTime;
 
-      let foundIdx = 0;
-      if (WORDS_DATA[0].startSec !== undefined) {
-        let low = 0;
-        let high = WORDS_DATA.length - 1;
+      // 1. Binary search active chunk
+      let cIdx = 0;
+      if (CHUNKS_DATA && CHUNKS_DATA.length && CHUNKS_DATA[0].startSec !== undefined) {
+        let low = 0, high = CHUNKS_DATA.length - 1;
         while (low <= high) {
           const mid = (low + high) >> 1;
-          if (WORDS_DATA[mid].startSec <= cur) {
-            foundIdx = mid;
-            low = mid + 1;
-          } else {
-            high = mid - 1;
-          }
-        }
-      } else {
-        const progress = Math.min(1.0, Math.max(0, cur / dur));
-        const targetWeight = progress * TOTAL_WEIGHT;
-        let low = 0;
-        let high = WORDS_DATA.length - 1;
-        while (low <= high) {
-          const mid = (low + high) >> 1;
-          if (WORDS_DATA[mid].c <= targetWeight) {
-            foundIdx = mid;
+          if (CHUNKS_DATA[mid].startSec <= cur) {
+            cIdx = mid;
             low = mid + 1;
           } else {
             high = mid - 1;
@@ -886,23 +844,45 @@
         }
       }
 
-      if (foundIdx !== activeWordIdx) {
+      if (cIdx !== activeChunkIdx) {
+        if (activeChunkIdx >= 0) {
+          const prevChunkEl = document.getElementById(`kchunk_${activeChunkIdx}`);
+          if (prevChunkEl) prevChunkEl.classList.remove("active-chunk");
+        }
+        const curChunkEl = document.getElementById(`kchunk_${cIdx}`);
+        if (curChunkEl) {
+          curChunkEl.classList.add("active-chunk");
+          const rect = curChunkEl.getBoundingClientRect();
+          if (rect.top < 80 || rect.bottom > window.innerHeight - 100) {
+            curChunkEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }
+        activeChunkIdx = cIdx;
+      }
+
+      // 2. Binary search active word strictly within active chunk
+      const curChunk = (CHUNKS_DATA && CHUNKS_DATA[cIdx]) ? CHUNKS_DATA[cIdx] : { w0: 0, w1: WORDS_DATA.length - 1 };
+      let foundWordIdx = curChunk.w0;
+      let low = curChunk.w0, high = curChunk.w1;
+      while (low <= high) {
+        const mid = (low + high) >> 1;
+        if (WORDS_DATA[mid].startSec <= cur) {
+          foundWordIdx = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      if (foundWordIdx !== activeWordIdx) {
         if (activeWordIdx >= 0) {
           const prev = document.getElementById(`w_${activeWordIdx}`);
           if (prev) prev.classList.remove("active-word");
         }
-        activeWordIdx = foundIdx;
+        activeWordIdx = foundWordIdx;
         const curEl = document.getElementById(`w_${activeWordIdx}`);
         if (curEl) {
           curEl.classList.add("active-word");
-          const r = curEl.getBoundingClientRect();
-          const targetY = window.innerHeight * 0.40;
-          if (r.top < 80 || r.top > window.innerHeight * 0.65) {
-            window.scrollBy({
-              top: r.top - targetY,
-              behavior: "smooth"
-            });
-          }
         }
       }
     }
@@ -912,11 +892,11 @@
       syncPlayButtonUi(true);
       karaokeActive = true;
       if (!timelineCalibrated) {
-        buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
+        buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
       }
     });
     audioEl.addEventListener("loadedmetadata", () => {
-      buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
+      buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
     });
     audioEl.addEventListener("pause", () => {
       syncPlayButtonUi(false);

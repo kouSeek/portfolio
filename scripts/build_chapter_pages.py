@@ -23,6 +23,7 @@ CATALOG_PATH = APP_ROOT / "assets" / "books_catalog.json"
 AUDIO_INDEX_PATH = APP_ROOT / "assets" / "books_audio_index.json"
 TEXT_VAULT_PATH = APP_ROOT / "assets" / "books_text_vault.json"
 CHAPTERS_DIR = APP_ROOT / "chapters"
+AUDIO_BOOKS_DIR = APP_ROOT / "audio" / "books"
 
 GH_RAW_AUDIO_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/"
 
@@ -65,23 +66,35 @@ def find_audio_track(audio_files: list[dict], book_slug: str, book_title: str, t
     return None
 
 
-def render_markdown_to_html(md_text: str) -> tuple[str, list[dict], int]:
+def render_markdown_to_html(md_text: str) -> tuple[str, list[dict], list[dict], int]:
     lines = (md_text or "").splitlines()
     body_parts = []
     in_quote = False
     word_index = 0
+    chunk_index = 0
     words_list = []
+    chunks_list = []
 
     def wrap_words(text: str, line_type: str = "body", is_block_end: bool = False) -> str:
-        nonlocal word_index
+        nonlocal word_index, chunk_index
         tokens = re.split(r"(\s+)", text)
         non_ws = [t for t in tokens if t and not re.match(r"^\s+$", t)]
+        if not non_ws:
+            return text
+
         token_pos = 0
-        res = []
+        chunk_words = []
+        chunk_res = []
+        full_res = []
+
         for tok in tokens:
             if not tok or re.match(r"^\s+$", tok):
-                res.append(tok)
+                if chunk_words:
+                    chunk_res.append(tok)
+                else:
+                    full_res.append(tok)
                 continue
+
             clean = re.sub(r"[*_#`~\[\]()]", "", tok)
             is_last = (token_pos == len(non_ws) - 1)
             token_pos += 1
@@ -89,16 +102,41 @@ def render_markdown_to_html(md_text: str) -> tuple[str, list[dict], int]:
             w_idx = word_index
             word_index += 1
             weight = max(3, len(clean))
-            is_sent_end = bool(re.search(r'[.?!]["\'\)\]]*$', tok)) or is_last
+            is_sent_end = bool(re.search(r'[.?!][")\]]*$', tok)) or is_last
             if is_sent_end:
                 weight += 4
-            elif re.search(r'[,;:—–·]["\'\)\]]*$', tok) or tok in ("—", "–", "·"):
+            elif re.search(r'[,;:—–·][")\]]*$', tok) or tok in ("—", "–", "·"):
                 weight += 2
 
-            words_list.append({"idx": w_idx, "word": clean, "weight": weight, "s": 1 if is_sent_end else 0})
+            w_info = {"idx": w_idx, "word": clean, "weight": weight, "s": 1 if is_sent_end else 0}
+            words_list.append(w_info)
+            chunk_words.append(w_info)
             escaped_tok = html.escape(tok)
-            res.append(f'<span class="k-word" data-word-idx="{w_idx}" id="w_{w_idx}">{escaped_tok}</span>')
-        return "".join(res)
+            chunk_res.append(f'<span class="k-word" data-word-idx="{w_idx}" id="w_{w_idx}">{escaped_tok}</span>')
+
+            sent_count = sum(1 for w in chunk_words if w["s"])
+            should_close = is_last or (is_sent_end and (sent_count >= 2 or len(chunk_words) >= 18))
+            if should_close and chunk_words:
+                c_idx = chunk_index
+                chunk_index += 1
+                c_w0 = chunk_words[0]["idx"]
+                c_w1 = chunk_words[-1]["idx"]
+                c_wt = sum(w["weight"] for w in chunk_words)
+                chunks_list.append({"idx": c_idx, "w0": c_w0, "w1": c_w1, "weight": c_wt})
+                full_res.append(f'<span class="k-chunk" id="kchunk_{c_idx}" data-chunk-idx="{c_idx}">{"".join(chunk_res)}</span>')
+                chunk_words = []
+                chunk_res = []
+
+        if chunk_words:
+            c_idx = chunk_index
+            chunk_index += 1
+            c_w0 = chunk_words[0]["idx"]
+            c_w1 = chunk_words[-1]["idx"]
+            c_wt = sum(w["weight"] for w in chunk_words)
+            chunks_list.append({"idx": c_idx, "w0": c_w0, "w1": c_w1, "weight": c_wt})
+            full_res.append(f'<span class="k-chunk" id="kchunk_{c_idx}" data-chunk-idx="{c_idx}">{"".join(chunk_res)}</span>')
+
+        return "".join(full_res)
 
     for i, line in enumerate(lines):
         line_s = line.strip()
@@ -147,8 +185,12 @@ def render_markdown_to_html(md_text: str) -> tuple[str, list[dict], int]:
         cum += w["weight"]
     total_weight = max(1, cum)
 
-    return "\n".join(body_parts), words_list, total_weight
+    cum_c = 0
+    for c in chunks_list:
+        c["cum"] = cum_c
+        cum_c += c["weight"]
 
+    return "\n".join(body_parts), words_list, chunks_list, total_weight
 
 def build_chapter_html(
     book: dict,
@@ -191,8 +233,13 @@ def build_chapter_html(
     brief = chapter_data.get("brief", "")
     content = chapter_data.get("content", brief)
 
-    body_html, words_list, total_weight = render_markdown_to_html(content)
+    body_html, words_list, chunks_list, total_weight = render_markdown_to_html(content)
     words_json = json.dumps([{"c": w["cum"], "w": w["weight"], "s": w["s"]} for w in words_list])
+    chunks_json = json.dumps([{"idx": c["idx"], "w0": c["w0"], "w1": c["w1"], "weight": c["weight"], "cum": c["cum"]} for c in chunks_list])
+
+    # Companion timeline JSON check
+    tl_path = AUDIO_BOOKS_DIR / clean_slug / f"{track_type}_{index}.timeline.json"
+    timeline_json = tl_path.read_text(encoding="utf-8") if tl_path.is_file() else "null" 
 
     audio_url = f"{GH_RAW_AUDIO_BASE}{audio_track['url']}" if audio_track else ""
     audio_dur = float(audio_track.get("durationSec") or 0.0) if audio_track else 0.0
@@ -523,7 +570,19 @@ def build_chapter_html(
       font-style: italic;
     }}
 
-    /* Karaoke Highlighting */
+    /* Sentence Chunking & Karaoke Highlighting */
+    .k-chunk {{
+      display: inline;
+      border-radius: 6px;
+      transition: background-color 0.18s ease;
+    }}
+    .k-chunk.active-chunk {{
+      background-color: rgba(99, 102, 241, 0.08);
+      border-radius: 6px;
+    }}
+    body.dark-mode .k-chunk.active-chunk {{
+      background-color: rgba(99, 102, 241, 0.18);
+    }}
     .k-word {{
       display: inline;
       border-radius: 4px;
@@ -741,6 +800,7 @@ def build_chapter_html(
         </div>
       </div>
       {f'<div class="hero-curation-pill">⚡ ADHD Core Cut: {adhd_pages} pages total ({adhd_effort}) · {pruned_pct}% filler pruned for maximum flow</div>' if (track_type == 'adhd' and pruned_pct > 0) else ''}
+      {f'<div class="hero-curation-pill" style="color:var(--accent);background:var(--accent-light);border-color:rgba(79,70,229,0.25);">🏛️ Author Chapter Structure: {html.escape(book.get("actual_chapters_structure") or "")} · {html.escape(book.get("actual_chapters_label") or "")}</div>' if book.get("actual_chapters_structure") else ''}
 
       {f'<div class="hero-brief"><strong>Core Takeaway:</strong> {html.escape(brief)}</div>' if brief else ""}
 
@@ -845,121 +905,68 @@ def build_chapter_html(
     const AUDIO_SILENCES = {audio_silences_json};
     const CACHE_NAME = "kortex-books-v1";
     const WORDS_DATA = {words_json};
+    const CHUNKS_DATA = {chunks_json};
+    const TIMELINE_DATA = {timeline_json};
     const TOTAL_WEIGHT = {total_weight};
     let timelineCalibrated = false;
 
-    function buildAcousticWordTimeline(words, totalWeight, audioMeta) {{
-      if (!words || !words.length || totalWeight <= 0) return;
+    function buildAcousticWordTimeline(words, chunks, totalWeight, audioMeta) {{
+      if (!words || !words.length || !chunks || !chunks.length || totalWeight <= 0) return;
       const totalDur = (audioMeta && Number(audioMeta.dur) > 0.5)
         ? Number(audioMeta.dur)
         : (audioEl && audioEl.duration > 0 ? audioEl.duration : AUDIO_DURATION);
       if (totalDur <= 0) return;
 
       const rawSilences = (audioMeta && Array.isArray(audioMeta.silences)) ? audioMeta.silences : (AUDIO_SILENCES || []);
-      if (!rawSilences.length) {{
-        for (let i = 0; i < words.length; i++) {{
-          words[i].startSec = (words[i].c / totalWeight) * totalDur;
-          words[i].endSec = ((words[i].c + words[i].w) / totalWeight) * totalDur;
+
+      // 1. Anchor 1-2 sentence chunk boundaries
+      if (Array.isArray(TIMELINE_DATA) && TIMELINE_DATA.length === chunks.length) {{
+        for (let i = 0; i < chunks.length; i++) {{
+          chunks[i].startSec = Number(TIMELINE_DATA[i].startSec || TIMELINE_DATA[i].start || 0);
+          chunks[i].endSec = Number(TIMELINE_DATA[i].endSec || TIMELINE_DATA[i].end || totalDur);
         }}
-        timelineCalibrated = true;
-        return;
-      }}
+      }} else {{
+        let lastEnd = 0.0;
+        for (let i = 0; i < chunks.length; i++) {{
+          const ch = chunks[i];
+          ch.startSec = lastEnd;
+          if (i === chunks.length - 1) {{
+            ch.endSec = totalDur;
+          }} else {{
+            const nextCum = ch.cum + ch.weight;
+            const targetT = (nextCum / totalWeight) * totalDur;
 
-      function voicedTimeAt(t) {{
-        const clamped = Math.max(0, Math.min(totalDur, t));
-        let v = clamped;
-        for (let i = 0; i < rawSilences.length; i++) {{
-          const s = rawSilences[i][0];
-          const e = rawSilences[i][1];
-          if (clamped <= s) break;
-          v -= (Math.min(clamped, e) - s);
-        }}
-        return Math.max(0, v);
-      }}
-
-      function invVoicedTime(targetV) {{
-        let lo = 0;
-        let hi = totalDur;
-        for (let iter = 0; iter < 28; iter++) {{
-          const mid = (lo + hi) * 0.5;
-          if (voicedTimeAt(mid) < targetV) lo = mid;
-          else hi = mid;
-        }}
-        return (lo + hi) * 0.5;
-      }}
-
-      const totalVoiced = voicedTimeAt(totalDur);
-      if (totalVoiced <= 0) return;
-
-      // 1. Sentence boundary word indices
-      const sentEndIndices = [];
-      for (let i = 0; i < words.length; i++) {{
-        if (words[i].s) sentEndIndices.push(i);
-      }}
-      if (!sentEndIndices.length || sentEndIndices[sentEndIndices.length - 1] !== words.length - 1) {{
-        sentEndIndices.push(words.length - 1);
-      }}
-
-      // 2. Anchor every K sentences (K=2 sentences per anchor)
-      const K = 2;
-      const anchorIndices = [];
-      for (let i = K - 1; i < sentEndIndices.length; i += K) {{
-        anchorIndices.push(sentEndIndices[i]);
-      }}
-      if (!anchorIndices.length || anchorIndices[anchorIndices.length - 1] !== words.length - 1) {{
-        anchorIndices.push(words.length - 1);
-      }}
-
-      // 3. Compute anchor timestamps snapped to acoustic silences
-      const anchors = [{{ wordIdx: -1, timeSec: 0.0 }}];
-      for (let a = 0; a < anchorIndices.length; a++) {{
-        const idx = anchorIndices[a];
-        const w = words[idx];
-        const cumW = w.c + w.w;
-        const frac = cumW / totalWeight;
-        const targetV = frac * totalVoiced;
-        const tEst = invVoicedTime(targetV);
-
-        let bestSilStart = null;
-        let minDist = 1.6;
-        for (let s = 0; s < rawSilences.length; s++) {{
-          const dist = Math.abs(rawSilences[s][0] - tEst);
-          if (dist < minDist) {{
-            minDist = dist;
-            bestSilStart = rawSilences[s][0];
+            let bestSil = null;
+            let minDist = 2.5;
+            for (let s = 0; s < rawSilences.length; s++) {{
+              const silT = rawSilences[s][0];
+              if (silT > lastEnd + 0.6 && silT < totalDur - 0.5) {{
+                const d = Math.abs(silT - targetT);
+                if (d < minDist) {{
+                  minDist = d;
+                  bestSil = silT;
+                }}
+              }}
+            }}
+            const boundary = bestSil !== null ? bestSil : Math.max(lastEnd + 0.6, targetT);
+            ch.endSec = boundary;
+            lastEnd = boundary;
           }}
         }}
-        const aTime = bestSilStart !== null ? bestSilStart : tEst;
-        anchors.push({{
-          wordIdx: idx,
-          timeSec: Math.max(0.1, aTime)
-        }});
       }}
 
-      for (let a = 1; a < anchors.length; a++) {{
-        if (anchors[a].timeSec <= anchors[a - 1].timeSec) {{
-          anchors[a].timeSec = anchors[a - 1].timeSec + 0.3;
-        }}
-      }}
-      anchors[anchors.length - 1].timeSec = totalDur;
-
-      // 4. Interpolate words strictly within each 2-sentence anchor interval
-      for (let a = 0; a < anchors.length - 1; a++) {{
-        const startWIdx = anchors[a].wordIdx + 1;
-        const endWIdx = anchors[a + 1].wordIdx;
-        if (startWIdx > endWIdx) continue;
-
-        const tStart = anchors[a].timeSec;
-        const tEnd = anchors[a + 1].timeSec;
-        const baseC = words[startWIdx].c;
-        const spanW = Math.max(1, (words[endWIdx].c + words[endWIdx].w) - baseC);
-        const spanT = Math.max(0.05, tEnd - tStart);
-
-        for (let i = startWIdx; i <= endWIdx; i++) {{
-          const fracS = (words[i].c - baseC) / spanW;
-          const fracE = ((words[i].c + words[i].w) - baseC) / spanW;
-          words[i].startSec = tStart + fracS * spanT;
-          words[i].endSec = tStart + fracE * spanT;
+      // 2. Interpolate words strictly inside each 1-2 sentence chunk
+      for (let c = 0; c < chunks.length; c++) {{
+        const ch = chunks[c];
+        const spanT = Math.max(0.05, ch.endSec - ch.startSec);
+        const baseC = words[ch.w0].c;
+        const spanW = Math.max(1, (words[ch.w1].c + words[ch.w1].w) - baseC);
+        for (let w = ch.w0; w <= ch.w1; w++) {{
+          const fracS = (words[w].c - baseC) / spanW;
+          const fracE = ((words[w].c + words[w].w) - baseC) / spanW;
+          words[w].startSec = ch.startSec + fracS * spanT;
+          words[w].endSec = ch.startSec + fracE * spanT;
+          words[w].chunkIdx = c;
         }}
       }}
 
@@ -1090,35 +1097,22 @@ def build_chapter_html(
       }}
     }}
 
-    // Sync Karaoke Word
+    // Sync Karaoke Sentence Chunk & Word
+    let activeChunkIdx = -1;
     function syncKaraokeWord() {{
       if (!karaokeActive || !WORDS_DATA.length || TOTAL_WEIGHT <= 0) return;
       const dur = (audioEl && audioEl.duration > 0) ? audioEl.duration : AUDIO_DURATION;
       if (!Number.isFinite(dur) || dur <= 0) return;
       const cur = audioEl.currentTime;
 
-      let foundIdx = 0;
-      if (WORDS_DATA[0].startSec !== undefined) {{
-        let low = 0;
-        let high = WORDS_DATA.length - 1;
+      // 1. Binary search active chunk
+      let cIdx = 0;
+      if (CHUNKS_DATA && CHUNKS_DATA.length && CHUNKS_DATA[0].startSec !== undefined) {{
+        let low = 0, high = CHUNKS_DATA.length - 1;
         while (low <= high) {{
           const mid = (low + high) >> 1;
-          if (WORDS_DATA[mid].startSec <= cur) {{
-            foundIdx = mid;
-            low = mid + 1;
-          }} else {{
-            high = mid - 1;
-          }}
-        }}
-      }} else {{
-        const progress = Math.min(1.0, Math.max(0, cur / dur));
-        const targetWeight = progress * TOTAL_WEIGHT;
-        let low = 0;
-        let high = WORDS_DATA.length - 1;
-        while (low <= high) {{
-          const mid = (low + high) >> 1;
-          if (WORDS_DATA[mid].c <= targetWeight) {{
-            foundIdx = mid;
+          if (CHUNKS_DATA[mid].startSec <= cur) {{
+            cIdx = mid;
             low = mid + 1;
           }} else {{
             high = mid - 1;
@@ -1126,23 +1120,45 @@ def build_chapter_html(
         }}
       }}
 
-      if (foundIdx !== activeWordIdx) {{
+      if (cIdx !== activeChunkIdx) {{
+        if (activeChunkIdx >= 0) {{
+          const prevChunkEl = document.getElementById(`kchunk_${{activeChunkIdx}}`);
+          if (prevChunkEl) prevChunkEl.classList.remove("active-chunk");
+        }}
+        const curChunkEl = document.getElementById(`kchunk_${{cIdx}}`);
+        if (curChunkEl) {{
+          curChunkEl.classList.add("active-chunk");
+          const rect = curChunkEl.getBoundingClientRect();
+          if (rect.top < 80 || rect.bottom > window.innerHeight - 100) {{
+            curChunkEl.scrollIntoView({{ behavior: "smooth", block: "center" }});
+          }}
+        }}
+        activeChunkIdx = cIdx;
+      }}
+
+      // 2. Binary search active word strictly within active chunk
+      const curChunk = (CHUNKS_DATA && CHUNKS_DATA[cIdx]) ? CHUNKS_DATA[cIdx] : {{ w0: 0, w1: WORDS_DATA.length - 1 }};
+      let foundWordIdx = curChunk.w0;
+      let low = curChunk.w0, high = curChunk.w1;
+      while (low <= high) {{
+        const mid = (low + high) >> 1;
+        if (WORDS_DATA[mid].startSec <= cur) {{
+          foundWordIdx = mid;
+          low = mid + 1;
+        }} else {{
+          high = mid - 1;
+        }}
+      }}
+
+      if (foundWordIdx !== activeWordIdx) {{
         if (activeWordIdx >= 0) {{
           const prev = document.getElementById(`w_${{activeWordIdx}}`);
           if (prev) prev.classList.remove("active-word");
         }}
-        activeWordIdx = foundIdx;
+        activeWordIdx = foundWordIdx;
         const curEl = document.getElementById(`w_${{activeWordIdx}}`);
         if (curEl) {{
           curEl.classList.add("active-word");
-          const r = curEl.getBoundingClientRect();
-          const targetY = window.innerHeight * 0.40;
-          if (r.top < 80 || r.top > window.innerHeight * 0.65) {{
-            window.scrollBy({{
-              top: r.top - targetY,
-              behavior: "smooth"
-            }});
-          }}
         }}
       }}
     }}
@@ -1152,11 +1168,11 @@ def build_chapter_html(
       syncPlayButtonUi(true);
       karaokeActive = true;
       if (!timelineCalibrated) {{
-        buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, {{ dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES }});
+        buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, {{ dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES }});
       }}
     }});
     audioEl.addEventListener("loadedmetadata", () => {{
-      buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, {{ dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES }});
+      buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, {{ dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES }});
     }});
     audioEl.addEventListener("pause", () => {{
       syncPlayButtonUi(false);

@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import io
 import json
+import mutagen.mp3
 import os
 from pathlib import Path
 import re
@@ -77,32 +79,53 @@ def clean_markdown_for_speech(raw_text: str) -> str:
     return " ".join(cleaned.split())
 
 
-def synthesize_text_to_mp3(text: str, voice_name: str = "Aoede", max_workers: int = 8) -> bytes:
-    """Chunk and synthesize text using parallel VoiceLM-XL Aoede calls, returning concatenated MP3 bytes."""
-    chunks = split_tts_text_chunks(text, max_chars=360)
+def synthesize_text_to_mp3(text: str, voice_name: str = "Aoede", max_workers: int = 8) -> tuple[bytes, list[dict]]:
+    """Chunk and synthesize text using 1-2 sentence chunking (max_chars=180), returning concatenated MP3 bytes and acoustic timeline."""
+    chunks = split_tts_text_chunks(text, max_chars=180)
     if not chunks:
-        return b""
+        return b"", []
 
-    results: list[bytes | None] = [None] * len(chunks)
+    results: list[tuple[bytes, float] | None] = [None] * len(chunks)
 
-    def worker(idx: int, chunk: str) -> tuple[int, bytes]:
+    def worker(idx: int, chunk: str) -> tuple[int, bytes, float]:
         for attempt in range(3):
             try:
                 mp3 = synthesize_gemini_neural_tts(chunk, voice_name=voice_name, timeout_sec=20.0)
                 if mp3 and len(mp3) > 100:
-                    return idx, mp3
-            except Exception as e:
+                    try:
+                        dur = float(mutagen.mp3.MP3(io.BytesIO(mp3)).info.length)
+                    except Exception:
+                        dur = max(0.5, len(chunk) / 16.0)
+                    return idx, mp3, dur
+            except Exception:
                 time.sleep(0.5 * (attempt + 1))
-        return idx, b""
+        return idx, b"", 0.0
 
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
         futures = [pool.submit(worker, i, ch) for i, ch in enumerate(chunks)]
         for fut in as_completed(futures):
-            i, data = fut.result()
-            results[i] = data
+            i, data, dur = fut.result()
+            results[i] = (data, dur)
 
-    valid_chunks = [c for c in results if c]
-    return b"".join(valid_chunks)
+    valid_chunks: list[bytes] = []
+    timeline: list[dict] = []
+    cum_t = 0.0
+
+    for i, res in enumerate(results):
+        if not res or not res[0]:
+            continue
+        data, dur = res
+        timeline.append({
+            "idx": len(timeline),
+            "text": chunks[i],
+            "startSec": round(cum_t, 3),
+            "endSec": round(cum_t + dur, 3),
+            "dur": round(dur, 3),
+        })
+        cum_t += dur
+        valid_chunks.append(data)
+
+    return b"".join(valid_chunks), timeline
 
 
 def get_mp3_duration_sec(mp3_path: Path) -> float:
@@ -230,13 +253,15 @@ def generate_book_audio(
             word_count = len(clean_speech.split())
             print(f"  [{idx}/{len(raw_items)}] 🎙️ Synthesizing {fname}: {label[:45]} ({word_count} words)...")
 
-            # Synthesize MP3
+            # Synthesize MP3 with 1-2 sentence chunking & acoustic timeline
             t0 = time.time()
-            mp3_bytes = synthesize_text_to_mp3(clean_speech, voice_name="Aoede", max_workers=8)
+            mp3_bytes, timeline = synthesize_text_to_mp3(clean_speech, voice_name="Aoede", max_workers=8)
             elapsed = time.time() - t0
 
             if mp3_bytes:
                 mp3_path.write_bytes(mp3_bytes)
+                tl_file = book_out_dir / fname.replace(".mp3", ".timeline.json")
+                tl_file.write_text(json.dumps(timeline, indent=2, ensure_ascii=False), encoding="utf-8")
                 dur = get_mp3_duration_sec(mp3_path)
                 sils = extract_mp3_silences(mp3_path)
                 print(f"     ✓ Done in {elapsed:.1f}s -> {len(mp3_bytes):,} bytes ({dur:.1f}s audio, {len(sils)} silences)")
