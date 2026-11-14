@@ -1200,6 +1200,48 @@
         });
       } catch (e) {}
     })();
+
+    // Offline Navigation Interceptor: When in offline flight mode, intercept Back to Library and Chapter links
+    document.addEventListener("click", async (e) => {
+      const a = e.target.closest("a[href*='books.html'], a[href*='step_'], a[href*='ch_']");
+      if (!a) return;
+      const href = a.getAttribute("href");
+      if (!href) return;
+
+      const isOffline = (!navigator.onLine || window.__FORCE_OFFLINE__);
+      if (isOffline) {
+        e.preventDefault();
+        let targetKey = href;
+        if (href.includes("books.html")) {
+          targetKey = "books.html";
+        } else if (href.includes("step_") || href.includes("ch_")) {
+          const fname = href.split("/").pop();
+          targetKey = `chapters/hitler-and-the-nazi-darwinian-worldview/${fname}`;
+        }
+        if ("caches" in window) {
+          try {
+            const cache = await caches.open(CACHE_NAME);
+            let cachedResp = await cache.match(targetKey) || await cache.match(href);
+            if (!cachedResp && href.includes("books.html")) {
+              cachedResp = await cache.match("./books.html") || await cache.match("books.html");
+            }
+            if (cachedResp) {
+              const htmlText = await cachedResp.text();
+              document.open();
+              document.write(htmlText);
+              document.close();
+              try { window.history.pushState({ path: targetKey }, "", targetKey); } catch (_e) {}
+              return;
+            }
+          } catch (ce) {}
+        }
+      }
+    });
+
+    // Register Service Worker for offline flight mode
+    if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+      navigator.serviceWorker.register("../../kalyani-sw.js", { scope: "../../" }).catch(() => {});
+    }
   </script>
 </body>
 </html>

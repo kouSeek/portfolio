@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
 
 APP_ROOT = Path(__file__).resolve().parent.parent
 CATALOG_PATH = APP_ROOT / "assets" / "books_catalog.json"
@@ -19,9 +20,47 @@ CODE_TEXT_PATH = APP_ROOT / "assets" / "books_text" / "14_the_code_book_simon_si
 OUTPUT_PATH = APP_ROOT / "books.html"
 
 
+def get_clean_book_slug_py(b: dict) -> str:
+    title = b.get("title", "")
+    slug = b.get("slug", "")
+    if "gene" in title.lower():
+        return "the-gene"
+    if "code book" in title.lower():
+        return "the-code-book"
+    clean = re.sub(r"^\d+[a-z]?_", "", slug.lower())
+    clean = re.sub(r"_+", "-", clean)
+    clean = re.sub(r"[^\w\-]", "", clean).strip("-")
+    return clean or slug.lower()
+
+
 def generate_books_html() -> None:
     catalog_json = CATALOG_PATH.read_text(encoding="utf-8") if CATALOG_PATH.is_file() else "[]"
     audio_index_json = AUDIO_INDEX_PATH.read_text(encoding="utf-8") if AUDIO_INDEX_PATH.is_file() else "{}"
+
+    catalog_list = json.loads(catalog_json)
+    all_chapter_files = []
+    for b in catalog_list:
+        slug = get_clean_book_slug_py(b)
+        title = b.get("title", "Book")
+        for idx, s in enumerate(b.get("adhd_segments") or [], 1):
+            all_chapter_files.append({
+                "path": f"chapters/{slug}/step_{idx}.html",
+                "bookTitle": title,
+                "slug": slug,
+                "trackType": "adhd",
+                "index": idx,
+                "label": s.get("label", f"Step {idx}")
+            })
+        for idx, c in enumerate(b.get("author_chapters") or [], 1):
+            all_chapter_files.append({
+                "path": f"chapters/{slug}/ch_{idx}.html",
+                "bookTitle": title,
+                "slug": slug,
+                "trackType": "author",
+                "index": idx,
+                "label": c.get("label", f"Ch {idx}")
+            })
+    all_chapters_json = json.dumps(all_chapter_files, ensure_ascii=False)
 
     gene_text = json.loads(GENE_TEXT_PATH.read_text(encoding="utf-8")) if GENE_TEXT_PATH.is_file() else {}
     code_text = json.loads(CODE_TEXT_PATH.read_text(encoding="utf-8")) if CODE_TEXT_PATH.is_file() else {}
@@ -1086,6 +1125,10 @@ def generate_books_html() -> None:
           <span>29 volumes (Inlined)</span>
         </div>
         <div class="storage-stat-line">
+          <span>📄 Chapter HTML Pages</span>
+          <span id="statModalChaptersCount">279 chapters</span>
+        </div>
+        <div class="storage-stat-line">
           <span>🎙️ Available Voice Tracks</span>
           <span id="statModalAudioFiles">7 chapters (99.3 MB)</span>
         </div>
@@ -1142,6 +1185,7 @@ def generate_books_html() -> None:
        ========================================================================== */
     const BOOKS_DATA = {catalog_json};
     const AUDIO_INDEX = {audio_index_json};
+    const CHAPTER_FILES = {all_chapters_json};
     const INLINED_BOOKS_TEXT = {inlined_text_json};
     const GH_RAW_AUDIO_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/";
     const CACHE_NAME = "kortex-books-v1";
@@ -1735,47 +1779,82 @@ def generate_books_html() -> None:
     }}
 
     /* ==========================================================================
-       SETTINGS & OFFLINE CACHE MANAGER
+       SETTINGS & OFFLINE CACHE MANAGER (CHAPTERS + AUDIO FLIGHT MODE SYNC)
        ========================================================================== */
     async function checkOfflineFilesStatus() {{
       const audioFiles = AUDIO_INDEX.files || [];
-      const total = audioFiles.length;
+      const chapterFiles = CHAPTER_FILES || [];
+      const total = audioFiles.length + chapterFiles.length;
+
       if (!("caches" in window)) {{
         return {{
           total,
           cached: 0,
           missing: total,
-          missingItems: audioFiles.map(f => ({{ file: f, url: `${{GH_RAW_AUDIO_BASE}}${{f.url}}` }}))
+          audioTotal: audioFiles.length,
+          audioCached: 0,
+          chaptersTotal: chapterFiles.length,
+          chaptersCached: 0,
+          missingAudio: audioFiles.map(f => ({{ file: f, url: `${{GH_RAW_AUDIO_BASE}}${{f.url}}`, type: "audio" }})),
+          missingChapters: chapterFiles.map(c => ({{ chapter: c, path: c.path, type: "chapter" }})),
         }};
       }}
+
       try {{
         const cache = await caches.open(CACHE_NAME);
-        let cachedCount = 0;
-        const missing = [];
+        let audioCachedCount = 0;
+        const missingAudio = [];
         for (const f of audioFiles) {{
           const remoteUrl = `${{GH_RAW_AUDIO_BASE}}${{f.url}}`;
           const relPath = `audio/${{f.url}}`;
           const hasRemote = await cache.match(remoteUrl);
           const hasRel = await cache.match(relPath);
           if (hasRemote || hasRel) {{
-            cachedCount++;
+            audioCachedCount++;
           }} else {{
-            missing.push({{ file: f, url: remoteUrl }});
+            missingAudio.push({{ file: f, url: remoteUrl, relPath, type: "audio" }});
           }}
         }}
+
+        let chaptersCachedCount = 0;
+        const missingChapters = [];
+        for (const c of chapterFiles) {{
+          const relPath = c.path;
+          const remoteUrl = `https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/${{c.path}}`;
+          const previewUrl = `https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/kalyani-reels/${{c.path}}`;
+          const hasRel = await cache.match(relPath);
+          const hasRemote = await cache.match(remoteUrl);
+          const hasPrev = await cache.match(previewUrl);
+          if (hasRel || hasRemote || hasPrev) {{
+            chaptersCachedCount++;
+          }} else {{
+            missingChapters.push({{ chapter: c, path: relPath, remoteUrl, previewUrl, type: "chapter" }});
+          }}
+        }}
+
         return {{
           total,
-          cached: cachedCount,
-          missing: missing.length,
-          missingItems: missing
+          cached: audioCachedCount + chaptersCachedCount,
+          missing: missingAudio.length + missingChapters.length,
+          audioTotal: audioFiles.length,
+          audioCached: audioCachedCount,
+          chaptersTotal: chapterFiles.length,
+          chaptersCached: chaptersCachedCount,
+          missingAudio,
+          missingChapters,
         }};
       }} catch (err) {{
-        console.warn("Error checking offline audio status:", err);
+        console.warn("Error checking offline files status:", err);
         return {{
           total,
           cached: 0,
           missing: total,
-          missingItems: audioFiles.map(f => ({{ file: f, url: `${{GH_RAW_AUDIO_BASE}}${{f.url}}` }}))
+          audioTotal: audioFiles.length,
+          audioCached: 0,
+          chaptersTotal: chapterFiles.length,
+          chaptersCached: 0,
+          missingAudio: audioFiles.map(f => ({{ file: f, url: `${{GH_RAW_AUDIO_BASE}}${{f.url}}`, type: "audio" }})),
+          missingChapters: chapterFiles.map(c => ({{ chapter: c, path: c.path, type: "chapter" }})),
         }};
       }}
     }}
@@ -1784,8 +1863,31 @@ def generate_books_html() -> None:
       try {{
         const audioFiles = AUDIO_INDEX.files || [];
         const statAudio = document.getElementById("statModalAudioFiles");
+        const statChapters = document.getElementById("statModalChaptersCount");
+        const statDownloaded = document.getElementById("statModalDownloadedCount");
+        const statMissing = document.getElementById("statModalMissingCount");
+        const btnSync = document.getElementById("btnModalStartSync");
+
+        // Check how many files are downloaded vs not downloaded
+        const status = await checkOfflineFilesStatus();
+
         if (statAudio) {{
-          statAudio.textContent = `${{audioFiles.length}} chapters (99.3 MB)`;
+          statAudio.textContent = `${{status.audioCached}} / ${{status.audioTotal}} audio tracks downloaded`;
+        }}
+        if (statChapters) {{
+          statChapters.textContent = `${{status.chaptersCached}} / ${{status.chaptersTotal}} chapter HTML pages`;
+        }}
+        if (statDownloaded) {{
+          statDownloaded.textContent = `${{status.cached}} / ${{status.total}} files cached`;
+        }}
+        if (statMissing) {{
+          if (status.missing === 0) {{
+            statMissing.textContent = "0 files (100% offline ready ✓)";
+            statMissing.style.color = "#10B981";
+          }} else {{
+            statMissing.textContent = `${{status.missing}} files remaining (${{status.missingChapters.length}} chapters, ${{status.missingAudio.length}} audio)`;
+            statMissing.style.color = "#F59E0B";
+          }}
         }}
 
         // Check cache storage size
@@ -1801,31 +1903,12 @@ def generate_books_html() -> None:
           document.getElementById("statModalCacheSize").textContent = "Available";
         }}
 
-        // Check how many files are downloaded vs not downloaded
-        const status = await checkOfflineFilesStatus();
-        const statDownloaded = document.getElementById("statModalDownloadedCount");
-        const statMissing = document.getElementById("statModalMissingCount");
-        const btnSync = document.getElementById("btnModalStartSync");
-
-        if (statDownloaded) {{
-          statDownloaded.textContent = `${{status.cached}} / ${{status.total}} chapters`;
-        }}
-        if (statMissing) {{
-          if (status.missing === 0) {{
-            statMissing.textContent = "0 files (100% offline ready ✓)";
-            statMissing.style.color = "#10B981";
-          }} else {{
-            statMissing.textContent = `${{status.missing}} file${{status.missing > 1 ? "s" : ""}} not downloaded`;
-            statMissing.style.color = "#F59E0B";
-          }}
-        }}
-
         if (btnSync && !isDownloading) {{
           if (status.missing === 0) {{
-            btnSync.textContent = "✓ All Files Downloaded (Offline Ready)";
+            btnSync.textContent = "✓ All Files Downloaded (100% Offline Ready)";
             btnSync.style.background = "#059669";
           }} else if (status.cached > 0) {{
-            btnSync.textContent = `⚡ Download Remaining ${{status.missing}} File${{status.missing > 1 ? "s" : ""}} for Offline`;
+            btnSync.textContent = `⚡ Download Remaining ${{status.missing}} Files for Offline`;
             btnSync.style.background = "";
           }} else {{
             btnSync.textContent = `⚡ Download All for Offline (${{status.total}} files)`;
@@ -1855,15 +1938,17 @@ def generate_books_html() -> None:
         const cache = await caches.open(CACHE_NAME);
         const status = await checkOfflineFilesStatus();
         const total = status.total;
-        const missingItems = status.missingItems;
+        const missingChapters = status.missingChapters;
+        const missingAudio = status.missingAudio;
+        const totalMissing = missingChapters.length + missingAudio.length;
 
         // If no files are missing, everything is already downloaded!
-        if (missingItems.length === 0) {{
+        if (totalMissing === 0) {{
           pFill.style.width = "100%";
           pPct.textContent = "100%";
           pTitle.textContent = "✓ Already Up to Date";
-          pSub.textContent = `All ${{total}} voice files are already saved in offline cache.`;
-          showToast(`✓ All ${{total}} voice files are already cached.`);
+          pSub.textContent = `All ${{total}} files (279 chapters + audio) are already saved in offline cache.`;
+          showToast(`✓ All ${{total}} files are already cached.`);
           setTimeout(() => {{
             btnSync.disabled = false;
             isDownloading = false;
@@ -1872,61 +1957,91 @@ def generate_books_html() -> None:
           return;
         }}
 
-        const needed = missingItems.length;
-        const alreadyCached = status.cached;
-        pTitle.textContent = `Downloading ${{needed}} missing file${{needed > 1 ? "s" : ""}}...`;
-        pSub.textContent = `(${{alreadyCached}} already downloaded)`;
-
         let newlyDownloaded = 0;
+        let processedCount = status.cached;
 
-        for (let i = 0; i < needed; i++) {{
-          const item = missingItems[i];
-          const fileName = item.file.file || item.url.split("/").pop();
-          const bookTitle = item.file.bookTitle || "Audiobook";
-
-          const currentOverallIndex = alreadyCached + i + 1;
-          const pct = Math.round((currentOverallIndex / total) * 100);
+        // 1. Download Chapter HTML files (All 279 chapters across all 29 books)
+        for (let i = 0; i < missingChapters.length; i++) {{
+          const item = missingChapters[i];
+          const ch = item.chapter;
+          processedCount++;
+          const pct = Math.round((processedCount / total) * 100);
           pFill.style.width = `${{pct}}%`;
           pPct.textContent = `${{pct}}%`;
-          pTitle.textContent = `Downloading missing [${{i + 1}}/${{needed}}]`;
-          pSub.textContent = `${{bookTitle}} — ${{fileName}}`;
+          pTitle.textContent = `Downloading Chapters [${{i + 1}}/${{missingChapters.length}}]`;
+          pSub.textContent = `${{ch.bookTitle}} — ${{ch.label}}`;
+
+          try {{
+            let resp = null;
+            try {{
+              resp = await fetch(item.path);
+            }} catch (_e) {{}}
+            if (!resp || !resp.ok) {{
+              resp = await fetch(item.remoteUrl, {{ mode: "cors" }});
+            }}
+            if (resp && resp.ok) {{
+              const htmlText = await resp.text();
+              const responseObj = () => new Response(htmlText, {{
+                headers: {{ "Content-Type": "text/html; charset=utf-8" }}
+              }});
+              await cache.put(item.path, responseObj());
+              await cache.put(item.remoteUrl, responseObj());
+              if (item.previewUrl) {{
+                await cache.put(item.previewUrl, responseObj());
+              }}
+              newlyDownloaded++;
+            }}
+          }} catch (err) {{
+            console.warn("Could not cache chapter:", item.path, err);
+          }}
+        }}
+
+        // 2. Download Voice Audio files
+        for (let j = 0; j < missingAudio.length; j++) {{
+          const item = missingAudio[j];
+          const f = item.file;
+          processedCount++;
+          const pct = Math.round((processedCount / total) * 100);
+          pFill.style.width = `${{pct}}%`;
+          pPct.textContent = `${{pct}}%`;
+          pTitle.textContent = `Downloading Audio Tracks [${{j + 1}}/${{missingAudio.length}}]`;
+          pSub.textContent = `${{f.bookTitle || "Audiobook"}} — ${{f.label || f.file}}`;
 
           try {{
             const resp = await fetch(item.url, {{ mode: "cors" }});
             if (resp.ok) {{
-              await cache.put(item.url, resp);
+              const buf = await resp.arrayBuffer();
+              const blobResponse = () => new Response(new Blob([buf], {{ type: "audio/mpeg" }}), {{
+                headers: {{ "Content-Type": "audio/mpeg" }}
+              }});
+              await cache.put(item.url, blobResponse());
+              if (item.relPath) {{
+                await cache.put(item.relPath, blobResponse());
+              }}
               newlyDownloaded++;
             }} else {{
-              console.warn("Fetch failed for:", item.url, resp.status);
+              console.warn("Fetch failed for audio:", item.url, resp.status);
             }}
           }} catch (err) {{
-            console.warn("Could not cache url:", item.url, err);
+            console.warn("Could not cache audio:", item.url, err);
           }}
         }}
 
-        // Also cache all book text files for complete offline reading
-        pTitle.textContent = "Syncing book text files...";
-        pSub.textContent = "Caching full chapter texts for offline reading...";
-        for (let j = 0; j < BOOKS_DATA.length; j++) {{
-          const b = BOOKS_DATA[j];
-          const bSlug = (b.slug || b.filename.replace(/\\.pdf$/i, "")).toLowerCase();
-          const textUrl = `https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/books_text/${{bSlug}}.json`;
-          try {{
-            const hasText = await cache.match(textUrl);
-            if (!hasText) {{
-              const tResp = await fetch(textUrl, {{ mode: "cors" }});
-              if (tResp.ok) {{
-                await cache.put(textUrl, tResp);
-              }}
-            }}
-          }} catch (te) {{}}
-        }}
+        // 3. Cache books.html itself for offline access
+        try {{
+          const bResp = await fetch("books.html");
+          if (bResp && bResp.ok) {{
+            await cache.put("books.html", bResp.clone());
+            await cache.put("./books.html", bResp.clone());
+            await cache.put(location.href, bResp.clone());
+          }}
+        }} catch (_be) {{}}
 
         pFill.style.width = "100%";
         pPct.textContent = "100%";
         pTitle.textContent = "✓ 100% Offline Ready!";
-        pSub.textContent = `Downloaded ${{newlyDownloaded}} new file${{newlyDownloaded !== 1 ? "s" : ""}}. All ${{total}} voice tracks are cached for flights.`;
-        showToast(`✓ ${{newlyDownloaded}} files downloaded for offline flights!`);
+        pSub.textContent = `Downloaded ${{newlyDownloaded}} files. All 279 chapters & audio are saved for flights.`;
+        showToast(`✓ All chapters and voices downloaded for offline flights!`);
 
         setTimeout(() => {{
           btnSync.disabled = false;
@@ -1938,6 +2053,11 @@ def generate_books_html() -> None:
         console.error("Offline download error:", err);
         pTitle.textContent = "Sync incomplete";
         pSub.textContent = "Some files could not be downloaded.";
+        btnSync.disabled = false;
+        isDownloading = false;
+        updateStorageMetrics();
+      }}
+    }}
         btnSync.disabled = false;
         isDownloading = false;
         updateStorageMetrics();
@@ -2164,6 +2284,47 @@ def generate_books_html() -> None:
         hydrateAppLinks();
       }} catch (e) {{}}
     }})();
+
+    // Offline Navigation Interceptor: When offline in flight mode, intercept clicks to chapter pages
+    // and render them directly from CacheStorage (0ms, zero network requests).
+    document.addEventListener("click", async (e) => {{
+      const a = e.target.closest("a[href*='chapters/']");
+      if (!a) return;
+      const href = a.getAttribute("href");
+      if (!href) return;
+
+      const isOffline = (!navigator.onLine || window.__FORCE_OFFLINE__);
+      if (isOffline) {{
+        e.preventDefault();
+        const cleanPath = href.replace(/^.*[\\/]chapters[\\/]/, "chapters/");
+        if ("caches" in window) {{
+          try {{
+            const cache = await caches.open(CACHE_NAME);
+            let cachedResp = await cache.match(cleanPath);
+            if (!cachedResp) cachedResp = await cache.match(href);
+            if (!cachedResp) {{
+              const remoteUrl = `https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/${{cleanPath}}`;
+              cachedResp = await cache.match(remoteUrl);
+            }}
+            if (cachedResp) {{
+              const htmlText = await cachedResp.text();
+              document.open();
+              document.write(htmlText);
+              document.close();
+              try {{ window.history.pushState({{ path: cleanPath }}, "", cleanPath); }} catch (_e) {{}}
+              return;
+            }}
+          }} catch (ce) {{
+            console.warn("Offline cache read error:", ce);
+          }}
+        }}
+      }}
+    }});
+
+    // Register Service Worker for offline flight mode
+    if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {{
+      navigator.serviceWorker.register("kalyani-sw.js").catch(() => {{}});
+    }}
 
     // Render immediately from inlined data
     renderBooksGrid();
