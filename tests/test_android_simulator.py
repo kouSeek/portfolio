@@ -699,12 +699,12 @@ class TestAndroidMobileBrowserSimulator(unittest.TestCase):
         filteredCards = booksGrid.querySelectorAll('.book-card');
         assert.strictEqual(filteredCards.length, 29, 'Clearing search should restore all 29 books');
 
-        // Tap category pill "Science & Frontier"
-        const sciencePill = documentNode.querySelector('.filter-chip[data-cat="Science & Frontier"]');
+        // Tap category pill "Science & Cosmos" (or fallback)
+        const sciencePill = documentNode.querySelector('.filter-chip[data-cat="Science & Cosmos"]') || documentNode.querySelector('.filter-chip[data-cat="Science & Frontier"]');
         assert.ok(sciencePill, 'Science category filter chip should exist');
         sciencePill.click();
         filteredCards = booksGrid.querySelectorAll('.book-card');
-        console.log(`✓ Filter category "Science & Frontier" results: ${filteredCards.length} book(s)`);
+        console.log(`✓ Filter category "${sciencePill.getAttribute('data-cat')}" results: ${filteredCards.length} book(s)`);
         assert.ok(filteredCards.length >= 4, 'Science category should have multiple books');
 
         // Tap "All" pill

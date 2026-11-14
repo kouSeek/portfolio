@@ -4,16 +4,16 @@
     "slug": "01_The_Gene_An_Intimate_History_Siddhartha_Mukherjee_COMPLETE",
     "title": "The Gene: An Intimate History",
     "author": "Siddhartha Mukherjee",
-    "category": "Science & Frontier",
+    "category": "Science & Cosmos",
     "pages": 620,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 21m",
     "full_time_label": "15h 30m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Prologue: Families in Kolkata (Start Here \u2014 The Personal Mystery)",
+        "label": "Step 1 · Prologue: Families in Kolkata (Start Here — The Personal Mystery)",
         "pages": "8-20",
         "openPages": "8-20",
         "startPage": 8,
@@ -29,7 +29,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Part II: Seeing the 3D DNA Double Helix (Franklin, Crick & Watson)",
+        "label": "Step 2 · Jumps to Part II: Seeing the 3D DNA Double Helix (Franklin, Crick & Watson)",
         "pages": "134-148",
         "openPages": "134-148",
         "startPage": 134,
@@ -45,7 +45,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps Back to Part I: Mendel's Pea Garden (How Discrete Code Packets Work)",
+        "label": "Step 3 · Jumps Back to Part I: Mendel's Pea Garden (How Discrete Code Packets Work)",
         "pages": "40-52",
         "openPages": "40-52",
         "startPage": 40,
@@ -61,7 +61,7 @@
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Jumps to Epilogue: Bheda, Abheda (Epigenetics, Fate & Human Freedom)",
+        "label": "Step 4 · Jumps to Epilogue: Bheda, Abheda (Epigenetics, Fate & Human Freedom)",
         "pages": "475-487",
         "openPages": "475-487",
         "startPage": 475,
@@ -94,7 +94,7 @@
       },
       {
         "index": 2,
-        "label": "Part I: The Missing Science of Heredity (1865\u20131935)",
+        "label": "Part I: The Missing Science of Heredity (1865–1935)",
         "pages": "21-92",
         "openPages": "21-35",
         "startPage": 21,
@@ -109,7 +109,7 @@
       },
       {
         "index": 3,
-        "label": "Part II: In the Sum of the Parts (1930\u20131970)",
+        "label": "Part II: In the Sum of the Parts (1930–1970)",
         "pages": "93-200",
         "openPages": "93-107",
         "startPage": 93,
@@ -124,7 +124,7 @@
       },
       {
         "index": 4,
-        "label": "Part III: The Dreams of Geneticists (1970\u20132001)",
+        "label": "Part III: The Dreams of Geneticists (1970–2001)",
         "pages": "201-251",
         "openPages": "201-215",
         "startPage": 201,
@@ -139,7 +139,7 @@
       },
       {
         "index": 5,
-        "label": "Part IV: The Proper Study of Mankind Is Man (1970\u20132005)",
+        "label": "Part IV: The Proper Study of Mankind Is Man (1970–2005)",
         "pages": "252-323",
         "openPages": "252-266",
         "startPage": 252,
@@ -154,7 +154,7 @@
       },
       {
         "index": 6,
-        "label": "Part V: Through the Looking Glass (2001\u20132015)",
+        "label": "Part V: Through the Looking Glass (2001–2015)",
         "pages": "324-406",
         "openPages": "324-338",
         "startPage": 324,
@@ -200,16 +200,16 @@
     "slug": "03_The_Man_Who_Knew_Infinity_Ramanujan_Robert_Kanigel",
     "title": "The Man Who Knew Infinity",
     "author": "Robert Kanigel",
-    "category": "Science & Frontier",
+    "category": "Science & Cosmos",
     "pages": 468,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 21m",
     "full_time_label": "11h 42m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 4: The 1913 Letter That Stunned G. H. Hardy (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 4: The 1913 Letter That Stunned G. H. Hardy (Start Here)",
         "pages": "159-172",
         "openPages": "159-172",
         "startPage": 159,
@@ -225,7 +225,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Flashes Back to Prologue & Ch. 1\u20132: Temple Porch & Carr's Book in Kumbakonam",
+        "label": "Step 2 · Flashes Back to Prologue & Ch. 1–2: Temple Porch & Carr's Book in Kumbakonam",
         "pages": "13-26",
         "openPages": "13-26",
         "startPage": 13,
@@ -241,7 +241,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps to Ch. 6: Flint and Stone \u2014 Pure Intuition Meets Rigorous Proof",
+        "label": "Step 3 · Jumps to Ch. 6: Flint and Stone — Pure Intuition Meets Rigorous Proof",
         "pages": "215-228",
         "openPages": "215-228",
         "startPage": 215,
@@ -257,7 +257,7 @@
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Jumps to Ch. 8: Taxicab 1729 & Mock Theta Functions",
+        "label": "Step 4 · Jumps to Ch. 8: Taxicab 1729 & Mock Theta Functions",
         "pages": "309-320",
         "openPages": "309-320",
         "startPage": 309,
@@ -290,7 +290,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 1: In the Shadow of the Temple (1887\u20131903)",
+        "label": "Ch. 1: In the Shadow of the Temple (1887–1903)",
         "pages": "21-54",
         "openPages": "21-35",
         "startPage": 21,
@@ -305,7 +305,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 2: Ranging with Delight (1903\u20131908)",
+        "label": "Ch. 2: Ranging with Delight (1903–1908)",
         "pages": "55-84",
         "openPages": "55-69",
         "startPage": 55,
@@ -320,7 +320,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 3: The Search for Patrons (1908\u20131913)",
+        "label": "Ch. 3: The Search for Patrons (1908–1913)",
         "pages": "85-126",
         "openPages": "85-99",
         "startPage": 85,
@@ -350,7 +350,7 @@
       },
       {
         "index": 6,
-        "label": "Ch. 5: 'I Beg to Introduce Myself' (1913\u20131914)",
+        "label": "Ch. 5: 'I Beg to Introduce Myself' (1913–1914)",
         "pages": "169-196",
         "openPages": "169-183",
         "startPage": 169,
@@ -365,7 +365,7 @@
       },
       {
         "index": 7,
-        "label": "Ch. 6: Ramanujan's Spring (1914\u20131916)",
+        "label": "Ch. 6: Ramanujan's Spring (1914–1916)",
         "pages": "197-236",
         "openPages": "197-211",
         "startPage": 197,
@@ -380,7 +380,7 @@
       },
       {
         "index": 8,
-        "label": "Ch. 7: The English Chill (1916\u20131918)",
+        "label": "Ch. 7: The English Chill (1916–1918)",
         "pages": "237-308",
         "openPages": "237-251",
         "startPage": 237,
@@ -395,7 +395,7 @@
       },
       {
         "index": 9,
-        "label": "Ch. 8: Return to the Cauvery & Epilogue (1918\u20131920)",
+        "label": "Ch. 8: Return to the Cauvery & Epilogue (1918–1920)",
         "pages": "309-374",
         "openPages": "309-323",
         "startPage": 309,
@@ -426,16 +426,16 @@
     "slug": "04_Autobiography_of_a_Yogi_Paramahansa_Yogananda",
     "title": "Autobiography of a Yogi",
     "author": "Paramahansa Yogananda",
-    "category": "Mind & Psychology",
+    "category": "Mind & Consciousness",
     "pages": 363,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 20m",
     "full_time_label": "9h 04m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 26: The Physiological Science of Kriya Yoga (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 26: The Physiological Science of Kriya Yoga (Start Here)",
         "pages": "184-193",
         "openPages": "184-193",
         "startPage": 184,
@@ -451,7 +451,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps Back to Ch. 14: An Experience in Cosmic Consciousness",
+        "label": "Step 2 · Jumps Back to Ch. 14: An Experience in Cosmic Consciousness",
         "pages": "111-119",
         "openPages": "111-119",
         "startPage": 111,
@@ -467,7 +467,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps Back to Ch. 8: Calcutta Scientist Jagadis Chandra Bose",
+        "label": "Step 3 · Jumps Back to Ch. 8: Calcutta Scientist Jagadis Chandra Bose",
         "pages": "52-60",
         "openPages": "52-60",
         "startPage": 52,
@@ -483,7 +483,7 @@
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Jumps to Ch. 10 & 12: Meeting Sri Yukteswar & Serampore Training",
+        "label": "Step 4 · Jumps to Ch. 10 & 12: Meeting Sri Yukteswar & Serampore Training",
         "pages": "75-86",
         "openPages": "75-86",
         "startPage": 75,
@@ -499,7 +499,7 @@
       },
       {
         "index": 5,
-        "label": "Step 5 \u00b7 Jumps Back to Ch. 1\u20132: Bengali Parents, Childhood & Mother's Amulet",
+        "label": "Step 5 · Jumps Back to Ch. 1–2: Bengali Parents, Childhood & Mother's Amulet",
         "pages": "6-18",
         "openPages": "6-18",
         "startPage": 6,
@@ -517,7 +517,7 @@
     "author_chapters": [
       {
         "index": 1,
-        "label": "Ch. 1\u20133: My Parents, Mother's Amulet & The Saint with Two Bodies",
+        "label": "Ch. 1–3: My Parents, Mother's Amulet & The Saint with Two Bodies",
         "pages": "6-25",
         "openPages": "6-20",
         "startPage": 6,
@@ -532,7 +532,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 4\u20137: Himalayan Flight, Tiger Swami & The Levitating Saint",
+        "label": "Ch. 4–7: Himalayan Flight, Tiger Swami & The Levitating Saint",
         "pages": "26-51",
         "openPages": "26-40",
         "startPage": 26,
@@ -547,7 +547,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 8\u20139: Jagadis Chandra Bose & Master Mahasaya",
+        "label": "Ch. 8–9: Jagadis Chandra Bose & Master Mahasaya",
         "pages": "52-74",
         "openPages": "52-66",
         "startPage": 52,
@@ -562,7 +562,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 10\u201313: Meeting Sri Yukteswar & Serampore Hermitage Years",
+        "label": "Ch. 10–13: Meeting Sri Yukteswar & Serampore Hermitage Years",
         "pages": "75-110",
         "openPages": "75-89",
         "startPage": 75,
@@ -577,7 +577,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 14\u201316: Cosmic Consciousness, Cauliflower Robbery & Outwitting the Stars",
+        "label": "Ch. 14–16: Cosmic Consciousness, Cauliflower Robbery & Outwitting the Stars",
         "pages": "111-139",
         "openPages": "111-125",
         "startPage": 111,
@@ -592,7 +592,7 @@
       },
       {
         "index": 6,
-        "label": "Ch. 17\u201323: Kashmir, Stone Image & Calcutta University Degree",
+        "label": "Ch. 17–23: Kashmir, Stone Image & Calcutta University Degree",
         "pages": "140-172",
         "openPages": "140-154",
         "startPage": 140,
@@ -607,7 +607,7 @@
       },
       {
         "index": 7,
-        "label": "Ch. 24\u201328: Becoming a Monk, Kriya Yoga & Ranchi School",
+        "label": "Ch. 24–28: Becoming a Monk, Kriya Yoga & Ranchi School",
         "pages": "173-200",
         "openPages": "173-187",
         "startPage": 173,
@@ -622,7 +622,7 @@
       },
       {
         "index": 8,
-        "label": "Ch. 29\u201336: Rabindranath Tagore, Law of Miracles, Babaji & Lahiri Mahasaya",
+        "label": "Ch. 29–36: Rabindranath Tagore, Law of Miracles, Babaji & Lahiri Mahasaya",
         "pages": "201-260",
         "openPages": "201-215",
         "startPage": 201,
@@ -637,7 +637,7 @@
       },
       {
         "index": 9,
-        "label": "Ch. 37\u201348: Voyage to America, Return to India, Gandhi & Encinitas",
+        "label": "Ch. 37–48: Voyage to America, Return to India, Gandhi & Encinitas",
         "pages": "261-363",
         "openPages": "261-275",
         "startPage": 261,
@@ -668,16 +668,16 @@
     "slug": "05_Fundamentals_of_Biostatistics_Rosner",
     "title": "Fundamentals of Biostatistics",
     "author": "Bernard Rosner",
-    "category": "Science & Frontier",
+    "category": "Science & Cosmos",
     "pages": 962,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 28m",
     "full_time_label": "24h 03m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 3: Bayes' Theorem & Real-World Medical Screening (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 3: Bayes' Theorem & Real-World Medical Screening (Start Here)",
         "pages": "66-80",
         "openPages": "66-80",
         "startPage": 66,
@@ -693,7 +693,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 5\u20136: Normal Distribution & The Central Limit Theorem",
+        "label": "Step 2 · Jumps to Ch. 5–6: Normal Distribution & The Central Limit Theorem",
         "pages": "135-150",
         "openPages": "135-150",
         "startPage": 135,
@@ -709,7 +709,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps Back to Ch. 1\u20132: Center vs. Spread (Mean, Median & Variance)",
+        "label": "Step 3 · Jumps Back to Ch. 1–2: Center vs. Spread (Mean, Median & Variance)",
         "pages": "23-36",
         "openPages": "23-36",
         "startPage": 23,
@@ -725,7 +725,7 @@
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Jumps to Ch. 7: Hypothesis Testing, P-Values & Statistical Power",
+        "label": "Step 4 · Jumps to Ch. 7: Hypothesis Testing, P-Values & Statistical Power",
         "pages": "231-244",
         "openPages": "231-244",
         "startPage": 231,
@@ -833,7 +833,7 @@
       },
       {
         "index": 7,
-        "label": "Ch. 7\u20138: Hypothesis Testing (One-Sample & Two-Sample)",
+        "label": "Ch. 7–8: Hypothesis Testing (One-Sample & Two-Sample)",
         "pages": "231-345",
         "openPages": "231-245",
         "startPage": 231,
@@ -848,7 +848,7 @@
       },
       {
         "index": 8,
-        "label": "Ch. 9\u201310: Nonparametric & Categorical Data Methods",
+        "label": "Ch. 9–10: Nonparametric & Categorical Data Methods",
         "pages": "346-444",
         "openPages": "346-360",
         "startPage": 346,
@@ -863,7 +863,7 @@
       },
       {
         "index": 9,
-        "label": "Ch. 11\u201314: Regression, Correlation, ANOVA & Survival Analysis",
+        "label": "Ch. 11–14: Regression, Correlation, ANOVA & Survival Analysis",
         "pages": "445-850",
         "openPages": "445-459",
         "startPage": 445,
@@ -894,16 +894,16 @@
     "slug": "06_Thinking_Fast_and_Slow_Daniel_Kahneman",
     "title": "Thinking, Fast and Slow",
     "author": "Daniel Kahneman",
-    "category": "Mind & Psychology",
+    "category": "Mind & Consciousness",
     "pages": 459,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 44m",
     "full_time_label": "11h 28m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Ch. 1\u20132: Fast System 1 vs. Effortful System 2 (Start Here)",
+        "label": "Step 1 · Ch. 1–2: Fast System 1 vs. Effortful System 2 (Start Here)",
         "pages": "17-31",
         "openPages": "17-31",
         "startPage": 17,
@@ -919,7 +919,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Part V (Ch. 35\u201336): The Experiencing Self vs. The Remembering Self",
+        "label": "Step 2 · Jumps to Part V (Ch. 35–36): The Experiencing Self vs. The Remembering Self",
         "pages": "353-366",
         "openPages": "353-366",
         "startPage": 353,
@@ -935,7 +935,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps Back to Part IV (Ch. 26): Prospect Theory & Loss Aversion",
+        "label": "Step 3 · Jumps Back to Part IV (Ch. 26): Prospect Theory & Loss Aversion",
         "pages": "259-272",
         "openPages": "259-272",
         "startPage": 259,
@@ -944,14 +944,14 @@
         "volumePct": 3.1,
         "estMinutes": 21,
         "effortLabel": "21 min",
-        "brief": "Unpacks the Nobel Prize discovery of why losing \u20b91,000 triggers twice as much gut pain as winning \u20b91,000 brings joy, and how reference points govern human risk.",
+        "brief": "Unpacks the Nobel Prize discovery of why losing ₹1,000 triggers twice as much gut pain as winning ₹1,000 brings joy, and how reference points govern human risk.",
         "path": "/usr/local/google/home/koushikchak/Downloads/Liberation_Library/06_Thinking_Fast_and_Slow_Daniel_Kahneman.pdf?pages=259-272&track=adhd&step=3",
         "totalSteps": 5,
         "flowSharePct": 20.3
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Jumps Back to Part I (Ch. 5): Cognitive Ease & Why Familiarity Feels True",
+        "label": "Step 4 · Jumps Back to Part I (Ch. 5): Cognitive Ease & Why Familiarity Feels True",
         "pages": "56-67",
         "openPages": "56-67",
         "startPage": 56,
@@ -967,7 +967,7 @@
       },
       {
         "index": 5,
-        "label": "Step 5 \u00b7 Jumps to Part II (Ch. 11 & 17): Anchoring & Regression to the Mean",
+        "label": "Step 5 · Jumps to Part II (Ch. 11 & 17): Anchoring & Regression to the Mean",
         "pages": "112-125",
         "openPages": "112-125",
         "startPage": 112,
@@ -1000,7 +1000,7 @@
       },
       {
         "index": 2,
-        "label": "Part I: Two Systems (Ch. 1\u20139)",
+        "label": "Part I: Two Systems (Ch. 1–9)",
         "pages": "17-102",
         "openPages": "17-31",
         "startPage": 17,
@@ -1015,7 +1015,7 @@
       },
       {
         "index": 3,
-        "label": "Part II: Heuristics and Biases (Ch. 10\u201318)",
+        "label": "Part II: Heuristics and Biases (Ch. 10–18)",
         "pages": "103-188",
         "openPages": "103-117",
         "startPage": 103,
@@ -1030,7 +1030,7 @@
       },
       {
         "index": 4,
-        "label": "Part III: Overconfidence (Ch. 19\u201324)",
+        "label": "Part III: Overconfidence (Ch. 19–24)",
         "pages": "189-248",
         "openPages": "189-203",
         "startPage": 189,
@@ -1045,7 +1045,7 @@
       },
       {
         "index": 5,
-        "label": "Part IV: Choices (Ch. 25\u201334)",
+        "label": "Part IV: Choices (Ch. 25–34)",
         "pages": "249-352",
         "openPages": "249-263",
         "startPage": 249,
@@ -1060,7 +1060,7 @@
       },
       {
         "index": 6,
-        "label": "Part V: Two Selves & Conclusions (Ch. 35\u201338)",
+        "label": "Part V: Two Selves & Conclusions (Ch. 35–38)",
         "pages": "353-398",
         "openPages": "353-367",
         "startPage": 353,
@@ -1091,16 +1091,16 @@
     "slug": "07_The_Art_of_War_Sun_Tzu_Thomas_Cleary",
     "title": "The Art of War",
     "author": "Sun Tzu (tr. Thomas Cleary)",
-    "category": "Philosophy & Warfare",
+    "category": "Power & Philosophy",
     "pages": 475,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 04m",
     "full_time_label": "11h 52m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 3: Winning Whole Without Fighting (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 3: Winning Whole Without Fighting (Start Here)",
         "pages": "70-82",
         "openPages": "70-82",
         "startPage": 70,
@@ -1116,7 +1116,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 6: Emptiness and Fullness \u2014 Flowing Like Water",
+        "label": "Step 2 · Jumps to Ch. 6: Emptiness and Fullness — Flowing Like Water",
         "pages": "98-112",
         "openPages": "98-112",
         "startPage": 98,
@@ -1125,14 +1125,14 @@
         "volumePct": 3.2,
         "estMinutes": 22,
         "effortLabel": "22 min",
-        "brief": "Shows how water never crashes into a solid rock wall\u2014it effortlessly flows around high resistance into empty spaces, shaping its victory to the terrain.",
+        "brief": "Shows how water never crashes into a solid rock wall—it effortlessly flows around high resistance into empty spaces, shaping its victory to the terrain.",
         "path": "/usr/local/google/home/koushikchak/Downloads/Liberation_Library/07_The_Art_of_War_Sun_Tzu_Thomas_Cleary.pdf?pages=98-112&track=adhd&step=2",
         "totalSteps": 3,
         "flowSharePct": 34.9
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps Back to Ch. 1 & 4: Making Yourself Invincible First",
+        "label": "Step 3 · Jumps Back to Ch. 1 & 4: Making Yourself Invincible First",
         "pages": "45-59",
         "openPages": "45-59",
         "startPage": 45,
@@ -1165,7 +1165,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 1\u20133: Strategic Assessments, Doing Battle & Planning a Siege",
+        "label": "Ch. 1–3: Strategic Assessments, Doing Battle & Planning a Siege",
         "pages": "45-76",
         "openPages": "45-59",
         "startPage": 45,
@@ -1180,7 +1180,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 4\u20136: Formation, Force & Emptiness and Fullness",
+        "label": "Ch. 4–6: Formation, Force & Emptiness and Fullness",
         "pages": "77-112",
         "openPages": "77-91",
         "startPage": 77,
@@ -1195,7 +1195,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 7\u20139: Armed Struggle, Adaptations & Maneuvering Armies",
+        "label": "Ch. 7–9: Armed Struggle, Adaptations & Maneuvering Armies",
         "pages": "113-142",
         "openPages": "113-127",
         "startPage": 113,
@@ -1210,7 +1210,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 10\u201313: Terrain, Nine Grounds, Fire Attack & Use of Spies",
+        "label": "Ch. 10–13: Terrain, Nine Grounds, Fire Attack & Use of Spies",
         "pages": "143-172",
         "openPages": "143-157",
         "startPage": 143,
@@ -1256,16 +1256,16 @@
     "slug": "08_The_Kama_Sutra_of_Vatsyayana_Burton",
     "title": "The Kama Sutra of Vatsyayana",
     "author": "Vatsyayana (tr. Richard Burton)",
-    "category": "Philosophy & Warfare",
+    "category": "Power & Philosophy",
     "pages": 112,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "39 min",
     "full_time_label": "2h 48m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Part I, Ch. 3\u20134: The 64 Arts & Sovereign Life of a Citizen (Start Here)",
+        "label": "Step 1 · Jumps to Part I, Ch. 3–4: The 64 Arts & Sovereign Life of a Citizen (Start Here)",
         "pages": "15-26",
         "openPages": "15-26",
         "startPage": 15,
@@ -1281,7 +1281,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Part I, Ch. 2 & Part III: Balancing Dharma, Artha & Kama and Courtship",
+        "label": "Step 2 · Jumps to Part I, Ch. 2 & Part III: Balancing Dharma, Artha & Kama and Courtship",
         "pages": "49-62",
         "openPages": "49-62",
         "startPage": 49,
@@ -1344,7 +1344,7 @@
       },
       {
         "index": 4,
-        "label": "Part IV\u2013VII: Household Life, Social Dynamics & Concluding Remarks",
+        "label": "Part IV–VII: Household Life, Social Dynamics & Concluding Remarks",
         "pages": "63-110",
         "openPages": "63-77",
         "startPage": 63,
@@ -1375,16 +1375,16 @@
     "slug": "09_Don_Quixote_Miguel_de_Cervantes",
     "title": "Don Quixote",
     "author": "Miguel de Cervantes",
-    "category": "Literature & Classics",
+    "category": "Power & Philosophy",
     "pages": 771,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 03m",
     "full_time_label": "19h 16m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Part I, Ch. 1\u20133: Polishing Rusty Armor & Riding Out at Dawn (Start Here)",
+        "label": "Step 1 · Part I, Ch. 1–3: Polishing Rusty Armor & Riding Out at Dawn (Start Here)",
         "pages": "57-70",
         "openPages": "57-70",
         "startPage": 57,
@@ -1400,7 +1400,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Part I, Ch. 7\u20138: Recruiting Sancho Panza & Charging the Windmills",
+        "label": "Step 2 · Jumps to Part I, Ch. 7–8: Recruiting Sancho Panza & Charging the Windmills",
         "pages": "82-95",
         "openPages": "82-95",
         "startPage": 82,
@@ -1416,7 +1416,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps to Part II: Sancho Governs His Island with Pure Common Sense",
+        "label": "Step 3 · Jumps to Part II: Sancho Governs His Island with Pure Common Sense",
         "pages": "595-608",
         "openPages": "595-608",
         "startPage": 595,
@@ -1449,7 +1449,7 @@
       },
       {
         "index": 2,
-        "label": "Part I, Ch. 1\u20136: The First Sally & The Burning of the Books",
+        "label": "Part I, Ch. 1–6: The First Sally & The Burning of the Books",
         "pages": "57-81",
         "openPages": "57-71",
         "startPage": 57,
@@ -1464,7 +1464,7 @@
       },
       {
         "index": 3,
-        "label": "Part I, Ch. 7\u201315: Sancho Panza & The Windmills",
+        "label": "Part I, Ch. 7–15: Sancho Panza & The Windmills",
         "pages": "82-135",
         "openPages": "82-96",
         "startPage": 82,
@@ -1479,7 +1479,7 @@
       },
       {
         "index": 4,
-        "label": "Part I, Ch. 16\u201352: The Inn, Mambrino's Helmet & Sierra Morena",
+        "label": "Part I, Ch. 16–52: The Inn, Mambrino's Helmet & Sierra Morena",
         "pages": "136-409",
         "openPages": "136-150",
         "startPage": 136,
@@ -1494,7 +1494,7 @@
       },
       {
         "index": 5,
-        "label": "Part II, Ch. 1\u201374: The Knight and Squire Meet Their Own Fame",
+        "label": "Part II, Ch. 1–74: The Knight and Squire Meet Their Own Fame",
         "pages": "410-771",
         "openPages": "410-424",
         "startPage": 410,
@@ -1525,16 +1525,16 @@
     "slug": "10_Stalin_and_Hitler_Two_Predator_Leaders",
     "title": "Stalin and Hitler: Two Predator Leaders",
     "author": "Historical Monograph",
-    "category": "Philosophy & Warfare",
+    "category": "Power & Philosophy",
     "pages": 171,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "51 min",
     "full_time_label": "4h 16m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Introduction & Origins \u2014 Psychological Formation of Two Outsiders",
+        "label": "Step 1 · Introduction & Origins — Psychological Formation of Two Outsiders",
         "pages": "9-24",
         "openPages": "9-24",
         "startPage": 9,
@@ -1550,7 +1550,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Machinery of Fear, Cult of Personality & Dictatorial Collision",
+        "label": "Step 2 · Machinery of Fear, Cult of Personality & Dictatorial Collision",
         "pages": "25-42",
         "openPages": "25-42",
         "startPage": 25,
@@ -1629,16 +1629,16 @@
     "slug": "11a_The_Communist_Manifesto_Karl_Marx",
     "title": "The Communist Manifesto",
     "author": "Karl Marx & Friedrich Engels",
-    "category": "Philosophy & Warfare",
+    "category": "Power & Philosophy",
     "pages": 184,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "44 min",
     "full_time_label": "4h 36m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Ch. 1: Bourgeois and Proletarians (Start Here \u2014 Skip the 39p Prefaces)",
+        "label": "Step 1 · Ch. 1: Bourgeois and Proletarians (Start Here — Skip the 39p Prefaces)",
         "pages": "40-54",
         "openPages": "40-54",
         "startPage": 40,
@@ -1654,7 +1654,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Ch. 2: Capital, Wage Labor & the State",
+        "label": "Step 2 · Ch. 2: Capital, Wage Labor & the State",
         "pages": "55-68",
         "openPages": "55-68",
         "startPage": 55,
@@ -1672,7 +1672,7 @@
     "author_chapters": [
       {
         "index": 1,
-        "label": "Historical Introduction & Prefaces (1872\u20131890)",
+        "label": "Historical Introduction & Prefaces (1872–1890)",
         "pages": "8-39",
         "openPages": "8-22",
         "startPage": 8,
@@ -1717,7 +1717,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 3\u20134 & Notes: Socialist Literature & Endnotes",
+        "label": "Ch. 3–4 & Notes: Socialist Literature & Endnotes",
         "pages": "69-184",
         "openPages": "69-83",
         "startPage": 69,
@@ -1748,16 +1748,16 @@
     "slug": "11b_Das_Kapital_Karl_Marx",
     "title": "Das Kapital",
     "author": "Karl Marx",
-    "category": "Philosophy & Warfare",
+    "category": "Power & Philosophy",
     "pages": 1542,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h",
     "full_time_label": "38h 33m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 4: The General Formula for Capital M\u2013C\u2013M' (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 4: The General Formula for Capital M–C–M' (Start Here)",
         "pages": "104-116",
         "openPages": "104-116",
         "startPage": 104,
@@ -1766,14 +1766,14 @@
         "volumePct": 0.8,
         "estMinutes": 20,
         "effortLabel": "20 min",
-        "brief": "Instead of getting bogged down in Ch. 1's 20 yards of linen, we start at Ch. 4 where Marx makes the mechanism crystal clear: ordinary people sell goods to buy what they need (C\u2013M\u2013C), whereas capital spends money only to end up with more money (M\u2013C\u2013M').",
+        "brief": "Instead of getting bogged down in Ch. 1's 20 yards of linen, we start at Ch. 4 where Marx makes the mechanism crystal clear: ordinary people sell goods to buy what they need (C–M–C), whereas capital spends money only to end up with more money (M–C–M').",
         "path": "/usr/local/google/home/koushikchak/Downloads/Liberation_Library/11b_Das_Kapital_Karl_Marx.pdf?pages=104-116&track=adhd&step=1",
         "totalSteps": 3,
         "flowSharePct": 32.5
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps Back to Ch. 1, Sec. 4: The Fetishism of Commodities",
+        "label": "Step 2 · Jumps Back to Ch. 1, Sec. 4: The Fetishism of Commodities",
         "pages": "46-57",
         "openPages": "46-57",
         "startPage": 46,
@@ -1789,7 +1789,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps to Part VIII: So-Called Primitive Accumulation",
+        "label": "Step 3 · Jumps to Part VIII: So-Called Primitive Accumulation",
         "pages": "507-521",
         "openPages": "507-521",
         "startPage": 507,
@@ -1822,7 +1822,7 @@
       },
       {
         "index": 2,
-        "label": "Part I: Commodities and Money (Ch. 1\u20133)",
+        "label": "Part I: Commodities and Money (Ch. 1–3)",
         "pages": "28-103",
         "openPages": "28-42",
         "startPage": 28,
@@ -1837,7 +1837,7 @@
       },
       {
         "index": 3,
-        "label": "Part II: The Transformation of Money into Capital (Ch. 4\u20136)",
+        "label": "Part II: The Transformation of Money into Capital (Ch. 4–6)",
         "pages": "104-125",
         "openPages": "104-118",
         "startPage": 104,
@@ -1846,13 +1846,13 @@
         "volumePct": 1.4,
         "estMinutes": 33,
         "effortLabel": "33 min",
-        "brief": "M\u2013C\u2013M' and the buying and selling of labor-power.",
+        "brief": "M–C–M' and the buying and selling of labor-power.",
         "path": "/usr/local/google/home/koushikchak/Downloads/Liberation_Library/11b_Das_Kapital_Karl_Marx.pdf?pages=104-118&track=author&step=3",
         "totalChapters": 6
       },
       {
         "index": 4,
-        "label": "Part III\u2013V: Absolute & Relative Surplus-Value (Ch. 7\u201318)",
+        "label": "Part III–V: Absolute & Relative Surplus-Value (Ch. 7–18)",
         "pages": "126-365",
         "openPages": "126-140",
         "startPage": 126,
@@ -1867,7 +1867,7 @@
       },
       {
         "index": 5,
-        "label": "Part VI\u2013VIII: Wages, Accumulation & Primitive Accumulation (Ch. 19\u201333)",
+        "label": "Part VI–VIII: Wages, Accumulation & Primitive Accumulation (Ch. 19–33)",
         "pages": "366-548",
         "openPages": "366-380",
         "startPage": 366,
@@ -1913,16 +1913,16 @@
     "slug": "12_Hitler_and_the_Nazi_Darwinian_Worldview",
     "title": "Hitler and the Nazi Darwinian Worldview",
     "author": "Jerry Bergman",
-    "category": "Philosophy & Warfare",
+    "category": "Power & Philosophy",
     "pages": 336,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "52 min",
     "full_time_label": "8h 24m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Introduction & Ch. 1: How Eugenics & Social Darwinism Infected Europe",
+        "label": "Step 1 · Introduction & Ch. 1: How Eugenics & Social Darwinism Infected Europe",
         "pages": "16-33",
         "openPages": "16-33",
         "startPage": 16,
@@ -1938,7 +1938,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 15\u201317: Textbooks, Lebensborn & Historical Lessons",
+        "label": "Step 2 · Jumps to Ch. 15–17: Textbooks, Lebensborn & Historical Lessons",
         "pages": "245-261",
         "openPages": "245-261",
         "startPage": 245,
@@ -1971,7 +1971,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 1\u20137: Origins & Architects of the Nazi Eugenics Worldview",
+        "label": "Ch. 1–7: Origins & Architects of the Nazi Eugenics Worldview",
         "pages": "31-145",
         "openPages": "31-45",
         "startPage": 31,
@@ -1986,7 +1986,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 8\u201317: Medical Establishment, Textbooks & Lessons",
+        "label": "Ch. 8–17: Medical Establishment, Textbooks & Lessons",
         "pages": "146-336",
         "openPages": "146-160",
         "startPage": 146,
@@ -2017,16 +2017,16 @@
     "slug": "13a_Aghora_I_At_the_Left_Hand_of_God_Robert_Svoboda",
     "title": "Aghora I: At the Left Hand of God",
     "author": "Robert E. Svoboda",
-    "category": "Mind & Psychology",
+    "category": "Mind & Consciousness",
     "pages": 167,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 09m",
     "full_time_label": "4h 10m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 1: Ma \u2014 Why the Aghori Approaches the Universe as Mother (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 1: Ma — Why the Aghori Approaches the Universe as Mother (Start Here)",
         "pages": "23-31",
         "openPages": "23-31",
         "startPage": 23,
@@ -2042,7 +2042,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 4: Rnanubandhana \u2014 The Primal Karmic Debt Account",
+        "label": "Step 2 · Jumps to Ch. 4: Rnanubandhana — The Primal Karmic Debt Account",
         "pages": "57-74",
         "openPages": "57-74",
         "startPage": 57,
@@ -2058,7 +2058,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps Back to Ch. 2\u20133: Shakti, Kali & Fearless Smashan Clarity",
+        "label": "Step 3 · Jumps Back to Ch. 2–3: Shakti, Kali & Fearless Smashan Clarity",
         "pages": "32-50",
         "openPages": "32-50",
         "startPage": 32,
@@ -2167,16 +2167,16 @@
     "slug": "13b_Aghora_II_Kundalini_Robert_Svoboda",
     "title": "Aghora II: Kundalini",
     "author": "Robert E. Svoboda",
-    "category": "Mind & Psychology",
+    "category": "Mind & Consciousness",
     "pages": 158,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 06m",
     "full_time_label": "3h 57m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Ch. 1: Agni \u2014 Why a Calm Belly Fire Means a Calm Mind (Start Here)",
+        "label": "Step 1 · Ch. 1: Agni — Why a Calm Belly Fire Means a Calm Mind (Start Here)",
         "pages": "16-28",
         "openPages": "16-28",
         "startPage": 16,
@@ -2192,7 +2192,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 7: Music \u2014 Nada Brahma & Vocal Resonance as Supreme Yoga",
+        "label": "Step 2 · Jumps to Ch. 7: Music — Nada Brahma & Vocal Resonance as Supreme Yoga",
         "pages": "88-102",
         "openPages": "88-102",
         "startPage": 88,
@@ -2208,7 +2208,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps Back to Ch. 2: Kundalini, Nadis & Purifying the Channels",
+        "label": "Step 3 · Jumps Back to Ch. 2: Kundalini, Nadis & Purifying the Channels",
         "pages": "29-44",
         "openPages": "29-44",
         "startPage": 29,
@@ -2271,7 +2271,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 3\u20134: Preliminaries & Sadhana",
+        "label": "Ch. 3–4: Preliminaries & Sadhana",
         "pages": "47-71",
         "openPages": "47-61",
         "startPage": 47,
@@ -2286,7 +2286,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 5\u20137: Mantra, Tantra & Music",
+        "label": "Ch. 5–7: Mantra, Tantra & Music",
         "pages": "72-105",
         "openPages": "72-86",
         "startPage": 72,
@@ -2301,7 +2301,7 @@
       },
       {
         "index": 6,
-        "label": "Ch. 8\u201310: Immortals, The Esoteric & Gurus and Disciples",
+        "label": "Ch. 8–10: Immortals, The Esoteric & Gurus and Disciples",
         "pages": "106-158",
         "openPages": "106-120",
         "startPage": 106,
@@ -2332,16 +2332,16 @@
     "slug": "13c_Aghora_III_The_Law_of_Karma_Robert_Svoboda",
     "title": "Aghora III: The Law of Karma",
     "author": "Robert E. Svoboda",
-    "category": "Mind & Psychology",
+    "category": "Mind & Consciousness",
     "pages": 162,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "54 min",
     "full_time_label": "4h 03m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Introduction: The Physics of Karma (Sanchita, Prarabdha & Zero Guilt)",
+        "label": "Step 1 · Introduction: The Physics of Karma (Sanchita, Prarabdha & Zero Guilt)",
         "pages": "7-22",
         "openPages": "7-22",
         "startPage": 7,
@@ -2357,7 +2357,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 9: Prakriti Siddhi \u2014 Playing Your Role 100% Then Dropping the Load",
+        "label": "Step 2 · Jumps to Ch. 9: Prakriti Siddhi — Playing Your Role 100% Then Dropping the Load",
         "pages": "132-151",
         "openPages": "132-151",
         "startPage": 132,
@@ -2390,7 +2390,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 1\u20133: Rnanubandhana, Elan & Teasers and Stallions",
+        "label": "Ch. 1–3: Rnanubandhana, Elan & Teasers and Stallions",
         "pages": "21-60",
         "openPages": "21-35",
         "startPage": 21,
@@ -2405,7 +2405,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 4\u20136: Timir, Scarlet Ruby & The City of Delusion",
+        "label": "Ch. 4–6: Timir, Scarlet Ruby & The City of Delusion",
         "pages": "61-104",
         "openPages": "61-75",
         "startPage": 61,
@@ -2420,7 +2420,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 7\u20139: Repay, Redstone & Prakriti Siddhi",
+        "label": "Ch. 7–9: Repay, Redstone & Prakriti Siddhi",
         "pages": "105-162",
         "openPages": "105-119",
         "startPage": 105,
@@ -2451,16 +2451,16 @@
     "slug": "14_The_Code_Book_Simon_Singh",
     "title": "The Code Book",
     "author": "Simon Singh",
-    "category": "Science & Frontier",
+    "category": "Science & Cosmos",
     "pages": 695,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 27m",
     "full_time_label": "17h 22m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 4: Cracking the Enigma Machine (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 4: Cracking the Enigma Machine (Start Here)",
         "pages": "215-234",
         "openPages": "215-234",
         "startPage": 215,
@@ -2476,7 +2476,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 6: Alice and Bob Go Public \u2014 One-Way Locks & RSA Prime Math",
+        "label": "Step 2 · Jumps to Ch. 6: Alice and Bob Go Public — One-Way Locks & RSA Prime Math",
         "pages": "410-428",
         "openPages": "410-428",
         "startPage": 410,
@@ -2492,7 +2492,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps Back to Ch. 1: Mary Queen of Scots & Al-Kindi's Frequency Analysis",
+        "label": "Step 3 · Jumps Back to Ch. 1: Mary Queen of Scots & Al-Kindi's Frequency Analysis",
         "pages": "15-33",
         "openPages": "15-33",
         "startPage": 15,
@@ -2540,7 +2540,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 2: Le Chiffre Ind\u00e9chiffrable",
+        "label": "Ch. 2: Le Chiffre Indéchiffrable",
         "pages": "82-171",
         "openPages": "82-96",
         "startPage": 82,
@@ -2549,7 +2549,7 @@
         "volumePct": 12.9,
         "estMinutes": 135,
         "effortLabel": "2h 15m",
-        "brief": "The Vigen\u00e8re polyalphabetic cipher and Charles Babbage's breakthrough.",
+        "brief": "The Vigenère polyalphabetic cipher and Charles Babbage's breakthrough.",
         "path": "/usr/local/google/home/koushikchak/Downloads/Liberation_Library/14_The_Code_Book_Simon_Singh.pdf?pages=82-96&track=author&step=3",
         "totalChapters": 8
       },
@@ -2600,7 +2600,7 @@
       },
       {
         "index": 7,
-        "label": "Ch. 6\u20137: Alice and Bob Go Public & Pretty Good Privacy",
+        "label": "Ch. 6–7: Alice and Bob Go Public & Pretty Good Privacy",
         "pages": "396-540",
         "openPages": "396-410",
         "startPage": 396,
@@ -2646,16 +2646,16 @@
     "slug": "15a_Cosmos_Carl_Sagan",
     "title": "Cosmos",
     "author": "Carl Sagan",
-    "category": "Space & Physics",
+    "category": "Science & Cosmos",
     "pages": 211,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 21m",
     "full_time_label": "5h 16m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 9\u201310: Lives of the Stars, Supernovas & Visualizing the 4th Dimension (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 9–10: Lives of the Stars, Supernovas & Visualizing the 4th Dimension (Start Here)",
         "pages": "133-152",
         "openPages": "133-152",
         "startPage": 133,
@@ -2671,7 +2671,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps Back to Ch. 1: The Shores of the Cosmic Ocean & Eratosthenes' Two Sticks",
+        "label": "Step 2 · Jumps Back to Ch. 1: The Shores of the Cosmic Ocean & Eratosthenes' Two Sticks",
         "pages": "10-17",
         "openPages": "10-17",
         "startPage": 10,
@@ -2687,7 +2687,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps to Ch. 7: The Backbone of Night \u2014 How Ancient Ionians Discovered Science",
+        "label": "Step 3 · Jumps to Ch. 7: The Backbone of Night — How Ancient Ionians Discovered Science",
         "pages": "102-114",
         "openPages": "102-114",
         "startPage": 102,
@@ -2703,7 +2703,7 @@
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Jumps to Ch. 13: Who Speaks for Earth?",
+        "label": "Step 4 · Jumps to Ch. 13: Who Speaks for Earth?",
         "pages": "192-204",
         "openPages": "192-204",
         "startPage": 192,
@@ -2781,7 +2781,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 4\u20136: Heaven and Hell, Blues for a Red Planet & Travelers' Tales",
+        "label": "Ch. 4–6: Heaven and Hell, Blues for a Red Planet & Travelers' Tales",
         "pages": "50-101",
         "openPages": "50-64",
         "startPage": 50,
@@ -2796,7 +2796,7 @@
       },
       {
         "index": 6,
-        "label": "Ch. 7\u20138: The Backbone of Night & Travels in Space and Time",
+        "label": "Ch. 7–8: The Backbone of Night & Travels in Space and Time",
         "pages": "102-132",
         "openPages": "102-116",
         "startPage": 102,
@@ -2811,7 +2811,7 @@
       },
       {
         "index": 7,
-        "label": "Ch. 9\u201310: The Lives of the Stars & The Edge of Forever",
+        "label": "Ch. 9–10: The Lives of the Stars & The Edge of Forever",
         "pages": "133-163",
         "openPages": "133-147",
         "startPage": 133,
@@ -2826,7 +2826,7 @@
       },
       {
         "index": 8,
-        "label": "Ch. 11\u201313: The Persistence of Memory, Encyclopaedia Galactica & Who Speaks for Earth?",
+        "label": "Ch. 11–13: The Persistence of Memory, Encyclopaedia Galactica & Who Speaks for Earth?",
         "pages": "164-206",
         "openPages": "164-178",
         "startPage": 164,
@@ -2857,16 +2857,16 @@
     "slug": "15b_Fundamentals_of_Astrodynamics_Bate_Mueller_White",
     "title": "Fundamentals of Astrodynamics",
     "author": "Bate, Mueller & White",
-    "category": "Space & Physics",
+    "category": "Science & Cosmos",
     "pages": 470,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "48 min",
     "full_time_label": "11h 45m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Ch. 1: Two-Body Orbital Energy & Why Orbits Are Conic Sections",
+        "label": "Step 1 · Ch. 1: Two-Body Orbital Energy & Why Orbits Are Conic Sections",
         "pages": "16-31",
         "openPages": "16-31",
         "startPage": 16,
@@ -2882,7 +2882,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 3: Hohmann Transfers \u2014 Shifting Orbits with Minimum Fuel",
+        "label": "Step 2 · Jumps to Ch. 3: Hohmann Transfers — Shifting Orbits with Minimum Fuel",
         "pages": "155-170",
         "openPages": "155-170",
         "startPage": 155,
@@ -2945,7 +2945,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 4\u20135: Time of Flight & Gauss' Problem",
+        "label": "Ch. 4–5: Time of Flight & Gauss' Problem",
         "pages": "183-280",
         "openPages": "183-197",
         "startPage": 183,
@@ -2960,7 +2960,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 6\u20139: Lunar, Interplanetary & Ballistic Trajectories",
+        "label": "Ch. 6–9: Lunar, Interplanetary & Ballistic Trajectories",
         "pages": "281-430",
         "openPages": "281-295",
         "startPage": 281,
@@ -2991,16 +2991,16 @@
     "slug": "15c_Astrophysics_for_People_in_a_Hurry_Neil_deGrasse_Tyson",
     "title": "Astrophysics for People in a Hurry",
     "author": "Neil deGrasse Tyson",
-    "category": "Space & Physics",
+    "category": "Science & Cosmos",
     "pages": 120,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 09m",
     "full_time_label": "3h",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Ch. 1: The Greatest Story Ever Told \u2014 The First Second of the Universe",
+        "label": "Step 1 · Ch. 1: The Greatest Story Ever Told — The First Second of the Universe",
         "pages": "11-18",
         "openPages": "11-18",
         "startPage": 11,
@@ -3016,7 +3016,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 7: The Cosmos on the Periodic Table",
+        "label": "Step 2 · Jumps to Ch. 7: The Cosmos on the Periodic Table",
         "pages": "58-66",
         "openPages": "58-66",
         "startPage": 58,
@@ -3032,7 +3032,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps Back to Ch. 5\u20136: Dark Matter & Dark Energy (The Invisible 95%)",
+        "label": "Step 3 · Jumps Back to Ch. 5–6: Dark Matter & Dark Energy (The Invisible 95%)",
         "pages": "39-56",
         "openPages": "39-56",
         "startPage": 39,
@@ -3048,7 +3048,7 @@
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Jumps to Ch. 12: Reflections on the Cosmic Perspective",
+        "label": "Step 4 · Jumps to Ch. 12: Reflections on the Cosmic Perspective",
         "pages": "96-106",
         "openPages": "96-106",
         "startPage": 96,
@@ -3186,7 +3186,7 @@
       },
       {
         "index": 9,
-        "label": "Ch. 8\u201310: On Being Round, Invisible Light & Between the Planets",
+        "label": "Ch. 8–10: On Being Round, Invisible Light & Between the Planets",
         "pages": "67-88",
         "openPages": "67-81",
         "startPage": 67,
@@ -3201,7 +3201,7 @@
       },
       {
         "index": 10,
-        "label": "Ch. 11\u201312: Exoplanet Earth & Reflections on the Cosmic Perspective",
+        "label": "Ch. 11–12: Exoplanet Earth & Reflections on the Cosmic Perspective",
         "pages": "89-106",
         "openPages": "89-103",
         "startPage": 89,
@@ -3232,16 +3232,16 @@
     "slug": "15d_Orbital_Mechanics_for_Engineering_Students_Howard_Curtis",
     "title": "Orbital Mechanics for Engineering Students",
     "author": "Howard D. Curtis",
-    "category": "Space & Physics",
+    "category": "Science & Cosmos",
     "pages": 692,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "51 min",
     "full_time_label": "17h 18m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 2: The Two-Body Problem & Why Orbits Lock Into a 2D Plane (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 2: The Two-Body Problem & Why Orbits Lock Into a 2D Plane (Start Here)",
         "pages": "67-84",
         "openPages": "67-84",
         "startPage": 67,
@@ -3257,7 +3257,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 6: Orbital Maneuvers, Hohmann Transfers & Chase Trajectories",
+        "label": "Step 2 · Jumps to Ch. 6: Orbital Maneuvers, Hohmann Transfers & Chase Trajectories",
         "pages": "293-308",
         "openPages": "293-308",
         "startPage": 293,
@@ -3335,7 +3335,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 5\u20138: Orbit Determination, Maneuvers, Relative Motion & Interplanetary Trajectories",
+        "label": "Ch. 5–8: Orbit Determination, Maneuvers, Relative Motion & Interplanetary Trajectories",
         "pages": "255-480",
         "openPages": "255-269",
         "startPage": 255,
@@ -3366,16 +3366,16 @@
     "slug": "16a_Harry_Potter_1_and_the_Philosophers_Stone_JK_Rowling",
     "title": "Harry Potter and the Philosopher's Stone (Book 1)",
     "author": "J. K. Rowling",
-    "category": "Wizarding & Fantasy",
+    "category": "Imagination & Wonder",
     "pages": 327,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 30m",
     "full_time_label": "8h 10m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 5: Diagon Alley, Gringotts & Ollivanders Wand Shop (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 5: Diagon Alley, Gringotts & Ollivanders Wand Shop (Start Here)",
         "pages": "73-89",
         "openPages": "73-89",
         "startPage": 73,
@@ -3391,7 +3391,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 12: The Invisibility Cloak & The Mirror of Erised",
+        "label": "Step 2 · Jumps to Ch. 12: The Invisibility Cloak & The Mirror of Erised",
         "pages": "206-220",
         "openPages": "206-220",
         "startPage": 206,
@@ -3407,7 +3407,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Flashes Back to Ch. 4 & 7: Hagrid Breaks the Door Down & The Sorting Hat",
+        "label": "Step 3 · Flashes Back to Ch. 4 & 7: Hagrid Breaks the Door Down & The Sorting Hat",
         "pages": "58-70",
         "openPages": "58-70",
         "startPage": 58,
@@ -3423,7 +3423,7 @@
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Jumps to Ch. 16\u201317: Through the Trapdoor, Wizard's Chess & The Man with Two Faces",
+        "label": "Step 4 · Jumps to Ch. 16–17: Through the Trapdoor, Wizard's Chess & The Man with Two Faces",
         "pages": "284-298",
         "openPages": "284-298",
         "startPage": 284,
@@ -3441,7 +3441,7 @@
     "author_chapters": [
       {
         "index": 1,
-        "label": "Ch. 1\u20132: The Boy Who Lived & The Vanishing Glass",
+        "label": "Ch. 1–2: The Boy Who Lived & The Vanishing Glass",
         "pages": "13-42",
         "openPages": "13-27",
         "startPage": 13,
@@ -3456,7 +3456,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 3\u20134: The Letters from No One & The Keeper of the Keys",
+        "label": "Ch. 3–4: The Letters from No One & The Keeper of the Keys",
         "pages": "43-72",
         "openPages": "43-57",
         "startPage": 43,
@@ -3471,7 +3471,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 5\u20136: Diagon Alley & Platform Nine and Three-Quarters",
+        "label": "Ch. 5–6: Diagon Alley & Platform Nine and Three-Quarters",
         "pages": "73-124",
         "openPages": "73-87",
         "startPage": 73,
@@ -3486,7 +3486,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 7\u20139: The Sorting Hat, The Potions Master & The Midnight Duel",
+        "label": "Ch. 7–9: The Sorting Hat, The Potions Master & The Midnight Duel",
         "pages": "125-174",
         "openPages": "125-139",
         "startPage": 125,
@@ -3501,7 +3501,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 10\u201312: Halloween, Quidditch & The Mirror of Erised",
+        "label": "Ch. 10–12: Halloween, Quidditch & The Mirror of Erised",
         "pages": "175-226",
         "openPages": "175-189",
         "startPage": 175,
@@ -3516,7 +3516,7 @@
       },
       {
         "index": 6,
-        "label": "Ch. 13\u201315: Nicolas Flamel, Norbert the Dragon & The Forbidden Forest",
+        "label": "Ch. 13–15: Nicolas Flamel, Norbert the Dragon & The Forbidden Forest",
         "pages": "227-273",
         "openPages": "227-241",
         "startPage": 227,
@@ -3531,7 +3531,7 @@
       },
       {
         "index": 7,
-        "label": "Ch. 16\u201317: Through the Trapdoor & The Man with Two Faces",
+        "label": "Ch. 16–17: Through the Trapdoor & The Man with Two Faces",
         "pages": "274-327",
         "openPages": "274-288",
         "startPage": 274,
@@ -3562,16 +3562,16 @@
     "slug": "16b_Harry_Potter_2_and_the_Chamber_of_Secrets_JK_Rowling",
     "title": "Harry Potter and the Chamber of Secrets (Book 2)",
     "author": "J. K. Rowling",
-    "category": "Wizarding & Fantasy",
+    "category": "Imagination & Wonder",
     "pages": 352,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 12m",
     "full_time_label": "8h 48m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 3: Midnight Rescue in the Flying Car & Arriving at the Burrow (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 3: Midnight Rescue in the Flying Car & Arriving at the Burrow (Start Here)",
         "pages": "33-48",
         "openPages": "33-48",
         "startPage": 33,
@@ -3587,7 +3587,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 13: The Very Secret Diary \u2014 Stepping Inside Tom Riddle's 1943 Memory",
+        "label": "Step 2 · Jumps to Ch. 13: The Very Secret Diary — Stepping Inside Tom Riddle's 1943 Memory",
         "pages": "236-251",
         "openPages": "236-251",
         "startPage": 236,
@@ -3603,7 +3603,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps to Ch. 17\u201318: The Heir of Slytherin, Fawkes the Phoenix & Freeing Dobby",
+        "label": "Step 3 · Jumps to Ch. 17–18: The Heir of Slytherin, Fawkes the Phoenix & Freeing Dobby",
         "pages": "315-330",
         "openPages": "315-330",
         "startPage": 315,
@@ -3621,7 +3621,7 @@
     "author_chapters": [
       {
         "index": 1,
-        "label": "Ch. 1\u20133: The Worst Birthday, Dobby's Warning & The Burrow",
+        "label": "Ch. 1–3: The Worst Birthday, Dobby's Warning & The Burrow",
         "pages": "10-50",
         "openPages": "10-24",
         "startPage": 10,
@@ -3636,7 +3636,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 4\u20136: Flourish and Blotts, The Whomping Willow & Gilderoy Lockhart",
+        "label": "Ch. 4–6: Flourish and Blotts, The Whomping Willow & Gilderoy Lockhart",
         "pages": "51-112",
         "openPages": "51-65",
         "startPage": 51,
@@ -3651,7 +3651,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 7\u20139: Mudbloods and Murmurs, The Deathday Party & The Writing on the Wall",
+        "label": "Ch. 7–9: Mudbloods and Murmurs, The Deathday Party & The Writing on the Wall",
         "pages": "113-169",
         "openPages": "113-127",
         "startPage": 113,
@@ -3666,7 +3666,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 10\u201312: The Rogue Bludger, The Dueling Club & The Polyjuice Potion",
+        "label": "Ch. 10–12: The Rogue Bludger, The Dueling Club & The Polyjuice Potion",
         "pages": "170-235",
         "openPages": "170-184",
         "startPage": 170,
@@ -3681,7 +3681,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 13\u201315: The Very Secret Diary, Cornelius Fudge & Aragog",
+        "label": "Ch. 13–15: The Very Secret Diary, Cornelius Fudge & Aragog",
         "pages": "236-291",
         "openPages": "236-250",
         "startPage": 236,
@@ -3696,7 +3696,7 @@
       },
       {
         "index": 6,
-        "label": "Ch. 16\u201318: The Chamber of Secrets, The Heir of Slytherin & Dobby's Reward",
+        "label": "Ch. 16–18: The Chamber of Secrets, The Heir of Slytherin & Dobby's Reward",
         "pages": "292-352",
         "openPages": "292-306",
         "startPage": 292,
@@ -3727,16 +3727,16 @@
     "slug": "16c_Harry_Potter_3_and_the_Prisoner_of_Azkaban_JK_Rowling",
     "title": "Harry Potter and the Prisoner of Azkaban (Book 3)",
     "author": "J. K. Rowling",
-    "category": "Wizarding & Fantasy",
+    "category": "Imagination & Wonder",
     "pages": 448,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 36m",
     "full_time_label": "11h 12m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 10: 'I Solemnly Swear That I Am Up to No Good' \u2014 The Marauder's Map (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 10: 'I Solemnly Swear That I Am Up to No Good' — The Marauder's Map (Start Here)",
         "pages": "194-210",
         "openPages": "194-210",
         "startPage": 194,
@@ -3752,7 +3752,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 17\u201319: Cat, Rat, and Dog \u2014 The Shrieking Shack Twist",
+        "label": "Step 2 · Jumps to Ch. 17–19: Cat, Rat, and Dog — The Shrieking Shack Twist",
         "pages": "343-358",
         "openPages": "343-358",
         "startPage": 343,
@@ -3768,7 +3768,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps to Ch. 21: Hermione's Secret \u2014 The Time-Turner Loop & The Stag Patronus",
+        "label": "Step 3 · Jumps to Ch. 21: Hermione's Secret — The Time-Turner Loop & The Stag Patronus",
         "pages": "399-415",
         "openPages": "399-415",
         "startPage": 399,
@@ -3784,7 +3784,7 @@
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Flashes Back to Ch. 7 & 12: Professor Lupin's Boggart & Patronus Lessons",
+        "label": "Step 4 · Flashes Back to Ch. 7 & 12: Professor Lupin's Boggart & Patronus Lessons",
         "pages": "134-147",
         "openPages": "134-147",
         "startPage": 134,
@@ -3802,7 +3802,7 @@
     "author_chapters": [
       {
         "index": 1,
-        "label": "Ch. 1\u20134: Owl Post, Aunt Marge, The Knight Bus & The Leaky Cauldron",
+        "label": "Ch. 1–4: Owl Post, Aunt Marge, The Knight Bus & The Leaky Cauldron",
         "pages": "12-79",
         "openPages": "12-26",
         "startPage": 12,
@@ -3817,7 +3817,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 5\u20138: The Dementor, Tea Leaves, The Boggart & Flight of the Fat Lady",
+        "label": "Ch. 5–8: The Dementor, Tea Leaves, The Boggart & Flight of the Fat Lady",
         "pages": "80-172",
         "openPages": "80-94",
         "startPage": 80,
@@ -3832,7 +3832,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 9\u201312: Grim Defeat, The Marauder's Map, The Firebolt & The Patronus",
+        "label": "Ch. 9–12: Grim Defeat, The Marauder's Map, The Firebolt & The Patronus",
         "pages": "173-262",
         "openPages": "173-187",
         "startPage": 173,
@@ -3847,7 +3847,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 13\u201316: Quidditch Cup, Snape's Grudge & Trelawney's Prediction",
+        "label": "Ch. 13–16: Quidditch Cup, Snape's Grudge & Trelawney's Prediction",
         "pages": "263-342",
         "openPages": "263-277",
         "startPage": 263,
@@ -3862,7 +3862,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 17\u201320: Cat, Rat, and Dog, Moony/Wormtail/Padfoot/Prongs & The Dementor's Kiss",
+        "label": "Ch. 17–20: Cat, Rat, and Dog, Moony/Wormtail/Padfoot/Prongs & The Dementor's Kiss",
         "pages": "343-398",
         "openPages": "343-357",
         "startPage": 343,
@@ -3877,7 +3877,7 @@
       },
       {
         "index": 6,
-        "label": "Ch. 21\u201322: Hermione's Secret (Time-Turner) & Owl Post Again",
+        "label": "Ch. 21–22: Hermione's Secret (Time-Turner) & Owl Post Again",
         "pages": "399-448",
         "openPages": "399-413",
         "startPage": 399,
@@ -3908,16 +3908,16 @@
     "slug": "16d_Harry_Potter_4_and_the_Goblet_of_Fire_JK_Rowling",
     "title": "Harry Potter and the Goblet of Fire (Book 4)",
     "author": "J. K. Rowling",
-    "category": "Wizarding & Fantasy",
+    "category": "Imagination & Wonder",
     "pages": 749,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 34m",
     "full_time_label": "18h 44m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 16\u201317: The Goblet of Fire Names a Fourth Champion (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 16–17: The Goblet of Fire Names a Fourth Champion (Start Here)",
         "pages": "261-276",
         "openPages": "261-276",
         "startPage": 261,
@@ -3933,7 +3933,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 20: The First Task \u2014 Out-Flying the Hungarian Horntail on a Firebolt",
+        "label": "Step 2 · Jumps to Ch. 20: The First Task — Out-Flying the Hungarian Horntail on a Firebolt",
         "pages": "350-365",
         "openPages": "350-365",
         "startPage": 350,
@@ -3942,14 +3942,14 @@
         "volumePct": 2.1,
         "estMinutes": 24,
         "effortLabel": "24 min",
-        "brief": "Instead of fighting a fifty-foot dragon with spells, Harry uses his pure spatial flying instinct\u2014summoning his Firebolt broomstick ('Accio Firebolt!') across the castle grounds to dive and feint past the Horntail.",
+        "brief": "Instead of fighting a fifty-foot dragon with spells, Harry uses his pure spatial flying instinct—summoning his Firebolt broomstick ('Accio Firebolt!') across the castle grounds to dive and feint past the Horntail.",
         "path": "/usr/local/google/home/koushikchak/Downloads/Liberation_Library/16d_Harry_Potter_4_and_the_Goblet_of_Fire_JK_Rowling.pdf?pages=350-365&track=adhd&step=2",
         "totalSteps": 4,
         "flowSharePct": 25.4
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps to Ch. 32\u201334: Flesh, Blood, and Bone & Priori Incantatem in the Graveyard",
+        "label": "Step 3 · Jumps to Ch. 32–34: Flesh, Blood, and Bone & Priori Incantatem in the Graveyard",
         "pages": "649-664",
         "openPages": "649-664",
         "startPage": 649,
@@ -3965,7 +3965,7 @@
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Jumps to Ch. 35: Veritaserum \u2014 Unmasking the Impostor Mad-Eye Moody",
+        "label": "Step 4 · Jumps to Ch. 35: Veritaserum — Unmasking the Impostor Mad-Eye Moody",
         "pages": "683-697",
         "openPages": "683-697",
         "startPage": 683,
@@ -3983,7 +3983,7 @@
     "author_chapters": [
       {
         "index": 1,
-        "label": "Ch. 1\u20135: The Riddle House, The Scar & Weasleys' Wizard Wheezes",
+        "label": "Ch. 1–5: The Riddle House, The Scar & Weasleys' Wizard Wheezes",
         "pages": "14-77",
         "openPages": "14-28",
         "startPage": 14,
@@ -3998,7 +3998,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 6\u201310: The Portkey, The Quidditch World Cup & The Dark Mark",
+        "label": "Ch. 6–10: The Portkey, The Quidditch World Cup & The Dark Mark",
         "pages": "78-170",
         "openPages": "78-92",
         "startPage": 78,
@@ -4013,7 +4013,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 11\u201317: Triwizard Tournament, Mad-Eye Moody, Unforgivable Curses & The Goblet of Fire",
+        "label": "Ch. 11–17: Triwizard Tournament, Mad-Eye Moody, Unforgivable Curses & The Goblet of Fire",
         "pages": "171-300",
         "openPages": "171-185",
         "startPage": 171,
@@ -4028,7 +4028,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 18\u201323: The Hungarian Horntail, The First Task & The Yule Ball",
+        "label": "Ch. 18–23: The Hungarian Horntail, The First Task & The Yule Ball",
         "pages": "301-445",
         "openPages": "301-315",
         "startPage": 301,
@@ -4043,7 +4043,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 24\u201329: The Egg and the Eye, The Second Task (Black Lake) & Crouch's Madness",
+        "label": "Ch. 24–29: The Egg and the Eye, The Second Task (Black Lake) & Crouch's Madness",
         "pages": "446-593",
         "openPages": "446-460",
         "startPage": 446,
@@ -4058,7 +4058,7 @@
       },
       {
         "index": 6,
-        "label": "Ch. 30\u201334: The Pensieve, The Third Task, Graveyard & Priori Incantatem",
+        "label": "Ch. 30–34: The Pensieve, The Third Task, Graveyard & Priori Incantatem",
         "pages": "594-682",
         "openPages": "594-608",
         "startPage": 594,
@@ -4073,7 +4073,7 @@
       },
       {
         "index": 7,
-        "label": "Ch. 35\u201337: Veritaserum, The Parting of the Ways & The Beginning",
+        "label": "Ch. 35–37: Veritaserum, The Parting of the Ways & The Beginning",
         "pages": "683-749",
         "openPages": "683-697",
         "startPage": 683,
@@ -4104,16 +4104,16 @@
     "slug": "16e_Harry_Potter_5_and_the_Order_of_the_Phoenix_JK_Rowling",
     "title": "Harry Potter and the Order of the Phoenix (Book 5)",
     "author": "J. K. Rowling",
-    "category": "Wizarding & Fantasy",
+    "category": "Imagination & Wonder",
     "pages": 884,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "2h 04m",
     "full_time_label": "22h 06m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 18: Dumbledore's Army & The Room of Requirement (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 18: Dumbledore's Army & The Room of Requirement (Start Here)",
         "pages": "387-405",
         "openPages": "387-405",
         "startPage": 387,
@@ -4122,14 +4122,14 @@
         "volumePct": 2.1,
         "estMinutes": 28,
         "effortLabel": "28 min",
-        "brief": "Skips Umbridge's bureaucratic misery and enters the magical Room of Requirement, where Harry steps into his natural teaching power\u2014guiding dozens of students in defensive spells and Patronus shields.",
+        "brief": "Skips Umbridge's bureaucratic misery and enters the magical Room of Requirement, where Harry steps into his natural teaching power—guiding dozens of students in defensive spells and Patronus shields.",
         "path": "/usr/local/google/home/koushikchak/Downloads/Liberation_Library/16e_Harry_Potter_5_and_the_Order_of_the_Phoenix_JK_Rowling.pdf?pages=387-405&track=adhd&step=1",
         "totalSteps": 4,
         "flowSharePct": 22.9
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 28: Snape's Worst Memory \u2014 The Human Flaws of James Potter",
+        "label": "Step 2 · Jumps to Ch. 28: Snape's Worst Memory — The Human Flaws of James Potter",
         "pages": "637-652",
         "openPages": "637-652",
         "startPage": 637,
@@ -4145,7 +4145,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps to Ch. 35\u201336: The Department of Mysteries & The Only One He Ever Feared",
+        "label": "Step 3 · Jumps to Ch. 35–36: The Department of Mysteries & The Only One He Ever Feared",
         "pages": "794-825",
         "openPages": "794-818",
         "startPage": 794,
@@ -4154,14 +4154,14 @@
         "volumePct": 3.6,
         "estMinutes": 48,
         "effortLabel": "48 min",
-        "brief": "After the battle beyond the veil in the Death Chamber, Dumbledore confronts Voldemort in the Ministry of Magic Atrium\u2014weaving water shields, golden fire, and statues to protect Harry.",
+        "brief": "After the battle beyond the veil in the Death Chamber, Dumbledore confronts Voldemort in the Ministry of Magic Atrium—weaving water shields, golden fire, and statues to protect Harry.",
         "path": "/usr/local/google/home/koushikchak/Downloads/Liberation_Library/16e_Harry_Potter_5_and_the_Order_of_the_Phoenix_JK_Rowling.pdf?pages=794-818&track=adhd&step=3",
         "totalSteps": 4,
         "flowSharePct": 38.6
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Jumps to Ch. 37\u201338: The Lost Prophecy & 'Neither Can Live While the Other Survives'",
+        "label": "Step 4 · Jumps to Ch. 37–38: The Lost Prophecy & 'Neither Can Live While the Other Survives'",
         "pages": "833-848",
         "openPages": "833-848",
         "startPage": 833,
@@ -4179,7 +4179,7 @@
     "author_chapters": [
       {
         "index": 1,
-        "label": "Ch. 1\u20135: Dudley Demented, Grimmauld Place & The Order of the Phoenix",
+        "label": "Ch. 1–5: Dudley Demented, Grimmauld Place & The Order of the Phoenix",
         "pages": "14-110",
         "openPages": "14-28",
         "startPage": 14,
@@ -4194,7 +4194,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 6\u201310: The Hearing, Luna Lovegood & The Sorting Hat's Song",
+        "label": "Ch. 6–10: The Hearing, Luna Lovegood & The Sorting Hat's Song",
         "pages": "111-212",
         "openPages": "111-125",
         "startPage": 111,
@@ -4209,7 +4209,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 11\u201317: Professor Umbridge, Detention & Educational Decrees",
+        "label": "Ch. 11–17: Professor Umbridge, Detention & Educational Decrees",
         "pages": "213-386",
         "openPages": "213-227",
         "startPage": 213,
@@ -4224,7 +4224,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 18\u201323: Dumbledore's Army, The Snake's Eye & St. Mungo's Hospital",
+        "label": "Ch. 18–23: Dumbledore's Army, The Snake's Eye & St. Mungo's Hospital",
         "pages": "387-530",
         "openPages": "387-401",
         "startPage": 387,
@@ -4239,7 +4239,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 24\u201329: Occlumency, Snape's Worst Memory & Career Advice",
+        "label": "Ch. 24–29: Occlumency, Snape's Worst Memory & Career Advice",
         "pages": "531-688",
         "openPages": "531-545",
         "startPage": 531,
@@ -4254,7 +4254,7 @@
       },
       {
         "index": 6,
-        "label": "Ch. 30\u201334: Grawp, O.W.L. Exams & The Department of Mysteries",
+        "label": "Ch. 30–34: Grawp, O.W.L. Exams & The Department of Mysteries",
         "pages": "689-793",
         "openPages": "689-703",
         "startPage": 689,
@@ -4269,7 +4269,7 @@
       },
       {
         "index": 7,
-        "label": "Ch. 35\u201338: Beyond the Veil, The Atrium Duel, The Prophecy & Second War",
+        "label": "Ch. 35–38: Beyond the Veil, The Atrium Duel, The Prophecy & Second War",
         "pages": "794-884",
         "openPages": "794-808",
         "startPage": 794,
@@ -4300,16 +4300,16 @@
     "slug": "16f_Harry_Potter_6_and_the_Half_Blood_Prince_JK_Rowling",
     "title": "Harry Potter and the Half-Blood Prince (Book 6)",
     "author": "J. K. Rowling",
-    "category": "Wizarding & Fantasy",
+    "category": "Imagination & Wonder",
     "pages": 664,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "2h 03m",
     "full_time_label": "16h 36m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 9: The Half-Blood Prince \u2014 Notes in an Old Potions Book (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 9: The Half-Blood Prince — Notes in an Old Potions Book (Start Here)",
         "pages": "182-198",
         "openPages": "182-198",
         "startPage": 182,
@@ -4325,7 +4325,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 13 & 20: Slices of the Dark Lord's Past \u2014 Wool's Orphanage & The Borgin Years",
+        "label": "Step 2 · Jumps to Ch. 13 & 20: Slices of the Dark Lord's Past — Wool's Orphanage & The Borgin Years",
         "pages": "269-284",
         "openPages": "269-284",
         "startPage": 269,
@@ -4341,7 +4341,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps to Ch. 23: Horcruxes \u2014 Slughorn's Real Memory & The Seven Pieces of Soul",
+        "label": "Step 3 · Jumps to Ch. 23: Horcruxes — Slughorn's Real Memory & The Seven Pieces of Soul",
         "pages": "503-518",
         "openPages": "503-518",
         "startPage": 503,
@@ -4357,7 +4357,7 @@
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Jumps to Ch. 26\u201327: The Sea Cave, The Emerald Potion & The Lightning-Struck Tower",
+        "label": "Step 4 · Jumps to Ch. 26–27: The Sea Cave, The Emerald Potion & The Lightning-Struck Tower",
         "pages": "566-598",
         "openPages": "566-590",
         "startPage": 566,
@@ -4375,7 +4375,7 @@
     "author_chapters": [
       {
         "index": 1,
-        "label": "Ch. 1\u20133: The Other Minister, Spinner's End & Will and Won't",
+        "label": "Ch. 1–3: The Other Minister, Spinner's End & Will and Won't",
         "pages": "12-67",
         "openPages": "12-26",
         "startPage": 12,
@@ -4390,7 +4390,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 4\u20138: Horace Slughorn, Draco's Detour & The Slug Club",
+        "label": "Ch. 4–8: Horace Slughorn, Draco's Detour & The Slug Club",
         "pages": "68-181",
         "openPages": "68-82",
         "startPage": 68,
@@ -4405,7 +4405,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 9\u201312: The Half-Blood Prince, The House of Gaunt & Silver and Opals",
+        "label": "Ch. 9–12: The Half-Blood Prince, The House of Gaunt & Silver and Opals",
         "pages": "182-268",
         "openPages": "182-196",
         "startPage": 182,
@@ -4420,7 +4420,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 13\u201317: The Secret Riddle, Felix Felicis & A Sluggish Memory",
+        "label": "Ch. 13–17: The Secret Riddle, Felix Felicis & A Sluggish Memory",
         "pages": "269-383",
         "openPages": "269-283",
         "startPage": 269,
@@ -4435,7 +4435,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 18\u201322: Birthday Surprises, Elf Tails & The Unknowable Room",
+        "label": "Ch. 18–22: Birthday Surprises, Elf Tails & The Unknowable Room",
         "pages": "384-502",
         "openPages": "384-398",
         "startPage": 384,
@@ -4450,7 +4450,7 @@
       },
       {
         "index": 6,
-        "label": "Ch. 23\u201325: Horcruxes, Sectumsempra & The Seer Overheard",
+        "label": "Ch. 23–25: Horcruxes, Sectumsempra & The Seer Overheard",
         "pages": "503-565",
         "openPages": "503-517",
         "startPage": 503,
@@ -4465,7 +4465,7 @@
       },
       {
         "index": 7,
-        "label": "Ch. 26\u201330: The Cave, The Lightning-Struck Tower, Flight of the Prince & The White Tomb",
+        "label": "Ch. 26–30: The Cave, The Lightning-Struck Tower, Flight of the Prince & The White Tomb",
         "pages": "566-664",
         "openPages": "566-580",
         "startPage": 566,
@@ -4496,16 +4496,16 @@
     "slug": "16g_Harry_Potter_7_and_the_Deathly_Hallows_JK_Rowling",
     "title": "Harry Potter and the Deathly Hallows (Book 7)",
     "author": "J. K. Rowling",
-    "category": "Wizarding & Fantasy",
+    "category": "Imagination & Wonder",
     "pages": 774,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "2h 21m",
     "full_time_label": "19h 21m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 21: The Tale of the Three Brothers \u2014 The Cloak, The Stone & The Wand (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 21: The Tale of the Three Brothers — The Cloak, The Stone & The Wand (Start Here)",
         "pages": "418-434",
         "openPages": "418-434",
         "startPage": 418,
@@ -4521,7 +4521,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 26: The Gringotts Dragon Breakout \u2014 Heist in the Lestrange Vault",
+        "label": "Step 2 · Jumps to Ch. 26: The Gringotts Dragon Breakout — Heist in the Lestrange Vault",
         "pages": "532-548",
         "openPages": "532-548",
         "startPage": 532,
@@ -4537,7 +4537,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps to Ch. 33: The Prince's Tale \u2014 Snape's Memories & 'Always'",
+        "label": "Step 3 · Jumps to Ch. 33: The Prince's Tale — Snape's Memories & 'Always'",
         "pages": "672-692",
         "openPages": "672-692",
         "startPage": 672,
@@ -4553,7 +4553,7 @@
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Jumps to Ch. 34\u201336: The Forest Again, King's Cross Station & The Flaw in the Plan",
+        "label": "Step 4 · Jumps to Ch. 34–36: The Forest Again, King's Cross Station & The Flaw in the Plan",
         "pages": "704-742",
         "openPages": "704-728",
         "startPage": 704,
@@ -4571,7 +4571,7 @@
     "author_chapters": [
       {
         "index": 1,
-        "label": "Ch. 1\u20135: The Dark Lord Ascending, The Dursleys & The Seven Potters",
+        "label": "Ch. 1–5: The Dark Lord Ascending, The Dursleys & The Seven Potters",
         "pages": "14-98",
         "openPages": "14-28",
         "startPage": 14,
@@ -4586,7 +4586,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 6\u201310: The Ghoul in Pajamas, Dumbledore's Will & Kreacher's Tale",
+        "label": "Ch. 6–10: The Ghoul in Pajamas, Dumbledore's Will & Kreacher's Tale",
         "pages": "99-213",
         "openPages": "99-113",
         "startPage": 99,
@@ -4601,7 +4601,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 11\u201315: Infiltrating the Ministry, The Locket & The Goblin's Revenge",
+        "label": "Ch. 11–15: Infiltrating the Ministry, The Locket & The Goblin's Revenge",
         "pages": "214-323",
         "openPages": "214-228",
         "startPage": 214,
@@ -4616,7 +4616,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 16\u201320: Godric's Hollow, Bathilda's Secret & The Silver Doe",
+        "label": "Ch. 16–20: Godric's Hollow, Bathilda's Secret & The Silver Doe",
         "pages": "324-417",
         "openPages": "324-338",
         "startPage": 324,
@@ -4631,7 +4631,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 21\u201325: The Three Brothers, Malfoy Manor & Shell Cottage",
+        "label": "Ch. 21–25: The Three Brothers, Malfoy Manor & Shell Cottage",
         "pages": "418-531",
         "openPages": "418-432",
         "startPage": 418,
@@ -4646,7 +4646,7 @@
       },
       {
         "index": 6,
-        "label": "Ch. 26\u201330: Gringotts Dragon Breakout, Hogsmeade & Sacking Snape",
+        "label": "Ch. 26–30: Gringotts Dragon Breakout, Hogsmeade & Sacking Snape",
         "pages": "532-620",
         "openPages": "532-546",
         "startPage": 532,
@@ -4661,7 +4661,7 @@
       },
       {
         "index": 7,
-        "label": "Ch. 31\u201336 & Epilogue: The Battle of Hogwarts, The Prince's Tale & 19 Years Later",
+        "label": "Ch. 31–36 & Epilogue: The Battle of Hogwarts, The Prince's Tale & 19 Years Later",
         "pages": "621-774",
         "openPages": "621-635",
         "startPage": 621,
@@ -4692,16 +4692,16 @@
     "slug": "17a_The_Hitchhikers_Guide_to_the_Galaxy_Douglas_Adams",
     "title": "The Hitchhiker's Guide to the Galaxy",
     "author": "Douglas Adams",
-    "category": "Literature & Classics",
+    "category": "Imagination & Wonder",
     "pages": 257,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "1h 36m",
     "full_time_label": "6h 26m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Jumps to Ch. 3 & 8: The Babel Fish, Towels & 'Don't Panic' (Start Here)",
+        "label": "Step 1 · Jumps to Ch. 3 & 8: The Babel Fish, Towels & 'Don't Panic' (Start Here)",
         "pages": "35-46",
         "openPages": "35-46",
         "startPage": 35,
@@ -4717,7 +4717,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Jumps to Ch. 10 & 18: The Infinite Improbability Drive & The Falling Whale",
+        "label": "Step 2 · Jumps to Ch. 10 & 18: The Infinite Improbability Drive & The Falling Whale",
         "pages": "81-95",
         "openPages": "81-95",
         "startPage": 81,
@@ -4733,7 +4733,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Jumps to Ch. 25 & 28: Deep Thought & The Ultimate Answer (42)",
+        "label": "Step 3 · Jumps to Ch. 25 & 28: Deep Thought & The Ultimate Answer (42)",
         "pages": "178-195",
         "openPages": "178-195",
         "startPage": 178,
@@ -4742,14 +4742,14 @@
         "volumePct": 7.0,
         "estMinutes": 27,
         "effortLabel": "27 min",
-        "brief": "Hyper-intelligent beings demand to know the Answer to the Ultimate Question of Life, the Universe, and Everything: after 7.5 million years of computation, Deep Thought calmly announces the answer is 42\u2014because nobody ever knew what the actual question was.",
+        "brief": "Hyper-intelligent beings demand to know the Answer to the Ultimate Question of Life, the Universe, and Everything: after 7.5 million years of computation, Deep Thought calmly announces the answer is 42—because nobody ever knew what the actual question was.",
         "path": "/usr/local/google/home/koushikchak/Downloads/Liberation_Library/17a_The_Hitchhikers_Guide_to_the_Galaxy_Douglas_Adams.pdf?pages=178-195&track=adhd&step=3",
         "totalSteps": 4,
         "flowSharePct": 28.1
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Flashes Back to Ch. 1\u20132: Arthur Dent, The Yellow Bulldozer & The Vogon Destructor Fleet",
+        "label": "Step 4 · Flashes Back to Ch. 1–2: Arthur Dent, The Yellow Bulldozer & The Vogon Destructor Fleet",
         "pages": "6-24",
         "openPages": "6-24",
         "startPage": 6,
@@ -4767,7 +4767,7 @@
     "author_chapters": [
       {
         "index": 1,
-        "label": "Ch. 1\u20134: Arthur Dent, Ford Prefect & The Demolition of Earth",
+        "label": "Ch. 1–4: Arthur Dent, Ford Prefect & The Demolition of Earth",
         "pages": "6-56",
         "openPages": "6-20",
         "startPage": 6,
@@ -4782,7 +4782,7 @@
       },
       {
         "index": 2,
-        "label": "Ch. 5\u20138: Inside the Vogon Ship, Vogon Poetry & The Guide Entry",
+        "label": "Ch. 5–8: Inside the Vogon Ship, Vogon Poetry & The Guide Entry",
         "pages": "57-97",
         "openPages": "57-71",
         "startPage": 57,
@@ -4797,7 +4797,7 @@
       },
       {
         "index": 3,
-        "label": "Ch. 9\u201314: The Infinite Improbability Drive & The Heart of Gold",
+        "label": "Ch. 9–14: The Infinite Improbability Drive & The Heart of Gold",
         "pages": "98-139",
         "openPages": "98-112",
         "startPage": 98,
@@ -4812,7 +4812,7 @@
       },
       {
         "index": 4,
-        "label": "Ch. 15\u201320: Magrathea, Slartibartfast & Designing Coastlines",
+        "label": "Ch. 15–20: Magrathea, Slartibartfast & Designing Coastlines",
         "pages": "140-177",
         "openPages": "140-154",
         "startPage": 140,
@@ -4827,7 +4827,7 @@
       },
       {
         "index": 5,
-        "label": "Ch. 21\u201328: Deep Thought & The Answer 42",
+        "label": "Ch. 21–28: Deep Thought & The Answer 42",
         "pages": "178-227",
         "openPages": "178-192",
         "startPage": 178,
@@ -4842,7 +4842,7 @@
       },
       {
         "index": 6,
-        "label": "Ch. 29\u201335: The Mice, Brains & The Restaurant at the End of the Universe",
+        "label": "Ch. 29–35: The Mice, Brains & The Restaurant at the End of the Universe",
         "pages": "228-257",
         "openPages": "228-242",
         "startPage": 228,
@@ -4873,16 +4873,16 @@
     "slug": "17b_The_Ultimate_Hitchhikers_Guide_Five_Novels_Douglas_Adams",
     "title": "The Ultimate Hitchhiker's Guide to the Galaxy (Complete 5-Novel Omnibus)",
     "author": "Douglas Adams",
-    "category": "Literature & Classics",
+    "category": "Imagination & Wonder",
     "pages": 856,
-    "cover_emoji": "\ud83d\udcd6",
+    "cover_emoji": "📖",
     "description": "",
     "adhd_time_label": "2h 22m",
     "full_time_label": "21h 24m",
     "adhd_segments": [
       {
         "index": 1,
-        "label": "Step 1 \u00b7 Novel 1: Deep Thought & The Answer 42 (Start Here)",
+        "label": "Step 1 · Novel 1: Deep Thought & The Answer 42 (Start Here)",
         "pages": "137-152",
         "openPages": "137-152",
         "startPage": 137,
@@ -4898,7 +4898,7 @@
       },
       {
         "index": 2,
-        "label": "Step 2 \u00b7 Novel 2: Milliways \u2014 The Restaurant at the End of the Universe",
+        "label": "Step 2 · Novel 2: Milliways — The Restaurant at the End of the Universe",
         "pages": "223-242",
         "openPages": "223-242",
         "startPage": 223,
@@ -4914,7 +4914,7 @@
       },
       {
         "index": 3,
-        "label": "Step 3 \u00b7 Novel 3: The Flying Lessons of Arthur Dent & The Krikkit Wars",
+        "label": "Step 3 · Novel 3: The Flying Lessons of Arthur Dent & The Krikkit Wars",
         "pages": "410-428",
         "openPages": "410-428",
         "startPage": 410,
@@ -4930,7 +4930,7 @@
       },
       {
         "index": 4,
-        "label": "Step 4 \u00b7 Novel 4: 'So Long, and Thanks for All the Fish' \u2014 The Dolphins' Final Message",
+        "label": "Step 4 · Novel 4: 'So Long, and Thanks for All the Fish' — The Dolphins' Final Message",
         "pages": "542-560",
         "openPages": "542-560",
         "startPage": 542,
@@ -4946,7 +4946,7 @@
       },
       {
         "index": 5,
-        "label": "Step 5 \u00b7 Novel 5: Mostly Harmless \u2014 The Multi-Dimensional Guide & Alternate Earths",
+        "label": "Step 5 · Novel 5: Mostly Harmless — The Multi-Dimensional Guide & Alternate Earths",
         "pages": "698-718",
         "openPages": "698-718",
         "startPage": 698,

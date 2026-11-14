@@ -264,20 +264,50 @@ def generate_books_html() -> None:
       border-color: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-soft);
     }}
+    .category-collapsible {{
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-top: 10px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+      transition: border-color 0.2s ease;
+    }}
+    .category-collapsible-header {{
+      padding: 10px 14px;
+      background: var(--surface-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 700;
+      user-select: none;
+      transition: background 0.15s ease;
+    }}
+    .category-collapsible-header:hover {{
+      background: var(--border);
+    }}
+    .category-chevron {{
+      font-size: 0.85rem;
+      transition: transform 0.2s ease;
+    }}
+    .category-collapsible.collapsed .category-chevron {{
+      transform: rotate(-90deg);
+    }}
     .category-pills {{
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
+      padding: 12px 14px;
+      transition: all 0.2s ease;
     }}
-    .category-pills::-webkit-scrollbar {{
+    .category-collapsible.collapsed .category-pills {{
       display: none;
     }}
     .filter-chip {{
       white-space: nowrap;
-      padding: 6px 12px;
+      padding: 7px 13px;
       border-radius: 999px;
       font-size: 0.82rem;
       font-weight: 600;
@@ -285,13 +315,31 @@ def generate_books_html() -> None:
       background: var(--surface);
       color: var(--ink-muted);
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       transition: all 0.15s ease;
+    }}
+    .filter-chip:hover {{
+      border-color: var(--accent);
+      color: var(--ink);
     }}
     .filter-chip.active {{
       background: var(--accent);
       color: #FFFFFF;
       border-color: var(--accent);
       box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+    }}
+    .filter-chip-count {{
+      font-size: 0.72rem;
+      font-weight: 700;
+      opacity: 0.75;
+      padding: 1px 5px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.08);
+    }}
+    .filter-chip.active .filter-chip-count {{
+      background: rgba(255, 255, 255, 0.25);
     }}
 
     /* Books Grid */
@@ -868,6 +916,46 @@ def generate_books_html() -> None:
       justify-content: space-between;
       gap: 10px;
     }}
+    .reader-chapter-drawer {{
+      background: var(--surface);
+      border-bottom: 2px solid var(--accent);
+      max-height: 280px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      z-index: 100;
+    }}
+    .reader-drawer-item {{
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 0.88rem;
+      transition: background 0.12s ease;
+    }}
+    .reader-drawer-item:hover {{
+      background: var(--surface-subtle);
+    }}
+    .reader-drawer-item.active {{
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      border-left: 3.5px solid var(--accent);
+    }}
+    .reader-drawer-item-title {{
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+      padding-right: 8px;
+    }}
+    .reader-drawer-item-meta {{
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      flex-shrink: 0;
+    }}
     .reader-content-body {{
       flex: 1;
       overflow-y: auto;
@@ -1010,14 +1098,21 @@ def generate_books_html() -> None:
           <span class="search-icon">🔍</span>
           <input type="search" class="search-input" id="bookSearchInput" placeholder="Search books, authors, topics..." autocomplete="off" />
         </div>
-        <div class="category-pills" id="categoryPills">
-          <button class="filter-chip active" data-cat="all">All Books</button>
-          <button class="filter-chip" data-cat="Science & Frontier">🧬 Science & Frontier</button>
-          <button class="filter-chip" data-cat="Mind & Psychology">🧠 Mind & Fast/Slow</button>
-          <button class="filter-chip" data-cat="Philosophy & Warfare">⚔️ Philosophy & Warfare</button>
-          <button class="filter-chip" data-cat="Literature & Classics">📜 Literature & Classics</button>
-          <button class="filter-chip" data-cat="Space & Physics">🚀 Space & Physics</button>
-          <button class="filter-chip" data-cat="Wizarding & Fantasy">⚡ Harry Potter & Fantasy</button>
+        <div class="category-collapsible" id="categoryCollapsible">
+          <div class="category-collapsible-header" onclick="toggleCategoryCollapsible()">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span>📂 Browse by Pillar</span>
+              <span class="track-badge" id="activeCategoryBadge">All Books (29)</span>
+            </div>
+            <span class="category-chevron" id="categoryChevron">▼</span>
+          </div>
+          <div class="category-pills" id="categoryPills">
+            <button class="filter-chip active" data-cat="all">All Books <span class="filter-chip-count">29</span></button>
+            <button class="filter-chip" data-cat="Science & Cosmos">🧬 Science & Cosmos <span class="filter-chip-count">8</span></button>
+            <button class="filter-chip" data-cat="Mind & Consciousness">🧠 Mind & Consciousness <span class="filter-chip-count">5</span></button>
+            <button class="filter-chip" data-cat="Power & Philosophy">⚔️ Power & Philosophy <span class="filter-chip-count">7</span></button>
+            <button class="filter-chip" data-cat="Imagination & Wonder">🪄 Imagination & Wonder <span class="filter-chip-count">9</span></button>
+          </div>
         </div>
       </div>
 
@@ -1173,12 +1268,23 @@ def generate_books_html() -> None:
   <div class="reader-modal" id="readerModal">
     <header class="reader-topbar">
       <button class="back-btn" id="btnCloseReader">✕ Close</button>
-      <div style="font-weight: 700; font-size: 0.95rem; text-align: center; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" id="readerHeaderTitle">Chapter Title</div>
+      <button class="btn-action" id="btnToggleReaderChapters" onclick="toggleReaderChapterDrawer()" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;">
+        <span>📑 Chapters</span>
+        <span id="readerChaptersChevron" style="font-size: 0.75rem;">▼</span>
+      </button>
+      <div style="font-weight: 700; font-size: 0.92rem; text-align: center; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" id="readerHeaderTitle">Chapter Title</div>
       <div style="display: flex; gap: 6px;">
         <button class="btn-action" style="padding: 4px 8px;" id="btnFontSmaller">A-</button>
         <button class="btn-action" style="padding: 4px 8px;" id="btnFontLarger">A+</button>
       </div>
     </header>
+
+    <!-- Collapsible Chapter Selection Drawer inside Reader -->
+    <div class="reader-chapter-drawer" id="readerChapterDrawer" style="display: none;">
+      <div class="reader-chapter-drawer-inner" id="readerChapterDrawerList">
+        <!-- Rendered list of chapters for direct 1-tap jump -->
+      </div>
+    </div>
     <div class="reader-content-body" id="readerContentBody">
       <!-- Chapter text rendered here -->
     </div>
@@ -1595,7 +1701,22 @@ def generate_books_html() -> None:
       grid.innerHTML = "";
 
       const filtered = BOOKS_DATA.filter(b => {{
-        const matchesCat = activeCategory === "all" || b.category.toLowerCase().includes(activeCategory.toLowerCase());
+        const cat = (b.category || "").toLowerCase();
+        const aCat = activeCategory.toLowerCase();
+        let matchesCat = activeCategory === "all";
+        if (!matchesCat) {{
+          if (aCat.includes("science")) {{
+            matchesCat = cat.includes("science") || cat.includes("space") || cat.includes("frontier") || cat.includes("cosmos");
+          }} else if (aCat.includes("mind")) {{
+            matchesCat = cat.includes("mind") || cat.includes("psychology") || cat.includes("consciousness");
+          }} else if (aCat.includes("power") || aCat.includes("philosophy")) {{
+            matchesCat = cat.includes("power") || cat.includes("philosophy") || cat.includes("warfare");
+          }} else if (aCat.includes("imagination") || aCat.includes("wonder")) {{
+            matchesCat = cat.includes("imagination") || cat.includes("wonder") || cat.includes("wizarding") || cat.includes("fantasy") || cat.includes("classics") || cat.includes("literature");
+          }} else {{
+            matchesCat = cat.includes(aCat);
+          }}
+        }}
         const q = activeSearchQuery.toLowerCase().trim();
         const matchesSearch = !q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) || (b.description || "").toLowerCase().includes(q);
         return matchesCat && matchesSearch;
@@ -1674,6 +1795,8 @@ def generate_books_html() -> None:
       const cleanSlug = getCleanBookSlug(book);
 
       // Render ADHD track
+      const adhdSec = document.getElementById("adhdTrackSection");
+      if (adhdSec) adhdSec.classList.remove("collapsed");
       const adhdBody = document.getElementById("adhdTrackBody");
       adhdBody.innerHTML = "";
       const adhdItems = book.adhd_segments || [];
@@ -1712,10 +1835,12 @@ def generate_books_html() -> None:
       }});
 
       // Render Full Book track
+      const fullSec = document.getElementById("fullTrackSection");
+      if (fullSec) fullSec.classList.add("collapsed");
       const fullBody = document.getElementById("fullTrackBody");
       fullBody.innerHTML = "";
       const fullItems = book.author_chapters || [];
-      document.getElementById("fullTrackBadge").textContent = `${{fullItems.length}} chapters`;
+      document.getElementById("fullTrackBadge").textContent = `${{fullItems.length}} chapters · Tap to expand`;
 
       fullItems.forEach((item, idx) => {{
         const chNum = idx + 1;
@@ -1762,7 +1887,64 @@ def generate_books_html() -> None:
 
     function toggleTrackSection(id) {{
       const sec = document.getElementById(id);
-      sec.classList.toggle("collapsed");
+      if (sec) sec.classList.toggle("collapsed");
+    }}
+
+    function toggleCategoryCollapsible() {{
+      const pane = document.getElementById("categoryCollapsible");
+      if (pane) {{
+        pane.classList.toggle("collapsed");
+      }}
+    }}
+
+    function toggleReaderChapterDrawer() {{
+      const drawer = document.getElementById("readerChapterDrawer");
+      const chevron = document.getElementById("readerChaptersChevron");
+      if (!drawer) return;
+      const isHidden = (drawer.style.display === "none" || !drawer.style.display);
+      if (isHidden) {{
+        populateReaderChapterDrawer();
+        drawer.style.display = "block";
+        if (chevron) chevron.textContent = "▲";
+      }} else {{
+        drawer.style.display = "none";
+        if (chevron) chevron.textContent = "▼";
+      }}
+    }}
+
+    function populateReaderChapterDrawer() {{
+      const list = document.getElementById("readerChapterDrawerList");
+      if (!list || !currentBook) return;
+      list.innerHTML = "";
+      const items = currentTrackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
+      items.forEach((item, idx) => {{
+        const num = idx + 1;
+        const el = document.createElement("div");
+        const isActive = (currentItemIndex === num);
+        el.className = "reader-drawer-item" + (isActive ? " active" : "");
+        const pCount = item.pageCount ? `${{item.pageCount}}p` : (item.pages ? `p. ${{item.pages}}` : "");
+        const prefix = currentTrackType === "adhd" ? `Step ${{num}}` : `Ch ${{num}}`;
+        el.innerHTML = `
+          <div class="reader-drawer-item-title">${{isActive ? "▶ " : ""}}${{prefix}} · ${{item.label}}</div>
+          <div class="reader-drawer-item-meta">${{pCount}}</div>
+        `;
+        el.onclick = () => {{
+          selectChapterFromDrawer(num);
+        }};
+        list.appendChild(el);
+      }});
+      const activeEl = list.querySelector(".reader-drawer-item.active");
+      if (activeEl) {{
+        activeEl.scrollIntoView({{ block: "nearest" }});
+      }}
+    }}
+
+    function selectChapterFromDrawer(newIdx) {{
+      const drawer = document.getElementById("readerChapterDrawer");
+      const chevron = document.getElementById("readerChaptersChevron");
+      if (drawer) drawer.style.display = "none";
+      if (chevron) chevron.textContent = "▼";
+      readChapter(currentTrackType, newIdx);
     }}
 
     /* ==========================================================================
@@ -2159,6 +2341,12 @@ def generate_books_html() -> None:
       currentTrackType = trackType;
       currentItemIndex = index;
 
+      // Reset reader chapters drawer state
+      const drawer = document.getElementById("readerChapterDrawer");
+      const chevron = document.getElementById("readerChaptersChevron");
+      if (drawer) drawer.style.display = "none";
+      if (chevron) chevron.textContent = "▼";
+
       const items = trackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
       const fallbackItem = items[index - 1] || {{}};
 
@@ -2288,6 +2476,10 @@ def generate_books_html() -> None:
         document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
         chip.classList.add("active");
         activeCategory = chip.getAttribute("data-cat");
+        const badge = document.getElementById("activeCategoryBadge");
+        if (badge) {{
+          badge.textContent = chip.textContent.trim();
+        }}
         renderBooksGrid();
       }});
     }});
