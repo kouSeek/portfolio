@@ -1,0 +1,903 @@
+{
+  "voice_model": "gemini-v4s-tts (Aoede)",
+  "persona_id": "kalyani",
+  "total_tracked": 162,
+  "hashes": {
+    "days/day_1.mp3": "92acc0cfb0ebb6349f95dc25dd8e311b2d2b3b860446facc4c6b5539a6a2274c",
+    "days/day_10.mp3": "1beb04b4f44a726f96e3ab9b2b7b07c807a2ef30ab9a7b1e5b7aa53e957c0790",
+    "days/day_11.mp3": "8d85fc3d25962f11bc8f18294e7d440f6e0e9894ec0354921618194dd5f96d2b",
+    "days/day_12.mp3": "aa93657c6c5725652cc83681f37a313a119080d0492863e044c26a0acef654c7",
+    "days/day_13.mp3": "ffe93c3216ededffcd9e5664832393c0862b3af1c94c650200de8e6920f9fa25",
+    "days/day_14.mp3": "d3ced4b8cc0bbd8330883c9303f0ed69230b7c89a60722368d0c24a6fa6c779b",
+    "days/day_15.mp3": "65c01884980c758031ee66199c8016ff37eef4c7cc91ac332745c19c162f8004",
+    "days/day_16.mp3": "7cfce1c89440ec04b66c6cfcc9a920d2b26d3bea78eb68e38232a58417037d49",
+    "days/day_17.mp3": "e805a4b949137aab51cfe7ccc626f3760060ebd17982393a91e9fc00fafa4607",
+    "days/day_18.mp3": "8a6121882529d131300199e0d921d82583505cb37faca2da7e7305c9f4e123f2",
+    "days/day_19.mp3": "fb66138a032c50ccb2f08a2ea2e337902ab373493294d052823ccca550a61662",
+    "days/day_2.mp3": "b241acd97ae321c777e92c20ef34777405c8a36cc1fa947b6332a89cbfca3a6a",
+    "days/day_20.mp3": "6881f437c7b866abbe063a1e9785c52bf435f6bf32d98a5aa3214bdd37e9aec3",
+    "days/day_21.mp3": "0fbab1b4fb7ea518d659f55ff573d00dea1526ef6da0eb17c381decc35121a48",
+    "days/day_3.mp3": "76ecc79378d6b87f9976d08cffc037ff0b77ca45d89050ffb2d7fc25a65281a7",
+    "days/day_4.mp3": "d7c14aaaee9b63e36509ebe581cbe4bcf48d32f874edce1c69f169ffa24b9da1",
+    "days/day_5.mp3": "54171b3273bc0446013987255edd4de7084c6c457c4b858981e3b4b5d58310e4",
+    "days/day_6.mp3": "9eec4504a42a1d6c5808e4d7459fa370ba1eb0919e76dab9343ac42f26f330c2",
+    "days/day_7.mp3": "0390915d8e2f1172b71712b1d6826f848965677a8135c118e16820f12973817e",
+    "days/day_8.mp3": "9b0bb93da793c9b431981a544cf70ea52c2043e941a64c336d1d5b0127b4bea6",
+    "days/day_9.mp3": "525ba09f2cc560580e01cdd7e8d0ebc3de9e761f7f1b62b936a4b860ffaf4ae7",
+    "games/day_10_ag_0.mp3": "ff7d1bd10bd65f5a6eb15ad9c04e1c07c5b544d50ff534d35cdfe8d29bbfb747",
+    "games/day_10_ag_1.mp3": "c3abbae1e453cb06669c668cb3942614165d6fc37d7131c9651431d5b2d4d13f",
+    "games/day_10_ag_2.mp3": "2ecfa16c6ebca457e4a4ad09a0bce243262561dee7fba06b7a820c54fff60d52",
+    "games/day_10_ag_3.mp3": "8ba357697de28441ffd2af84d7f9c770ef68aabb9ea126ee8e5e0531ccefefe9",
+    "games/day_10_ag_4.mp3": "f545492d474440a3c0eccffb6e7eae18b1d0006680ae106a26d11db1c7317b88",
+    "games/day_10_ag_5.mp3": "8b4d50f2a50f55206fc87e9db88ad4f8bffdbaab5c536287ba02c8840f5e553e",
+    "games/day_11_ag_0.mp3": "36a1239069a2d610f4df52f07f93297e519861517698e3a822aa1d4ab86f285e",
+    "games/day_11_ag_1.mp3": "4c3041ff33fd48de0abb6aa0652edf2d00c85bac8fb3d9c490acae4a52ddc519",
+    "games/day_11_ag_2.mp3": "5c1ba12823aecedf41a83126f512a21d83eefc4b60903f48d13a45ef356341f0",
+    "games/day_11_ag_3.mp3": "a3429e7df7445d5a194171e10e4b5c1be470242b377be33a561f261015e70e19",
+    "games/day_11_ag_4.mp3": "d65e4563706d4347d4c557fcb26c9ccc06405c846ace8818450b663d4425c67a",
+    "games/day_11_ag_5.mp3": "bf24f1361b288177aa3ec0e72394ae20e9e5d8c8ac3ea9c34350f5df2f17f215",
+    "games/day_12_ag_0.mp3": "f9818efaefe87992b26b7cca882410e6ea523060671845b166d217e550370334",
+    "games/day_12_ag_1.mp3": "0fd7440c3d64cbfaf73e80b6a994878437c5373756db47f348efd382ba193f4b",
+    "games/day_12_ag_2.mp3": "c53035930ea7be6d6afeffcce970e67eb83716184f935b250c6a3ac0f11b2604",
+    "games/day_12_ag_3.mp3": "27e335e5437722e46e616d5b3624f96235a61ea1d05a0a0ded3167a0824f744e",
+    "games/day_12_ag_4.mp3": "45a87387013a40219481d69f48e3d7f36ff5642bf7cc2e02cba56a14c3b340be",
+    "games/day_12_ag_5.mp3": "3b36c72293ad429a385f3b40887ca110feeb4e34bae59b39adaa27c6acd541e1",
+    "games/day_13_ag_0.mp3": "8d18a821c4a3d05810f677b4fa059558f7d3bd915c6ad145ceaa972b2d237433",
+    "games/day_13_ag_1.mp3": "ece300cf68a3fb20f7bbcbe94c08e95975863ef61928a1d86c6369fd87238460",
+    "games/day_13_ag_2.mp3": "f6e828d2e60efdf3c2b5c7faf2887f94a8d65980538466986a363d0a3e810276",
+    "games/day_13_ag_3.mp3": "d6ae8379cfd97f9b1bd95a5c915aac62ae1a5aa0eed0fcaa2d9d26f0e1a26d94",
+    "games/day_13_ag_4.mp3": "c85d7873c8b70b9a7200532d75be7a1c5aff3a72d4a94a5ffae90899e7d00c9f",
+    "games/day_13_ag_5.mp3": "7be8a7a6601b0ebd377681aab2809b9f844ca5f28410d5a34a58134d06f2a2e6",
+    "games/day_14_ag_0.mp3": "ab85bf021ddc24676a7c6e3266e7fcb5eeac1aeca35c77c236fc6d4ba74ccc83",
+    "games/day_14_ag_1.mp3": "35d333a671247b24db24240ed56e3ef1823136a3f0f1d370045cc658e367ab0b",
+    "games/day_14_ag_2.mp3": "2865b2b6c4699c96f7730586125f850c743cf8e70f4952fe7ffb0ce94da0e429",
+    "games/day_14_ag_3.mp3": "6ecb90fdcab41123aa8af3c7e888841622d151b575bdf32cda92d74d2f60f4a7",
+    "games/day_14_ag_4.mp3": "84e84e7edb960eae6f1a73306e6e2aa860c2a2905997ddd8de2fc2db82391ba8",
+    "games/day_14_ag_5.mp3": "4dcd5e96fcc91ab6396207d0679d628e8817b7e1dc1a43f7d9e1f0b8771177b6",
+    "games/day_15_ag_0.mp3": "78e1056d14204dec2036891a7660a077471b208bef668fe2ff7f8d466e622210",
+    "games/day_15_ag_1.mp3": "383423e11545259dd1b14fc236bb48a15d70d9b045f222510ade5228b6845c01",
+    "games/day_15_ag_2.mp3": "9c7174f659376231f486340b256809cdb2f04a7f22da818230d96912b7d28cc3",
+    "games/day_15_ag_3.mp3": "2e7aa636745ea6d9f93148f811683b6cf342f04352807a55a31a39f682c7ea84",
+    "games/day_15_ag_4.mp3": "5f4d8b1b5c08227be43b24dc7a6e0be315174581819e8ab09c904c8c2f7ef25a",
+    "games/day_15_ag_5.mp3": "f26b58f80cfe4e67f369fa9660792cefc1142469f88cbb29240ecf4d8ad7a085",
+    "games/day_16_ag_0.mp3": "4815841d3a6ff780e4eb85d7d8e6df60ad1786ec3761fdad9fa4085cda4918f9",
+    "games/day_16_ag_1.mp3": "d740bbc320177cf12acc6a31b8d7ebcdf838cab2c25136f5b1cade72d1332828",
+    "games/day_16_ag_2.mp3": "205cb530509ec7aeb2308e2885447d81602d00c311d4140a4e3f232c048b79f8",
+    "games/day_16_ag_3.mp3": "23d21533cd850e89e28271960fb62018817267e096bf52f1ca605040e54203c2",
+    "games/day_16_ag_4.mp3": "9caec7148bdbd4f908b91b29010e4b9adeb80f99a01f8f098cc3a65c3298c8cb",
+    "games/day_16_ag_5.mp3": "ad9547efa203fcc83b81b8228c94e11020bed454932b41322216e8eb65bc129e",
+    "games/day_17_ag_0.mp3": "22e2444a2502ed6f23509f396f47c141b56c865ce30137821bff1062465d6cbc",
+    "games/day_17_ag_1.mp3": "699d3afa1e0ce23464df921b0e27e7c20afb5f60518b1db6f1bf3a32c07a6a4c",
+    "games/day_17_ag_2.mp3": "bc95c51b78074e661accf8afb384faa7c50039012d1256b6e0b30cd0e95a7660",
+    "games/day_17_ag_3.mp3": "d3117cddef95460615d27cce94a0f72e15791df6b5feed21658efee33717fc9f",
+    "games/day_17_ag_4.mp3": "dfc4180c96c50fa3fe4c12914e9b12735aff47356b195793fccdf2fa6367a872",
+    "games/day_17_ag_5.mp3": "9950f3f61421bd916470800a3e29216871898bdf29b9ddaba5e5a7c8c097f00b",
+    "games/day_18_ag_0.mp3": "78e8c2b1e1d17c60220ec593ee1c0443a43f258080444e42394b0e12e1888b37",
+    "games/day_18_ag_1.mp3": "db3600c0a023769a35dcb9b54856339d5daa8cee95e1be4e898a2d40d72aa342",
+    "games/day_18_ag_2.mp3": "81495894568aa9e589539f6cbf9e44e66f1d37f8d48a6f0e13d1a03e3b6320b0",
+    "games/day_18_ag_3.mp3": "2507df2c34a50daa9088766148f5e6113f61dbc515602ce873d087f8806c4616",
+    "games/day_18_ag_4.mp3": "d42c378a6f2bb0e5c7f88013e9a810adad484dffec9ae229dae14f0bfb75b1db",
+    "games/day_18_ag_5.mp3": "1d5aaf61a8975ade5b9bbf7c36fe1cae5181f906dd90a0e5061fdcc89c976153",
+    "games/day_19_ag_0.mp3": "40df09d2bbd34056f2498e6c2b9117ee19fef3825620e77418692309ca7ad80c",
+    "games/day_19_ag_1.mp3": "91d183c49181c7d0b62b7085260d44ecd458bd0ed03e9c121af7a46ef0a19849",
+    "games/day_19_ag_2.mp3": "655f67b9931cb423410057c33bf9341b4dd5a02f7ce6b89a89290591dd0ca968",
+    "games/day_19_ag_3.mp3": "cc6454953836b4b1400316aa6231ee85f54d19ae30482f7893e225d6ddb56d51",
+    "games/day_19_ag_4.mp3": "c63afaa5b6f84769f240327277b41675bbbb8dd82f7de25fe4e4434df9e035c6",
+    "games/day_19_ag_5.mp3": "42018ee536941c7b59561eec10f3a9ca455ac6225833a0803b8f6140a95cc706",
+    "games/day_1_ag_0.mp3": "315e4349b815320819c4595f69e42a2494a557fb204f62a6e6af75ceed13adc2",
+    "games/day_1_ag_1.mp3": "bdd4b80a2b3b49aea60b158fa08f2a74b9492da709fb2aee77f469805676102c",
+    "games/day_1_ag_2.mp3": "a57c51cb73db79a301ac1176307d71751c32c8878fea6cfa8729c3992121f18a",
+    "games/day_1_ag_3.mp3": "e77373a06e75f820710cca02a611fa6b5335ae55296f55fecd82f510e10297e2",
+    "games/day_1_ag_4.mp3": "da999fe7f79e181d85ba84131d9a8cbd0222449de2d7728425d6d79d1390ae35",
+    "games/day_1_ag_5.mp3": "82725d8519abf551c164ffe447e23b9b466a39eca0e3d618df393e7e7b85c919",
+    "games/day_20_ag_0.mp3": "e5e79409eb5332bebce272319b875008b441de82adb758fcbe1760c037f7a203",
+    "games/day_20_ag_1.mp3": "bb9b4d9e40c47c8f185cad3a0bf3ef8edde6dd182e79a664b83b7c2fc0a76433",
+    "games/day_20_ag_2.mp3": "def3023bf684236690eb2a204219be01af9718015cfb73fae768f843395431c6",
+    "games/day_20_ag_3.mp3": "ef061d1ce5c4ec6d79fd8b69c6ada6ccccd066061db67389683cca59f39f3b91",
+    "games/day_20_ag_4.mp3": "422162205994b235eb471983444db3d3375b4662adeceaf6c7e85c757365fcce",
+    "games/day_20_ag_5.mp3": "7e1d4081ba7b5861cb6480a427b6ba80260c34eb18feb19665f628b8abb8ab23",
+    "games/day_21_ag_0.mp3": "70b35794afcaf9cfd4e0eb6d78fd978aed7af4a540dd378cdad54a04698e7376",
+    "games/day_21_ag_1.mp3": "abe9a495be27ef6bf2b4b93d56372799a5e95022ac6f4230f60b9504a842e893",
+    "games/day_21_ag_2.mp3": "ad657ccfe79c8a6bcd3605aebbcc0fcec6f8e572c2ae1bb86e0d2d5cb2f96d4d",
+    "games/day_21_ag_3.mp3": "1408fd4f6624be06655c35ccf14f5ed2df778d7b1eb6dcd4a1a85a763db2484f",
+    "games/day_21_ag_4.mp3": "3da464637292f4a20d6e2978ef351e576e7f268f394eb2e21731f8425a2426ab",
+    "games/day_21_ag_5.mp3": "749f340fa5178fa729cfcb129953b3d464f26a30d5312a6ef7bb1a4422c4d546",
+    "games/day_2_ag_0.mp3": "db6fe3d81bff743be7122296bbf5108b08b3c75aa0f4789810915eee17dc7b56",
+    "games/day_2_ag_1.mp3": "fcbad5da4f6a83e15b73bc7aa968c397a4cc67745f25dd7e3a06abb8d6a7b99a",
+    "games/day_2_ag_2.mp3": "e0615129d9873ea7e3f3705b06669b8800f5b96749919964401ea09a58a93857",
+    "games/day_2_ag_3.mp3": "e3be5b7456a2224d4c08045d665e5649a0496371abe8630d9215172eeb0e22ad",
+    "games/day_2_ag_4.mp3": "9fc5ec4d877b3bb2dada7c7ad664bb074ceb2cb152cbd248b32a64881cf765af",
+    "games/day_2_ag_5.mp3": "75a36fc5a446cde038319783adf1f7333948bff7f1b819f36c8e38393c472547",
+    "games/day_3_ag_0.mp3": "ade9a4c3a4428e6dfa903d345e210a1f83f35c3027d4937b3d744067575eab58",
+    "games/day_3_ag_1.mp3": "6eeac49bfcc4084e5e5f91cab955659390d36a232100f4d1bbc9cae7375e81e5",
+    "games/day_3_ag_2.mp3": "2337a77b0e40a57611ffaf5d107dc14060f2a8960d3c05135fa3a091c28c837f",
+    "games/day_3_ag_3.mp3": "12c7c7279b40b0841988f87e536e3a9ef8eb33cba002a0d69a5794ad002df0e3",
+    "games/day_3_ag_4.mp3": "9491ae1c8659b9ff9ecc251bf44722bb3a5b29492a8dec13cf86f62423913e99",
+    "games/day_3_ag_5.mp3": "b2ee6430d6633984261ed2df37fc8b0e5487ca0fb21db51166d60daf8108b000",
+    "games/day_4_ag_0.mp3": "4d50f413c6127baeeff483c0ad0fa4398dbf9240641d46e95dd23b76b2dcca96",
+    "games/day_4_ag_1.mp3": "60a1c7bbc9c05c8f5916fc45b72cc72ac68b7c590b96f1f33b4ca7373790e9ba",
+    "games/day_4_ag_2.mp3": "16c6a4503d20c84bef41ff9d9110c3352b6ad43397ed5c71efcb822da684c413",
+    "games/day_4_ag_3.mp3": "7a8671caa6abc033f7006f6aefdeb168316bff229a629adce994f6e508f688b8",
+    "games/day_4_ag_4.mp3": "0759608bac791a1b9988c4b9b1b9a1227dcfea866c6f0b1f1a4cac43b4c0405a",
+    "games/day_4_ag_5.mp3": "c89d4c8578170d5d517da6ec719ab3d54ea481ead83baec3305ea46f5a720004",
+    "games/day_5_ag_0.mp3": "295dc25b4968730b2a085c251586a6a1f353b40cd3e5c9f1d3ef001fc3622704",
+    "games/day_5_ag_1.mp3": "5ebc1e6443720a6ed724b427184154d4d2188e3320dd1f88661b22d0ff2da169",
+    "games/day_5_ag_2.mp3": "a1748071bc6c2d9ae8b77b936b8e440b4ad7d88934e14f45529b24f605512702",
+    "games/day_5_ag_3.mp3": "910bff0453c5b110c1226310d7f812da1a5cf146558552bdf3fbab98ef7b7351",
+    "games/day_5_ag_4.mp3": "1a4c39e53b5addda6bbe15748153e25251049722918e890db88fd8af84911be5",
+    "games/day_5_ag_5.mp3": "09da4340461e3b0d63e992a4ab52574fd0400d0eaeec56e64d524b5eaf3d6e20",
+    "games/day_6_ag_0.mp3": "d482e3d8c0fed389d60f5715192de0dd1297d2db2c60ce8391c8d2ea4b99c5af",
+    "games/day_6_ag_1.mp3": "1edc84f19d1434c136e1f279ce2c423fd36241da32c26fd70d96216d3bdd62f2",
+    "games/day_6_ag_2.mp3": "34420856c30c7b86992d16c462f910189962837f660917ef136be6e364e0e47f",
+    "games/day_6_ag_3.mp3": "b11cbae4b1e7a5658226e81b4413bab8d5d92c867a3cb3a667ed1ad3838e987c",
+    "games/day_6_ag_4.mp3": "34d9aba0b44e6fafa5e456cf43cf62b151d2de48467d32d0fbfc7744e5f4d8ea",
+    "games/day_6_ag_5.mp3": "5b537e258f2f97fabceb55bcd0a17060dcc16aa297f232730c89342329378137",
+    "games/day_7_ag_0.mp3": "d47e743131310799be9cf0321ff0adc131130e1a1761d0fa7e287c3583db9afe",
+    "games/day_7_ag_1.mp3": "622d77fba0e7527f8b8907d264cbbaef7e2813c0569097f38a0ddac6b1a0e0f9",
+    "games/day_7_ag_2.mp3": "988839eee863667d204338ee6f6d327b63229ad50edd9ed490c917b7979eb6d3",
+    "games/day_7_ag_3.mp3": "a570eb18f6e7af636297a8b29fd425fb27fdcf76742b9a04d4a8dcb47b5d60d3",
+    "games/day_7_ag_4.mp3": "0cf1f2dceb032ca24d7ed5f3a97b24067dcc8698beeb0dc195c11e3a38109084",
+    "games/day_7_ag_5.mp3": "9cb3c5b9a13160dd0c4659b6f95be15df927e71f4f4a90a8fc2b40b341963bff",
+    "games/day_8_ag_0.mp3": "c3ce8af64a008d7d366a3846523b33ae4855d60455cf0a5ef0969a47de6d9156",
+    "games/day_8_ag_1.mp3": "87b24dff4afaa5c9bb223d3395ec9a0bc958db2021e86b693550baeddb8250ac",
+    "games/day_8_ag_2.mp3": "94bfc7206604a4e980857386a02620b83c6948de31517f078f03bb29774c3802",
+    "games/day_8_ag_3.mp3": "68166299ca1e84ba741a308706f0aa51756382d086e04914dd0ec87bab56ba35",
+    "games/day_8_ag_4.mp3": "16fe4fad95e742215a035a192b8d4c9e69a8166305397cf75182c304535d1f86",
+    "games/day_8_ag_5.mp3": "4dc3fd1bea08b4f25ddca8e0a2c8711764ad49d5dec06d62d45b671928eae1be",
+    "games/day_9_ag_0.mp3": "76f560fd0d4f6ef6bdab72e8e1431809d80f8802acb8551835b65ca1e344900d",
+    "games/day_9_ag_1.mp3": "c868834c6301e81981fa6848003a56a1f83075e1fdd62fec7bd5e75e2cc0c5c1",
+    "games/day_9_ag_2.mp3": "833e64abcc6998136f32ffd1dcdb85282866375f7b9f954b7707c38458a44a96",
+    "games/day_9_ag_3.mp3": "bff2e01916df265738c1c8b0248757eee3a8a4eb923d07043a40cc6612bc7c1e",
+    "games/day_9_ag_4.mp3": "ac4c38450c1e47f6d9c4e2108c5596f3f4d2c64f68c5576180af879ea11fb062",
+    "games/day_9_ag_5.mp3": "f681ed9f81797e4fda3f45a47322a9330ed7d51010abdb8078cff27dd71d1c16",
+    "quotes/quote_0.mp3": "fd25abbbfbd93c5d4b46fd4c2eaa697612239846e6d979a9d9f29e76e110a288",
+    "quotes/quote_1.mp3": "61dd68ef1f212685510e428146b86516a21d92258874bfe77c383c357f042b7c",
+    "quotes/quote_2.mp3": "97ce70899a16415bf5d637d80d9373aecbe4da85bd93e238eb92a44fda416d0b",
+    "quotes/quote_3.mp3": "4e30b171308f08ec23f1a5f7fdb5528dc06b3a6e2c8156253c826082f2b70729",
+    "quotes/quote_4.mp3": "3b09b561a805d489f08b1cfd627788436c012f538bf857a20692d4d9f991313a",
+    "quotes/quote_5.mp3": "35755029a71735773f34dde4c7f47eb8c3bcecd9dea8fabad72d8304d2f4e44a",
+    "quotes/quote_6.mp3": "d3f639ab3f3bcad0bb56f8db06fc5fe8d204f7faa96a4c09bc301c61bfa3a2c6",
+    "slides/slide_1.mp3": "a6e64772146f7937c5177637fb4ec5752257b3d6ddad85faeb049b6f225efdee",
+    "slides/slide_2.mp3": "833033a21054347e490aa6091cf249fdce66976640a7bcd99afeafd7122d26a2",
+    "slides/slide_3.mp3": "f7ad0cb881c2ce65d661ae6c4d00340cfd3e346bb7fb9c0bbb2d0dfa7610ce0d",
+    "slides/slide_4.mp3": "15bde07d3d9ed4d5493f3fafaf0f38af8040a85b47147fe00e3ed08832773911",
+    "slides/slide_5.mp3": "e0ab90845382017b1f707445409b44d44607104014f265ffdef245a9474d56ad",
+    "slides/slide_6.mp3": "86c3d2b97059501b6456befef4ea34c03e3801c081b9e8dd49cdf3735744ffab",
+    "slides/slide_7.mp3": "6167bc8fa5793776c6ddcdd017f13c0c0a41dfa8763cf14eec6ea0cc2ae28031",
+    "slides/slide_8.mp3": "a0f356da6fb82368a329057f384cb0c466a23bc83979f72b265f5838c9cdc860"
+  },
+  "story_cuts": {
+    "games/day_10_ag_0.mp3": 36.01,
+    "games/day_10_ag_1.mp3": 29.95,
+    "games/day_10_ag_2.mp3": 19.08,
+    "games/day_10_ag_3.mp3": 19.48,
+    "games/day_10_ag_4.mp3": 18.22,
+    "games/day_10_ag_5.mp3": 32.09,
+    "games/day_11_ag_0.mp3": 31.96,
+    "games/day_11_ag_1.mp3": 28.78,
+    "games/day_11_ag_2.mp3": 20.26,
+    "games/day_11_ag_3.mp3": 20.49,
+    "games/day_11_ag_4.mp3": 25.91,
+    "games/day_11_ag_5.mp3": 25.27,
+    "games/day_12_ag_0.mp3": 42.47,
+    "games/day_12_ag_1.mp3": 20.24,
+    "games/day_12_ag_2.mp3": 16.12,
+    "games/day_12_ag_3.mp3": 18.25,
+    "games/day_12_ag_4.mp3": 27.57,
+    "games/day_12_ag_5.mp3": 23.33,
+    "games/day_13_ag_0.mp3": 22.54,
+    "games/day_13_ag_1.mp3": 17.04,
+    "games/day_13_ag_2.mp3": 17.18,
+    "games/day_13_ag_3.mp3": 22.67,
+    "games/day_13_ag_4.mp3": 25.02,
+    "games/day_13_ag_5.mp3": 16.63,
+    "games/day_14_ag_0.mp3": 31.53,
+    "games/day_14_ag_1.mp3": 20.52,
+    "games/day_14_ag_2.mp3": 17.37,
+    "games/day_14_ag_3.mp3": 22.25,
+    "games/day_14_ag_4.mp3": 21.06,
+    "games/day_14_ag_5.mp3": 20.89,
+    "games/day_15_ag_0.mp3": 25.04,
+    "games/day_15_ag_1.mp3": 27.31,
+    "games/day_15_ag_2.mp3": 18.81,
+    "games/day_15_ag_3.mp3": 21.83,
+    "games/day_15_ag_4.mp3": 25.86,
+    "games/day_15_ag_5.mp3": 26.52,
+    "games/day_16_ag_0.mp3": 38.8,
+    "games/day_16_ag_1.mp3": 18.91,
+    "games/day_16_ag_2.mp3": 53.46,
+    "games/day_16_ag_3.mp3": 20.43,
+    "games/day_16_ag_4.mp3": 24.2,
+    "games/day_16_ag_5.mp3": 18.52,
+    "games/day_17_ag_0.mp3": 22.28,
+    "games/day_17_ag_1.mp3": 20.08,
+    "games/day_17_ag_2.mp3": 16.05,
+    "games/day_17_ag_3.mp3": 17.5,
+    "games/day_17_ag_4.mp3": 25.07,
+    "games/day_17_ag_5.mp3": 16.96,
+    "games/day_18_ag_0.mp3": 30.52,
+    "games/day_18_ag_1.mp3": 22.37,
+    "games/day_18_ag_2.mp3": 12.22,
+    "games/day_18_ag_3.mp3": 21.51,
+    "games/day_18_ag_4.mp3": 17.43,
+    "games/day_18_ag_5.mp3": 20.14,
+    "games/day_19_ag_0.mp3": 24.1,
+    "games/day_19_ag_1.mp3": 27.48,
+    "games/day_19_ag_2.mp3": 22.08,
+    "games/day_19_ag_3.mp3": 19.18,
+    "games/day_19_ag_4.mp3": 24.13,
+    "games/day_19_ag_5.mp3": 18.12,
+    "games/day_1_ag_0.mp3": 32.07,
+    "games/day_1_ag_1.mp3": 34.51,
+    "games/day_1_ag_2.mp3": 24.6,
+    "games/day_1_ag_3.mp3": 35.6,
+    "games/day_1_ag_4.mp3": 26.57,
+    "games/day_1_ag_5.mp3": 32.95,
+    "games/day_20_ag_0.mp3": 27.42,
+    "games/day_20_ag_1.mp3": 18.31,
+    "games/day_20_ag_2.mp3": 20.03,
+    "games/day_20_ag_3.mp3": 30.05,
+    "games/day_20_ag_4.mp3": 25.84,
+    "games/day_20_ag_5.mp3": 19.97,
+    "games/day_21_ag_0.mp3": 19.44,
+    "games/day_21_ag_1.mp3": 29.95,
+    "games/day_21_ag_2.mp3": 15.34,
+    "games/day_21_ag_3.mp3": 26.09,
+    "games/day_21_ag_4.mp3": 31.13,
+    "games/day_21_ag_5.mp3": 17.34,
+    "games/day_2_ag_0.mp3": 45.7,
+    "games/day_2_ag_1.mp3": 28.48,
+    "games/day_2_ag_2.mp3": 19.61,
+    "games/day_2_ag_3.mp3": 30.32,
+    "games/day_2_ag_4.mp3": 23.22,
+    "games/day_2_ag_5.mp3": 23.46,
+    "games/day_3_ag_0.mp3": 26.1,
+    "games/day_3_ag_1.mp3": 21.01,
+    "games/day_3_ag_2.mp3": 18.53,
+    "games/day_3_ag_3.mp3": 26.83,
+    "games/day_3_ag_4.mp3": 26.59,
+    "games/day_3_ag_5.mp3": 19.88,
+    "games/day_4_ag_0.mp3": 43.65,
+    "games/day_4_ag_1.mp3": 29.95,
+    "games/day_4_ag_2.mp3": 18.9,
+    "games/day_4_ag_3.mp3": 20.09,
+    "games/day_4_ag_4.mp3": 26.63,
+    "games/day_4_ag_5.mp3": 24.36,
+    "games/day_5_ag_0.mp3": 27.79,
+    "games/day_5_ag_1.mp3": 23.42,
+    "games/day_5_ag_2.mp3": 26.57,
+    "games/day_5_ag_3.mp3": 25.81,
+    "games/day_5_ag_4.mp3": 17.93,
+    "games/day_5_ag_5.mp3": 22.09,
+    "games/day_6_ag_0.mp3": 31.48,
+    "games/day_6_ag_1.mp3": 24.71,
+    "games/day_6_ag_2.mp3": 20.99,
+    "games/day_6_ag_3.mp3": 22.08,
+    "games/day_6_ag_4.mp3": 28.67,
+    "games/day_6_ag_5.mp3": 16.6,
+    "games/day_7_ag_0.mp3": 33.43,
+    "games/day_7_ag_1.mp3": 29.95,
+    "games/day_7_ag_2.mp3": 17.16,
+    "games/day_7_ag_3.mp3": 31.03,
+    "games/day_7_ag_4.mp3": 28.61,
+    "games/day_7_ag_5.mp3": 18.05,
+    "games/day_8_ag_0.mp3": 32.33,
+    "games/day_8_ag_1.mp3": 23.52,
+    "games/day_8_ag_2.mp3": 20.23,
+    "games/day_8_ag_3.mp3": 22.32,
+    "games/day_8_ag_4.mp3": 16.52,
+    "games/day_8_ag_5.mp3": 24.36,
+    "games/day_9_ag_0.mp3": 24.13,
+    "games/day_9_ag_1.mp3": 18.33,
+    "games/day_9_ag_2.mp3": 17.2,
+    "games/day_9_ag_3.mp3": 26.82,
+    "games/day_9_ag_4.mp3": 25.2,
+    "games/day_9_ag_5.mp3": 13.86
+  },
+  "slide_timings": {
+    "slide_1": {
+      "dur": 31.72,
+      "silences": [
+        [
+          0.0,
+          0.31
+        ],
+        [
+          0.68,
+          1.29
+        ],
+        [
+          3.76,
+          4.52
+        ],
+        [
+          4.77,
+          5.46
+        ],
+        [
+          8.78,
+          9.74
+        ],
+        [
+          11.73,
+          12.41
+        ],
+        [
+          13.87,
+          14.37
+        ],
+        [
+          15.68,
+          16.62
+        ],
+        [
+          18.36,
+          19.06
+        ],
+        [
+          21.11,
+          21.32
+        ],
+        [
+          22.25,
+          23.06
+        ],
+        [
+          25.99,
+          26.98
+        ],
+        [
+          29.32,
+          29.88
+        ],
+        [
+          31.42,
+          31.72
+        ]
+      ]
+    },
+    "slide_2": {
+      "dur": 35.84,
+      "silences": [
+        [
+          0.0,
+          0.28
+        ],
+        [
+          1.68,
+          2.21
+        ],
+        [
+          3.76,
+          4.91
+        ],
+        [
+          5.21,
+          5.58
+        ],
+        [
+          7.71,
+          7.93
+        ],
+        [
+          10.53,
+          11.02
+        ],
+        [
+          12.18,
+          13.12
+        ],
+        [
+          14.71,
+          15.1
+        ],
+        [
+          15.98,
+          16.5
+        ],
+        [
+          18.97,
+          19.45
+        ],
+        [
+          21.95,
+          22.64
+        ],
+        [
+          23.96,
+          25.16
+        ],
+        [
+          27.38,
+          28.52
+        ],
+        [
+          31.24,
+          31.73
+        ],
+        [
+          35.55,
+          35.84
+        ]
+      ]
+    },
+    "slide_3": {
+      "dur": 42.56,
+      "silences": [
+        [
+          0.0,
+          0.29
+        ],
+        [
+          2.11,
+          2.51
+        ],
+        [
+          4.77,
+          5.62
+        ],
+        [
+          6.9,
+          7.11
+        ],
+        [
+          12.24,
+          13.19
+        ],
+        [
+          14.79,
+          15.16
+        ],
+        [
+          17.55,
+          18.22
+        ],
+        [
+          19.45,
+          19.82
+        ],
+        [
+          20.9,
+          22.12
+        ],
+        [
+          22.99,
+          23.55
+        ],
+        [
+          25.45,
+          25.79
+        ],
+        [
+          26.71,
+          26.93
+        ],
+        [
+          28.83,
+          29.28
+        ],
+        [
+          31.59,
+          31.84
+        ],
+        [
+          34.37,
+          34.73
+        ],
+        [
+          35.84,
+          36.79
+        ],
+        [
+          39.18,
+          40.0
+        ],
+        [
+          41.06,
+          41.5
+        ],
+        [
+          42.24,
+          42.56
+        ]
+      ]
+    },
+    "slide_4": {
+      "dur": 60.32,
+      "silences": [
+        [
+          0.0,
+          0.31
+        ],
+        [
+          1.77,
+          2.23
+        ],
+        [
+          3.31,
+          3.83
+        ],
+        [
+          4.99,
+          5.72
+        ],
+        [
+          5.88,
+          6.06
+        ],
+        [
+          10.38,
+          10.83
+        ],
+        [
+          14.84,
+          16.05
+        ],
+        [
+          19.0,
+          19.41
+        ],
+        [
+          21.98,
+          22.64
+        ],
+        [
+          27.62,
+          28.33
+        ],
+        [
+          30.09,
+          30.39
+        ],
+        [
+          35.68,
+          36.6
+        ],
+        [
+          40.04,
+          40.35
+        ],
+        [
+          42.33,
+          42.53
+        ],
+        [
+          44.03,
+          44.97
+        ],
+        [
+          52.15,
+          52.51
+        ],
+        [
+          55.49,
+          56.35
+        ],
+        [
+          59.9,
+          60.32
+        ]
+      ]
+    },
+    "slide_5": {
+      "dur": 59.24,
+      "silences": [
+        [
+          0.0,
+          0.21
+        ],
+        [
+          1.74,
+          2.03
+        ],
+        [
+          5.73,
+          6.43
+        ],
+        [
+          7.78,
+          7.96
+        ],
+        [
+          11.53,
+          11.88
+        ],
+        [
+          16.89,
+          17.68
+        ],
+        [
+          17.91,
+          18.14
+        ],
+        [
+          21.82,
+          22.45
+        ],
+        [
+          27.3,
+          27.52
+        ],
+        [
+          30.02,
+          30.25
+        ],
+        [
+          32.76,
+          33.06
+        ],
+        [
+          48.88,
+          49.27
+        ],
+        [
+          55.43,
+          55.74
+        ],
+        [
+          57.24,
+          57.42
+        ],
+        [
+          58.89,
+          59.24
+        ]
+      ]
+    },
+    "slide_6": {
+      "dur": 50.88,
+      "silences": [
+        [
+          0.0,
+          0.26
+        ],
+        [
+          2.07,
+          2.6
+        ],
+        [
+          4.48,
+          5.32
+        ],
+        [
+          7.31,
+          7.84
+        ],
+        [
+          11.12,
+          11.59
+        ],
+        [
+          15.39,
+          16.31
+        ],
+        [
+          20.1,
+          20.41
+        ],
+        [
+          23.46,
+          23.86
+        ],
+        [
+          25.19,
+          25.73
+        ],
+        [
+          28.37,
+          28.65
+        ],
+        [
+          30.74,
+          31.53
+        ],
+        [
+          31.75,
+          32.14
+        ],
+        [
+          32.85,
+          33.46
+        ],
+        [
+          35.05,
+          35.65
+        ],
+        [
+          38.0,
+          38.78
+        ],
+        [
+          41.13,
+          41.82
+        ],
+        [
+          44.15,
+          44.64
+        ],
+        [
+          47.74,
+          47.98
+        ],
+        [
+          50.51,
+          50.88
+        ]
+      ]
+    },
+    "slide_7": {
+      "dur": 55.8,
+      "silences": [
+        [
+          0.0,
+          0.26
+        ],
+        [
+          1.2,
+          1.59
+        ],
+        [
+          2.42,
+          2.88
+        ],
+        [
+          5.15,
+          6.02
+        ],
+        [
+          10.5,
+          11.03
+        ],
+        [
+          12.1,
+          12.53
+        ],
+        [
+          14.03,
+          14.37
+        ],
+        [
+          16.73,
+          17.57
+        ],
+        [
+          18.05,
+          18.3
+        ],
+        [
+          19.36,
+          19.86
+        ],
+        [
+          25.05,
+          25.42
+        ],
+        [
+          26.21,
+          26.58
+        ],
+        [
+          29.12,
+          29.98
+        ],
+        [
+          32.67,
+          32.87
+        ],
+        [
+          36.5,
+          37.0
+        ],
+        [
+          39.53,
+          40.14
+        ],
+        [
+          42.88,
+          43.72
+        ],
+        [
+          48.23,
+          48.8
+        ],
+        [
+          52.01,
+          52.39
+        ],
+        [
+          53.62,
+          54.0
+        ],
+        [
+          55.51,
+          55.8
+        ]
+      ]
+    },
+    "slide_8": {
+      "dur": 43.8,
+      "silences": [
+        [
+          0.0,
+          0.29
+        ],
+        [
+          1.57,
+          2.02
+        ],
+        [
+          3.19,
+          3.43
+        ],
+        [
+          5.14,
+          5.52
+        ],
+        [
+          5.62,
+          5.8
+        ],
+        [
+          6.06,
+          6.41
+        ],
+        [
+          8.24,
+          8.43
+        ],
+        [
+          10.27,
+          10.6
+        ],
+        [
+          11.66,
+          11.95
+        ],
+        [
+          17.91,
+          18.24
+        ],
+        [
+          20.15,
+          20.46
+        ],
+        [
+          21.67,
+          21.92
+        ],
+        [
+          25.39,
+          25.64
+        ],
+        [
+          26.56,
+          26.74
+        ],
+        [
+          28.18,
+          28.46
+        ],
+        [
+          30.79,
+          31.16
+        ],
+        [
+          33.43,
+          33.75
+        ],
+        [
+          40.39,
+          40.87
+        ],
+        [
+          41.56,
+          41.9
+        ],
+        [
+          43.49,
+          43.8
+        ]
+      ]
+    }
+  }
+}
