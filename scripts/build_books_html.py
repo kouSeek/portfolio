@@ -1527,8 +1527,13 @@ def generate_books_html() -> None:
       }}).join("");
       listEl.querySelectorAll(".in-progress-chip").forEach(btn => {{
         btn.addEventListener("click", () => {{
+          const href = btn.getAttribute("data-resume-href");
           const slug = btn.getAttribute("data-resume-slug");
-          if (slug) openBookDetail(slug);
+          if (href) {{
+            window.location.href = href;
+          }} else if (slug) {{
+            openBookDetail(slug);
+          }}
         }});
       }});
     }}
@@ -2109,14 +2114,32 @@ def generate_books_html() -> None:
       }});
     }}
 
-    function openBookDetail(slugOrFilename) {{
+    let lastLibraryScrollY = 0;
+
+    function openBookDetail(slugOrFilename, pushToHistory = true) {{
       const book = BOOKS_DATA.find(b => b.slug === slugOrFilename || b.filename === slugOrFilename);
       if (!book) return;
       currentBook = book;
+      lastLibraryScrollY = window.scrollY || window.pageYOffset || 0;
 
       document.getElementById("libraryView").style.display = "none";
       const dv = document.getElementById("bookDetailView");
       dv.classList.add("active");
+
+      // Adapt topbar back button for detail view
+      const navBackBtn = document.getElementById("navBackBtn");
+      if (navBackBtn) {{
+        navBackBtn.textContent = "← Books";
+        navBackBtn.onclick = (e) => {{
+          e.preventDefault();
+          backToLibrary();
+        }};
+      }}
+
+      const cleanSlug = getCleanBookSlug(book);
+      if (pushToHistory && typeof history !== "undefined" && history.pushState) {{
+        history.pushState({{ view: "detail", slug: cleanSlug }}, "", "#book=" + encodeURIComponent(cleanSlug));
+      }}
 
       const bookDesc = book.description || book.skipped_note || "";
       document.getElementById("detailEmoji").textContent = book.cover_emoji || "📖";
@@ -2139,8 +2162,6 @@ def generate_books_html() -> None:
         <span class="badge-chip full">📖 ${{(book.author_chapters || []).length}} Chapters ${{fullPages ? `· ${{fullPages}}` : ""}} ${{fullTime ? `· ⏱️ ${{fullTime}}` : ""}}</span>
       `;
 
-      const cleanSlug = getCleanBookSlug(book);
-
       // Render ADHD track
       const adhdSec = document.getElementById("adhdTrackSection");
       if (adhdSec) adhdSec.classList.remove("collapsed");
@@ -2155,6 +2176,14 @@ def generate_books_html() -> None:
         const stepNum = idx + 1;
         const row = document.createElement("div");
         row.className = "chapter-row";
+        row.style.cursor = "pointer";
+        const stepHref = `chapters/${{cleanSlug}}/step_${{stepNum}}.html`;
+        row.onclick = (e) => {{
+          saveMobileBookProgress(currentBook, `Step ${{stepNum}} · ${{item.label}}`, stepHref);
+          if (!e.target.closest("a")) {{
+            window.location.href = stepHref;
+          }}
+        }};
         const pageRange = item.pages ? `p. ${{item.pages}}` : "";
         const pageCnt = item.pageCount ? `${{item.pageCount}}p` : "";
         const volPct = item.volumePct ? `${{item.volumePct}}%` : "";
@@ -2177,7 +2206,7 @@ def generate_books_html() -> None:
                 ${{effStr ? `<span class="chapter-chip effort">${{effStr}}</span>` : ""}}
               </div>
               <div class="chapter-actions">
-                <a class="btn-ch play-btn" href="chapters/${{cleanSlug}}/step_${{stepNum}}.html" style="text-decoration:none;">Absorb</a>
+                <a class="btn-ch play-btn" href="${{stepHref}}" style="text-decoration:none;">Absorb</a>
               </div>
             </div>
           </div>
@@ -2199,6 +2228,14 @@ def generate_books_html() -> None:
         const chNum = idx + 1;
         const row = document.createElement("div");
         row.className = "chapter-row";
+        row.style.cursor = "pointer";
+        const chHref = `chapters/${{cleanSlug}}/ch_${{chNum}}.html`;
+        row.onclick = (e) => {{
+          saveMobileBookProgress(currentBook, `Ch ${{chNum}} · ${{item.label}}`, chHref);
+          if (!e.target.closest("a")) {{
+            window.location.href = chHref;
+          }}
+        }};
         const pageRange = item.pages ? `p. ${{item.pages}}` : "";
         const pageCnt = item.pageCount ? `${{item.pageCount}}p` : "";
         const volPct = item.volumePct ? `${{item.volumePct}}%` : "";
@@ -2221,7 +2258,7 @@ def generate_books_html() -> None:
                 ${{effStr ? `<span class="chapter-chip effort">${{effStr}}</span>` : ""}}
               </div>
               <div class="chapter-actions">
-                <a class="btn-ch play-btn" href="chapters/${{cleanSlug}}/ch_${{chNum}}.html" style="text-decoration:none;">Absorb</a>
+                <a class="btn-ch play-btn" href="${{chHref}}" style="text-decoration:none;">Absorb</a>
               </div>
             </div>
           </div>
@@ -2233,11 +2270,23 @@ def generate_books_html() -> None:
       hydrateAppLinks();
     }}
 
-    function backToLibrary() {{
+    function backToLibrary(triggerHistory = true) {{
       document.getElementById("bookDetailView").classList.remove("active");
       document.getElementById("libraryView").style.display = "block";
       document.getElementById("headerTitle").textContent = "Liberation Library";
+      const navBackBtn = document.getElementById("navBackBtn");
+      if (navBackBtn) {{
+        navBackBtn.textContent = "← AI Hub";
+        navBackBtn.onclick = null;
+        hydrateAppLinks();
+      }}
+      if (triggerHistory && typeof history !== "undefined" && history.pushState && (location.hash || location.search)) {{
+        history.pushState({{ view: "library" }}, "", location.pathname + (location.search ? location.search.replace(/[?&]book=[^&]+/g, "") : ""));
+      }}
       currentBook = null;
+      if (lastLibraryScrollY > 0) {{
+        window.scrollTo({{ top: lastLibraryScrollY, behavior: "instant" }});
+      }}
     }}
 
     function toggleTrackSection(id) {{
@@ -3042,6 +3091,31 @@ def generate_books_html() -> None:
     refreshLiveCatalogCountsIfUpdated();
     updateOfflineStatus();
     updateStorageMetrics();
+
+    function checkInitialUrlBook() {{
+      try {{
+        if (typeof location === "undefined") return;
+        const hashMatch = (location.hash || "").match(/#book=([^&]+)/i);
+        const searchMatch = (location.search || "").match(/[?&]book=([^&]+)/i);
+        const slug = hashMatch ? decodeURIComponent(hashMatch[1]) : (searchMatch ? decodeURIComponent(searchMatch[1]) : null);
+        if (slug) {{
+          openBookDetail(slug, false);
+        }}
+      }} catch (_e) {{}}
+    }}
+
+    window.addEventListener("popstate", (e) => {{
+      if (e.state && e.state.view === "detail" && e.state.slug) {{
+        openBookDetail(e.state.slug, false);
+      }} else {{
+        const dv = document.getElementById("bookDetailView");
+        if (dv && dv.classList.contains("active")) {{
+          backToLibrary(false);
+        }}
+      }}
+    }});
+
+    checkInitialUrlBook();
   </script>
 </body>
 </html>

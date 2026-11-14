@@ -289,8 +289,11 @@ def build_chapter_html(
       display: flex;
       flex-direction: column;
       padding-top: calc(var(--safe-top) + 56px);
-      padding-bottom: calc(var(--safe-bottom) + 110px);
+      padding-bottom: calc(var(--safe-bottom) + 36px);
       transition: background 0.2s ease, color 0.2s ease;
+    }}
+    body.has-active-player {{
+      padding-bottom: calc(var(--safe-bottom) + 110px);
     }}
     /* Topbar */
     .topbar {{
@@ -572,7 +575,7 @@ def build_chapter_html(
       border-color: var(--accent);
     }}
 
-    /* Sticky Bottom Player Bar */
+    /* Sticky Bottom Player Bar (only shown when audio is playing/active) */
     .sticky-player {{
       position: fixed;
       bottom: 0;
@@ -583,9 +586,12 @@ def build_chapter_html(
       padding: 10px 16px calc(var(--safe-bottom) + 10px);
       z-index: 60;
       box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
-      display: flex;
+      display: none;
       flex-direction: column;
       gap: 8px;
+    }}
+    body.has-active-player .sticky-player {{
+      display: flex;
     }}
     .player-progress-wrap {{
       display: flex;
@@ -704,7 +710,7 @@ def build_chapter_html(
 </head>
 <body>
   <header class="topbar">
-    <a class="back-btn" id="navBackBtn" href="../../books.html">← Library</a>
+    <a class="back-btn" id="navBackBtn" href="../../books.html#book={clean_slug}">← Library</a>
     <div class="top-title">{html.escape(book_title)}</div>
     <div class="top-actions">
       <button class="btn-icon" id="btnFontSmaller">A-</button>
@@ -771,7 +777,7 @@ def build_chapter_html(
 
     <nav class="nav-footer">
       {f'<a href="{prev_link}">← Previous Chapter</a>' if prev_link else '<span style="flex:1;"></span>'}
-      <a class="primary" href="../../books.html">📚 All Books</a>
+      <a class="primary" href="../../books.html#book={clean_slug}">📚 All Books</a>
       {f'<a href="{next_link}">Next Chapter →</a>' if next_link else '<span style="flex:1;"></span>'}
     </nav>
   </main>
@@ -999,6 +1005,11 @@ def build_chapter_html(
       const tBtn = document.getElementById("btnTopListen");
       if (bBtn) bBtn.textContent = isPlaying ? "⏸" : "▶";
       if (tBtn) tBtn.textContent = isPlaying ? "⏸ Pause" : "▶️ Listen";
+      if (isPlaying) {{
+        document.body.classList.add("has-active-player");
+        const sp = document.getElementById("stickyPlayer");
+        if (sp) sp.style.display = "flex";
+      }}
     }}
 
     async function toggleAudioPlay() {{
