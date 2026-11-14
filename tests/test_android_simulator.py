@@ -704,8 +704,22 @@ class TestAndroidMobileBrowserSimulator(unittest.TestCase):
         assert.ok(sciencePill, 'Science category filter chip should exist');
         sciencePill.click();
         filteredCards = booksGrid.querySelectorAll('.book-card');
-        console.log(`✓ Filter category "${sciencePill.getAttribute('data-cat')}" results: ${filteredCards.length} book(s)`);
-        assert.ok(filteredCards.length >= 4, 'Science category should have multiple books');
+        const scienceCount = filteredCards.length;
+        console.log(`✓ Filter category "${sciencePill.getAttribute('data-cat')}" results: ${scienceCount} book(s)`);
+        assert.ok(scienceCount >= 4, 'Science category should have multiple books');
+
+        // Multi-select: also tap "Mind & Consciousness" pill -> union of both pillars!
+        const mindPill = documentNode.querySelector('.filter-chip[data-cat="Mind & Consciousness"]');
+        if (mindPill) {
+          mindPill.click();
+          const multiCards = booksGrid.querySelectorAll('.book-card');
+          assert.ok(multiCards.length > scienceCount, 'Multi-selecting a second pillar should include books from both pillars');
+          console.log(`✓ Multi-select (Science + Mind) results: ${multiCards.length} book(s)`);
+        }
+
+        // Verify minimal In-Progress bar exists
+        const inProgressBar = documentNode.getElementById('inProgressBar');
+        assert.ok(inProgressBar, 'Minimal In-Progress bar (#inProgressBar) should exist');
 
         // Tap "All" pill
         const allPill = documentNode.querySelector('.filter-chip[data-cat="all"]');
@@ -717,11 +731,13 @@ class TestAndroidMobileBrowserSimulator(unittest.TestCase):
         // Test Journey 3: Book Detail View Navigation & Metadata
         // =========================================================================
         console.log('--- Test Journey 3: Book Detail View Navigation ---');
-        // Tap on The Gene card
+        // Tap on The Gene card and verify book description is present on the card
         const geneCard = Array.from(booksGrid.querySelectorAll('.book-card')).find(c =>
           c.querySelector('.book-card-title').textContent.includes('The Gene')
         );
         assert.ok(geneCard, 'The Gene card must exist in the grid');
+        const geneCardDesc = geneCard.querySelector('.book-card-desc');
+        assert.ok(geneCardDesc && geneCardDesc.textContent.trim().length > 20, 'Book card in grid must display book description');
         geneCard.click();
 
         const libraryView = documentNode.getElementById('libraryView');
@@ -731,18 +747,26 @@ class TestAndroidMobileBrowserSimulator(unittest.TestCase):
 
         const detailTitle = documentNode.getElementById('detailTitle');
         assert.ok(detailTitle.textContent.includes('The Gene'), 'detailTitle should show The Gene');
+        const detailDesc = documentNode.getElementById('detailDesc');
+        assert.ok(detailDesc && detailDesc.textContent.trim().length > 20, 'detailDesc must show the book description');
         console.log(`✓ Book Detail View opened: "${detailTitle.textContent}"`);
 
-        // Verify ADHD and Author track chapters
-        const adhdRows = documentNode.getElementById('adhdTrackBody').querySelectorAll('.chapter-row');
-        const fullRows = documentNode.getElementById('fullTrackBody').querySelectorAll('.chapter-row');
+        // Verify ADHD and Author track chapters + book description inside chapter lists
+        const adhdTrackBody = documentNode.getElementById('adhdTrackBody');
+        const fullTrackBody = documentNode.getElementById('fullTrackBody');
+        assert.ok(adhdTrackBody.querySelector('.track-book-desc'), 'adhdTrackBody must include book description banner');
+        assert.ok(fullTrackBody.querySelector('.track-book-desc'), 'fullTrackBody must include book description banner');
+        const adhdRows = adhdTrackBody.querySelectorAll('.chapter-row');
+        const fullRows = fullTrackBody.querySelectorAll('.chapter-row');
         console.log(`✓ Chapter Tracks: ${adhdRows.length} ADHD Steps, ${fullRows.length} Full Chapters`);
         assert.strictEqual(adhdRows.length, 4, 'The Gene has 4 ADHD steps');
         assert.strictEqual(fullRows.length, 7, 'The Gene has 7 author chapters');
 
-        // Verify Step 1 Read button link
+        // Verify Step 1 Absorb button & stacked row layout
+        assert.ok(adhdRows[0].querySelector('.chapter-bottom-bar'), 'Chapter row must use stacked .chapter-bottom-bar layout');
         const step1Btn = adhdRows[0].querySelector('a.play-btn');
         assert.ok(step1Btn, 'Step 1 link button must exist');
+        assert.strictEqual(step1Btn.textContent.trim(), 'Absorb', 'Chapter button must be labeled Absorb');
         const step1Href = step1Btn.getAttribute('href');
         assert.ok(step1Href.includes('the-gene/step_1.html'), `Step 1 link should point to step_1.html, got: ${step1Href}`);
 

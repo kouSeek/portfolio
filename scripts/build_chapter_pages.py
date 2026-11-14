@@ -162,6 +162,7 @@ def build_chapter_html(
     next_link: str,
 ) -> str:
     book_title = book.get("title", "Book")
+    book_desc = book.get("description") or book.get("skipped_note") or ""
     label = chapter_data.get("label", f"Chapter {index}")
     pages = chapter_data.get("pages", "")
     page_count = chapter_data.get("pageCount")
@@ -200,6 +201,39 @@ def build_chapter_html(
 
     step_title_short = f"Step {index}" if track_type == "adhd" else f"Ch {index}"
     track_type_name = "⚡ Non-Linear Core Cut" if track_type == "adhd" else "📖 Full Book Chapter"
+
+    track_items = (book.get("adhd_segments") or []) if track_type == "adhd" else (book.get("author_chapters") or [])
+    toc_rows_list = []
+    if book_desc:
+        toc_rows_list.append(
+            f'<div style="padding:8px 10px;margin-bottom:8px;background:var(--surface-subtle);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.82rem;color:var(--ink-muted);line-height:1.45;"><strong>📖 About {html.escape(book_title)}:</strong> {html.escape(book_desc)}</div>'
+        )
+    for t_idx, t_item in enumerate(track_items, 1):
+        t_is_cur = (t_idx == index)
+        t_lbl = t_item.get("label", f"Chapter {t_idx}")
+        t_pgs = t_item.get("pages", "")
+        t_pcnt = t_item.get("pageCount") or 1
+        t_vol = t_item.get("volumePct", 0.0)
+        t_eff = t_item.get("effortLabel") or f"{t_item.get('estMinutes', t_item.get('duration_min', 15))}m"
+        t_brief = t_item.get("brief", "")
+        t_href = f"step_{t_idx}.html" if track_type == "adhd" else f"ch_{t_idx}.html"
+        t_prefix = f"Step {t_idx}" if track_type == "adhd" else f"Ch {t_idx}"
+        t_bar_w = min(100, max(4, round(float(t_vol) * 2.2))) if t_vol else 8
+        toc_rows_list.append(
+            f'<div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:{"var(--accent-light)" if t_is_cur else "transparent"};border-radius:6px;">'
+            f'<div style="font-weight:700;font-size:0.88rem;line-height:1.35;">{"▶ " if t_is_cur else ""}{html.escape(t_prefix)} · {html.escape(t_lbl)}</div>'
+            + (f'<div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.42;">{html.escape(t_brief)}</div>' if t_brief else '')
+            + f'<div class="book-toc-vol-bar-track" style="height:4px;"><div class="book-toc-vol-bar-fill {track_type}" style="width:{t_bar_w}%;"></div></div>'
+            f'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:2px;">'
+            f'<div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.74rem;color:var(--ink-muted);">'
+            + (f'<span class="meta-chip" style="padding:2px 7px;font-size:0.72rem;">p. {html.escape(str(t_pgs))}</span>' if t_pgs else '')
+            + f'<span class="meta-chip primary" style="padding:2px 7px;font-size:0.72rem;">{t_pcnt}p ({t_vol}%)</span>'
+            f'<span class="meta-chip effort" style="padding:2px 7px;font-size:0.72rem;">⏱️ {html.escape(str(t_eff))}</span>'
+            f'</div>'
+            f'<a href="{t_href}" style="text-decoration:none;padding:4px 11px;border-radius:999px;font-size:0.75rem;font-weight:700;background:var(--accent);color:#FFFFFF;">Absorb</a>'
+            f'</div></div>'
+        )
+    chapter_toc_drawer_html = "".join(toc_rows_list)
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -682,6 +716,7 @@ def build_chapter_html(
   <main class="reader-container">
     <article class="chapter-hero">
       <div class="hero-book-title">{html.escape(book_title)}</div>
+      {f'<div class="hero-book-desc" style="font-size: 0.86rem; color: var(--ink-muted); line-height: 1.5; margin: 6px 0 10px; padding-left: 10px; border-left: 3px solid var(--accent);">{html.escape(book_desc)}</div>' if book_desc else ""}
       <h1 class="hero-chapter-title">{html.escape(label)}</h1>
       <div class="hero-meta-row">
         <span class="meta-chip primary">{html.escape(track_type_name)} ({html.escape(step_title_short)} of {total_items})</span>
@@ -702,6 +737,16 @@ def build_chapter_html(
       {f'<div class="hero-curation-pill">⚡ ADHD Core Cut: {adhd_pages} pages total ({adhd_effort}) · {pruned_pct}% filler pruned for maximum flow</div>' if (track_type == 'adhd' and pruned_pct > 0) else ''}
 
       {f'<div class="hero-brief"><strong>Core Takeaway:</strong> {html.escape(brief)}</div>' if brief else ""}
+
+      <details style="margin-top: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-subtle); overflow: hidden;">
+        <summary style="padding: 10px 14px; font-size: 0.85rem; font-weight: 700; cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between;">
+          <span>📑 Chapters List &amp; Book Details ({total_items})</span>
+          <span style="font-size: 0.78rem; color: var(--ink-muted);">Tap to expand ▼</span>
+        </summary>
+        <div style="padding: 10px 12px; background: var(--surface); border-top: 1px solid var(--border); max-height: 360px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">
+          {chapter_toc_drawer_html}
+        </div>
+      </details>
 
       {f'''
       <div class="hero-listen-card">

@@ -38,6 +38,19 @@ def get_clean_book_slug_py(b: dict) -> str:
     return clean or slug.lower()
 
 
+def _normalize_mobile_pillar_category(b: dict) -> str:
+    raw = f"{b.get('wing', '')} {b.get('wing_category', '')} {b.get('category', '')}".lower()
+    if any(k in raw for k in ("science", "cosmos", "space", "biology", "genetics", "math", "physics", "cryptography", "code", "calculus")):
+        return "Science & Cosmos"
+    if any(k in raw for k in ("mind", "consciousness", "psychology", "cognition", "tantra", "spiritual", "aghora", "yogi")):
+        return "Mind & Consciousness"
+    if any(k in raw for k in ("power", "philosophy", "war", "strategy", "history", "political")):
+        return "Power & Philosophy"
+    if any(k in raw for k in ("imagination", "wonder", "magic", "wizarding", "fantasy", "literature", "classics", "sci-fi", "fiction")):
+        return "Imagination & Wonder"
+    return "Science & Cosmos"
+
+
 def generate_books_html() -> None:
     catalog_json = CATALOG_PATH.read_text(encoding="utf-8") if CATALOG_PATH.is_file() else "[]"
     audio_index_json = AUDIO_INDEX_PATH.read_text(encoding="utf-8") if AUDIO_INDEX_PATH.is_file() else "{}"
@@ -46,9 +59,8 @@ def generate_books_html() -> None:
     total_books = len(catalog_list)
     cat_counts = {"all": total_books}
     for b in catalog_list:
-        cat = b.get("wing_category") or b.get("category", "")
-        if cat:
-            cat_counts[cat] = cat_counts.get(cat, 0) + 1
+        cat = _normalize_mobile_pillar_category(b)
+        cat_counts[cat] = cat_counts.get(cat, 0) + 1
     all_chapter_files = []
     for b in catalog_list:
         slug = get_clean_book_slug_py(b)
@@ -610,14 +622,34 @@ def generate_books_html() -> None:
       padding: 8px 0;
     }}
 
-    /* Chapter Row */
+    /* Chapter Row — Stacked Full-Width Row Layout (Zero 3-Column Squeeze) */
+    .track-book-desc {{
+      margin: 6px 16px 10px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }}
+    .book-card-desc {{
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+      line-height: 1.48;
+      margin: 8px 0 12px;
+      padding: 7px 10px;
+      background: var(--surface-subtle);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+    }}
     .chapter-row {{
-      padding: 12px 18px;
+      padding: 14px 18px;
       border-bottom: 1px solid var(--border);
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 7px;
       transition: background 0.12s ease;
     }}
     .chapter-row:last-child {{
@@ -627,19 +659,39 @@ def generate_books_html() -> None:
       background: var(--surface-subtle);
     }}
     .chapter-info {{
-      flex: 1;
+      width: 100%;
       min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }}
     .chapter-title-row {{
       display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      width: 100%;
     }}
     .chapter-label {{
       font-weight: 700;
-      font-size: 0.92rem;
-      line-height: 1.35;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      width: 100%;
+    }}
+    .chapter-brief {{
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+      line-height: 1.48;
+      width: 100%;
+    }}
+    .chapter-bottom-bar {{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      width: 100%;
+      margin-top: 2px;
     }}
     .chapter-metrics {{
       display: inline-flex;
@@ -648,9 +700,9 @@ def generate_books_html() -> None:
       flex-wrap: wrap;
     }}
     .chapter-chip {{
-      font-size: 0.72rem;
-      padding: 2px 6px;
-      border-radius: 4px;
+      font-size: 0.74rem;
+      padding: 2px 7px;
+      border-radius: 5px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
       border: 1px solid var(--border);
@@ -673,7 +725,7 @@ def generate_books_html() -> None:
       height: 4px;
       background: rgba(148, 163, 184, 0.18);
       border-radius: 2px;
-      margin: 6px 0 6px;
+      margin: 2px 0;
       overflow: hidden;
     }}
     .book-toc-vol-bar-fill {{
@@ -687,28 +739,20 @@ def generate_books_html() -> None:
     .book-toc-vol-bar-fill.author {{
       background: #6366F1;
     }}
-    .chapter-brief {{
-      font-size: 0.8rem;
-      color: var(--ink-muted);
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }}
     .chapter-actions {{
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
       flex-shrink: 0;
+      margin-left: auto;
     }}
     .btn-ch {{
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 4px;
-      padding: 6px 10px;
-      border-radius: var(--radius-sm);
+      padding: 5px 12px;
+      border-radius: 999px;
       font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
@@ -716,6 +760,7 @@ def generate_books_html() -> None:
       background: var(--surface);
       color: var(--ink);
       transition: all 0.12s ease;
+      white-space: nowrap;
     }}
     .btn-ch.play-btn {{
       background: var(--accent-soft);
@@ -1159,7 +1204,7 @@ def generate_books_html() -> None:
           <div class="category-collapsible-header" onclick="toggleCategoryCollapsible()">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span>📂 Browse by Pillar</span>
-              <span class="track-badge" id="activeCategoryBadge">All Books ({total_books})</span>
+              <span class="track-badge" id="activeCategoryBadge">🌐 All Pillars ({total_books})</span>
             </div>
             <span class="category-chevron" id="categoryChevron">▼</span>
           </div>
@@ -1170,10 +1215,13 @@ def generate_books_html() -> None:
             <button class="filter-chip" data-cat="Power & Philosophy">⚔️ Power & Philosophy <span class="filter-chip-count">{cat_counts.get('Power & Philosophy', 0)}</span></button>
             <button class="filter-chip" data-cat="Imagination & Wonder">🪄 Imagination & Wonder <span class="filter-chip-count">{cat_counts.get('Imagination & Wonder', 0)}</span></button>
           </div>
-          <div class="in-progress-bar" id="inProgressBar">
-            <button class="filter-chip" id="inProgressFilterChip" data-cat="in-progress">🔖 In-Progress <span class="filter-chip-count" id="inProgressCountBadge">0</span></button>
+          <div class="in-progress-bar in-progress-card" id="inProgressBar">
+            <div style="display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0;">
+              <button class="filter-chip" id="inProgressFilterChip" data-cat="in-progress">🔖 In-Progress <span class="filter-chip-count" id="inProgressCountBadge">0</span></button>
+              <span style="font-size: 0.78rem; font-weight: 600; color: var(--ink-muted);">Saved / In-Progress Books</span>
+            </div>
             <div class="in-progress-list" id="inProgressList">
-              <span class="in-progress-empty">Start any chapter to keep active reads here</span>
+              <span class="in-progress-empty">Open any chapter to keep active reads here</span>
             </div>
           </div>
         </div>
@@ -1464,7 +1512,7 @@ def generate_books_html() -> None:
       const listEl = document.getElementById("inProgressList");
       if (!listEl) return;
       if (entries.length === 0) {{
-        listEl.innerHTML = `<span class="in-progress-empty">Start any chapter to keep active reads here</span>`;
+        listEl.innerHTML = `<span class="in-progress-empty">Open any chapter to keep active reads here</span>`;
         return;
       }}
       listEl.innerHTML = entries.map(item => {{
@@ -1674,17 +1722,17 @@ def generate_books_html() -> None:
       return items[index - 1] || null;
     }}
 
+    function escapeHtml(str) {{
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }}
+
     function renderMarkdownWithKaraoke(content, brief, label, pages, durMin) {{
       let wordIndex = 0;
       const wordsList = [];
-
-      function escapeHtml(str) {{
-        return String(str || "")
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
-      }}
 
       function wrapWords(text, lineType, isBlockEnd) {{
         const rawTokens = text.split(/(\\s+)/);
@@ -1714,6 +1762,7 @@ def generate_books_html() -> None:
         }}).join("");
       }}
 
+      const bookDesc = currentBook ? (currentBook.description || currentBook.skipped_note || "") : "";
       let headerHtml = `
         <div class="reader-meta-banner">
           <h2 style="font-size: 1.4rem; margin-top: 0; margin-bottom: 8px;">${{escapeHtml(label)}}</h2>
@@ -1722,6 +1771,7 @@ def generate_books_html() -> None:
             <span>📄 Pages: ${{escapeHtml(pages || "N/A")}}</span>
             <span>⏱️ Duration: ~${{escapeHtml(durMin || 15)}} mins</span>
           </div>
+          ${{bookDesc ? `<div style="font-size: 0.88rem; color: var(--ink-muted); line-height: 1.5; margin-bottom: 8px; padding-left: 10px; border-left: 3px solid var(--accent);">${{escapeHtml(bookDesc)}}</div>` : ""}}
           ${{brief ? `<div class="reader-overview-box"><strong>Core Takeaway:</strong> ${{escapeHtml(brief)}}</div>` : ""}}
         </div>
       `;
@@ -2033,17 +2083,19 @@ def generate_books_html() -> None:
         const fullPages = b.full_book_pages || b.pages ? `${{b.full_book_pages || b.pages}}p` : "";
 
         const hasAudio = b.has_audio || (AUDIO_INDEX.books && AUDIO_INDEX.books[b.slug]);
+        const bookDesc = b.description || b.skipped_note || "";
+        const pillarBadge = b.wing || b.category || "";
 
         card.innerHTML = `
           <div>
             <div class="book-card-header">
               <div class="book-card-emoji">${{b.cover_emoji || "📖"}}</div>
               <div class="book-card-titles">
-                <div class="book-card-title">${{b.title}}</div>
-                <div class="book-card-author">${{b.author || "Liberation Library"}}</div>
+                <div class="book-card-title">${{escapeHtml(b.title)}}</div>
+                <div class="book-card-author">${{escapeHtml(b.author || "Liberation Library")}}${{pillarBadge ? ` · <span style="color:var(--accent);font-weight:600;">${{escapeHtml(pillarBadge)}}</span>` : ""}}</div>
               </div>
             </div>
-            <p style="font-size: 0.82rem; color: var(--ink-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 10px;">${{b.description || ""}}</p>
+            ${{bookDesc ? `<div class="book-card-desc">${{escapeHtml(bookDesc)}}</div>` : ""}}
           </div>
           <div>
             <div class="book-card-stats">
@@ -2066,10 +2118,11 @@ def generate_books_html() -> None:
       const dv = document.getElementById("bookDetailView");
       dv.classList.add("active");
 
+      const bookDesc = book.description || book.skipped_note || "";
       document.getElementById("detailEmoji").textContent = book.cover_emoji || "📖";
       document.getElementById("detailTitle").textContent = book.title;
       document.getElementById("detailAuthor").textContent = book.author || "Liberation Library";
-      document.getElementById("detailDesc").textContent = book.description || "";
+      document.getElementById("detailDesc").textContent = bookDesc;
       document.getElementById("headerTitle").textContent = book.title;
 
       const adhdTime = cleanEffortStr(book.adhd_time_label);
@@ -2078,8 +2131,10 @@ def generate_books_html() -> None:
       const adhdVol = book.adhd_volume_pct ? `${{book.adhd_volume_pct}}% of book` : "";
       const prunedInfo = book.pruned_pct ? `${{book.pruned_pct}}% pruned` : "";
       const fullPages = book.full_book_pages || book.pages ? `${{book.full_book_pages || book.pages}} pages` : "";
+      const pillarBadge = book.wing || book.category || "";
 
       document.getElementById("detailBadges").innerHTML = `
+        ${{pillarBadge ? `<span class="badge-chip" style="background:var(--surface-subtle);color:var(--ink);border:1px solid var(--border);">${{escapeHtml(pillarBadge)}}</span>` : ""}}
         <span class="badge-chip adhd">⚡ ${{(book.adhd_segments || []).length}} Steps ${{adhdPages ? `· ${{adhdPages}}` : ""}} ${{adhdVol ? `· ${{adhdVol}}` : ""}} ${{prunedInfo ? `(${{prunedInfo}})` : ""}} ${{adhdTime ? `· ⏱️ ${{adhdTime}}` : ""}}</span>
         <span class="badge-chip full">📖 ${{(book.author_chapters || []).length}} Chapters ${{fullPages ? `· ${{fullPages}}` : ""}} ${{fullTime ? `· ⏱️ ${{fullTime}}` : ""}}</span>
       `;
@@ -2090,7 +2145,9 @@ def generate_books_html() -> None:
       const adhdSec = document.getElementById("adhdTrackSection");
       if (adhdSec) adhdSec.classList.remove("collapsed");
       const adhdBody = document.getElementById("adhdTrackBody");
-      adhdBody.innerHTML = "";
+      adhdBody.innerHTML = bookDesc
+        ? `<div class="track-book-desc"><strong>📖 About ${{escapeHtml(book.title)}}:</strong> ${{escapeHtml(bookDesc)}}</div>`
+        : "";
       const adhdItems = book.adhd_segments || [];
       document.getElementById("adhdTrackBadge").textContent = `${{adhdItems.length}} steps`;
 
@@ -2107,20 +2164,22 @@ def generate_books_html() -> None:
         row.innerHTML = `
           <div class="chapter-info">
             <div class="chapter-title-row">
-              <span class="chapter-label">Step ${{stepNum}} · ${{item.label}}</span>
+              <span class="chapter-label">Step ${{stepNum}} · ${{escapeHtml(item.label)}}</span>
+            </div>
+            ${{item.brief ? `<div class="chapter-brief">${{escapeHtml(item.brief)}}</div>` : ""}}
+            <div class="book-toc-vol-bar-track">
+              <div class="book-toc-vol-bar-fill adhd" style="width: ${{volWidth}}%;"></div>
+            </div>
+            <div class="chapter-bottom-bar">
               <div class="chapter-metrics">
                 ${{pageRange ? `<span class="chapter-chip">${{pageRange}}</span>` : ""}}
                 ${{pageCnt ? `<span class="chapter-chip count">${{pageCnt}} (${{volPct}})</span>` : ""}}
                 ${{effStr ? `<span class="chapter-chip effort">${{effStr}}</span>` : ""}}
               </div>
+              <div class="chapter-actions">
+                <a class="btn-ch play-btn" href="chapters/${{cleanSlug}}/step_${{stepNum}}.html" style="text-decoration:none;">Absorb</a>
+              </div>
             </div>
-            <div class="book-toc-vol-bar-track">
-              <div class="book-toc-vol-bar-fill adhd" style="width: ${{volWidth}}%;"></div>
-            </div>
-            <div class="chapter-brief">${{item.brief || ""}}</div>
-          </div>
-          <div class="chapter-actions">
-            <a class="btn-ch play-btn" href="chapters/${{cleanSlug}}/step_${{stepNum}}.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px;">📖 Read &amp; Listen →</a>
           </div>
         `;
         adhdBody.appendChild(row);
@@ -2130,7 +2189,9 @@ def generate_books_html() -> None:
       const fullSec = document.getElementById("fullTrackSection");
       if (fullSec) fullSec.classList.add("collapsed");
       const fullBody = document.getElementById("fullTrackBody");
-      fullBody.innerHTML = "";
+      fullBody.innerHTML = bookDesc
+        ? `<div class="track-book-desc"><strong>📖 About ${{escapeHtml(book.title)}}:</strong> ${{escapeHtml(bookDesc)}}</div>`
+        : "";
       const fullItems = book.author_chapters || [];
       document.getElementById("fullTrackBadge").textContent = `${{fullItems.length}} chapters · Tap to expand`;
 
@@ -2147,20 +2208,22 @@ def generate_books_html() -> None:
         row.innerHTML = `
           <div class="chapter-info">
             <div class="chapter-title-row">
-              <span class="chapter-label">Ch ${{chNum}} · ${{item.label}}</span>
+              <span class="chapter-label">Ch ${{chNum}} · ${{escapeHtml(item.label)}}</span>
+            </div>
+            ${{item.brief ? `<div class="chapter-brief">${{escapeHtml(item.brief)}}</div>` : ""}}
+            <div class="book-toc-vol-bar-track">
+              <div class="book-toc-vol-bar-fill author" style="width: ${{volWidth}}%;"></div>
+            </div>
+            <div class="chapter-bottom-bar">
               <div class="chapter-metrics">
                 ${{pageRange ? `<span class="chapter-chip">${{pageRange}}</span>` : ""}}
                 ${{pageCnt ? `<span class="chapter-chip count">${{pageCnt}} (${{volPct}})</span>` : ""}}
                 ${{effStr ? `<span class="chapter-chip effort">${{effStr}}</span>` : ""}}
               </div>
+              <div class="chapter-actions">
+                <a class="btn-ch play-btn" href="chapters/${{cleanSlug}}/ch_${{chNum}}.html" style="text-decoration:none;">Absorb</a>
+              </div>
             </div>
-            <div class="book-toc-vol-bar-track">
-              <div class="book-toc-vol-bar-fill author" style="width: ${{volWidth}}%;"></div>
-            </div>
-            <div class="chapter-brief">${{item.brief || ""}}</div>
-          </div>
-          <div class="chapter-actions">
-            <a class="btn-ch play-btn" href="chapters/${{cleanSlug}}/ch_${{chNum}}.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px;">📖 Read &amp; Listen →</a>
           </div>
         `;
         fullBody.appendChild(row);
@@ -2207,18 +2270,29 @@ def generate_books_html() -> None:
     function populateReaderChapterDrawer() {{
       const list = document.getElementById("readerChapterDrawerList");
       if (!list || !currentBook) return;
-      list.innerHTML = "";
+      const bookDesc = currentBook.description || currentBook.skipped_note || "";
+      list.innerHTML = bookDesc
+        ? `<div class="track-book-desc" style="margin:6px 8px 10px;"><strong>📖 About ${{escapeHtml(currentBook.title)}}:</strong> ${{escapeHtml(bookDesc)}}</div>`
+        : "";
       const items = currentTrackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
       items.forEach((item, idx) => {{
         const num = idx + 1;
         const el = document.createElement("div");
         const isActive = (currentItemIndex === num);
         el.className = "reader-drawer-item" + (isActive ? " active" : "");
+        el.style.flexDirection = "column";
+        el.style.alignItems = "stretch";
+        el.style.gap = "5px";
         const pCount = item.pageCount ? `${{item.pageCount}}p` : (item.pages ? `p. ${{item.pages}}` : "");
+        const effStr = item.effortLabel || (item.estMinutes ? `⏱️ ${{item.estMinutes}}m` : "");
         const prefix = currentTrackType === "adhd" ? `Step ${{num}}` : `Ch ${{num}}`;
         el.innerHTML = `
-          <div class="reader-drawer-item-title">${{isActive ? "▶ " : ""}}${{prefix}} · ${{item.label}}</div>
-          <div class="reader-drawer-item-meta">${{pCount}}</div>
+          <div class="reader-drawer-item-title" style="white-space:normal;overflow:visible;">${{isActive ? "▶ " : ""}}${{prefix}} · ${{escapeHtml(item.label)}}</div>
+          ${{item.brief ? `<div style="font-size:0.78rem;color:var(--ink-muted);line-height:1.4;">${{escapeHtml(item.brief)}}</div>` : ""}}
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <div class="reader-drawer-item-meta">${{pCount}}${{effStr ? ` · ${{effStr}}` : ""}}</div>
+            <span class="btn-ch play-btn" style="padding:3px 10px;font-size:0.74rem;">Absorb</span>
+          </div>
         `;
         el.onclick = () => {{
           selectChapterFromDrawer(num);
@@ -2921,23 +2995,24 @@ def generate_books_html() -> None:
     }}
 
     function updateDynamicCounts() {{
-      const counts = {{ all: BOOKS_DATA.length }};
       let totalCh = 0;
       BOOKS_DATA.forEach(b => {{
-        const cat = b.wing_category || b.category;
-        if (cat) counts[cat] = (counts[cat] || 0) + 1;
         totalCh += (b.adhd_segments || []).length + (b.author_chapters || []).length;
       }});
-      document.querySelectorAll(".filter-chip").forEach(chip => {{
-        const cat = chip.getAttribute("data-cat");
+      document.querySelectorAll(".category-pills .filter-chip").forEach(chip => {{
+        const cat = chip.getAttribute("data-cat") || "all";
         const countEl = chip.querySelector(".filter-chip-count");
-        if (countEl && counts[cat] !== undefined) {{
-          countEl.textContent = counts[cat];
+        if (!countEl) return;
+        if (cat === "all") {{
+          countEl.textContent = String(BOOKS_DATA.length);
+        }} else {{
+          const cnt = BOOKS_DATA.filter(b => bookMatchesCategoryLabel(b, cat)).length;
+          countEl.textContent = String(cnt);
         }}
       }});
       const badge = document.getElementById("activeCategoryBadge");
-      if (badge && activeCategory === "all") {{
-        badge.textContent = `All Books (${{BOOKS_DATA.length}})`;
+      if (badge && selectedCategories.size === 0 && !inProgressOnly) {{
+        badge.textContent = `🌐 All Pillars (${{BOOKS_DATA.length}})`;
       }}
       const statVols = document.getElementById("statModalVolumesCount");
       if (statVols) statVols.textContent = `${{BOOKS_DATA.length}} volumes (Inlined)`;
@@ -2945,10 +3020,26 @@ def generate_books_html() -> None:
       if (statChaps) statChaps.textContent = `${{totalCh}} chapters`;
     }}
 
-    // Render immediately from inlined data
+    async function refreshLiveCatalogCountsIfUpdated() {{
+      try {{
+        if (typeof fetch !== "function" || (typeof navigator !== "undefined" && navigator.onLine === false) || window.__FORCE_OFFLINE__) return;
+        const resp = await fetch("assets/books_catalog.json", {{ cache: "no-store" }});
+        if (!resp || !resp.ok) return;
+        const liveList = await resp.json();
+        if (Array.isArray(liveList) && liveList.length !== BOOKS_DATA.length) {{
+          BOOKS_DATA.length = 0;
+          liveList.forEach(item => BOOKS_DATA.push(item));
+          updateDynamicCounts();
+          renderBooksGrid();
+        }}
+      }} catch (_e) {{}}
+    }}
+
+    // Render immediately from inlined data and sync any newly added books dynamically
     updateDynamicCounts();
     renderInProgressBar();
     renderBooksGrid();
+    refreshLiveCatalogCountsIfUpdated();
     updateOfflineStatus();
     updateStorageMetrics();
   </script>

@@ -220,8 +220,59 @@
       padding: 12px 14px;
       transition: all 0.2s ease;
     }
-    .category-collapsible.collapsed .category-pills {
+    .category-collapsible.collapsed .category-pills,
+    .category-collapsible.collapsed .in-progress-bar {
       display: none;
+    }
+    .in-progress-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 14px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-subtle);
+    }
+    .in-progress-list {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+    }
+    .in-progress-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s ease, transform 0.12s ease;
+      max-width: 100%;
+    }
+    .in-progress-chip:hover {
+      border-color: var(--accent);
+    }
+    .in-progress-chip-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+    }
+    .in-progress-chip-step {
+      color: var(--ink-muted);
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+    .in-progress-empty {
+      color: var(--ink-muted);
+      font-size: 0.78rem;
     }
     .filter-chip {
       white-space: nowrap;
@@ -471,14 +522,34 @@
       padding: 8px 0;
     }
 
-    /* Chapter Row */
+    /* Chapter Row — Stacked Full-Width Row Layout (Zero 3-Column Squeeze) */
+    .track-book-desc {
+      margin: 6px 16px 10px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }
+    .book-card-desc {
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+      line-height: 1.48;
+      margin: 8px 0 12px;
+      padding: 7px 10px;
+      background: var(--surface-subtle);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+    }
     .chapter-row {
-      padding: 12px 18px;
+      padding: 14px 18px;
       border-bottom: 1px solid var(--border);
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 7px;
       transition: background 0.12s ease;
     }
     .chapter-row:last-child {
@@ -488,19 +559,39 @@
       background: var(--surface-subtle);
     }
     .chapter-info {
-      flex: 1;
+      width: 100%;
       min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
     .chapter-title-row {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      width: 100%;
     }
     .chapter-label {
       font-weight: 700;
-      font-size: 0.92rem;
-      line-height: 1.35;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      width: 100%;
+    }
+    .chapter-brief {
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+      line-height: 1.48;
+      width: 100%;
+    }
+    .chapter-bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      width: 100%;
+      margin-top: 2px;
     }
     .chapter-metrics {
       display: inline-flex;
@@ -509,9 +600,9 @@
       flex-wrap: wrap;
     }
     .chapter-chip {
-      font-size: 0.72rem;
-      padding: 2px 6px;
-      border-radius: 4px;
+      font-size: 0.74rem;
+      padding: 2px 7px;
+      border-radius: 5px;
       background: var(--surface-subtle);
       color: var(--ink-muted);
       border: 1px solid var(--border);
@@ -534,7 +625,7 @@
       height: 4px;
       background: rgba(148, 163, 184, 0.18);
       border-radius: 2px;
-      margin: 6px 0 6px;
+      margin: 2px 0;
       overflow: hidden;
     }
     .book-toc-vol-bar-fill {
@@ -548,28 +639,20 @@
     .book-toc-vol-bar-fill.author {
       background: #6366F1;
     }
-    .chapter-brief {
-      font-size: 0.8rem;
-      color: var(--ink-muted);
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
     .chapter-actions {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
       flex-shrink: 0;
+      margin-left: auto;
     }
     .btn-ch {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 4px;
-      padding: 6px 10px;
-      border-radius: var(--radius-sm);
+      padding: 5px 12px;
+      border-radius: 999px;
       font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
@@ -577,6 +660,7 @@
       background: var(--surface);
       color: var(--ink);
       transition: all 0.12s ease;
+      white-space: nowrap;
     }
     .btn-ch.play-btn {
       background: var(--accent-soft);
@@ -1020,16 +1104,25 @@
           <div class="category-collapsible-header" onclick="toggleCategoryCollapsible()">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span>📂 Browse by Pillar</span>
-              <span class="track-badge" id="activeCategoryBadge">All Books (40)</span>
+              <span class="track-badge" id="activeCategoryBadge">🌐 All Pillars (40)</span>
             </div>
             <span class="category-chevron" id="categoryChevron">▼</span>
           </div>
-          <div class="category-pills" id="categoryPills">
-            <button class="filter-chip active" data-cat="all">All Books <span class="filter-chip-count">40</span></button>
+          <div class="category-pills" id="categoryPills" role="group" aria-label="Multi-select book pillars">
+            <button class="filter-chip active" data-cat="all">🌐 All Books <span class="filter-chip-count">40</span></button>
             <button class="filter-chip" data-cat="Science & Cosmos">🧬 Science & Cosmos <span class="filter-chip-count">9</span></button>
             <button class="filter-chip" data-cat="Mind & Consciousness">🧠 Mind & Consciousness <span class="filter-chip-count">13</span></button>
             <button class="filter-chip" data-cat="Power & Philosophy">⚔️ Power & Philosophy <span class="filter-chip-count">8</span></button>
             <button class="filter-chip" data-cat="Imagination & Wonder">🪄 Imagination & Wonder <span class="filter-chip-count">10</span></button>
+          </div>
+          <div class="in-progress-bar in-progress-card" id="inProgressBar">
+            <div style="display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0;">
+              <button class="filter-chip" id="inProgressFilterChip" data-cat="in-progress">🔖 In-Progress <span class="filter-chip-count" id="inProgressCountBadge">0</span></button>
+              <span style="font-size: 0.78rem; font-weight: 600; color: var(--ink-muted);">Saved / In-Progress Books</span>
+            </div>
+            <div class="in-progress-list" id="inProgressList">
+              <span class="in-progress-empty">Open any chapter to keep active reads here</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1262,7 +1355,7 @@
     "category": "Science & Cosmos",
     "pages": 620,
     "cover_emoji": "🧬",
-    "description": "",
+    "description": "Starts with Mukherjee's Bengali family mystery in Kolkata, jumps straight to the 3D DNA double-helix discovery, hops back to Mendel's pea packets, and closes with Epigenetics & Identity.",
     "adhd_time_label": "1h 21m",
     "full_time_label": "15h 30m",
     "adhd_segments": [
@@ -1448,7 +1541,9 @@
     "pruned_pct": 91.3,
     "full_book_pages": 620,
     "full_book_minutes": 930,
-    "full_book_effort_label": "15h 30m"
+    "full_book_effort_label": "15h 30m",
+    "wing": "🧬 Science & Cosmos",
+    "skipped_note": "Non-linear 4-step flow (53 pages = 8.5% of book, ~1h 20m): starts with Mukherjee's Bengali family mystery in Kolkata, jumps straight to the 3D DNA double-helix discovery, hops back to Mendel's pea packets, and closes with Epigenetics & Identity—skipping 567 pages of bureaucratic history and endnotes."
   },
   {
     "filename": "03_The_Man_Who_Knew_Infinity_Ramanujan_Robert_Kanigel.pdf",
@@ -1458,7 +1553,7 @@
     "category": "Science & Cosmos",
     "pages": 468,
     "cover_emoji": "♾️",
-    "description": "",
+    "description": "Opens right at the electric 1913 Cambridge letter to G. H. Hardy, flashes back to Ramanujan's South Indian temple slates, jumps to his clash with Hardy over proof vs. intuition, and finishes with 1729 & Mock Theta functions.",
     "adhd_time_label": "1h 21m",
     "full_time_label": "11h 42m",
     "adhd_segments": [
@@ -1674,7 +1769,9 @@
     "pruned_pct": 88.5,
     "full_book_pages": 468,
     "full_book_minutes": 702,
-    "full_book_effort_label": "11h 42m"
+    "full_book_effort_label": "11h 42m",
+    "wing": "🧬 Science & Cosmos",
+    "skipped_note": "Non-linear 4-step flow (54 pages = 11.5% of book, ~1h 21m): opens right at the electric 1913 Cambridge letter to G. H. Hardy, flashes back to Ramanujan's South Indian temple slates, jumps to his clash with Hardy over proof vs. intuition, and finishes with 1729 & Mock Theta functions."
   },
   {
     "filename": "04_Autobiography_of_a_Yogi_Paramahansa_Yogananda.pdf",
@@ -1684,7 +1781,7 @@
     "category": "Mind & Consciousness",
     "pages": 363,
     "cover_emoji": "🪷",
-    "description": "",
+    "description": "Starts with Ch. 26 (the physiological nervous-system mechanism of Kriya Yoga), jumps to Ch. 14 (Cosmic Consciousness), hops back to Ch. 8 (scientist J. C. Bose in Calcutta), visits Ch. 10 (Sri Yukteswar at Serampore), and closes with Ch. 1–2 (Bengali childhood & Mother's amulet).",
     "adhd_time_label": "1h 20m",
     "full_time_label": "9h 04m",
     "adhd_segments": [
@@ -1916,7 +2013,9 @@
     "pruned_pct": 85.4,
     "full_book_pages": 363,
     "full_book_minutes": 544,
-    "full_book_effort_label": "9h 04m"
+    "full_book_effort_label": "9h 04m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Non-linear 5-step flow (52 pages = 14.3% of book, ~1h 18m): starts with Ch. 26 (the physiological nervous-system mechanism of Kriya Yoga), jumps to Ch. 14 (Cosmic Consciousness), hops back to Ch. 8 (scientist J. C. Bose in Calcutta), visits Ch. 10 (Sri Yukteswar at Serampore), and closes with Ch. 1–2 (Bengali childhood & Mother's amulet)."
   },
   {
     "filename": "05_Fundamentals_of_Biostatistics_Rosner.pdf",
@@ -1926,7 +2025,7 @@
     "category": "Science & Cosmos",
     "pages": 962,
     "cover_emoji": "📊",
-    "description": "",
+    "description": "Starts with Ch. 3 (Bayes' Theorem & medical screening intuition), jumps to Ch. 5–6 (Central Limit Theorem), hops back to Ch. 1–2 (Descriptive Spread), and finishes with Ch. 7 (Hypothesis Testing & P-Values).",
     "adhd_time_label": "1h 28m",
     "full_time_label": "24h 03m",
     "adhd_segments": [
@@ -2142,7 +2241,9 @@
     "pruned_pct": 93.9,
     "full_book_pages": 962,
     "full_book_minutes": 1443,
-    "full_book_effort_label": "24h 03m"
+    "full_book_effort_label": "24h 03m",
+    "wing": "🧬 Science & Cosmos",
+    "skipped_note": "Non-linear 4-step flow (58 pages = 6.0% of 962p textbook, ~1h 27m): starts with Ch. 3 (Bayes' Theorem & medical screening intuition), jumps to Ch. 5–6 (Central Limit Theorem), hops back to Ch. 1–2 (Descriptive Spread), and finishes with Ch. 7 (Hypothesis Testing & P-Values)—skipping 904 pages of SAS printouts and homework tables."
   },
   {
     "filename": "06_Thinking_Fast_and_Slow_Daniel_Kahneman.pdf",
@@ -2152,7 +2253,7 @@
     "category": "Mind & Consciousness",
     "pages": 459,
     "cover_emoji": "🧠",
-    "description": "",
+    "description": "Starts with Ch. 1–2 (System 1 vs. System 2), jumps straight to the end (Ch. 35: Experiencing vs. Remembering Self), hops to Part IV (Ch. 26: Prospect Theory & Loss Aversion), then Ch. 5 (Cognitive Ease), and Ch. 11 (Anchoring).",
     "adhd_time_label": "1h 44m",
     "full_time_label": "11h 28m",
     "adhd_segments": [
@@ -2339,7 +2440,9 @@
     "pruned_pct": 85.0,
     "full_book_pages": 459,
     "full_book_minutes": 688,
-    "full_book_effort_label": "11h 28m"
+    "full_book_effort_label": "11h 28m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Non-linear 5-step flow (64 pages = 13.9% of book, ~1h 36m): starts with Ch. 1–2 (System 1 vs. System 2), jumps straight to the end (Ch. 35: Experiencing vs. Remembering Self), hops to Part IV (Ch. 26: Prospect Theory & Loss Aversion), then Ch. 5 (Cognitive Ease), and Ch. 11 (Anchoring)—skipping 395 pages of repetitive lab variations."
   },
   {
     "filename": "07_The_Art_of_War_Sun_Tzu_Thomas_Cleary.pdf",
@@ -2349,7 +2452,7 @@
     "category": "Power & Philosophy",
     "pages": 475,
     "cover_emoji": "⚔️",
-    "description": "",
+    "description": "Starts with Ch. 3 (Planning a Siege — winning whole without fighting), jumps to Ch. 6 (Emptiness and Fullness — flowing like water), and hops back to Ch. 1 & 4 (Strategic Assessments & Invincibility).",
     "adhd_time_label": "1h 04m",
     "full_time_label": "11h 52m",
     "adhd_segments": [
@@ -2504,7 +2607,9 @@
     "pruned_pct": 90.9,
     "full_book_pages": 475,
     "full_book_minutes": 712,
-    "full_book_effort_label": "11h 52m"
+    "full_book_effort_label": "11h 52m",
+    "wing": "⚔️ Power & Philosophy",
+    "skipped_note": "Non-linear 3-step flow (42 pages = 8.8% of 475p volume, ~1h 03m): starts with Ch. 3 (Planning a Siege — winning whole without fighting), jumps to Ch. 6 (Emptiness and Fullness — flowing like water), and hops back to Ch. 1 & 4 (Strategic Assessments & Invincibility)—skipping 430 pages of secondary commentaries."
   },
   {
     "filename": "08_The_Kama_Sutra_of_Vatsyayana_Burton.pdf",
@@ -2514,7 +2619,7 @@
     "category": "Power & Philosophy",
     "pages": 112,
     "cover_emoji": "🦚",
-    "description": "",
+    "description": "Starts with Ch. 4 (The Cultured Daily Life of a Sovereign Citizen — music, aesthetics, and adda), then jumps to Part I Ch. 2 & Part III (Harmony of Dharma, Artha & Kama and Courtship).",
     "adhd_time_label": "39 min",
     "full_time_label": "2h 48m",
     "adhd_segments": [
@@ -2623,7 +2728,9 @@
     "pruned_pct": 76.8,
     "full_book_pages": 112,
     "full_book_minutes": 168,
-    "full_book_effort_label": "2h 48m"
+    "full_book_effort_label": "2h 48m",
+    "wing": "⚔️ Power & Philosophy",
+    "skipped_note": "Non-linear 2-step flow (28 pages = 25% of book, ~42m): starts with Ch. 4 (The Cultured Daily Life of a Sovereign Citizen — music, aesthetics, and adda), then jumps to Part I Ch. 2 & Part III (Harmony of Dharma, Artha & Kama and Courtship)."
   },
   {
     "filename": "09_Don_Quixote_Miguel_de_Cervantes.pdf",
@@ -2633,7 +2740,7 @@
     "category": "Power & Philosophy",
     "pages": 771,
     "cover_emoji": "🛡️",
-    "description": "",
+    "description": "Starts at Part I Ch. 1 (Don Quixote's transformation), jumps to Ch. 7–8 (Sancho Panza & the Windmills), and leaps to Part II's philosophical finale.",
     "adhd_time_label": "1h 03m",
     "full_time_label": "19h 16m",
     "adhd_segments": [
@@ -2773,7 +2880,9 @@
     "pruned_pct": 94.6,
     "full_book_pages": 771,
     "full_book_minutes": 1156,
-    "full_book_effort_label": "19h 16m"
+    "full_book_effort_label": "19h 16m",
+    "wing": "⚔️ Power & Philosophy",
+    "skipped_note": "Non-linear 3-step flow (42 pages = 5.4% of 771p novel, ~1h 03m): starts at Part I Ch. 1 (Don Quixote's transformation), jumps to Ch. 7–8 (Sancho Panza & the Windmills), and leaps to Part II's philosophical finale."
   },
   {
     "filename": "10_Stalin_and_Hitler_Two_Predator_Leaders.pdf",
@@ -2783,7 +2892,7 @@
     "category": "Power & Philosophy",
     "pages": 171,
     "cover_emoji": "🦅",
-    "description": "",
+    "description": "Psychological formation and totalitarian state mechanics.",
     "adhd_time_label": "51 min",
     "full_time_label": "4h 16m",
     "adhd_segments": [
@@ -2877,7 +2986,9 @@
     "pruned_pct": 80.1,
     "full_book_pages": 171,
     "full_book_minutes": 256,
-    "full_book_effort_label": "4h 16m"
+    "full_book_effort_label": "4h 16m",
+    "wing": "⚔️ Power & Philosophy",
+    "skipped_note": "Pruned 135 pages of secondary timelines — keeping 2 focused segments (34 pages = 19.9% of book, ~51m) on psychological formation and totalitarian state mechanics."
   },
   {
     "filename": "11a_The_Communist_Manifesto_Karl_Marx.pdf",
@@ -2887,7 +2998,7 @@
     "category": "Power & Philosophy",
     "pages": 184,
     "cover_emoji": "🚩",
-    "description": "",
+    "description": "Skipped 155 pages of editorial apparatus, prefaces, and 1848 splinter-group polemics — keeping the 29-page core (15.8% of volume, ~44m) of Chapters 1 & 2.",
     "adhd_time_label": "44 min",
     "full_time_label": "4h 36m",
     "adhd_segments": [
@@ -2996,7 +3107,9 @@
     "pruned_pct": 84.2,
     "full_book_pages": 184,
     "full_book_minutes": 276,
-    "full_book_effort_label": "4h 36m"
+    "full_book_effort_label": "4h 36m",
+    "wing": "⚔️ Power & Philosophy",
+    "skipped_note": "Skipped 155 pages of editorial apparatus, prefaces, and 1848 splinter-group polemics — keeping the 29-page core (15.8% of volume, ~44m) of Chapters 1 & 2."
   },
   {
     "filename": "11b_Das_Kapital_Karl_Marx.pdf",
@@ -3006,7 +3119,7 @@
     "category": "Power & Philosophy",
     "pages": 1542,
     "cover_emoji": "⚙️",
-    "description": "",
+    "description": "Skips the dense linen-coat algebra of Ch. 1 at first and starts at Ch. 4 (The General Formula for Capital M–C–M'), then hops back to Commodity Fetishism (p. 46–56), and jumps to Part VIII (Primitive Accumulation).",
     "adhd_time_label": "1h",
     "full_time_label": "38h 33m",
     "adhd_segments": [
@@ -3161,7 +3274,9 @@
     "pruned_pct": 97.4,
     "full_book_pages": 1542,
     "full_book_minutes": 2313,
-    "full_book_effort_label": "38h 33m"
+    "full_book_effort_label": "38h 33m",
+    "wing": "⚔️ Power & Philosophy",
+    "skipped_note": "Non-linear 3-step flow (40 pages = 2.6% of 1,542p tome, ~1h 00m): skips the dense linen-coat algebra of Ch. 1 at first and starts at Ch. 4 (The General Formula for Capital M–C–M'), then hops back to Commodity Fetishism (p. 46–56), and jumps to Part VIII (Primitive Accumulation)."
   },
   {
     "filename": "12_Hitler_and_the_Nazi_Darwinian_Worldview.pdf",
@@ -3171,7 +3286,7 @@
     "category": "Power & Philosophy",
     "pages": 336,
     "cover_emoji": "🌑",
-    "description": "",
+    "description": "How 19th-century racial eugenics infected European institutions.",
     "adhd_time_label": "52 min",
     "full_time_label": "8h 24m",
     "adhd_segments": [
@@ -3265,7 +3380,9 @@
     "pruned_pct": 89.6,
     "full_book_pages": 336,
     "full_book_minutes": 504,
-    "full_book_effort_label": "8h 24m"
+    "full_book_effort_label": "8h 24m",
+    "wing": "⚔️ Power & Philosophy",
+    "skipped_note": "Pruned 300 pages of repetitive biographical chapters — keeping 2 core segments (35 pages = 10.4% of book, ~52m) on how 19th-century racial eugenics infected European institutions."
   },
   {
     "filename": "13a_Aghora_I_At_the_Left_Hand_of_God_Robert_Svoboda.pdf",
@@ -3275,7 +3392,7 @@
     "category": "Mind & Consciousness",
     "pages": 167,
     "cover_emoji": "💀",
-    "description": "",
+    "description": "Starts directly at Ch. 1 (Ma — why the Mother is the heart of everything), jumps to Ch. 4 (Rnanubandhana — the physics of karmic debt), and hops back to Ch. 2–3 (Shakti, Smashan & fearless awareness).",
     "adhd_time_label": "1h 09m",
     "full_time_label": "4h 10m",
     "adhd_segments": [
@@ -3415,7 +3532,9 @@
     "pruned_pct": 72.5,
     "full_book_pages": 167,
     "full_book_minutes": 250,
-    "full_book_effort_label": "4h 10m"
+    "full_book_effort_label": "4h 10m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Non-linear 3-step flow (46 pages = 27.5% of book, ~1h 09m): starts directly at Ch. 1 (Ma — why the Mother is the heart of everything), jumps to Ch. 4 (Rnanubandhana — the physics of karmic debt), and hops back to Ch. 2–3 (Shakti, Smashan & fearless awareness)."
   },
   {
     "filename": "13b_Aghora_II_Kundalini_Robert_Svoboda.pdf",
@@ -3425,7 +3544,7 @@
     "category": "Mind & Consciousness",
     "pages": 158,
     "cover_emoji": "🔥",
-    "description": "",
+    "description": "Starts at Ch. 1 (Agni — why calm belly fire equals calm brain), jumps to Ch. 7 (Indian Classical Music as direct Kundalini yoga), and hops back to Ch. 2 (Nadis, Chakras & Prana).",
     "adhd_time_label": "1h 06m",
     "full_time_label": "3h 57m",
     "adhd_segments": [
@@ -3580,7 +3699,9 @@
     "pruned_pct": 72.2,
     "full_book_pages": 158,
     "full_book_minutes": 237,
-    "full_book_effort_label": "3h 57m"
+    "full_book_effort_label": "3h 57m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Non-linear 3-step flow (44 pages = 27.8% of book, ~1h 06m): starts at Ch. 1 (Agni — why calm belly fire equals calm brain), jumps to Ch. 7 (Indian Classical Music as direct Kundalini yoga), and hops back to Ch. 2 (Nadis, Chakras & Prana)."
   },
   {
     "filename": "13c_Aghora_III_The_Law_of_Karma_Robert_Svoboda.pdf",
@@ -3590,7 +3711,7 @@
     "category": "Mind & Consciousness",
     "pages": 162,
     "cover_emoji": "☸️",
-    "description": "",
+    "description": "Reads the Introduction on Karmic Physics first, then skips 100 pages of horse-racing anecdotes to land directly on Ch. 9 (Prakriti Siddhi — living free of entanglement).",
     "adhd_time_label": "54 min",
     "full_time_label": "4h 03m",
     "adhd_segments": [
@@ -3699,7 +3820,9 @@
     "pruned_pct": 77.8,
     "full_book_pages": 162,
     "full_book_minutes": 243,
-    "full_book_effort_label": "4h 03m"
+    "full_book_effort_label": "4h 03m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Non-linear 2-step flow (36 pages = 22.2% of book, ~54m): reads the Introduction on Karmic Physics first, then skips 100 pages of horse-racing anecdotes to land directly on Ch. 9 (Prakriti Siddhi — living free of entanglement)."
   },
   {
     "filename": "14_The_Code_Book_Simon_Singh.pdf",
@@ -3709,7 +3832,7 @@
     "category": "Science & Cosmos",
     "pages": 695,
     "cover_emoji": "🔐",
-    "description": "",
+    "description": "Starts at Ch. 4 (Cracking the Enigma with Alan Turing), jumps to Ch. 6 (RSA Public-Key Math), and hops back to Ch. 1 (Mary Queen of Scots & Al-Kindi's Frequency Analysis).",
     "adhd_time_label": "1h 27m",
     "full_time_label": "17h 22m",
     "adhd_segments": [
@@ -3894,7 +4017,9 @@
     "pruned_pct": 91.7,
     "full_book_pages": 695,
     "full_book_minutes": 1042,
-    "full_book_effort_label": "17h 22m"
+    "full_book_effort_label": "17h 22m",
+    "wing": "🧬 Science & Cosmos",
+    "skipped_note": "Non-linear 3-step flow (58 pages = 8.3% of 695p book, ~1h 27m): starts at Ch. 4 (Cracking the Enigma with Alan Turing), jumps to Ch. 6 (RSA Public-Key Math), and hops back to Ch. 1 (Mary Queen of Scots & Al-Kindi's Frequency Analysis)."
   },
   {
     "filename": "15a_Cosmos_Carl_Sagan.pdf",
@@ -3904,7 +4029,7 @@
     "category": "Science & Cosmos",
     "pages": 211,
     "cover_emoji": "🌌",
-    "description": "",
+    "description": "Starts at Ch. 9–10 (Lives of the Stars, Black Holes & the 4th Dimension in Flatland), jumps back to Ch. 1 (Alexandria & Eratosthenes' Stick), hops to Ch. 7 (How Ionians Invented Physics), and ends at Ch. 13.",
     "adhd_time_label": "1h 21m",
     "full_time_label": "5h 16m",
     "adhd_segments": [
@@ -4105,7 +4230,9 @@
     "pruned_pct": 74.4,
     "full_book_pages": 211,
     "full_book_minutes": 316,
-    "full_book_effort_label": "5h 16m"
+    "full_book_effort_label": "5h 16m",
+    "wing": "🧬 Science & Cosmos",
+    "skipped_note": "Non-linear 4-step flow (48 pages = 22.7% of book, ~1h 12m): starts at Ch. 9–10 (Lives of the Stars, Black Holes & the 4th Dimension in Flatland), jumps back to Ch. 1 (Alexandria & Eratosthenes' Stick), hops to Ch. 7 (How Ionians Invented Physics), and ends at Ch. 13."
   },
   {
     "filename": "15b_Fundamentals_of_Astrodynamics_Bate_Mueller_White.pdf",
@@ -4115,7 +4242,7 @@
     "category": "Science & Cosmos",
     "pages": 470,
     "cover_emoji": "🚀",
-    "description": "",
+    "description": "Pairs Ch. 1 (Two-Body Energy & Conic Orbits) directly with Ch. 3 (Hohmann Orbital Transfers).",
     "adhd_time_label": "48 min",
     "full_time_label": "11h 45m",
     "adhd_segments": [
@@ -4239,7 +4366,9 @@
     "pruned_pct": 93.2,
     "full_book_pages": 470,
     "full_book_minutes": 705,
-    "full_book_effort_label": "11h 45m"
+    "full_book_effort_label": "11h 45m",
+    "wing": "🧬 Science & Cosmos",
+    "skipped_note": "Non-linear 2-step flow (32 pages = 6.8% of 470p book, ~48m): pairs Ch. 1 (Two-Body Energy & Conic Orbits) directly with Ch. 3 (Hohmann Orbital Transfers)—skipping 438 pages of radar coordinate tables."
   },
   {
     "filename": "15c_Astrophysics_for_People_in_a_Hurry_Neil_deGrasse_Tyson.pdf",
@@ -4249,7 +4378,7 @@
     "category": "Science & Cosmos",
     "pages": 120,
     "cover_emoji": "🔭",
-    "description": "",
+    "description": "Starts at Ch. 1 (The Big Bang), jumps to Ch. 7 (How Exploding Stars Built the Periodic Table), hops back to Ch. 5–6 (Dark Matter & Dark Energy), and closes with Ch. 12 (The Cosmic Perspective).",
     "adhd_time_label": "1h 09m",
     "full_time_label": "3h",
     "adhd_segments": [
@@ -4480,7 +4609,9 @@
     "pruned_pct": 61.7,
     "full_book_pages": 120,
     "full_book_minutes": 180,
-    "full_book_effort_label": "3h"
+    "full_book_effort_label": "3h",
+    "wing": "🧬 Science & Cosmos",
+    "skipped_note": "Non-linear 4-step flow (46 pages = 38.3% of 120p book, ~1h 09m): starts at Ch. 1 (The Big Bang), jumps to Ch. 7 (How Exploding Stars Built the Periodic Table), hops back to Ch. 5–6 (Dark Matter & Dark Energy), and closes with Ch. 12 (The Cosmic Perspective)."
   },
   {
     "filename": "15d_Orbital_Mechanics_for_Engineering_Students_Howard_Curtis.pdf",
@@ -4490,7 +4621,7 @@
     "category": "Science & Cosmos",
     "pages": 692,
     "cover_emoji": "🛰️",
-    "description": "",
+    "description": "Starts directly at Ch. 2 (The Two-Body Orbital Plane & Conic Trajectories), then jumps to Ch. 5–6 (Orbital Maneuvers & Hohmann Transfers).",
     "adhd_time_label": "51 min",
     "full_time_label": "17h 18m",
     "adhd_segments": [
@@ -4614,7 +4745,9 @@
     "pruned_pct": 95.1,
     "full_book_pages": 692,
     "full_book_minutes": 1038,
-    "full_book_effort_label": "17h 18m"
+    "full_book_effort_label": "17h 18m",
+    "wing": "🧬 Science & Cosmos",
+    "skipped_note": "Non-linear 2-step flow (34 pages = 4.9% of 692p textbook, ~51m): starts directly at Ch. 2 (The Two-Body Orbital Plane & Conic Trajectories), then jumps to Ch. 5–6 (Orbital Maneuvers & Hohmann Transfers)."
   },
   {
     "filename": "16a_Harry_Potter_1_and_the_Philosophers_Stone_JK_Rowling.pdf",
@@ -4624,7 +4757,7 @@
     "category": "Imagination & Wonder",
     "pages": 327,
     "cover_emoji": "⚡",
-    "description": "",
+    "description": "Opens straight in Diagon Alley & Ollivanders (Ch. 5), jumps to the Mirror of Erised (Ch. 12), flashes back to Hagrid's midnight arrival & Privet Drive (Ch. 1 & 4), and leaps to the Trapdoor & Quirrell climax (Ch. 16–17).",
     "adhd_time_label": "1h 30m",
     "full_time_label": "8h 10m",
     "adhd_segments": [
@@ -4810,7 +4943,9 @@
     "pruned_pct": 81.7,
     "full_book_pages": 327,
     "full_book_minutes": 490,
-    "full_book_effort_label": "8h 10m"
+    "full_book_effort_label": "8h 10m",
+    "wing": "🪄 Imagination & Wonder",
+    "skipped_note": "Non-linear 4-step flow (58 pages = 17.7% of 327p book, ~1h 27m): opens straight in Diagon Alley & Ollivanders (Ch. 5), jumps to the Mirror of Erised (Ch. 12), flashes back to Hagrid's midnight arrival & Privet Drive (Ch. 1 & 4), and leaps to the Trapdoor & Quirrell climax (Ch. 16–17)."
   },
   {
     "filename": "16b_Harry_Potter_2_and_the_Chamber_of_Secrets_JK_Rowling.pdf",
@@ -4820,7 +4955,7 @@
     "category": "Imagination & Wonder",
     "pages": 352,
     "cover_emoji": "🗝️",
-    "description": "",
+    "description": "Starts with the flying Ford Anglia rescue to the Burrow (Ch. 3), jumps to Tom Riddle's 50-year-old memory diary (Ch. 13), and leaps to the Basilisk duel & Dobby's liberation (Ch. 17–18).",
     "adhd_time_label": "1h 12m",
     "full_time_label": "8h 48m",
     "adhd_segments": [
@@ -4975,7 +5110,9 @@
     "pruned_pct": 86.4,
     "full_book_pages": 352,
     "full_book_minutes": 528,
-    "full_book_effort_label": "8h 48m"
+    "full_book_effort_label": "8h 48m",
+    "wing": "🪄 Imagination & Wonder",
+    "skipped_note": "Non-linear 3-step flow (46 pages = 13.1% of 352p book, ~1h 09m): starts with the flying Ford Anglia rescue to the Burrow (Ch. 3), jumps to Tom Riddle's 50-year-old memory diary (Ch. 13), and leaps to the Basilisk duel & Dobby's liberation (Ch. 17–18)."
   },
   {
     "filename": "16c_Harry_Potter_3_and_the_Prisoner_of_Azkaban_JK_Rowling.pdf",
@@ -4985,7 +5122,7 @@
     "category": "Imagination & Wonder",
     "pages": 448,
     "cover_emoji": "🐺",
-    "description": "",
+    "description": "Opens when Fred and George hand Harry the Marauder's Map (Ch. 10), jumps to the Shrieking Shack twist (Ch. 17–19), leaps into Hermione's Time-Turner causal loop & the stag Patronus (Ch. 21), and flashes back to Lupin's Boggart & Patronus lessons (Ch. 7 & 12).",
     "adhd_time_label": "1h 36m",
     "full_time_label": "11h 12m",
     "adhd_segments": [
@@ -5156,7 +5293,9 @@
     "pruned_pct": 85.7,
     "full_book_pages": 448,
     "full_book_minutes": 672,
-    "full_book_effort_label": "11h 12m"
+    "full_book_effort_label": "11h 12m",
+    "wing": "🪄 Imagination & Wonder",
+    "skipped_note": "Non-linear 4-step flow (62 pages = 13.8% of 448p book, ~1h 33m): opens when Fred and George hand Harry the Marauder's Map (Ch. 10), jumps to the Shrieking Shack twist (Ch. 17–19), leaps into Hermione's Time-Turner causal loop & the stag Patronus (Ch. 21), and flashes back to Lupin's Boggart & Patronus lessons (Ch. 7 & 12)."
   },
   {
     "filename": "16d_Harry_Potter_4_and_the_Goblet_of_Fire_JK_Rowling.pdf",
@@ -5166,7 +5305,7 @@
     "category": "Imagination & Wonder",
     "pages": 749,
     "cover_emoji": "🏆",
-    "description": "",
+    "description": "Opens right as the Goblet of Fire spits out Harry's name as the 4th champion (Ch. 16), jumps to out-flying the Hungarian Horntail dragon (Ch. 20), leaps to the Graveyard duel & Priori Incantatem (Ch. 32–34), and unmasks Moody via Veritaserum (Ch. 35).",
     "adhd_time_label": "1h 34m",
     "full_time_label": "18h 44m",
     "adhd_segments": [
@@ -5352,7 +5491,9 @@
     "pruned_pct": 91.6,
     "full_book_pages": 749,
     "full_book_minutes": 1124,
-    "full_book_effort_label": "18h 44m"
+    "full_book_effort_label": "18h 44m",
+    "wing": "🪄 Imagination & Wonder",
+    "skipped_note": "Non-linear 4-step flow (61 pages = 8.1% of 749p book, ~1h 31m): opens right as the Goblet of Fire spits out Harry's name as the 4th champion (Ch. 16), jumps to out-flying the Hungarian Horntail dragon (Ch. 20), leaps to the Graveyard duel & Priori Incantatem (Ch. 32–34), and unmasks Moody via Veritaserum (Ch. 35)."
   },
   {
     "filename": "16e_Harry_Potter_5_and_the_Order_of_the_Phoenix_JK_Rowling.pdf",
@@ -5362,7 +5503,7 @@
     "category": "Imagination & Wonder",
     "pages": 884,
     "cover_emoji": "🔥",
-    "description": "",
+    "description": "Starts with founding Dumbledore's Army in the Room of Requirement (Ch. 18), jumps to Snape's Worst Memory in the Pensieve (Ch. 28), leaps to the Ministry Atrium duel (Dumbledore vs. Voldemort in Ch. 35–36), and finishes with the Prophecy & Sirius's mirror (Ch. 37–38).",
     "adhd_time_label": "2h 04m",
     "full_time_label": "22h 06m",
     "adhd_segments": [
@@ -5548,7 +5689,9 @@
     "pruned_pct": 90.6,
     "full_book_pages": 884,
     "full_book_minutes": 1326,
-    "full_book_effort_label": "22h 06m"
+    "full_book_effort_label": "22h 06m",
+    "wing": "🪄 Imagination & Wonder",
+    "skipped_note": "Non-linear 4-step flow (68 pages = 7.7% of 884p book, ~1h 42m): starts with founding Dumbledore's Army in the Room of Requirement (Ch. 18), jumps to Snape's Worst Memory in the Pensieve (Ch. 28), leaps to the Ministry Atrium duel (Dumbledore vs. Voldemort in Ch. 35–36), and finishes with the Prophecy & Sirius's mirror (Ch. 37–38)."
   },
   {
     "filename": "16f_Harry_Potter_6_and_the_Half_Blood_Prince_JK_Rowling.pdf",
@@ -5558,7 +5701,7 @@
     "category": "Imagination & Wonder",
     "pages": 664,
     "cover_emoji": "🧪",
-    "description": "",
+    "description": "Opens with discovering the Half-Blood Prince's annotated Potions book & Felix Felicis (Ch. 9), jumps to Tom Riddle's past in the Pensieve (Ch. 13 & 20), leaps to Slughorn's memory & the 7 Horcruxes (Ch. 23), and enters the Sea Cave & Lightning-Struck Tower (Ch. 26–27).",
     "adhd_time_label": "2h 03m",
     "full_time_label": "16h 36m",
     "adhd_segments": [
@@ -5744,7 +5887,9 @@
     "pruned_pct": 87.7,
     "full_book_pages": 664,
     "full_book_minutes": 996,
-    "full_book_effort_label": "16h 36m"
+    "full_book_effort_label": "16h 36m",
+    "wing": "🪄 Imagination & Wonder",
+    "skipped_note": "Non-linear 4-step flow (64 pages = 9.6% of 664p book, ~1h 36m): opens with discovering the Half-Blood Prince's annotated Potions book & Felix Felicis (Ch. 9), jumps to Tom Riddle's past in the Pensieve (Ch. 13 & 20), leaps to Slughorn's memory & the 7 Horcruxes (Ch. 23), and enters the Sea Cave & Lightning-Struck Tower (Ch. 26–27)."
   },
   {
     "filename": "16g_Harry_Potter_7_and_the_Deathly_Hallows_JK_Rowling.pdf",
@@ -5754,7 +5899,7 @@
     "category": "Imagination & Wonder",
     "pages": 774,
     "cover_emoji": "🪄",
-    "description": "",
+    "description": "Opens with The Tale of the Three Brothers & the Hallows symbol (Ch. 21), jumps to the Gringotts vault dragon heist (Ch. 26), leaps to Snape's memory in 'The Prince's Tale' (Ch. 33), and finishes with the Forest, King's Cross & the final duel (Ch. 34–36).",
     "adhd_time_label": "2h 21m",
     "full_time_label": "19h 21m",
     "adhd_segments": [
@@ -5940,7 +6085,9 @@
     "pruned_pct": 87.9,
     "full_book_pages": 774,
     "full_book_minutes": 1161,
-    "full_book_effort_label": "19h 21m"
+    "full_book_effort_label": "19h 21m",
+    "wing": "🪄 Imagination & Wonder",
+    "skipped_note": "Non-linear 4-step flow (72 pages = 9.3% of 774p finale, ~1h 48m): opens with The Tale of the Three Brothers & the Hallows symbol (Ch. 21), jumps to the Gringotts vault dragon heist (Ch. 26), leaps to Snape's memory in 'The Prince's Tale' (Ch. 33), and finishes with the Forest, King's Cross & the final duel (Ch. 34–36)."
   },
   {
     "filename": "17a_The_Hitchhikers_Guide_to_the_Galaxy_Douglas_Adams.pdf",
@@ -5950,7 +6097,7 @@
     "category": "Imagination & Wonder",
     "pages": 257,
     "cover_emoji": "🪐",
-    "description": "",
+    "description": "Opens with the Babel Fish, Towels & the Guide itself (Ch. 3 & 8), jumps to the Infinite Improbability Drive & Whale (Ch. 10 & 18), leaps to Deep Thought & the Answer 42 (Ch. 25 & 28), and flashes back to Arthur's house & Vogon demolition (Ch. 1–3).",
     "adhd_time_label": "1h 36m",
     "full_time_label": "6h 26m",
     "adhd_segments": [
@@ -6121,7 +6268,9 @@
     "pruned_pct": 75.1,
     "full_book_pages": 257,
     "full_book_minutes": 386,
-    "full_book_effort_label": "6h 26m"
+    "full_book_effort_label": "6h 26m",
+    "wing": "🪄 Imagination & Wonder",
+    "skipped_note": "Non-linear 4-step flow (48 pages = 18.7% of 257p classic, ~1h 12m): opens with the Babel Fish, Towels & the Guide itself (Ch. 3 & 8), jumps to the Infinite Improbability Drive & Whale (Ch. 10 & 18), leaps to Deep Thought & the Answer 42 (Ch. 25 & 28), and flashes back to Arthur's house & Vogon demolition (Ch. 1–3)."
   },
   {
     "filename": "17b_The_Ultimate_Hitchhikers_Guide_Five_Novels_Douglas_Adams.pdf",
@@ -6131,7 +6280,7 @@
     "category": "Imagination & Wonder",
     "pages": 856,
     "cover_emoji": "🛸",
-    "description": "",
+    "description": "Non-linear 5-step flow across all 5 novels: 1) Novel 1 (Deep Thought & 42 on pp. 137–152), 2) Novel 2 (The Restaurant at the End of the Universe & Milliways on pp. 223–242), 3) Novel 3 (Life, the Universe & The Krikkit Wars on pp. 410–428), 4) Novel 4 (So Long, and Thanks for All the Fish & Flying by Missing the Ground on pp. 542–560), and 5) Novel 5 (Mostly Harmless & The Multi-Dimensional Guide on pp. 698–718).",
     "adhd_time_label": "2h 22m",
     "full_time_label": "21h 24m",
     "adhd_segments": [
@@ -6318,7 +6467,9 @@
     "pruned_pct": 88.9,
     "full_book_pages": 856,
     "full_book_minutes": 1284,
-    "full_book_effort_label": "21h 24m"
+    "full_book_effort_label": "21h 24m",
+    "wing": "🪄 Imagination & Wonder",
+    "skipped_note": "Non-linear 5-step flow across all 5 novels (84 pages = 9.8% of 856p omnibus, ~2h 06m): 1) Novel 1 (Deep Thought & 42 on pp. 137–152), 2) Novel 2 (The Restaurant at the End of the Universe & Milliways on pp. 223–242), 3) Novel 3 (Life, the Universe & The Krikkit Wars on pp. 410–428), 4) Novel 4 (So Long, and Thanks for All the Fish & Flying by Missing the Ground on pp. 542–560), and 5) Novel 5 (Mostly Harmless & The Multi-Dimensional Guide on pp. 698–718)."
   },
   {
     "filename": "18_The_Drunkards_Walk_Leonard_Mlodinow.pdf",
@@ -6329,7 +6480,7 @@
     "wing_category": "Science & Cosmos",
     "pages": 272,
     "cover_emoji": "🎲",
-    "description": "How randomness rules our lives, why probability feels like black magic to human intuition, and how the Central Limit Theorem and Law of Large Numbers crystallize order out of chaos.",
+    "description": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms.",
     "adhd_time_label": "45m",
     "full_time_label": "7h 30m",
     "adhd_segments": [
@@ -6466,7 +6617,9 @@
     "pruned_pct": 84.6,
     "full_book_pages": 272,
     "full_book_minutes": 100,
-    "full_book_effort_label": "7h 30m"
+    "full_book_effort_label": "7h 30m",
+    "wing": "🧬 Science & Cosmos",
+    "skipped_note": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms."
   },
   {
     "filename": "19_Charaka_Samhita_Ayurveda.pdf",
@@ -6477,7 +6630,7 @@
     "wing_category": "Mind & Consciousness",
     "pages": 850,
     "cover_emoji": "🌿",
-    "description": "The foundational medical treatise of internal medicine: Tridosha dynamics (Vata, Pitta, Kapha), the digestive furnace (Agni), tissue essence (Ojas), and circadian rhythms.",
+    "description": "Curated 4-step non-linear flow focusing on the essential core insights and practical mechanisms.",
     "adhd_time_label": "1h 00m",
     "full_time_label": "18h 45m",
     "adhd_segments": [
@@ -6629,7 +6782,9 @@
     "pruned_pct": 93.4,
     "full_book_pages": 850,
     "full_book_minutes": 100,
-    "full_book_effort_label": "18h 45m"
+    "full_book_effort_label": "18h 45m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Curated 4-step non-linear flow focusing on the essential core insights and practical mechanisms."
   },
   {
     "filename": "20_Hatha_Yoga_Pradipika_Swatmarama.pdf",
@@ -6640,7 +6795,7 @@
     "wing_category": "Mind & Consciousness",
     "pages": 220,
     "cover_emoji": "🧘",
-    "description": "The foundational manual bridging physical asana, shatkarmas, neuromuscular bandhas and mudras, clearing the 72,000 nadis, and awakening Kundalini into Sushumna.",
+    "description": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms.",
     "adhd_time_label": "45m",
     "full_time_label": "6h 15m",
     "adhd_segments": [
@@ -6762,7 +6917,9 @@
     "pruned_pct": 80.9,
     "full_book_pages": 220,
     "full_book_minutes": 80,
-    "full_book_effort_label": "6h 15m"
+    "full_book_effort_label": "6h 15m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms."
   },
   {
     "filename": "21_Shiva_Samhita_and_Gheranda_Samhita.pdf",
@@ -6773,7 +6930,7 @@
     "wing_category": "Mind & Consciousness",
     "pages": 310,
     "cover_emoji": "🔱",
-    "description": "Two classical esoteric treatises mapping the 14 principal nadis, Ghatastha Yoga (the seven limbs of baking the bodily vessel), and internal sound current meditation (Nada Yoga).",
+    "description": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms.",
     "adhd_time_label": "45m",
     "full_time_label": "8h 20m",
     "adhd_segments": [
@@ -6910,7 +7067,9 @@
     "pruned_pct": 86.5,
     "full_book_pages": 310,
     "full_book_minutes": 100,
-    "full_book_effort_label": "8h 20m"
+    "full_book_effort_label": "8h 20m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms."
   },
   {
     "filename": "22_The_Yoga_Kundalini_Upanishad.pdf",
@@ -6921,7 +7080,7 @@
     "wing_category": "Mind & Consciousness",
     "pages": 140,
     "cover_emoji": "🐍",
-    "description": "The principal Yoga Upanishad on the two seeds of mind (Prana and Vasanas), piercing the three psychic knots (Brahma, Vishnu, Rudra), and Khechari Vidya.",
+    "description": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms.",
     "adhd_time_label": "45m",
     "full_time_label": "4h 30m",
     "adhd_segments": [
@@ -7028,7 +7187,9 @@
     "pruned_pct": 70.0,
     "full_book_pages": 140,
     "full_book_minutes": 60,
-    "full_book_effort_label": "4h 30m"
+    "full_book_effort_label": "4h 30m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms."
   },
   {
     "filename": "23_Sat_Chakra_Nirupana_The_Serpent_Power.pdf",
@@ -7039,7 +7200,7 @@
     "wing_category": "Mind & Consciousness",
     "pages": 280,
     "cover_emoji": "🌸",
-    "description": "The definitive 16th-century Bengali Tantric root work mapping the subtle geography of the seven chakras from Muladhara to Sahasrara, their seed mantras, and Kundalini ascent.",
+    "description": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms.",
     "adhd_time_label": "45m",
     "full_time_label": "7h 45m",
     "adhd_segments": [
@@ -7161,7 +7322,9 @@
     "pruned_pct": 85.0,
     "full_book_pages": 280,
     "full_book_minutes": 80,
-    "full_book_effort_label": "7h 45m"
+    "full_book_effort_label": "7h 45m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms."
   },
   {
     "filename": "24_The_Principal_Upanishads.pdf",
@@ -7172,7 +7335,7 @@
     "wing_category": "Mind & Consciousness",
     "pages": 480,
     "cover_emoji": "📜",
-    "description": "The philosophical core of ancient Indian inquiry (Kena, Katha, Mundaka, Mandukya, Chandogya, Brihadaranyaka): the nature of consciousness and the eternal witness (Turiya).",
+    "description": "Curated 4-step non-linear flow focusing on the essential core insights and practical mechanisms.",
     "adhd_time_label": "1h 00m",
     "full_time_label": "14h 30m",
     "adhd_segments": [
@@ -7339,7 +7502,9 @@
     "pruned_pct": 88.3,
     "full_book_pages": 480,
     "full_book_minutes": 120,
-    "full_book_effort_label": "14h 30m"
+    "full_book_effort_label": "14h 30m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Curated 4-step non-linear flow focusing on the essential core insights and practical mechanisms."
   },
   {
     "filename": "25_Swami_Vivekananda_Raja_Yoga_and_Jnana_Yoga.pdf",
@@ -7350,7 +7515,7 @@
     "wing_category": "Mind & Consciousness",
     "pages": 420,
     "cover_emoji": "🦁",
-    "description": "Spirituality as empirical psychological science: mental concentration in Raja Yoga, fierce rational inquiry in Jnana Yoga, and fearless sovereign humanism in Practical Vedanta.",
+    "description": "Curated 4-step non-linear flow focusing on the essential core insights and practical mechanisms.",
     "adhd_time_label": "1h 00m",
     "full_time_label": "12h 15m",
     "adhd_segments": [
@@ -7517,7 +7682,9 @@
     "pruned_pct": 86.7,
     "full_book_pages": 420,
     "full_book_minutes": 120,
-    "full_book_effort_label": "12h 15m"
+    "full_book_effort_label": "12h 15m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Curated 4-step non-linear flow focusing on the essential core insights and practical mechanisms."
   },
   {
     "filename": "26_Sri_Aurobindo_The_Life_Divine.pdf",
@@ -7528,7 +7695,7 @@
     "wing_category": "Mind & Consciousness",
     "pages": 1040,
     "cover_emoji": "✨",
-    "description": "Magnum opus synthesizing Eastern Vedanta and evolutionary science: consciousness is not escaping matter, but evolving through matter to manifest a higher Supermind on earth.",
+    "description": "Curated 4-step non-linear flow focusing on the essential core insights and practical mechanisms.",
     "adhd_time_label": "1h 00m",
     "full_time_label": "28h 00m",
     "adhd_segments": [
@@ -7695,7 +7862,9 @@
     "pruned_pct": 94.6,
     "full_book_pages": 1040,
     "full_book_minutes": 120,
-    "full_book_effort_label": "28h 00m"
+    "full_book_effort_label": "28h 00m",
+    "wing": "🧠 Mind & Consciousness",
+    "skipped_note": "Curated 4-step non-linear flow focusing on the essential core insights and practical mechanisms."
   },
   {
     "filename": "27_Rabindranath_Tagore_The_Religion_of_Man.pdf",
@@ -7706,7 +7875,7 @@
     "wing_category": "Imagination & Wonder",
     "pages": 240,
     "cover_emoji": "🎨",
-    "description": "Tagore's Oxford Hibbert Lectures: the surplus in man that overflows biological survival into art, music, beauty, the Bauls of Bengal, and intimate union with the universal.",
+    "description": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms.",
     "adhd_time_label": "45m",
     "full_time_label": "6h 45m",
     "adhd_segments": [
@@ -7843,7 +8012,9 @@
     "pruned_pct": 82.5,
     "full_book_pages": 240,
     "full_book_minutes": 100,
-    "full_book_effort_label": "6h 45m"
+    "full_book_effort_label": "6h 45m",
+    "wing": "🪄 Imagination & Wonder",
+    "skipped_note": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms."
   },
   {
     "filename": "28_Ishwar_Chandra_Vidyasagar_Reforms.pdf",
@@ -7854,7 +8025,7 @@
     "wing_category": "Power & Philosophy",
     "pages": 260,
     "cover_emoji": "⚖️",
-    "description": "The fiery tracts and petitions of the incorruptible scholar of the Bengal Renaissance: legalizing widow remarriage, modernizing education, and defending women's freedom.",
+    "description": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms.",
     "adhd_time_label": "45m",
     "full_time_label": "7h 10m",
     "adhd_segments": [
@@ -7976,9 +8147,12 @@
     "pruned_pct": 83.8,
     "full_book_pages": 260,
     "full_book_minutes": 80,
-    "full_book_effort_label": "7h 10m"
+    "full_book_effort_label": "7h 10m",
+    "wing": "⚔️ Power & Philosophy",
+    "skipped_note": "Curated 3-step non-linear flow focusing on the essential core insights and practical mechanisms."
   }
-];
+]
+;
     const AUDIO_INDEX = {
   "generatedAt": "2026-11-14T02:30:00Z",
   "totalFiles": 44,
@@ -26928,6 +27102,8 @@
     let currentTrackType = "adhd";
     let currentItemIndex = 1;
     let activeCategory = "all";
+    const selectedCategories = new Set();
+    let inProgressOnly = false;
     let activeSearchQuery = "";
     let readerFontSize = 1.05;
     let isDownloading = false;
@@ -26936,6 +27112,71 @@
     let currentChapterTotalWeight = 0;
     let activeWordIdx = -1;
     let karaokeActive = false;
+    const PROGRESS_STORAGE_KEY = "kortex_mobile_books_progress_v1";
+
+    function loadMobileProgressMap() {
+      try {
+        if (typeof localStorage === "undefined") return {};
+        const raw = localStorage.getItem(PROGRESS_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return (parsed && typeof parsed === "object") ? parsed : {};
+      } catch (_e) {
+        return {};
+      }
+    }
+
+    function saveMobileBookProgress(book, stepLabel, chapterHref) {
+      try {
+        if (!book || typeof localStorage === "undefined") return;
+        const key = book.slug || book.filename || book.title;
+        if (!key) return;
+        const pMap = loadMobileProgressMap();
+        pMap[key] = {
+          slug: book.slug || book.filename,
+          title: book.title,
+          emoji: book.cover_emoji || "📖",
+          stepLabel: stepLabel || "Step 1",
+          href: chapterHref || "",
+          updatedAt: Date.now()
+        };
+        localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(pMap));
+        renderInProgressBar();
+      } catch (_e) {}
+    }
+
+    function renderInProgressBar() {
+      const pMap = loadMobileProgressMap();
+      const entries = Object.values(pMap).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+      const countEl = document.getElementById("inProgressCountBadge");
+      if (countEl) countEl.textContent = String(entries.length);
+      const chipBtn = document.getElementById("inProgressFilterChip");
+      if (chipBtn) {
+        if (inProgressOnly) chipBtn.classList.add("active");
+        else chipBtn.classList.remove("active");
+      }
+      const listEl = document.getElementById("inProgressList");
+      if (!listEl) return;
+      if (entries.length === 0) {
+        listEl.innerHTML = `<span class="in-progress-empty">Open any chapter to keep active reads here</span>`;
+        return;
+      }
+      listEl.innerHTML = entries.map(item => {
+        const shortStep = String(item.stepLabel || "Resume").slice(0, 28);
+        return `
+          <button type="button" class="in-progress-chip" data-resume-slug="${escapeHtml(item.slug || "")}" data-resume-href="${escapeHtml(item.href || "")}">
+            <span>${escapeHtml(item.emoji || "📖")}</span>
+            <span class="in-progress-chip-title">${escapeHtml(item.title || "")}</span>
+            <span class="in-progress-chip-step">${escapeHtml(shortStep)} ▸</span>
+          </button>
+        `;
+      }).join("");
+      listEl.querySelectorAll(".in-progress-chip").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const slug = btn.getAttribute("data-resume-slug");
+          if (slug) openBookDetail(slug);
+        });
+      });
+    }
 
     const audioEl = document.getElementById("audioElement");
 
@@ -27126,17 +27367,17 @@
       return items[index - 1] || null;
     }
 
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
     function renderMarkdownWithKaraoke(content, brief, label, pages, durMin) {
       let wordIndex = 0;
       const wordsList = [];
-
-      function escapeHtml(str) {
-        return String(str || "")
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
-      }
 
       function wrapWords(text, lineType, isBlockEnd) {
         const rawTokens = text.split(/(\s+)/);
@@ -27166,6 +27407,7 @@
         }).join("");
       }
 
+      const bookDesc = currentBook ? (currentBook.description || currentBook.skipped_note || "") : "";
       let headerHtml = `
         <div class="reader-meta-banner">
           <h2 style="font-size: 1.4rem; margin-top: 0; margin-bottom: 8px;">${escapeHtml(label)}</h2>
@@ -27174,6 +27416,7 @@
             <span>📄 Pages: ${escapeHtml(pages || "N/A")}</span>
             <span>⏱️ Duration: ~${escapeHtml(durMin || 15)} mins</span>
           </div>
+          ${bookDesc ? `<div style="font-size: 0.88rem; color: var(--ink-muted); line-height: 1.5; margin-bottom: 8px; padding-left: 10px; border-left: 3px solid var(--accent);">${escapeHtml(bookDesc)}</div>` : ""}
           ${brief ? `<div class="reader-overview-box"><strong>Core Takeaway:</strong> ${escapeHtml(brief)}</div>` : ""}
         </div>
       `;
@@ -27412,31 +27655,59 @@
       }
     }
 
+    function bookMatchesCategoryLabel(b, aCatRaw) {
+      const cat = (b.wing_category || b.category || "").toLowerCase();
+      const aCat = String(aCatRaw || "").toLowerCase();
+      if (!aCat || aCat === "all") return true;
+      if (aCat.includes("science")) {
+        return cat.includes("science") || cat.includes("space") || cat.includes("frontier") || cat.includes("cosmos");
+      }
+      if (aCat.includes("mind")) {
+        return cat.includes("mind") || cat.includes("psychology") || cat.includes("consciousness");
+      }
+      if (aCat.includes("power") || aCat.includes("philosophy")) {
+        return cat.includes("power") || cat.includes("philosophy") || cat.includes("warfare");
+      }
+      if (aCat.includes("imagination") || aCat.includes("wonder")) {
+        return cat.includes("imagination") || cat.includes("wonder") || cat.includes("wizarding") || cat.includes("fantasy") || cat.includes("classics") || cat.includes("literature");
+      }
+      return cat.includes(aCat);
+    }
+
     function renderBooksGrid() {
       const grid = document.getElementById("booksGrid");
       grid.innerHTML = "";
+      const pMap = loadMobileProgressMap();
 
       const filtered = BOOKS_DATA.filter(b => {
-        const cat = (b.category || "").toLowerCase();
-        const aCat = activeCategory.toLowerCase();
-        let matchesCat = activeCategory === "all";
-        if (!matchesCat) {
-          if (aCat.includes("science")) {
-            matchesCat = cat.includes("science") || cat.includes("space") || cat.includes("frontier") || cat.includes("cosmos");
-          } else if (aCat.includes("mind")) {
-            matchesCat = cat.includes("mind") || cat.includes("psychology") || cat.includes("consciousness");
-          } else if (aCat.includes("power") || aCat.includes("philosophy")) {
-            matchesCat = cat.includes("power") || cat.includes("philosophy") || cat.includes("warfare");
-          } else if (aCat.includes("imagination") || aCat.includes("wonder")) {
-            matchesCat = cat.includes("imagination") || cat.includes("wonder") || cat.includes("wizarding") || cat.includes("fantasy") || cat.includes("classics") || cat.includes("literature");
-          } else {
-            matchesCat = cat.includes(aCat);
-          }
+        if (inProgressOnly) {
+          const key = b.slug || b.filename || b.title;
+          if (!pMap[key]) return false;
+        }
+        let matchesCat = true;
+        if (selectedCategories.size > 0) {
+          matchesCat = Array.from(selectedCategories).some(selCat => bookMatchesCategoryLabel(b, selCat));
+        } else if (activeCategory !== "all" && activeCategory !== "in-progress") {
+          matchesCat = bookMatchesCategoryLabel(b, activeCategory);
         }
         const q = activeSearchQuery.toLowerCase().trim();
         const matchesSearch = !q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) || (b.description || "").toLowerCase().includes(q);
         return matchesCat && matchesSearch;
       });
+
+      const badge = document.getElementById("activeCategoryBadge");
+      if (badge) {
+        if (selectedCategories.size === 0 && !inProgressOnly) {
+          badge.textContent = `All Books (${BOOKS_DATA.length})`;
+        } else if (inProgressOnly && selectedCategories.size === 0) {
+          badge.textContent = `🔖 In-Progress (${filtered.length})`;
+        } else if (selectedCategories.size === 1) {
+          const onlyCat = Array.from(selectedCategories)[0];
+          badge.textContent = `${onlyCat}${inProgressOnly ? " · 🔖" : ""} (${filtered.length})`;
+        } else {
+          badge.textContent = `${selectedCategories.size} Pillars${inProgressOnly ? " · 🔖" : ""} (${filtered.length})`;
+        }
+      }
 
       if (filtered.length === 0) {
         grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--ink-muted);">No books found matching "${activeSearchQuery}".</div>`;
@@ -27457,17 +27728,19 @@
         const fullPages = b.full_book_pages || b.pages ? `${b.full_book_pages || b.pages}p` : "";
 
         const hasAudio = b.has_audio || (AUDIO_INDEX.books && AUDIO_INDEX.books[b.slug]);
+        const bookDesc = b.description || b.skipped_note || "";
+        const pillarBadge = b.wing || b.category || "";
 
         card.innerHTML = `
           <div>
             <div class="book-card-header">
               <div class="book-card-emoji">${b.cover_emoji || "📖"}</div>
               <div class="book-card-titles">
-                <div class="book-card-title">${b.title}</div>
-                <div class="book-card-author">${b.author || "Liberation Library"}</div>
+                <div class="book-card-title">${escapeHtml(b.title)}</div>
+                <div class="book-card-author">${escapeHtml(b.author || "Liberation Library")}${pillarBadge ? ` · <span style="color:var(--accent);font-weight:600;">${escapeHtml(pillarBadge)}</span>` : ""}</div>
               </div>
             </div>
-            <p style="font-size: 0.82rem; color: var(--ink-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 10px;">${b.description || ""}</p>
+            ${bookDesc ? `<div class="book-card-desc">${escapeHtml(bookDesc)}</div>` : ""}
           </div>
           <div>
             <div class="book-card-stats">
@@ -27490,10 +27763,11 @@
       const dv = document.getElementById("bookDetailView");
       dv.classList.add("active");
 
+      const bookDesc = book.description || book.skipped_note || "";
       document.getElementById("detailEmoji").textContent = book.cover_emoji || "📖";
       document.getElementById("detailTitle").textContent = book.title;
       document.getElementById("detailAuthor").textContent = book.author || "Liberation Library";
-      document.getElementById("detailDesc").textContent = book.description || "";
+      document.getElementById("detailDesc").textContent = bookDesc;
       document.getElementById("headerTitle").textContent = book.title;
 
       const adhdTime = cleanEffortStr(book.adhd_time_label);
@@ -27502,8 +27776,10 @@
       const adhdVol = book.adhd_volume_pct ? `${book.adhd_volume_pct}% of book` : "";
       const prunedInfo = book.pruned_pct ? `${book.pruned_pct}% pruned` : "";
       const fullPages = book.full_book_pages || book.pages ? `${book.full_book_pages || book.pages} pages` : "";
+      const pillarBadge = book.wing || book.category || "";
 
       document.getElementById("detailBadges").innerHTML = `
+        ${pillarBadge ? `<span class="badge-chip" style="background:var(--surface-subtle);color:var(--ink);border:1px solid var(--border);">${escapeHtml(pillarBadge)}</span>` : ""}
         <span class="badge-chip adhd">⚡ ${(book.adhd_segments || []).length} Steps ${adhdPages ? `· ${adhdPages}` : ""} ${adhdVol ? `· ${adhdVol}` : ""} ${prunedInfo ? `(${prunedInfo})` : ""} ${adhdTime ? `· ⏱️ ${adhdTime}` : ""}</span>
         <span class="badge-chip full">📖 ${(book.author_chapters || []).length} Chapters ${fullPages ? `· ${fullPages}` : ""} ${fullTime ? `· ⏱️ ${fullTime}` : ""}</span>
       `;
@@ -27514,7 +27790,9 @@
       const adhdSec = document.getElementById("adhdTrackSection");
       if (adhdSec) adhdSec.classList.remove("collapsed");
       const adhdBody = document.getElementById("adhdTrackBody");
-      adhdBody.innerHTML = "";
+      adhdBody.innerHTML = bookDesc
+        ? `<div class="track-book-desc"><strong>📖 About ${escapeHtml(book.title)}:</strong> ${escapeHtml(bookDesc)}</div>`
+        : "";
       const adhdItems = book.adhd_segments || [];
       document.getElementById("adhdTrackBadge").textContent = `${adhdItems.length} steps`;
 
@@ -27531,20 +27809,22 @@
         row.innerHTML = `
           <div class="chapter-info">
             <div class="chapter-title-row">
-              <span class="chapter-label">Step ${stepNum} · ${item.label}</span>
+              <span class="chapter-label">Step ${stepNum} · ${escapeHtml(item.label)}</span>
+            </div>
+            ${item.brief ? `<div class="chapter-brief">${escapeHtml(item.brief)}</div>` : ""}
+            <div class="book-toc-vol-bar-track">
+              <div class="book-toc-vol-bar-fill adhd" style="width: ${volWidth}%;"></div>
+            </div>
+            <div class="chapter-bottom-bar">
               <div class="chapter-metrics">
                 ${pageRange ? `<span class="chapter-chip">${pageRange}</span>` : ""}
                 ${pageCnt ? `<span class="chapter-chip count">${pageCnt} (${volPct})</span>` : ""}
                 ${effStr ? `<span class="chapter-chip effort">${effStr}</span>` : ""}
               </div>
+              <div class="chapter-actions">
+                <a class="btn-ch play-btn" href="chapters/${cleanSlug}/step_${stepNum}.html" style="text-decoration:none;">Absorb</a>
+              </div>
             </div>
-            <div class="book-toc-vol-bar-track">
-              <div class="book-toc-vol-bar-fill adhd" style="width: ${volWidth}%;"></div>
-            </div>
-            <div class="chapter-brief">${item.brief || ""}</div>
-          </div>
-          <div class="chapter-actions">
-            <a class="btn-ch play-btn" href="chapters/${cleanSlug}/step_${stepNum}.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px;">📖 Read &amp; Listen →</a>
           </div>
         `;
         adhdBody.appendChild(row);
@@ -27554,7 +27834,9 @@
       const fullSec = document.getElementById("fullTrackSection");
       if (fullSec) fullSec.classList.add("collapsed");
       const fullBody = document.getElementById("fullTrackBody");
-      fullBody.innerHTML = "";
+      fullBody.innerHTML = bookDesc
+        ? `<div class="track-book-desc"><strong>📖 About ${escapeHtml(book.title)}:</strong> ${escapeHtml(bookDesc)}</div>`
+        : "";
       const fullItems = book.author_chapters || [];
       document.getElementById("fullTrackBadge").textContent = `${fullItems.length} chapters · Tap to expand`;
 
@@ -27571,20 +27853,22 @@
         row.innerHTML = `
           <div class="chapter-info">
             <div class="chapter-title-row">
-              <span class="chapter-label">Ch ${chNum} · ${item.label}</span>
+              <span class="chapter-label">Ch ${chNum} · ${escapeHtml(item.label)}</span>
+            </div>
+            ${item.brief ? `<div class="chapter-brief">${escapeHtml(item.brief)}</div>` : ""}
+            <div class="book-toc-vol-bar-track">
+              <div class="book-toc-vol-bar-fill author" style="width: ${volWidth}%;"></div>
+            </div>
+            <div class="chapter-bottom-bar">
               <div class="chapter-metrics">
                 ${pageRange ? `<span class="chapter-chip">${pageRange}</span>` : ""}
                 ${pageCnt ? `<span class="chapter-chip count">${pageCnt} (${volPct})</span>` : ""}
                 ${effStr ? `<span class="chapter-chip effort">${effStr}</span>` : ""}
               </div>
+              <div class="chapter-actions">
+                <a class="btn-ch play-btn" href="chapters/${cleanSlug}/ch_${chNum}.html" style="text-decoration:none;">Absorb</a>
+              </div>
             </div>
-            <div class="book-toc-vol-bar-track">
-              <div class="book-toc-vol-bar-fill author" style="width: ${volWidth}%;"></div>
-            </div>
-            <div class="chapter-brief">${item.brief || ""}</div>
-          </div>
-          <div class="chapter-actions">
-            <a class="btn-ch play-btn" href="chapters/${cleanSlug}/ch_${chNum}.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px;">📖 Read &amp; Listen →</a>
           </div>
         `;
         fullBody.appendChild(row);
@@ -27631,18 +27915,29 @@
     function populateReaderChapterDrawer() {
       const list = document.getElementById("readerChapterDrawerList");
       if (!list || !currentBook) return;
-      list.innerHTML = "";
+      const bookDesc = currentBook.description || currentBook.skipped_note || "";
+      list.innerHTML = bookDesc
+        ? `<div class="track-book-desc" style="margin:6px 8px 10px;"><strong>📖 About ${escapeHtml(currentBook.title)}:</strong> ${escapeHtml(bookDesc)}</div>`
+        : "";
       const items = currentTrackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
       items.forEach((item, idx) => {
         const num = idx + 1;
         const el = document.createElement("div");
         const isActive = (currentItemIndex === num);
         el.className = "reader-drawer-item" + (isActive ? " active" : "");
+        el.style.flexDirection = "column";
+        el.style.alignItems = "stretch";
+        el.style.gap = "5px";
         const pCount = item.pageCount ? `${item.pageCount}p` : (item.pages ? `p. ${item.pages}` : "");
+        const effStr = item.effortLabel || (item.estMinutes ? `⏱️ ${item.estMinutes}m` : "");
         const prefix = currentTrackType === "adhd" ? `Step ${num}` : `Ch ${num}`;
         el.innerHTML = `
-          <div class="reader-drawer-item-title">${isActive ? "▶ " : ""}${prefix} · ${item.label}</div>
-          <div class="reader-drawer-item-meta">${pCount}</div>
+          <div class="reader-drawer-item-title" style="white-space:normal;overflow:visible;">${isActive ? "▶ " : ""}${prefix} · ${escapeHtml(item.label)}</div>
+          ${item.brief ? `<div style="font-size:0.78rem;color:var(--ink-muted);line-height:1.4;">${escapeHtml(item.brief)}</div>` : ""}
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <div class="reader-drawer-item-meta">${pCount}${effStr ? ` · ${effStr}` : ""}</div>
+            <span class="btn-ch play-btn" style="padding:3px 10px;font-size:0.74rem;">Absorb</span>
+          </div>
         `;
         el.onclick = () => {
           selectChapterFromDrawer(num);
@@ -28200,17 +28495,46 @@
       renderBooksGrid();
     });
 
+    function syncPillarChipsUI() {
+      const allChip = document.querySelector('.filter-chip[data-cat="all"]');
+      if (allChip) {
+        if (selectedCategories.size === 0 && !inProgressOnly) allChip.classList.add("active");
+        else allChip.classList.remove("active");
+      }
+      document.querySelectorAll('.category-pills .filter-chip:not([data-cat="all"])').forEach(c => {
+        const cName = c.getAttribute("data-cat");
+        if (selectedCategories.has(cName)) c.classList.add("active");
+        else c.classList.remove("active");
+      });
+      const ipChip = document.getElementById("inProgressFilterChip");
+      if (ipChip) {
+        if (inProgressOnly) ipChip.classList.add("active");
+        else ipChip.classList.remove("active");
+      }
+    }
+
     document.querySelectorAll(".filter-chip").forEach(chip => {
       chip.addEventListener("click", () => {
-        document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
-        chip.classList.add("active");
-        const cat = chip.getAttribute("data-cat");
-        activeCategory = cat;
-        const matchingCount = (cat === "all") ? BOOKS_DATA.length : (BOOKS_DATA.filter(b => (b.wing_category || b.category) === cat).length);
-        const badge = document.getElementById("activeCategoryBadge");
-        if (badge) {
-          badge.textContent = (cat === "all") ? `All Books (${matchingCount})` : `${cat} (${matchingCount})`;
+        const cat = chip.getAttribute("data-cat") || "all";
+        if (cat === "all") {
+          selectedCategories.clear();
+          inProgressOnly = false;
+          activeCategory = "all";
+        } else if (cat === "in-progress") {
+          inProgressOnly = !inProgressOnly;
+          activeCategory = inProgressOnly ? "in-progress" : (Array.from(selectedCategories)[0] || "all");
+        } else {
+          if (selectedCategories.has(cat)) {
+            selectedCategories.delete(cat);
+          } else {
+            selectedCategories.add(cat);
+          }
+          if (selectedCategories.size >= 4) {
+            selectedCategories.clear();
+          }
+          activeCategory = Array.from(selectedCategories)[0] || (inProgressOnly ? "in-progress" : "all");
         }
+        syncPillarChipsUI();
         renderBooksGrid();
       });
     });
@@ -28275,6 +28599,12 @@
       if (!a) return;
       const href = a.getAttribute("href");
       if (!href) return;
+      if (currentBook) {
+        const rowEl = a.closest(".chapter-row");
+        const lblEl = rowEl && rowEl.querySelector ? rowEl.querySelector(".chapter-label") : null;
+        const stepLabel = lblEl ? lblEl.textContent.trim() : "Step 1";
+        saveMobileBookProgress(currentBook, stepLabel, href);
+      }
 
       const isOffline = (!navigator.onLine || window.__FORCE_OFFLINE__);
       if (isOffline) {
@@ -28310,23 +28640,24 @@
     }
 
     function updateDynamicCounts() {
-      const counts = { all: BOOKS_DATA.length };
       let totalCh = 0;
       BOOKS_DATA.forEach(b => {
-        const cat = b.wing_category || b.category;
-        if (cat) counts[cat] = (counts[cat] || 0) + 1;
         totalCh += (b.adhd_segments || []).length + (b.author_chapters || []).length;
       });
-      document.querySelectorAll(".filter-chip").forEach(chip => {
-        const cat = chip.getAttribute("data-cat");
+      document.querySelectorAll(".category-pills .filter-chip").forEach(chip => {
+        const cat = chip.getAttribute("data-cat") || "all";
         const countEl = chip.querySelector(".filter-chip-count");
-        if (countEl && counts[cat] !== undefined) {
-          countEl.textContent = counts[cat];
+        if (!countEl) return;
+        if (cat === "all") {
+          countEl.textContent = String(BOOKS_DATA.length);
+        } else {
+          const cnt = BOOKS_DATA.filter(b => bookMatchesCategoryLabel(b, cat)).length;
+          countEl.textContent = String(cnt);
         }
       });
       const badge = document.getElementById("activeCategoryBadge");
-      if (badge && activeCategory === "all") {
-        badge.textContent = `All Books (${BOOKS_DATA.length})`;
+      if (badge && selectedCategories.size === 0 && !inProgressOnly) {
+        badge.textContent = `🌐 All Pillars (${BOOKS_DATA.length})`;
       }
       const statVols = document.getElementById("statModalVolumesCount");
       if (statVols) statVols.textContent = `${BOOKS_DATA.length} volumes (Inlined)`;
@@ -28334,9 +28665,26 @@
       if (statChaps) statChaps.textContent = `${totalCh} chapters`;
     }
 
-    // Render immediately from inlined data
+    async function refreshLiveCatalogCountsIfUpdated() {
+      try {
+        if (typeof fetch !== "function" || (typeof navigator !== "undefined" && navigator.onLine === false) || window.__FORCE_OFFLINE__) return;
+        const resp = await fetch("assets/books_catalog.json", { cache: "no-store" });
+        if (!resp || !resp.ok) return;
+        const liveList = await resp.json();
+        if (Array.isArray(liveList) && liveList.length !== BOOKS_DATA.length) {
+          BOOKS_DATA.length = 0;
+          liveList.forEach(item => BOOKS_DATA.push(item));
+          updateDynamicCounts();
+          renderBooksGrid();
+        }
+      } catch (_e) {}
+    }
+
+    // Render immediately from inlined data and sync any newly added books dynamically
     updateDynamicCounts();
+    renderInProgressBar();
     renderBooksGrid();
+    refreshLiveCatalogCountsIfUpdated();
     updateOfflineStatus();
     updateStorageMetrics();
   </script>
