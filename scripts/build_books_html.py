@@ -1556,7 +1556,7 @@ def generate_books_html() -> None:
           .replace(/"/g, "&quot;");
       }}
 
-      function wrapWords(text, lineType) {{
+      function wrapWords(text, lineType, isBlockEnd) {{
         const rawTokens = text.split(/(\\s+)/);
         const nonWsTokens = rawTokens.filter(t => t && !/^\\s+$/.test(t));
         let tokenPos = 0;
@@ -1570,18 +1570,20 @@ def generate_books_html() -> None:
           let weight = Math.max(3, clean.length);
           if (lineType === "h1" || lineType === "h2") {{
             weight += 2;
+          }} else if (lineType === "quote") {{
+            weight += 1;
           }}
-          if (/[.?!]$/.test(clean) || /[.?!]["'\)\]]*$/.test(tok)) {{
+          if (/[.?!]$/.test(clean) || /[.?!]["')\\]]*$/.test(tok)) {{
             weight += 6;
-          }} else if (/[,;:—–·]$/.test(clean) || /[,;:—–·]["'\)\]]*$/.test(tok) || tok === "—" || tok === "–" || tok === "·") {{
+          }} else if (/[,;:—–·]$/.test(clean) || /[,;:—–·]["')\\]]*$/.test(tok) || tok === "—" || tok === "–" || tok === "·") {{
             weight += 3;
           }}
           if (isLast) {{
-            if (lineType === "h1") weight += 40;
-            else if (lineType === "h2") weight += 52;
-            else if (lineType === "h3") weight += 10;
-            else if (lineType === "quote") weight += 2;
-            else weight += 6;
+            if (lineType === "h1") weight += 20;
+            else if (lineType === "h2") weight += 18;
+            else if (lineType === "h3") weight += 16;
+            else if (lineType === "quote") weight += (isBlockEnd ? 18 : 10);
+            else weight += (isBlockEnd ? 16 : 4);
           }}
           wordsList.push({{
             index: wIdx,
@@ -1615,22 +1617,32 @@ def generate_books_html() -> None:
           continue;
         }}
 
+        const isQuoteLine = line.startsWith(">");
+        let isBlockEnd = false;
+        if (i + 1 >= lines.length) {{
+          isBlockEnd = true;
+        }} else {{
+          const nxt = lines[i + 1].trim();
+          if (!nxt) isBlockEnd = true;
+          else if (nxt.startsWith("#") || (nxt.startsWith(">") !== isQuoteLine)) isBlockEnd = true;
+        }}
+
         if (line.startsWith(">")) {{
           if (!inQuote) {{ bodyHtml += "<blockquote>"; inQuote = true; }}
           line = line.replace(/^>\\s*/, "");
-          bodyHtml += `<p>${{wrapWords(line, "quote")}}</p>`;
+          bodyHtml += `<p>${{wrapWords(line, "quote", isBlockEnd)}}</p>`;
         }} else if (line.startsWith("### ")) {{
           if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
-          bodyHtml += `<h3>${{wrapWords(line.slice(4), "h3")}}</h3>`;
+          bodyHtml += `<h3>${{wrapWords(line.slice(4), "h3", true)}}</h3>`;
         }} else if (line.startsWith("## ")) {{
           if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
-          bodyHtml += `<h2>${{wrapWords(line.slice(3), "h2")}}</h2>`;
+          bodyHtml += `<h2>${{wrapWords(line.slice(3), "h2", true)}}</h2>`;
         }} else if (line.startsWith("# ")) {{
           if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
-          bodyHtml += `<h1>${{wrapWords(line.slice(2), "h1")}}</h1>`;
+          bodyHtml += `<h1>${{wrapWords(line.slice(2), "h1", true)}}</h1>`;
         }} else {{
           if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
-          bodyHtml += `<p>${{wrapWords(line, "body")}}</p>`;
+          bodyHtml += `<p>${{wrapWords(line, "body", isBlockEnd)}}</p>`;
         }}
       }}
       if (inQuote) {{ bodyHtml += "</blockquote>"; }}
@@ -1649,24 +1661,88 @@ def generate_books_html() -> None:
       }};
     }}
 
+    function buildAcousticWordTimeline(words, totalWeight, audioMeta) {{
+      if (!words || !words.length || totalWeight <= 0) return;
+      const totalDur = (audioMeta && Number(audioMeta.durationSec || audioMeta.dur) > 0.5)
+        ? Number(audioMeta.durationSec || audioMeta.dur)
+        : (audioEl && audioEl.duration > 0 ? audioEl.duration : 0);
+      if (totalDur <= 0) return;
+
+      const rawSilences = (audioMeta && Array.isArray(audioMeta.silences)) ? audioMeta.silences : [];
+      if (!rawSilences.length) {{
+        for (let i = 0; i < words.length; i++) {{
+          words[i].startSec = (words[i].cumWeight / totalWeight) * totalDur;
+          words[i].endSec = ((words[i].cumWeight + words[i].weight) / totalWeight) * totalDur;
+        }}
+        return;
+      }}
+
+      function voicedTimeAt(t) {{
+        const clamped = Math.max(0, Math.min(totalDur, t));
+        let v = clamped;
+        for (let i = 0; i < rawSilences.length; i++) {{
+          const s = rawSilences[i][0];
+          const e = rawSilences[i][1];
+          if (clamped <= s) break;
+          v -= (Math.min(clamped, e) - s);
+        }}
+        return Math.max(0, v);
+      }}
+
+      function invVoicedTime(targetV) {{
+        let lo = 0;
+        let hi = totalDur;
+        for (let iter = 0; iter < 26; iter++) {{
+          const mid = (lo + hi) * 0.5;
+          if (voicedTimeAt(mid) < targetV) lo = mid;
+          else hi = mid;
+        }}
+        return (lo + hi) * 0.5;
+      }}
+
+      const totalVoiced = voicedTimeAt(totalDur);
+      if (totalVoiced <= 0) return;
+
+      for (let i = 0; i < words.length; i++) {{
+        const targetVStart = (words[i].cumWeight / totalWeight) * totalVoiced;
+        const targetVEnd = ((words[i].cumWeight + words[i].weight) / totalWeight) * totalVoiced;
+        words[i].startSec = i === 0 ? 0 : invVoicedTime(targetVStart);
+        words[i].endSec = invVoicedTime(targetVEnd);
+      }}
+    }}
+
     function syncKaraokeWord() {{
       if (!karaokeActive || !currentChapterWords.length || currentChapterTotalWeight <= 0) return;
       const dur = audioEl.duration;
       if (!Number.isFinite(dur) || dur <= 0) return;
       const curTime = audioEl.currentTime;
-      const progress = Math.min(1.0, Math.max(0, curTime / dur));
-      const targetWeight = progress * currentChapterTotalWeight;
 
-      let low = 0;
-      let high = currentChapterWords.length - 1;
       let foundIdx = 0;
-      while (low <= high) {{
-        const mid = (low + high) >> 1;
-        if (currentChapterWords[mid].cumWeight <= targetWeight) {{
-          foundIdx = mid;
-          low = mid + 1;
-        }} else {{
-          high = mid - 1;
+      if (currentChapterWords[0] && currentChapterWords[0].startSec !== undefined) {{
+        let low = 0;
+        let high = currentChapterWords.length - 1;
+        while (low <= high) {{
+          const mid = (low + high) >> 1;
+          if (currentChapterWords[mid].startSec <= curTime) {{
+            foundIdx = mid;
+            low = mid + 1;
+          }} else {{
+            high = mid - 1;
+          }}
+        }}
+      }} else {{
+        const progress = Math.min(1.0, Math.max(0, curTime / dur));
+        const targetWeight = progress * currentChapterTotalWeight;
+        let low = 0;
+        let high = currentChapterWords.length - 1;
+        while (low <= high) {{
+          const mid = (low + high) >> 1;
+          if (currentChapterWords[mid].cumWeight <= targetWeight) {{
+            foundIdx = mid;
+            low = mid + 1;
+          }} else {{
+            high = mid - 1;
+          }}
         }}
       }}
 
@@ -2001,6 +2077,9 @@ def generate_books_html() -> None:
       audioEl.load();
 
       try {{
+        if (currentChapterWords && currentChapterWords.length && trackInfo) {{
+          buildAcousticWordTimeline(currentChapterWords, currentChapterTotalWeight, trackInfo);
+        }}
         await audioEl.play();
         requestScreenWakeLock();
         karaokeActive = true;
@@ -2379,6 +2458,12 @@ def generate_books_html() -> None:
       currentChapterTotalWeight = totalWeight;
       activeWordIdx = -1;
 
+      // Calibrate acoustic timeline if audio track metadata / silences exist
+      const trackInfo = findAudioTrack(currentBook, trackType, index);
+      if (trackInfo) {{
+        buildAcousticWordTimeline(currentChapterWords, currentChapterTotalWeight, trackInfo);
+      }}
+
       // Sync reader listen button state
       const isCurrentlyPlayingThis = (!audioEl.paused && currentTrackType === trackType && currentItemIndex === index);
       updateReaderPlayButton(isCurrentlyPlayingThis);
@@ -2395,13 +2480,17 @@ def generate_books_html() -> None:
       if (!span) return;
       const wIdx = parseInt(span.getAttribute("data-word-idx"), 10);
       if (Number.isFinite(wIdx) && currentChapterWords[wIdx]) {{
-        const dur = audioEl.duration;
-        if (Number.isFinite(dur) && dur > 0 && currentChapterTotalWeight > 0) {{
-          const targetTime = (currentChapterWords[wIdx].cumWeight / currentChapterTotalWeight) * dur;
-          audioEl.currentTime = targetTime;
-          if (audioEl.paused) {{
-            audioEl.play();
+        if (currentChapterWords[wIdx].startSec !== undefined) {{
+          audioEl.currentTime = currentChapterWords[wIdx].startSec;
+        }} else {{
+          const dur = audioEl.duration;
+          if (Number.isFinite(dur) && dur > 0 && currentChapterTotalWeight > 0) {{
+            const targetTime = (currentChapterWords[wIdx].cumWeight / currentChapterTotalWeight) * dur;
+            audioEl.currentTime = targetTime;
           }}
+        }}
+        if (audioEl.paused) {{
+          audioEl.play();
         }}
       }}
     }});

@@ -161,6 +161,125 @@ class TestKaraokeVoiceSyncCalibration(unittest.TestCase):
                     f"{ch.name} Seek Invertibility failed: sought word {target_idx} but resolved to {resolved_idx}",
                 )
 
+        # 3. Verify acoustic silence map and timeline integration for audio tracks
+        audio_idx_path = APP_ROOT / "assets" / "books_audio_index.json"
+        self.assertTrue(audio_idx_path.is_file(), "books_audio_index.json must exist")
+        audio_idx = json.loads(audio_idx_path.read_text(encoding="utf-8"))
+        files = audio_idx.get("files", [])
+        self.assertGreaterEqual(len(files), 7, "Must have at least 7 audio files indexed")
+
+        for f in files:
+            silences = f.get("silences", [])
+            self.assertGreater(
+                len(silences),
+                20,
+                f"{f.get('url')} missing calibrated silence intervals in books_audio_index.json",
+            )
+            # Verify silence intervals are strictly monotonic
+            last_e = 0.0
+            for pair in silences:
+                self.assertGreaterEqual(pair[0], last_e, f"{f.get('url')} silence start < previous end")
+                self.assertGreater(pair[1], pair[0], f"{f.get('url')} silence end <= start")
+                last_e = pair[1]
+
+        # 4. Verify buildAcousticWordTimeline exists in books.html and chapter pages
+        self.assertIn("function buildAcousticWordTimeline", books_html, "books.html must define buildAcousticWordTimeline")
+        gene_step1 = CHAPTERS_DIR / "the-gene" / "step_1.html"
+        self.assertTrue(gene_step1.is_file(), "the-gene/step_1.html must exist")
+        gene_content = gene_step1.read_text(encoding="utf-8")
+        self.assertIn("buildAcousticWordTimeline", gene_content, "step_1.html must define buildAcousticWordTimeline")
+        self.assertIn("const AUDIO_SILENCES", gene_content, "step_1.html must define AUDIO_SILENCES")
+
+        # 5. Verify Node VM Acoustic Timeline calibration on The Gene Step 1
+        node_script = r"""
+const fs = require('fs'), vm = require('vm'), assert = require('assert');
+const html = fs.readFileSync(0, 'utf8');
+
+const mWords = html.match(/const WORDS_DATA = (\[.*?\]);/);
+const mWeight = html.match(/const TOTAL_WEIGHT = (\d+);/);
+const mSilences = html.match(/const AUDIO_SILENCES = (\[.*?\]);/);
+const mDur = html.match(/const AUDIO_DURATION = ([\d.]+);/);
+
+assert.ok(mWords, 'Missing WORDS_DATA');
+assert.ok(mWeight, 'Missing TOTAL_WEIGHT');
+assert.ok(mSilences, 'Missing AUDIO_SILENCES');
+assert.ok(mDur, 'Missing AUDIO_DURATION');
+
+const words = JSON.parse(mWords[1]);
+const totalWeight = parseInt(mWeight[1], 10);
+const silences = JSON.parse(mSilences[1]);
+const totalDur = parseFloat(mDur[1]);
+
+assert.ok(words.length > 5000, 'The Gene Step 1 should have >5000 words');
+assert.ok(silences.length > 100, 'The Gene Step 1 should have >100 silences');
+
+// Execute buildAcousticWordTimeline logic
+function voicedTimeAt(t) {
+  const clamped = Math.max(0, Math.min(totalDur, t));
+  let v = clamped;
+  for (let i = 0; i < silences.length; i++) {
+    const s = silences[i][0];
+    const e = silences[i][1];
+    if (clamped <= s) break;
+    v -= (Math.min(clamped, e) - s);
+  }
+  return Math.max(0, v);
+}
+
+function invVoicedTime(targetV) {
+  let lo = 0, hi = totalDur;
+  for (let iter = 0; iter < 26; iter++) {
+    const mid = (lo + hi) * 0.5;
+    if (voicedTimeAt(mid) < targetV) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) * 0.5;
+}
+
+const totalVoiced = voicedTimeAt(totalDur);
+assert.ok(totalVoiced > 1000, 'Total voiced duration must be >1000s');
+
+for (let i = 0; i < words.length; i++) {
+  const targetVStart = (words[i].c / totalWeight) * totalVoiced;
+  const targetVEnd = ((words[i].c + words[i].w) / totalWeight) * totalVoiced;
+  words[i].startSec = i === 0 ? 0 : invVoicedTime(targetVStart);
+  words[i].endSec = invVoicedTime(targetVEnd);
+}
+
+// Verify monotonicity of acoustic startSec
+for (let i = 1; i < words.length; i++) {
+  assert.ok(words[i].startSec >= words[i-1].startSec, `Word ${i} startSec inversion`);
+}
+
+// Verify speech start and speech end
+assert.strictEqual(words[0].startSec, 0, 'Word 0 must start at 0s');
+assert.ok(words[words.length - 1].endSec >= totalDur - 1.0, 'Final word must reach audio end');
+
+// Verify that at t=5.6s (title end), active word is near Word 12
+let found1 = 0;
+for (let i = 0; i < words.length; i++) {
+  if (words[i].startSec <= 5.6) found1 = i;
+  else break;
+}
+assert.ok(Math.abs(found1 - 12) <= 4, `Title end alignment: expected ~12, got ${found1}`);
+
+console.log('✓ Books Library Acoustic Timeline Calibration Gate Passed');
+process.exit(0);
+""";
+
+        proc = subprocess.run(
+            [NODE_BIN, "-e", node_script],
+            input=gene_content,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(
+            proc.returncode,
+            0,
+            f"Node VM Books Library calibration failed:\nSTDOUT: {proc.stdout}\nSTDERR: {proc.stderr}",
+        )
+
     def test_zorba_reels_acoustic_voice_sync_calibration_gate(self) -> None:
         """Calibrate Zorba Reels acoustic timeline, voice start/end alignment, and word spotlight highlighting."""
         self.assertTrue(ZORBA_HTML_PATH.is_file(), "zorba.html must exist")

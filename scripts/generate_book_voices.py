@@ -23,6 +23,7 @@ LIBERATION_LIB_DIR = Path.home() / "Downloads" / "Liberation_Library"
 AUDIO_BOOKS_DIR = APP_ROOT / "audio" / "books"
 
 sys.path.insert(0, str(WIKI_ROOT / "scripts"))
+sys.path.insert(0, str(APP_ROOT / "scripts"))
 
 from transcript_cards import (
     LIBERATION_LIBRARY_CATALOG,
@@ -31,6 +32,10 @@ from transcript_cards import (
 from server import (
     split_tts_text_chunks,
     synthesize_gemini_neural_tts,
+)
+from calibrate_books_audio_sync import (
+    extract_mp3_silences,
+    calibrate_all_audio_timings,
 )
 
 
@@ -152,7 +157,8 @@ def generate_book_audio(
 
             if mp3_path.is_file() and mp3_path.stat().st_size > 1000 and not overwrite:
                 dur = get_mp3_duration_sec(mp3_path)
-                print(f"  [{idx}/{len(raw_items)}] ✓ Cached: {fname} ({dur:.1f}s, {mp3_path.stat().st_size:,} bytes) - {label[:45]}")
+                sils = extract_mp3_silences(mp3_path)
+                print(f"  [{idx}/{len(raw_items)}] ✓ Cached: {fname} ({dur:.1f}s, {len(sils)} silences) - {label[:45]}")
                 track_entries.append({
                     "index": idx,
                     "label": label,
@@ -161,6 +167,7 @@ def generate_book_audio(
                     "file": fname,
                     "durationSec": dur,
                     "sizeBytes": mp3_path.stat().st_size,
+                    "silences": sils,
                 })
                 continue
 
@@ -178,7 +185,8 @@ def generate_book_audio(
             if mp3_bytes:
                 mp3_path.write_bytes(mp3_bytes)
                 dur = get_mp3_duration_sec(mp3_path)
-                print(f"     ✓ Done in {elapsed:.1f}s -> {len(mp3_bytes):,} bytes ({dur:.1f}s audio)")
+                sils = extract_mp3_silences(mp3_path)
+                print(f"     ✓ Done in {elapsed:.1f}s -> {len(mp3_bytes):,} bytes ({dur:.1f}s audio, {len(sils)} silences)")
                 track_entries.append({
                     "index": idx,
                     "label": label,
@@ -187,6 +195,7 @@ def generate_book_audio(
                     "file": fname,
                     "durationSec": dur,
                     "sizeBytes": len(mp3_bytes),
+                    "silences": sils,
                 })
             else:
                 print(f"     ❌ Failed to synthesize audio for {label}")
@@ -224,6 +233,9 @@ def main():
             track_types=list(tracks),
             overwrite=args.overwrite,
         )
+
+    # Automatically calibrate acoustic silence maps and update books_audio_index.json
+    calibrate_all_audio_timings()
 
 
 if __name__ == "__main__":

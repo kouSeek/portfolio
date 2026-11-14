@@ -72,7 +72,7 @@ def render_markdown_to_html(md_text: str) -> tuple[str, list[dict], int]:
     word_index = 0
     words_list = []
 
-    def wrap_words(text: str, line_type: str = "body") -> str:
+    def wrap_words(text: str, line_type: str = "body", is_block_end: bool = False) -> str:
         nonlocal word_index
         tokens = re.split(r"(\s+)", text)
         non_ws = [t for t in tokens if t and not re.match(r"^\s+$", t)]
@@ -91,28 +91,33 @@ def render_markdown_to_html(md_text: str) -> tuple[str, list[dict], int]:
             weight = max(3, len(clean))
             if line_type in ("h1", "h2"):
                 weight += 2
+            elif line_type == "quote":
+                weight += 1
+
             if re.search(r"[.?!]$", clean) or re.search(r'[.?!]["\'\)\]]*$', tok):
                 weight += 6
             elif re.search(r"[,;:—–·]$", clean) or re.search(r'[,;:—–·]["\'\)\]]*$', tok) or tok in ("—", "–", "·"):
                 weight += 3
+
+            # Calibrated block & pairing pause weights
             if is_last:
                 if line_type == "h1":
-                    weight += 40
+                    weight += 20
                 elif line_type == "h2":
-                    weight += 52
+                    weight += 18
                 elif line_type == "h3":
-                    weight += 10
+                    weight += 16
                 elif line_type == "quote":
-                    weight += 2
-                else:
-                    weight += 6
+                    weight += (18 if is_block_end else 10)
+                else: # body paragraph
+                    weight += (16 if is_block_end else 4)
 
             words_list.append({"idx": w_idx, "word": clean, "weight": weight})
             escaped_tok = html.escape(tok)
             res.append(f'<span class="k-word" data-word-idx="{w_idx}" id="w_{w_idx}">{escaped_tok}</span>')
         return "".join(res)
 
-    for line in lines:
+    for i, line in enumerate(lines):
         line_s = line.strip()
         if not line_s:
             if in_quote:
@@ -120,32 +125,35 @@ def render_markdown_to_html(md_text: str) -> tuple[str, list[dict], int]:
                 in_quote = False
             continue
 
+        is_quote = line_s.startswith(">")
+        is_block_end = (i + 1 >= len(lines)) or not lines[i + 1].strip() or lines[i + 1].strip().startswith("#") or (lines[i + 1].strip().startswith(">") != is_quote)
+
         if line_s.startswith(">"):
             if not in_quote:
                 body_parts.append('<blockquote class="chapter-spoken-brief">')
                 in_quote = True
             quote_text = re.sub(r"^>\s*", "", line_s)
-            body_parts.append(f"<p>{wrap_words(quote_text, 'quote')}</p>")
+            body_parts.append(f"<p>{wrap_words(quote_text, 'quote', is_block_end=is_block_end)}</p>")
         elif line_s.startswith("### "):
             if in_quote:
                 body_parts.append("</blockquote>")
                 in_quote = False
-            body_parts.append(f'<h3 class="section-heading">{wrap_words(line_s[4:], "h3")}</h3>')
+            body_parts.append(f'<h3 class="section-heading">{wrap_words(line_s[4:], "h3", is_block_end=True)}</h3>')
         elif line_s.startswith("## "):
             if in_quote:
                 body_parts.append("</blockquote>")
                 in_quote = False
-            body_parts.append(f'<h2 class="chapter-prose-title">{wrap_words(line_s[3:], "h2")}</h2>')
+            body_parts.append(f'<h2 class="chapter-prose-title">{wrap_words(line_s[3:], "h2", is_block_end=True)}</h2>')
         elif line_s.startswith("# "):
             if in_quote:
                 body_parts.append("</blockquote>")
                 in_quote = False
-            body_parts.append(f'<h1 class="chapter-prose-title">{wrap_words(line_s[2:], "h1")}</h1>')
+            body_parts.append(f'<h1 class="chapter-prose-title">{wrap_words(line_s[2:], "h1", is_block_end=True)}</h1>')
         else:
             if in_quote:
                 body_parts.append("</blockquote>")
                 in_quote = False
-            body_parts.append(f"<p>{wrap_words(line_s, 'body')}</p>")
+            body_parts.append(f"<p>{wrap_words(line_s, 'body', is_block_end=is_block_end)}</p>")
 
     if in_quote:
         body_parts.append("</blockquote>")
@@ -203,6 +211,8 @@ def build_chapter_html(
     words_json = json.dumps([{"c": w["cum"], "w": w["weight"]} for w in words_list])
 
     audio_url = f"{GH_RAW_AUDIO_BASE}{audio_track['url']}" if audio_track else ""
+    audio_dur = float(audio_track.get("durationSec") or 0.0) if audio_track else 0.0
+    audio_silences_json = json.dumps(audio_track.get("silences", [])) if audio_track else "[]"
     has_audio = bool(audio_url)
 
     step_title_short = f"Step {index}" if track_type == "adhd" else f"Ch {index}"
@@ -797,9 +807,64 @@ def build_chapter_html(
     }})();
 
     const AUDIO_URL = "{audio_url}";
+    const AUDIO_DURATION = {audio_dur};
+    const AUDIO_SILENCES = {audio_silences_json};
     const CACHE_NAME = "kortex-books-v1";
     const WORDS_DATA = {words_json};
     const TOTAL_WEIGHT = {total_weight};
+    let timelineCalibrated = false;
+
+    function buildAcousticWordTimeline(words, totalWeight, audioMeta) {{
+      if (!words || !words.length || totalWeight <= 0) return;
+      const totalDur = (audioMeta && Number(audioMeta.dur) > 0.5)
+        ? Number(audioMeta.dur)
+        : (audioEl && audioEl.duration > 0 ? audioEl.duration : AUDIO_DURATION);
+      if (totalDur <= 0) return;
+
+      const rawSilences = (audioMeta && Array.isArray(audioMeta.silences)) ? audioMeta.silences : (AUDIO_SILENCES || []);
+      if (!rawSilences.length) {{
+        for (let i = 0; i < words.length; i++) {{
+          words[i].startSec = (words[i].c / totalWeight) * totalDur;
+          words[i].endSec = ((words[i].c + words[i].w) / totalWeight) * totalDur;
+        }}
+        timelineCalibrated = true;
+        return;
+      }}
+
+      function voicedTimeAt(t) {{
+        const clamped = Math.max(0, Math.min(totalDur, t));
+        let v = clamped;
+        for (let i = 0; i < rawSilences.length; i++) {{
+          const s = rawSilences[i][0];
+          const e = rawSilences[i][1];
+          if (clamped <= s) break;
+          v -= (Math.min(clamped, e) - s);
+        }}
+        return Math.max(0, v);
+      }}
+
+      function invVoicedTime(targetV) {{
+        let lo = 0;
+        let hi = totalDur;
+        for (let iter = 0; iter < 26; iter++) {{
+          const mid = (lo + hi) * 0.5;
+          if (voicedTimeAt(mid) < targetV) lo = mid;
+          else hi = mid;
+        }}
+        return (lo + hi) * 0.5;
+      }}
+
+      const totalVoiced = voicedTimeAt(totalDur);
+      if (totalVoiced <= 0) return;
+
+      for (let i = 0; i < words.length; i++) {{
+        const targetVStart = (words[i].c / totalWeight) * totalVoiced;
+        const targetVEnd = ((words[i].c + words[i].w) / totalWeight) * totalVoiced;
+        words[i].startSec = i === 0 ? 0 : invVoicedTime(targetVStart);
+        words[i].endSec = invVoicedTime(targetVEnd);
+      }}
+      timelineCalibrated = true;
+    }}
 
     let audioEl = document.getElementById("playerAudio");
     let activeBlobUrl = null;
@@ -921,22 +986,36 @@ def build_chapter_html(
     // Sync Karaoke Word
     function syncKaraokeWord() {{
       if (!karaokeActive || !WORDS_DATA.length || TOTAL_WEIGHT <= 0) return;
-      const dur = audioEl.duration;
+      const dur = (audioEl && audioEl.duration > 0) ? audioEl.duration : AUDIO_DURATION;
       if (!Number.isFinite(dur) || dur <= 0) return;
       const cur = audioEl.currentTime;
-      const progress = Math.min(1.0, Math.max(0, cur / dur));
-      const targetWeight = progress * TOTAL_WEIGHT;
 
-      let low = 0;
-      let high = WORDS_DATA.length - 1;
       let foundIdx = 0;
-      while (low <= high) {{
-        const mid = (low + high) >> 1;
-        if (WORDS_DATA[mid].c <= targetWeight) {{
-          foundIdx = mid;
-          low = mid + 1;
-        }} else {{
-          high = mid - 1;
+      if (WORDS_DATA[0].startSec !== undefined) {{
+        let low = 0;
+        let high = WORDS_DATA.length - 1;
+        while (low <= high) {{
+          const mid = (low + high) >> 1;
+          if (WORDS_DATA[mid].startSec <= cur) {{
+            foundIdx = mid;
+            low = mid + 1;
+          }} else {{
+            high = mid - 1;
+          }}
+        }}
+      }} else {{
+        const progress = Math.min(1.0, Math.max(0, cur / dur));
+        const targetWeight = progress * TOTAL_WEIGHT;
+        let low = 0;
+        let high = WORDS_DATA.length - 1;
+        while (low <= high) {{
+          const mid = (low + high) >> 1;
+          if (WORDS_DATA[mid].c <= targetWeight) {{
+            foundIdx = mid;
+            low = mid + 1;
+          }} else {{
+            high = mid - 1;
+          }}
         }}
       }}
 
@@ -965,6 +1044,12 @@ def build_chapter_html(
     audioEl.addEventListener("play", () => {{
       syncPlayButtonUi(true);
       karaokeActive = true;
+      if (!timelineCalibrated) {{
+        buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, {{ dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES }});
+      }}
+    }});
+    audioEl.addEventListener("loadedmetadata", () => {{
+      buildAcousticWordTimeline(WORDS_DATA, TOTAL_WEIGHT, {{ dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES }});
     }});
     audioEl.addEventListener("pause", () => {{
       syncPlayButtonUi(false);
@@ -1011,14 +1096,15 @@ def build_chapter_html(
       if (!span) return;
       const wIdx = parseInt(span.getAttribute("data-word-idx"), 10);
       if (Number.isFinite(wIdx) && WORDS_DATA[wIdx]) {{
-        const dur = audioEl.duration;
-        if (Number.isFinite(dur) && dur > 0 && TOTAL_WEIGHT > 0) {{
-          const targetTime = (WORDS_DATA[wIdx].c / TOTAL_WEIGHT) * dur;
-          audioEl.currentTime = targetTime;
-          if (audioEl.paused) {{
-            toggleAudioPlay();
+        if (WORDS_DATA[wIdx].startSec !== undefined) {{
+          audioEl.currentTime = WORDS_DATA[wIdx].startSec;
+        }} else {{
+          const dur = audioEl.duration || AUDIO_DURATION;
+          if (Number.isFinite(dur) && dur > 0 && TOTAL_WEIGHT > 0) {{
+            audioEl.currentTime = (WORDS_DATA[wIdx].c / TOTAL_WEIGHT) * dur;
           }}
-        }} else if (!audioLoaded) {{
+        }}
+        if (audioEl.paused) {{
           toggleAudioPlay();
         }}
       }}
