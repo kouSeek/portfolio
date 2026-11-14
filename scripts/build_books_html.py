@@ -2880,6 +2880,12 @@ def generate_books_html() -> None:
       if (!a) return;
       const href = a.getAttribute("href");
       if (!href) return;
+      if (currentBook) {{
+        const rowEl = a.closest(".chapter-row");
+        const lblEl = rowEl && rowEl.querySelector ? rowEl.querySelector(".chapter-label") : null;
+        const stepLabel = lblEl ? lblEl.textContent.trim() : "Step 1";
+        saveMobileBookProgress(currentBook, stepLabel, href);
+      }}
 
       const isOffline = (!navigator.onLine || window.__FORCE_OFFLINE__);
       if (isOffline) {{
@@ -2941,6 +2947,7 @@ def generate_books_html() -> None:
 
     // Render immediately from inlined data
     updateDynamicCounts();
+    renderInProgressBar();
     renderBooksGrid();
     updateOfflineStatus();
     updateStorageMetrics();
