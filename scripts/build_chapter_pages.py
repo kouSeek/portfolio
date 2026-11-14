@@ -12,6 +12,7 @@ Each chapter gets its own self-contained HTML page:
 
 from __future__ import annotations
 
+import base64
 import html
 import json
 import re
@@ -24,6 +25,13 @@ TEXT_VAULT_PATH = APP_ROOT / "assets" / "books_text_vault.json"
 CHAPTERS_DIR = APP_ROOT / "chapters"
 
 GH_RAW_AUDIO_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/"
+
+
+def b64_uri(path: Path, mime: str) -> str:
+    return ("data:" + mime + ";base64," + base64.b64encode(path.read_bytes()).decode("ascii")) if path.is_file() else ""
+
+
+FAV_BOOKS_B64 = b64_uri(APP_ROOT / "assets" / "icons" / "favicon-books.png", "image/png")
 
 
 def get_clean_slug(b: dict) -> str:
@@ -185,7 +193,11 @@ def build_chapter_html(
   <meta name="theme-color" content="#0F172A" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>{html.escape(step_title_short)} • {html.escape(book_title)}</title>
+  <title>{html.escape(step_title_short)} • {html.escape(book_title)} 📚</title>
+  <link id="pageFavicon" data-emoji="📚" data-png-b64="{FAV_BOOKS_B64}" data-https-png="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.png?v=1" data-https-ico="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.ico?v=1" rel="icon" type="image/png" sizes="64x64" href="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.png?v=1" />
+  <link rel="shortcut icon" type="image/x-icon" href="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.ico?v=1" />
+  <link rel="apple-touch-icon" sizes="64x64" href="{FAV_BOOKS_B64 or 'https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.png?v=1'}" />
+  <link rel="manifest" href="../../books-manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
@@ -727,6 +739,40 @@ def build_chapter_html(
   <audio id="playerAudio" preload="auto" playsinline webkit-playsinline></audio>
 
   <script>
+    (function hydratePageFavicon() {{
+      function apply() {{
+        try {{
+          if (!document.head || typeof document.createElement !== "function") return;
+          const el = document.getElementById("pageFavicon");
+          if (!el || !el.getAttribute) return;
+          const emoji = el.getAttribute("data-emoji") || "";
+          const b64 = el.getAttribute("data-png-b64") || "";
+          const httpsPng = el.getAttribute("data-https-png") || b64;
+          const httpsIco = el.getAttribute("data-https-ico") || httpsPng;
+          const useHttps = (typeof location !== "undefined" && /^https?:$/i.test(location.protocol) && (typeof navigator === "undefined" || navigator.onLine !== false));
+          const pngHref = useHttps ? httpsPng : (b64 || httpsPng);
+          const icoHref = useHttps ? httpsIco : (b64 || httpsIco);
+          document.querySelectorAll('link[rel*="icon"]').forEach(n => {{ if (n.parentNode) n.parentNode.removeChild(n); }});
+          const l1 = document.createElement("link");
+          l1.id = "pageFavicon";
+          l1.setAttribute("data-emoji", emoji);
+          l1.setAttribute("data-png-b64", b64);
+          l1.setAttribute("data-https-png", httpsPng);
+          l1.setAttribute("data-https-ico", httpsIco);
+          l1.rel = "icon"; l1.type = "image/png"; l1.sizes = "64x64"; l1.href = pngHref;
+          document.head.appendChild(l1);
+          const l2 = document.createElement("link");
+          l2.rel = "shortcut icon"; l2.type = useHttps ? "image/x-icon" : "image/png"; l2.href = icoHref;
+          document.head.appendChild(l2);
+          const l3 = document.createElement("link");
+          l3.rel = "apple-touch-icon"; l3.sizes = "64x64"; l3.href = b64 || pngHref;
+          document.head.appendChild(l3);
+        }} catch (e) {{}}
+      }}
+      apply();
+      if (typeof setTimeout === "function") setTimeout(apply, 90);
+    }})();
+
     const AUDIO_URL = "{audio_url}";
     const CACHE_NAME = "kortex-books-v1";
     const WORDS_DATA = {words_json};

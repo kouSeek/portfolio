@@ -363,6 +363,43 @@ class TestBooksOfflineFlightMode(unittest.TestCase):
         self.assertEqual(res.returncode, 0, f"Headless Node VM failed:\nSTDOUT:\n{res.stdout}\nSTDERR:\n{res.stderr}")
         self.assertIn("ALL OFFLINE FLIGHT MODE TESTS PASSED!", res.stdout)
 
+    def test_books_favicon_and_manifest_pwa(self) -> None:
+        """Verify books library has dedicated mobile favicons, PWA manifest, and client hydration."""
+        icons_dir = APP_ROOT / "assets" / "icons"
+        self.assertTrue((icons_dir / "favicon-books.png").is_file(), "favicon-books.png missing")
+        self.assertTrue((icons_dir / "favicon-books-192.png").is_file(), "favicon-books-192.png missing")
+        self.assertTrue((icons_dir / "favicon-books-512.png").is_file(), "favicon-books-512.png missing")
+        self.assertTrue((icons_dir / "favicon-books.ico").is_file(), "favicon-books.ico missing")
+        self.assertTrue((icons_dir / "favicon-books.svg").is_file(), "favicon-books.svg missing")
+
+        manifest_path = APP_ROOT / "books-manifest.json"
+        self.assertTrue(manifest_path.is_file(), "books-manifest.json missing")
+        manifest_data = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertIn("Books Library 📚", manifest_data["name"])
+        self.assertIn("Books 📚", manifest_data["short_name"])
+        icon_srcs = [i["src"] for i in manifest_data.get("icons", [])]
+        self.assertTrue(any("favicon-books-192.png" in s for s in icon_srcs))
+        self.assertTrue(any("favicon-books-512.png" in s for s in icon_srcs))
+
+        # Check books.html
+        books_html = BOOKS_HTML_PATH.read_text(encoding="utf-8")
+        self.assertIn("<title>Books Library 📚</title>", books_html)
+        self.assertIn('id="pageFavicon"', books_html)
+        self.assertIn('data-emoji="📚"', books_html)
+        self.assertIn('data-png-b64="data:image/png;base64,', books_html)
+        self.assertIn('rel="manifest" href="books-manifest.json"', books_html)
+        self.assertIn("hydratePageFavicon", books_html)
+
+        # Check a sample chapter page
+        sample_ch = CHAPTERS_DIR / "the-gene" / "step_1.html"
+        self.assertTrue(sample_ch.is_file(), f"Sample chapter missing: {sample_ch}")
+        ch_html = sample_ch.read_text(encoding="utf-8")
+        self.assertIn("<title>Step 1 • The Gene: An Intimate History 📚</title>", ch_html)
+        self.assertIn('id="pageFavicon"', ch_html)
+        self.assertIn('data-emoji="📚"', ch_html)
+        self.assertIn('rel="manifest" href="../../books-manifest.json"', ch_html)
+        self.assertIn("hydratePageFavicon", ch_html)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

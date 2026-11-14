@@ -8,6 +8,7 @@ so the page requires ZERO external JSON fetches on `htmlpreview.github.io` or mo
 
 from __future__ import annotations
 
+import base64
 import json
 from pathlib import Path
 import re
@@ -18,6 +19,10 @@ AUDIO_INDEX_PATH = APP_ROOT / "assets" / "books_audio_index.json"
 GENE_TEXT_PATH = APP_ROOT / "assets" / "books_text" / "01_the_gene_an_intimate_history_siddhartha_mukherjee_complete.json"
 CODE_TEXT_PATH = APP_ROOT / "assets" / "books_text" / "14_the_code_book_simon_singh.json"
 OUTPUT_PATH = APP_ROOT / "books.html"
+
+
+def b64_uri(path: Path, mime: str) -> str:
+    return ("data:" + mime + ";base64," + base64.b64encode(path.read_bytes()).decode("ascii")) if path.is_file() else ""
 
 
 def get_clean_book_slug_py(b: dict) -> str:
@@ -72,6 +77,9 @@ def generate_books_html() -> None:
     }
     inlined_text_json = json.dumps(inlined_text_dict, ensure_ascii=False)
 
+    fav_png_path = APP_ROOT / "assets" / "icons" / "favicon-books.png"
+    fav_b64 = b64_uri(fav_png_path, "image/png")
+
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,6 +91,10 @@ def generate_books_html() -> None:
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="description" content="Liberation Books Library — Non-linear core cuts and full audiobooks for offline reading & listening." />
   <title>Books Library 📚</title>
+  <link id="pageFavicon" data-emoji="📚" data-png-b64="{fav_b64}" data-https-png="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.png?v=1" data-https-ico="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.ico?v=1" rel="icon" type="image/png" sizes="64x64" href="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.png?v=1" />
+  <link rel="shortcut icon" type="image/x-icon" href="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.ico?v=1" />
+  <link rel="apple-touch-icon" sizes="64x64" href="{fav_b64 or 'https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.png?v=1'}" />
+  <link rel="manifest" href="books-manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
@@ -1180,6 +1192,40 @@ def generate_books_html() -> None:
   <audio id="audioElement" preload="metadata"></audio>
 
   <script>
+    (function hydratePageFavicon() {{
+      function apply() {{
+        try {{
+          if (!document.head || typeof document.createElement !== "function") return;
+          const el = document.getElementById("pageFavicon");
+          if (!el || !el.getAttribute) return;
+          const emoji = el.getAttribute("data-emoji") || "";
+          const b64 = el.getAttribute("data-png-b64") || "";
+          const httpsPng = el.getAttribute("data-https-png") || b64;
+          const httpsIco = el.getAttribute("data-https-ico") || httpsPng;
+          const useHttps = (typeof location !== "undefined" && /^https?:$/i.test(location.protocol) && (typeof navigator === "undefined" || navigator.onLine !== false));
+          const pngHref = useHttps ? httpsPng : (b64 || httpsPng);
+          const icoHref = useHttps ? httpsIco : (b64 || httpsIco);
+          document.querySelectorAll('link[rel*="icon"]').forEach(n => {{ if (n.parentNode) n.parentNode.removeChild(n); }});
+          const l1 = document.createElement("link");
+          l1.id = "pageFavicon";
+          l1.setAttribute("data-emoji", emoji);
+          l1.setAttribute("data-png-b64", b64);
+          l1.setAttribute("data-https-png", httpsPng);
+          l1.setAttribute("data-https-ico", httpsIco);
+          l1.rel = "icon"; l1.type = "image/png"; l1.sizes = "64x64"; l1.href = pngHref;
+          document.head.appendChild(l1);
+          const l2 = document.createElement("link");
+          l2.rel = "shortcut icon"; l2.type = useHttps ? "image/x-icon" : "image/png"; l2.href = icoHref;
+          document.head.appendChild(l2);
+          const l3 = document.createElement("link");
+          l3.rel = "apple-touch-icon"; l3.sizes = "64x64"; l3.href = b64 || pngHref;
+          document.head.appendChild(l3);
+        }} catch (e) {{}}
+      }}
+      apply();
+      if (typeof setTimeout === "function") setTimeout(apply, 90);
+    }})();
+
     /* ==========================================================================
        INLINED CATALOG & AUDIO INDEX (100% SELF-CONTAINED, ZERO EXTERNAL JSON FETCHES)
        ========================================================================== */

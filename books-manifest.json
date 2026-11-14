@@ -1,0 +1,36 @@
+{
+  "name": "Liberation Books Library 📚 — KORTEX Mobile",
+  "short_name": "Books 📚",
+  "description": "Complete 29-book Liberation Library with audio chapters, word-by-word karaoke synchronization, and 100% offline flight mode.",
+  "lang": "en",
+  "start_url": "./books.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F172A",
+  "theme_color": "#0F172A",
+  "icons": [
+    {
+      "src": "assets/icons/favicon-books-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/favicon-books-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/favicon-books.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/favicon-books.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
