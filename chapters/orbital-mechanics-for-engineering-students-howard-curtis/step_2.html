@@ -52,11 +52,8 @@
       display: flex;
       flex-direction: column;
       padding-top: calc(var(--safe-top) + 56px);
-      padding-bottom: calc(var(--safe-bottom) + 36px);
-      transition: background 0.2s ease, color 0.2s ease;
-    }
-    body.has-active-player {
       padding-bottom: calc(var(--safe-bottom) + 110px);
+      transition: background 0.2s ease, color 0.2s ease;
     }
     /* Topbar */
     .topbar {
@@ -338,7 +335,7 @@
       border-color: var(--accent);
     }
 
-    /* Sticky Bottom Player Bar (only shown when audio is playing/active) */
+    /* Sticky Bottom Player Bar */
     .sticky-player {
       position: fixed;
       bottom: 0;
@@ -349,12 +346,9 @@
       padding: 10px 16px calc(var(--safe-bottom) + 10px);
       z-index: 60;
       box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
-      display: none;
+      display: flex;
       flex-direction: column;
       gap: 8px;
-    }
-    body.has-active-player .sticky-player {
-      display: flex;
     }
     .player-progress-wrap {
       display: flex;
@@ -473,7 +467,7 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="back-btn" id="navBackBtn" href="../../books.html#book=orbital-mechanics-for-engineering-students-howard-curtis">← Library</a>
+    <a class="back-btn" id="navBackBtn" href="../../books.html">← Library</a>
     <div class="top-title">Orbital Mechanics for Engineering Students</div>
     <div class="top-actions">
       <button class="btn-icon" id="btnFontSmaller">A-</button>
@@ -784,7 +778,7 @@
 
     <nav class="nav-footer">
       <a href="step_1.html">← Previous Chapter</a>
-      <a class="primary" href="../../books.html#book=orbital-mechanics-for-engineering-students-howard-curtis">📚 All Books</a>
+      <a class="primary" href="../../books.html">📚 All Books</a>
       <span style="flex:1;"></span>
     </nav>
   </main>
@@ -1012,11 +1006,6 @@
       const tBtn = document.getElementById("btnTopListen");
       if (bBtn) bBtn.textContent = isPlaying ? "⏸" : "▶";
       if (tBtn) tBtn.textContent = isPlaying ? "⏸ Pause" : "▶️ Listen";
-      if (isPlaying) {
-        document.body.classList.add("has-active-player");
-        const sp = document.getElementById("stickyPlayer");
-        if (sp) sp.style.display = "flex";
-      }
     }
 
     async function toggleAudioPlay() {

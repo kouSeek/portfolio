@@ -2341,9 +2341,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 51910272,
     "adhd_total_pages": 44,
     "adhd_total_minutes": 66,
     "adhd_volume_pct": 27.8,
@@ -3585,9 +3585,9 @@
         "totalChapters": 7
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 14709120,
     "adhd_total_pages": 60,
     "adhd_total_minutes": 90,
     "adhd_volume_pct": 18.3,
@@ -3752,9 +3752,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 9504192,
     "adhd_total_pages": 48,
     "adhd_total_minutes": 72,
     "adhd_volume_pct": 13.6,
@@ -3935,9 +3935,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 15820800,
     "adhd_total_pages": 64,
     "adhd_total_minutes": 96,
     "adhd_volume_pct": 14.3,
