@@ -183,9 +183,9 @@
         "totalChapters": 7
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 65659392,
     "adhd_total_pages": 54,
     "adhd_total_minutes": 81,
     "adhd_volume_pct": 8.7,
@@ -411,9 +411,9 @@
         "totalChapters": 9
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 57582912,
     "adhd_total_pages": 54,
     "adhd_total_minutes": 81,
     "adhd_volume_pct": 11.5,
@@ -655,9 +655,9 @@
         "totalChapters": 9
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 5,
+    "audio_bytes": 69441792,
     "adhd_total_pages": 53,
     "adhd_total_minutes": 80,
     "adhd_volume_pct": 14.6,
@@ -883,9 +883,9 @@
         "totalChapters": 9
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 99496896,
     "adhd_total_pages": 59,
     "adhd_total_minutes": 88,
     "adhd_volume_pct": 6.1,
@@ -1082,9 +1082,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 5,
+    "audio_bytes": 92223168,
     "adhd_total_pages": 69,
     "adhd_total_minutes": 104,
     "adhd_volume_pct": 15.0,
@@ -1249,9 +1249,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 33776256,
     "adhd_total_pages": 43,
     "adhd_total_minutes": 64,
     "adhd_volume_pct": 9.1,
@@ -1370,9 +1370,9 @@
         "totalChapters": 4
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 2,
+    "audio_bytes": 43724736,
     "adhd_total_pages": 26,
     "adhd_total_minutes": 39,
     "adhd_volume_pct": 23.2,
@@ -1522,9 +1522,9 @@
         "totalChapters": 5
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 65542464,
     "adhd_total_pages": 42,
     "adhd_total_minutes": 63,
     "adhd_volume_pct": 5.4,
@@ -1628,9 +1628,9 @@
         "totalChapters": 3
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 2,
+    "audio_bytes": 15993408,
     "adhd_total_pages": 34,
     "adhd_total_minutes": 51,
     "adhd_volume_pct": 19.9,
@@ -1749,9 +1749,9 @@
         "totalChapters": 4
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 2,
+    "audio_bytes": 23154432,
     "adhd_total_pages": 29,
     "adhd_total_minutes": 44,
     "adhd_volume_pct": 15.8,
@@ -1916,9 +1916,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 73832448,
     "adhd_total_pages": 40,
     "adhd_total_minutes": 60,
     "adhd_volume_pct": 2.6,
@@ -2022,9 +2022,9 @@
         "totalChapters": 3
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 2,
+    "audio_bytes": 8291904,
     "adhd_total_pages": 35,
     "adhd_total_minutes": 52,
     "adhd_volume_pct": 10.4,
@@ -2174,9 +2174,9 @@
         "totalChapters": 5
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 79383360,
     "adhd_total_pages": 46,
     "adhd_total_minutes": 69,
     "adhd_volume_pct": 27.5,
@@ -2341,9 +2341,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 51910272,
     "adhd_total_pages": 44,
     "adhd_total_minutes": 66,
     "adhd_volume_pct": 27.8,
@@ -2462,9 +2462,9 @@
         "totalChapters": 4
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 2,
+    "audio_bytes": 59013696,
     "adhd_total_pages": 36,
     "adhd_total_minutes": 54,
     "adhd_volume_pct": 22.2,
@@ -2659,9 +2659,9 @@
         "totalChapters": 8
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 38475456,
     "adhd_total_pages": 58,
     "adhd_total_minutes": 87,
     "adhd_volume_pct": 8.3,
@@ -2872,9 +2872,9 @@
         "totalChapters": 8
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 92900736,
     "adhd_total_pages": 54,
     "adhd_total_minutes": 81,
     "adhd_volume_pct": 25.6,
@@ -3008,9 +3008,9 @@
         "totalChapters": 5
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 2,
+    "audio_bytes": 4429056,
     "adhd_total_pages": 32,
     "adhd_total_minutes": 48,
     "adhd_volume_pct": 6.8,
@@ -3251,9 +3251,9 @@
         "totalChapters": 10
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 27468480,
     "adhd_total_pages": 46,
     "adhd_total_minutes": 69,
     "adhd_volume_pct": 38.3,
@@ -3387,9 +3387,9 @@
         "totalChapters": 5
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 2,
+    "audio_bytes": 2655744,
     "adhd_total_pages": 34,
     "adhd_total_minutes": 51,
     "adhd_volume_pct": 4.9,
@@ -3585,9 +3585,9 @@
         "totalChapters": 7
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 14709120,
     "adhd_total_pages": 60,
     "adhd_total_minutes": 90,
     "adhd_volume_pct": 18.3,
@@ -3752,9 +3752,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 9504192,
     "adhd_total_pages": 48,
     "adhd_total_minutes": 72,
     "adhd_volume_pct": 13.6,
@@ -3935,9 +3935,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 15820800,
     "adhd_total_pages": 64,
     "adhd_total_minutes": 96,
     "adhd_volume_pct": 14.3,
@@ -4133,9 +4133,9 @@
         "totalChapters": 7
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 11317248,
     "adhd_total_pages": 63,
     "adhd_total_minutes": 94,
     "adhd_volume_pct": 8.4,
@@ -4331,9 +4331,9 @@
         "totalChapters": 7
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 26586432,
     "adhd_total_pages": 83,
     "adhd_total_minutes": 124,
     "adhd_volume_pct": 9.4,
@@ -4529,9 +4529,9 @@
         "totalChapters": 7
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 16402368,
     "adhd_total_pages": 82,
     "adhd_total_minutes": 123,
     "adhd_volume_pct": 12.3,
@@ -4727,9 +4727,9 @@
         "totalChapters": 7
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 26201664,
     "adhd_total_pages": 94,
     "adhd_total_minutes": 141,
     "adhd_volume_pct": 12.1,
@@ -4910,9 +4910,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 9826944,
     "adhd_total_pages": 64,
     "adhd_total_minutes": 96,
     "adhd_volume_pct": 24.9,
@@ -5109,9 +5109,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 5,
+    "audio_bytes": 43389120,
     "adhd_total_pages": 95,
     "adhd_total_minutes": 142,
     "adhd_volume_pct": 11.1,
@@ -5259,9 +5259,9 @@
         "totalChapters": 5
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 4440768,
     "adhd_total_pages": 42,
     "adhd_total_minutes": 45,
     "adhd_volume_pct": 15.4,
@@ -5424,9 +5424,9 @@
         "totalChapters": 5
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 5028672,
     "adhd_total_pages": 56,
     "adhd_total_minutes": 60,
     "adhd_volume_pct": 6.6,
@@ -5559,9 +5559,9 @@
         "totalChapters": 4
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 3689856,
     "adhd_total_pages": 42,
     "adhd_total_minutes": 45,
     "adhd_volume_pct": 19.1,
@@ -5709,9 +5709,9 @@
         "totalChapters": 5
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 2720448,
     "adhd_total_pages": 42,
     "adhd_total_minutes": 45,
     "adhd_volume_pct": 13.5,
@@ -5829,9 +5829,9 @@
         "totalChapters": 3
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 2695872,
     "adhd_total_pages": 42,
     "adhd_total_minutes": 45,
     "adhd_volume_pct": 30.0,
@@ -5964,9 +5964,9 @@
         "totalChapters": 4
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 3071424,
     "adhd_total_pages": 42,
     "adhd_total_minutes": 45,
     "adhd_volume_pct": 15.0,
@@ -6144,9 +6144,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 4230528,
     "adhd_total_pages": 56,
     "adhd_total_minutes": 60,
     "adhd_volume_pct": 11.7,
@@ -6324,9 +6324,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 2770944,
     "adhd_total_pages": 56,
     "adhd_total_minutes": 60,
     "adhd_volume_pct": 13.3,
@@ -6504,9 +6504,9 @@
         "totalChapters": 6
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 4,
+    "audio_bytes": 2921664,
     "adhd_total_pages": 56,
     "adhd_total_minutes": 60,
     "adhd_volume_pct": 5.4,
@@ -6654,9 +6654,9 @@
         "totalChapters": 5
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 2153088,
     "adhd_total_pages": 42,
     "adhd_total_minutes": 45,
     "adhd_volume_pct": 17.5,
@@ -6789,9 +6789,9 @@
         "totalChapters": 4
       }
     ],
-    "has_audio": false,
-    "audio_count": 0,
-    "audio_bytes": 0,
+    "has_audio": true,
+    "audio_count": 3,
+    "audio_bytes": 2784960,
     "adhd_total_pages": 42,
     "adhd_total_minutes": 45,
     "adhd_volume_pct": 16.2,
