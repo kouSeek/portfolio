@@ -14,12 +14,24 @@ from pathlib import Path
 APP_ROOT = Path(__file__).resolve().parent.parent
 CATALOG_PATH = APP_ROOT / "assets" / "books_catalog.json"
 AUDIO_INDEX_PATH = APP_ROOT / "assets" / "books_audio_index.json"
+GENE_TEXT_PATH = APP_ROOT / "assets" / "books_text" / "01_the_gene_an_intimate_history_siddhartha_mukherjee_complete.json"
+CODE_TEXT_PATH = APP_ROOT / "assets" / "books_text" / "14_the_code_book_simon_singh.json"
 OUTPUT_PATH = APP_ROOT / "books.html"
 
 
 def generate_books_html() -> None:
     catalog_json = CATALOG_PATH.read_text(encoding="utf-8") if CATALOG_PATH.is_file() else "[]"
     audio_index_json = AUDIO_INDEX_PATH.read_text(encoding="utf-8") if AUDIO_INDEX_PATH.is_file() else "{}"
+
+    gene_text = json.loads(GENE_TEXT_PATH.read_text(encoding="utf-8")) if GENE_TEXT_PATH.is_file() else {}
+    code_text = json.loads(CODE_TEXT_PATH.read_text(encoding="utf-8")) if CODE_TEXT_PATH.is_file() else {}
+    inlined_text_dict = {
+        "01_the_gene_an_intimate_history_siddhartha_mukherjee_complete": gene_text,
+        "the-gene": gene_text,
+        "14_the_code_book_simon_singh": code_text,
+        "the-code-book": code_text,
+    }
+    inlined_text_json = json.dumps(inlined_text_dict, ensure_ascii=False)
 
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -788,6 +800,64 @@ def generate_books_html() -> None:
     .reader-content-body p {{
       margin-bottom: 16px;
     }}
+    .reader-meta-banner {{
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }}
+    .reader-meta-pill-row {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      margin-bottom: 10px;
+    }}
+    .reader-overview-box {{
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--ink);
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      margin-top: 10px;
+    }}
+    .reader-prose {{
+      font-size: 1.08rem;
+      line-height: 1.85;
+      color: var(--ink);
+    }}
+    .reader-prose blockquote {{
+      border-left: 3px solid var(--accent);
+      margin: 16px 0;
+      padding: 8px 16px;
+      color: var(--ink-muted);
+      background: rgba(99, 102, 241, 0.05);
+      border-radius: 0 8px 8px 0;
+    }}
+    .k-word {{
+      display: inline;
+      border-radius: 4px;
+      padding: 0 2px;
+      transition: background-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+      cursor: pointer;
+    }}
+    .k-word:hover {{
+      background-color: rgba(99, 102, 241, 0.12);
+    }}
+    .k-word.active-word {{
+      background-color: #FEF08A !important;
+      color: #0F172A !important;
+      font-weight: 700;
+      border-radius: 4px;
+      box-shadow: 0 0 0 2px #FEF08A, 0 2px 6px rgba(0, 0, 0, 0.15);
+    }}
+    body.dark-mode .k-word.active-word {{
+      background-color: #6366F1 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 0 0 2px #6366F1, 0 2px 6px rgba(0, 0, 0, 0.35);
+    }}
     .reader-bottom-nav {{
       padding: 12px 16px;
       background: var(--surface);
@@ -1035,6 +1105,7 @@ def generate_books_html() -> None:
        ========================================================================== */
     const BOOKS_DATA = {catalog_json};
     const AUDIO_INDEX = {audio_index_json};
+    const INLINED_BOOKS_TEXT = {inlined_text_json};
     const GH_RAW_AUDIO_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/";
     const CACHE_NAME = "kortex-books-v1";
 
@@ -1046,6 +1117,10 @@ def generate_books_html() -> None:
     let readerFontSize = 1.05;
     let isDownloading = false;
     let activeBlobUrl = null;
+    let currentChapterWords = [];
+    let currentChapterTotalWeight = 0;
+    let activeWordIdx = -1;
+    let karaokeActive = false;
 
     const audioEl = document.getElementById("audioElement");
 
@@ -1072,16 +1147,32 @@ def generate_books_html() -> None:
     }}
 
     // Audio Element Event Handlers — Sync buttons cleanly
+    function updateReaderPlayButton(isPlaying) {{
+      const btn = document.getElementById("btnReaderListenCurrent");
+      if (btn) {{
+        btn.textContent = isPlaying ? "⏸ Pause" : "▶️ Listen";
+      }}
+    }}
+
     audioEl.addEventListener("play", () => {{
       document.getElementById("btnPlayPause").textContent = "⏸";
+      updateReaderPlayButton(true);
+      karaokeActive = true;
     }});
 
     audioEl.addEventListener("pause", () => {{
       document.getElementById("btnPlayPause").textContent = "▶";
+      updateReaderPlayButton(false);
     }});
 
     audioEl.addEventListener("ended", () => {{
       document.getElementById("btnPlayPause").textContent = "▶";
+      updateReaderPlayButton(false);
+      karaokeActive = false;
+      if (activeWordIdx >= 0) {{
+        const prev = document.getElementById(`kword_${{activeWordIdx}}`);
+        if (prev) prev.classList.remove("active-word");
+      }}
       if (!currentBook) return;
       const items = currentTrackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
       if (currentItemIndex < items.length) {{
@@ -1092,10 +1183,11 @@ def generate_books_html() -> None:
     audioEl.addEventListener("error", (e) => {{
       console.warn("Audio error event:", audioEl.error);
       document.getElementById("btnPlayPause").textContent = "▶";
+      updateReaderPlayButton(false);
       showToast("Audio not available offline. Tap ⚙️ to download.");
     }});
 
-    // Scrubber updates
+    // Scrubber & Karaoke updates
     audioEl.addEventListener("timeupdate", () => {{
       const cur = audioEl.currentTime || 0;
       const dur = audioEl.duration || 0;
@@ -1103,6 +1195,9 @@ def generate_books_html() -> None:
       document.getElementById("playerTotalTime").textContent = formatSeconds(dur);
       if (dur > 0) {{
         document.getElementById("playerScrubber").value = (cur / dur) * 100;
+      }}
+      if (karaokeActive) {{
+        syncKaraokeWord();
       }}
     }});
 
@@ -1144,6 +1239,212 @@ def generate_books_html() -> None:
       const m = Math.floor(sec / 60);
       const s = Math.floor(sec % 60);
       return `${{m}}:${{s < 10 ? "0" : ""}}${{s}}`;
+    }}
+
+    function findAudioTrack(book, trackType, index) {{
+      if (!AUDIO_INDEX || !AUDIO_INDEX.files || !book) return null;
+      const bSlug = (book.slug || book.filename || "").toLowerCase();
+      const bTitle = (book.title || "").toLowerCase();
+
+      return AUDIO_INDEX.files.find(f => {{
+        const fSlug = (f.slug || "").toLowerCase();
+        const fTitle = (f.bookTitle || "").toLowerCase();
+        const matchesBook =
+          fSlug === bSlug ||
+          bSlug.includes(fSlug.replace(/-/g, "_")) ||
+          bSlug.includes(fSlug) ||
+          fSlug.includes(bSlug) ||
+          (fTitle && bTitle.includes(fTitle)) ||
+          (fTitle && fTitle.includes(bTitle));
+        return matchesBook && f.trackType === trackType && f.index === index;
+      }});
+    }}
+
+    async function getChapterText(book, trackType, index) {{
+      if (!book) return null;
+      const bSlug = (book.slug || book.filename.replace(/\\.pdf$/i, "")).toLowerCase();
+
+      // 1. Check inlined text dictionary (The Gene, The Code Book, etc.)
+      if (typeof INLINED_BOOKS_TEXT !== "undefined" && INLINED_BOOKS_TEXT) {{
+        const bookData = INLINED_BOOKS_TEXT[bSlug] || INLINED_BOOKS_TEXT[book.slug] || INLINED_BOOKS_TEXT[(book.slug || "").toLowerCase()];
+        if (bookData) {{
+          const group = bookData[trackType] || {{}};
+          const item = group[String(index)];
+          if (item && item.content) return item;
+        }}
+      }}
+
+      // 2. Check CacheStorage for assets/books_text/<slug>.json
+      const textUrl = `https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/books_text/${{bSlug}}.json`;
+      if ("caches" in window) {{
+        try {{
+          const cache = await caches.open(CACHE_NAME);
+          const cachedResp = await cache.match(textUrl);
+          if (cachedResp) {{
+            const bData = await cachedResp.json();
+            const group = bData[trackType] || {{}};
+            const item = group[String(index)];
+            if (item && item.content) return item;
+          }}
+        }} catch (ce) {{}}
+      }}
+
+      // 3. Fetch from remote
+      try {{
+        const resp = await fetch(textUrl);
+        if (resp.ok) {{
+          const bData = await resp.json();
+          if ("caches" in window) {{
+            try {{
+              const cache = await caches.open(CACHE_NAME);
+              cache.put(textUrl, new Response(JSON.stringify(bData)));
+            }} catch (pe) {{}}
+          }}
+          const group = bData[trackType] || {{}};
+          const item = group[String(index)];
+          if (item && item.content) return item;
+        }}
+      }} catch (fe) {{}}
+
+      // Fallback to brief
+      const items = trackType === "adhd" ? (book.adhd_segments || []) : (book.author_chapters || []);
+      return items[index - 1] || null;
+    }}
+
+    function renderMarkdownWithKaraoke(content, brief, label, pages, durMin) {{
+      let wordIndex = 0;
+      const wordsList = [];
+
+      function escapeHtml(str) {{
+        return String(str || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }}
+
+      function wrapWords(text) {{
+        const tokens = text.split(/(\\s+)/);
+        return tokens.map(tok => {{
+          if (/^\\s+$/.test(tok) || !tok) return tok;
+          const clean = tok.replace(/[*_#`~[\\]()]/g, "");
+          const wIdx = wordIndex++;
+          const weight = Math.max(1, clean.length);
+          wordsList.push({{
+            index: wIdx,
+            word: clean,
+            weight: weight
+          }});
+          return `<span class="k-word" data-word-idx="${{wIdx}}" id="kword_${{wIdx}}">${{escapeHtml(tok)}}</span>`;
+        }}).join("");
+      }}
+
+      let headerHtml = `
+        <div class="reader-meta-banner">
+          <h2 style="font-size: 1.4rem; margin-top: 0; margin-bottom: 8px;">${{escapeHtml(label)}}</h2>
+          <div class="reader-meta-pill-row">
+            <span>📚 ${{escapeHtml(currentBook.title)}}</span>
+            <span>📄 Pages: ${{escapeHtml(pages || "N/A")}}</span>
+            <span>⏱️ Duration: ~${{escapeHtml(durMin || 15)}} mins</span>
+          </div>
+          ${{brief ? `<div class="reader-overview-box"><strong>Core Takeaway:</strong> ${{escapeHtml(brief)}}</div>` : ""}}
+        </div>
+      `;
+
+      const lines = (content || "").split(/\\r?\\n/);
+      let bodyHtml = "";
+      let inQuote = false;
+
+      for (let i = 0; i < lines.length; i++) {{
+        let line = lines[i].trim();
+        if (!line) {{
+          if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
+          continue;
+        }}
+
+        if (line.startsWith("## Step") || line.startsWith("## Chapter") || line.startsWith("# Step")) {{
+          continue;
+        }}
+
+        if (line.startsWith(">")) {{
+          if (!inQuote) {{ bodyHtml += "<blockquote>"; inQuote = true; }}
+          line = line.replace(/^>\\s*/, "");
+          bodyHtml += `<p>${{wrapWords(line)}}</p>`;
+        }} else if (line.startsWith("### ")) {{
+          if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
+          bodyHtml += `<h3>${{wrapWords(line.slice(4))}}</h3>`;
+        }} else if (line.startsWith("## ")) {{
+          if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
+          bodyHtml += `<h2>${{wrapWords(line.slice(3))}}</h2>`;
+        }} else if (line.startsWith("# ")) {{
+          if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
+          bodyHtml += `<h1>${{wrapWords(line.slice(2))}}</h1>`;
+        }} else {{
+          if (inQuote) {{ bodyHtml += "</blockquote>"; inQuote = false; }}
+          bodyHtml += `<p>${{wrapWords(line)}}</p>`;
+        }}
+      }}
+      if (inQuote) {{ bodyHtml += "</blockquote>"; }}
+
+      let cum = 0;
+      for (let w of wordsList) {{
+        w.cumWeight = cum;
+        cum += w.weight;
+      }}
+      const totalWeight = Math.max(1, cum);
+
+      return {{
+        html: headerHtml + `<div class="reader-prose">${{bodyHtml}}</div>`,
+        wordsList,
+        totalWeight
+      }};
+    }}
+
+    function syncKaraokeWord() {{
+      if (!karaokeActive || !currentChapterWords.length || currentChapterTotalWeight <= 0) return;
+      const dur = audioEl.duration;
+      if (!Number.isFinite(dur) || dur <= 0) return;
+      const curTime = audioEl.currentTime;
+      const progress = Math.min(1.0, Math.max(0, curTime / dur));
+      const targetWeight = progress * currentChapterTotalWeight;
+
+      let low = 0;
+      let high = currentChapterWords.length - 1;
+      let foundIdx = 0;
+      while (low <= high) {{
+        const mid = (low + high) >> 1;
+        if (currentChapterWords[mid].cumWeight <= targetWeight) {{
+          foundIdx = mid;
+          low = mid + 1;
+        }} else {{
+          high = mid - 1;
+        }}
+      }}
+
+      if (foundIdx !== activeWordIdx) {{
+        if (activeWordIdx >= 0) {{
+          const prevEl = document.getElementById(`kword_${{activeWordIdx}}`);
+          if (prevEl) prevEl.classList.remove("active-word");
+        }}
+        activeWordIdx = foundIdx;
+        const curEl = document.getElementById(`kword_${{activeWordIdx}}`);
+        if (curEl) {{
+          curEl.classList.add("active-word");
+          const container = document.getElementById("readerContentBody");
+          if (container) {{
+            const cRect = container.getBoundingClientRect();
+            const elRect = curEl.getBoundingClientRect();
+            const relTop = elRect.top - cRect.top;
+            const targetCenter = cRect.height * 0.40;
+            if (relTop < 50 || relTop > cRect.height * 0.70) {{
+              container.scrollBy({{
+                top: relTop - targetCenter,
+                behavior: "smooth"
+              }});
+            }}
+          }}
+        }}
+      }}
     }}
 
     function renderBooksGrid() {{
@@ -1299,20 +1600,21 @@ def generate_books_html() -> None:
       currentTrackType = trackType;
       currentItemIndex = index;
 
-      const items = trackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
-      const item = items[index - 1];
-      if (!item) return;
+      const trackInfo = findAudioTrack(currentBook, trackType, index);
+      if (!trackInfo) {{
+        showToast("Audio track not yet generated for this chapter.");
+        return;
+      }}
 
-      const trackTitle = (trackType === "adhd" ? `Step ${{index}}` : `Chapter ${{index}}`) + ` · ${{item.label}}`;
+      const trackTitle = (trackType === "adhd" ? `Step ${{index}}` : `Chapter ${{index}}`) + ` · ${{trackInfo.label || "Chapter"}}`;
       document.getElementById("playerBookTitle").textContent = currentBook.title;
       document.getElementById("playerChapterTitle").textContent = trackTitle;
 
       // SHOW the player bar only when user explicitly chooses to play!
       document.getElementById("playerBar").style.display = "flex";
 
-      const slug = currentBook.slug || currentBook.filename.replace(/\\.pdf$/i, "").toLowerCase();
-      const relPath = `audio/books/${{slug}}/${{trackType}}_${{index}}.mp3`;
-      const remoteUrl = `${{GH_RAW_AUDIO_BASE}}${{relPath}}`;
+      const remoteUrl = `${{GH_RAW_AUDIO_BASE}}${{trackInfo.url}}`;
+      const relPath = trackInfo.url;
 
       if (activeBlobUrl) {{
         URL.revokeObjectURL(activeBlobUrl);
@@ -1346,6 +1648,8 @@ def generate_books_html() -> None:
       try {{
         await audioEl.play();
         requestScreenWakeLock();
+        karaokeActive = true;
+        updateReaderPlayButton(true);
 
         if ("mediaSession" in navigator) {{
           navigator.mediaSession.metadata = new MediaMetadata({{
@@ -1358,6 +1662,7 @@ def generate_books_html() -> None:
       }} catch (err) {{
         console.warn("Playback play() rejected:", err);
         document.getElementById("btnPlayPause").textContent = "▶";
+        updateReaderPlayButton(false);
         showToast("Audio unavailable offline. Tap ⚙️ to download.");
       }}
     }}
@@ -1532,6 +1837,24 @@ def generate_books_html() -> None:
           }}
         }}
 
+        // Also cache all book text files for complete offline reading
+        pTitle.textContent = "Syncing book text files...";
+        pSub.textContent = "Caching full chapter texts for offline reading...";
+        for (let j = 0; j < BOOKS_DATA.length; j++) {{
+          const b = BOOKS_DATA[j];
+          const bSlug = (b.slug || b.filename.replace(/\\.pdf$/i, "")).toLowerCase();
+          const textUrl = `https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/books_text/${{bSlug}}.json`;
+          try {{
+            const hasText = await cache.match(textUrl);
+            if (!hasText) {{
+              const tResp = await fetch(textUrl, {{ mode: "cors" }});
+              if (tResp.ok) {{
+                await cache.put(textUrl, tResp);
+              }}
+            }}
+          }} catch (te) {{}}
+        }}
+
         pFill.style.width = "100%";
         pPct.textContent = "100%";
         pTitle.textContent = "✓ 100% Offline Ready!";
@@ -1582,41 +1905,85 @@ def generate_books_html() -> None:
     window.addEventListener("offline", updateOfflineStatus);
 
     /* ==========================================================================
-       CHAPTER READER (USES INLINED BRIEFS & CHAPTER SLICES)
+       CHAPTER READER (FULL PAGE RANGE TEXT + KARAOKE-STYLE HIGHLIGHTING)
        ========================================================================== */
-    function readChapter(trackType, index) {{
+    async function readChapter(trackType, index) {{
       if (!currentBook) return;
       currentTrackType = trackType;
       currentItemIndex = index;
 
       const items = trackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
-      const item = items[index - 1];
-      if (!item) return;
+      const fallbackItem = items[index - 1] || {{}};
 
-      const title = (trackType === "adhd" ? `Step ${{index}}` : `Ch ${{index}}`) + ` · ${{item.label}}`;
+      const title = (trackType === "adhd" ? `Step ${{index}}` : `Ch ${{index}}`) + ` · ${{fallbackItem.label || "Chapter"}}`;
       document.getElementById("readerHeaderTitle").textContent = title;
 
       const modal = document.getElementById("readerModal");
       const body = document.getElementById("readerContentBody");
       modal.classList.add("active");
 
+      // Show friendly loading skeleton while full text loads
       body.innerHTML = `
-        <h2>${{item.label}}</h2>
-        <div style="background: var(--surface-subtle); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem;">
-          <strong>Book:</strong> ${{currentBook.title}} · <strong>Pages:</strong> ${{item.pages || "N/A"}} · <strong>Duration:</strong> ~${{item.duration_min || 15}} mins
-        </div>
-        <div style="font-size: 1.12rem; line-height: 1.85; margin-bottom: 24px;">
-          <p style="font-weight: 600; color: var(--accent); margin-bottom: 12px;">Overview & Core Takeaway:</p>
-          <p>${{item.brief || "Chapter overview ready. Tap Listen below to start the complete neural audiobook."}}</p>
+        <div style="padding: 40px 20px; text-align: center; color: var(--ink-muted);">
+          <div style="font-size: 1.6rem; margin-bottom: 8px;">📖 Loading complete chapter text...</div>
+          <div style="font-size: 0.9rem;">Retrieving full page range for ${{currentBook.title}}</div>
         </div>
       `;
+
+      const itemData = await getChapterText(currentBook, trackType, index);
+      const content = itemData && itemData.content ? itemData.content : (fallbackItem.brief || "");
+      const label = itemData && itemData.label ? itemData.label : fallbackItem.label;
+      const pages = itemData && itemData.pages ? itemData.pages : fallbackItem.pages;
+      const durMin = itemData && itemData.duration_min ? itemData.duration_min : fallbackItem.duration_min;
+      const brief = itemData && itemData.brief ? itemData.brief : fallbackItem.brief;
+
+      const {{ html, wordsList, totalWeight }} = renderMarkdownWithKaraoke(content, brief, label, pages, durMin);
+      body.innerHTML = html;
+
+      currentChapterWords = wordsList;
+      currentChapterTotalWeight = totalWeight;
+      activeWordIdx = -1;
+
+      // Sync reader listen button state
+      const isCurrentlyPlayingThis = (!audioEl.paused && currentTrackType === trackType && currentItemIndex === index);
+      updateReaderPlayButton(isCurrentlyPlayingThis);
+
+      if (isCurrentlyPlayingThis) {{
+        karaokeActive = true;
+        syncKaraokeWord();
+      }}
     }}
+
+    // Tap/Click anywhere on a word in the text to jump audio playback to that exact word
+    document.getElementById("readerContentBody").addEventListener("click", (e) => {{
+      const span = e.target.closest(".k-word");
+      if (!span) return;
+      const wIdx = parseInt(span.getAttribute("data-word-idx"), 10);
+      if (Number.isFinite(wIdx) && currentChapterWords[wIdx]) {{
+        const dur = audioEl.duration;
+        if (Number.isFinite(dur) && dur > 0 && currentChapterTotalWeight > 0) {{
+          const targetTime = (currentChapterWords[wIdx].cumWeight / currentChapterTotalWeight) * dur;
+          audioEl.currentTime = targetTime;
+          if (audioEl.paused) {{
+            audioEl.play();
+          }}
+        }}
+      }}
+    }});
 
     document.getElementById("btnCloseReader").addEventListener("click", () => {{
       document.getElementById("readerModal").classList.remove("active");
     }});
     document.getElementById("btnReaderListenCurrent").addEventListener("click", () => {{
-      playChapter(currentTrackType, currentItemIndex);
+      if (currentBook && currentTrackType && currentItemIndex) {{
+        if (!audioEl.paused && audioEl.src) {{
+          audioEl.pause();
+        }} else if (audioEl.paused && audioEl.src && currentTrackType && currentItemIndex) {{
+          audioEl.play();
+        }} else {{
+          playChapter(currentTrackType, currentItemIndex);
+        }}
+      }}
     }});
     document.getElementById("btnReaderPrev").addEventListener("click", () => {{
       if (currentItemIndex > 1) {{
