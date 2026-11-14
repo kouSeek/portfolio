@@ -1182,16 +1182,23 @@ def generate_books_html() -> None:
   <header class="topbar">
     <div class="topbar-left">
       <a class="back-btn" id="navBackBtn" href="index.html">← AI Hub</a>
-      <div class="topbar-title">📚 <span id="headerTitle">Liberation Library</span></div>
+      <div class="topbar-title">📚 <span id="headerTitle">Liberation Library</span> <span style="font-size:0.75rem;padding:2px 8px;border-radius:999px;background:#ef4444;color:#fff;vertical-align:middle;margin-left:6px;">Disabled</span></div>
     </div>
     <div class="topbar-actions">
-      <button class="icon-btn" id="btnOpenSettings" aria-label="Settings & Offline Sync" title="Settings & Offline Sync">⚙️</button>
       <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle Theme">🌓</button>
     </div>
   </header>
 
-  <!-- Main Container -->
-  <main class="container">
+  <!-- Disabled Notice -->
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;padding:40px 20px;text-align:center;">
+    <div style="font-size:56px;margin-bottom:16px;">📚🔒</div>
+    <h1 style="font-size:1.6rem;font-weight:700;color:var(--ink);margin-bottom:12px;">Mobile Books Library Disabled</h1>
+    <p style="max-width:480px;color:var(--ink-muted);font-size:0.95rem;line-height:1.6;margin-bottom:24px;">The mobile books library and voice generation have been disabled per user request while book contents and authentic full texts are being validated.</p>
+    <a href="index.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:14px;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;font-size:0.92rem;box-shadow:0 4px 12px rgba(99,102,241,0.25);">← Back to AI Companion Hub</a>
+  </div>
+
+  <!-- Main Container (Hidden while disabled) -->
+  <main class="container" style="display:none !important;">
     <!-- Library View -->
     <div id="libraryView">
       <!-- Search Section -->
