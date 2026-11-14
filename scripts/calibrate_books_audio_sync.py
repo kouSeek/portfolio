@@ -67,6 +67,15 @@ def calibrate_all_audio_timings() -> dict:
             continue
 
         t0 = time.time()
+        existing_sils = item.get("silences")
+        if isinstance(existing_sils, list) and len(existing_sils) > 0:
+            sils = existing_sils
+            dur = item.get("durationSec") or 0.0
+            elapsed = time.time() - t0
+            timings_by_path[rel_url] = {"dur": dur, "silences": sils}
+            print(f"  [{idx}/{len(files)}] ✓ Cached {item.get('slug')} / {item.get('file')}: {len(sils)} silences ({dur:.1f}s)")
+            continue
+
         sils = extract_mp3_silences(mp3_path)
         dur = item.get("durationSec") or 0.0
         elapsed = time.time() - t0

@@ -11,10 +11,25 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
 
 APP_ROOT = Path(__file__).resolve().parent.parent
 AUDIO_DIR = APP_ROOT / "audio" / "books"
 ASSETS_DIR = APP_ROOT / "assets"
+WIKI_CATALOG_PATH = Path("/usr/local/google/home/koushikchak/koushik-wiki/assets/books_catalog.json")
+
+
+def get_clean_slug(b: dict) -> str:
+    title = b.get("title", "")
+    slug = b.get("slug", "")
+    if "gene" in title.lower():
+        return "the-gene"
+    if "code book" in title.lower():
+        return "the-code-book"
+    clean = re.sub(r"^\d+[a-z]?_", "", slug.lower())
+    clean = re.sub(r"_+", "-", clean)
+    clean = re.sub(r"[^\w\-]", "", clean).strip("-")
+    return clean or slug.lower()
 
 
 def build_audio_index() -> dict:
@@ -50,6 +65,7 @@ def build_audio_index() -> dict:
                             "file": f,
                             "sizeBytes": p.stat().st_size,
                             "durationSec": item.get("durationSec", 0),
+                            "silences": item.get("silences", []),
                         }
                         audio_files.append(entry)
                         slug_audio_files.append(entry)
@@ -78,7 +94,8 @@ def build_audio_index() -> dict:
     # Update catalog
     for b in catalog:
         slug = b.get("slug")
-        st = books_audio_status.get(slug)
+        clean_slug = get_clean_slug(b)
+        st = books_audio_status.get(slug) or books_audio_status.get(clean_slug)
         if st and st["count"] > 0:
             b["has_audio"] = True
             b["audio_count"] = st["count"]
@@ -88,8 +105,11 @@ def build_audio_index() -> dict:
             b["audio_count"] = 0
             b["audio_bytes"] = 0
 
-    catalog_path.write_text(json.dumps(catalog, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"Updated {len(catalog)} books in {catalog_path}")
+    catalog_json = json.dumps(catalog, indent=2, ensure_ascii=False)
+    catalog_path.write_text(catalog_json, encoding="utf-8")
+    if WIKI_CATALOG_PATH.parent.is_dir():
+        WIKI_CATALOG_PATH.write_text(catalog_json, encoding="utf-8")
+    print(f"Updated {len(catalog)} books in {catalog_path} ({sum(1 for b in catalog if b.get('has_audio'))} with audio)")
     return audio_index_payload
 
 

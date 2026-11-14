@@ -77,7 +77,7 @@ def clean_markdown_for_speech(raw_text: str) -> str:
     return " ".join(cleaned.split())
 
 
-def synthesize_text_to_mp3(text: str, voice_name: str = "Aoede", max_workers: int = 6) -> bytes:
+def synthesize_text_to_mp3(text: str, voice_name: str = "Aoede", max_workers: int = 8) -> bytes:
     """Chunk and synthesize text using parallel VoiceLM-XL Aoede calls, returning concatenated MP3 bytes."""
     chunks = split_tts_text_chunks(text, max_chars=360)
     if not chunks:
@@ -232,7 +232,7 @@ def generate_book_audio(
 
             # Synthesize MP3
             t0 = time.time()
-            mp3_bytes = synthesize_text_to_mp3(clean_speech, voice_name="Aoede", max_workers=6)
+            mp3_bytes = synthesize_text_to_mp3(clean_speech, voice_name="Aoede", max_workers=8)
             elapsed = time.time() - t0
 
             if mp3_bytes:
