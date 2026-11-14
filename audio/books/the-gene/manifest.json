@@ -1,0 +1,47 @@
+{
+  "title": "The Gene: An Intimate History",
+  "author": "Siddhartha Mukherjee",
+  "filename": "01_The_Gene_An_Intimate_History_Siddhartha_Mukherjee_COMPLETE.pdf",
+  "slug": "the-gene",
+  "voice": "Aoede",
+  "tracks": {
+    "adhd": [
+      {
+        "index": 1,
+        "label": "Step 1 · Prologue: Families in Kolkata (Start Here — The Personal Mystery)",
+        "pages": "8-20",
+        "brief": "Siddhartha Mukherjee travels with his father through Kolkata to visit his schizophrenic cousin Moni, asking how a tiny physical code inside our cells carries both brilliance and mental illness across generations.",
+        "file": "adhd_1.mp3",
+        "durationSec": 2085.84,
+        "sizeBytes": 16686720
+      },
+      {
+        "index": 2,
+        "label": "Step 2 · Jumps to Part II: Seeing the 3D DNA Double Helix (Franklin, Crick & Watson)",
+        "pages": "134-148",
+        "brief": "Jumps ahead to 1953 Cambridge and London, where Rosalind Franklin's X-ray photographs and Watson and Crick's brass models reveal the physical four-letter twisted staircase that copies all life.",
+        "file": "adhd_2.mp3",
+        "durationSec": 2358.216,
+        "sizeBytes": 18865728
+      },
+      {
+        "index": 3,
+        "label": "Step 3 · Jumps Back to Part I: Mendel's Pea Garden (How Discrete Code Packets Work)",
+        "pages": "40-52",
+        "brief": "Now that you can picture DNA, we jump back to Gregor Mendel cross-breeding 28,000 pea plants in his monastery garden to prove that traits pass from parent to child as unbreakable packets rather than blended fluids.",
+        "file": "adhd_3.mp3",
+        "durationSec": 2025.216,
+        "sizeBytes": 16201728
+      },
+      {
+        "index": 4,
+        "label": "Step 4 · Jumps to Epilogue: Bheda, Abheda (Epigenetics, Fate & Human Freedom)",
+        "pages": "475-487",
+        "brief": "Returns to the Mukherjee family and the modern CRISPR era, showing how environmental triggers flip genetic switches on and off and why understanding our genome liberates us from fatalism.",
+        "file": "adhd_4.mp3",
+        "durationSec": 1738.152,
+        "sizeBytes": 13905216
+      }
+    ]
+  }
+}

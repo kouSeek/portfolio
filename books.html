@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0F172A" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="description" content="Liberation Books Library — Non-linear core cuts and full audiobooks with VoiceLM-XL Aoede UK Female voice for offline reading & listening." />
+  <title>Books Library 📚</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --surface: #FFFFFF;
+      --surface-subtle: #F1F5F9;
+      --ink: #0F172A;
+      --ink-muted: #475569;
+      --border: #E2E8F0;
+      --accent: #4F46E5;
+      --accent-soft: #EEF2FF;
+      --accent-ink: #3730A3;
+      --emerald: #059669;
+      --emerald-soft: #ECFDF5;
+      --amber: #D97706;
+      --amber-soft: #FFFBEB;
+      --purple: #7C3AED;
+      --purple-soft: #F3E8FF;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0B0F17;
+      --surface: #141B26;
+      --surface-subtle: #1C2636;
+      --ink: #F1F5F9;
+      --ink-muted: #94A3B8;
+      --border: #233146;
+      --accent: #6366F1;
+      --accent-soft: rgba(99, 102, 241, 0.16);
+      --accent-ink: #A5B4FC;
+      --emerald-soft: rgba(5, 150, 105, 0.16);
+      --amber-soft: rgba(217, 119, 6, 0.16);
+      --purple-soft: rgba(124, 58, 237, 0.16);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      padding-top: var(--safe-top);
+      padding-bottom: calc(var(--safe-bottom) + 94px);
+    }
+
+    /* Top Bar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: var(--surface-subtle);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .topbar-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .flight-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: var(--purple-soft);
+      color: var(--purple);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .flight-pill-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(124, 58, 237, 0.2);
+    }
+    .status-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--emerald-soft);
+      color: var(--emerald);
+      border: 1px solid rgba(5, 150, 105, 0.2);
+    }
+    .status-pill.offline {
+      background: var(--amber-soft);
+      color: var(--amber);
+      border-color: rgba(217, 119, 6, 0.2);
+    }
+    .theme-toggle-btn {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    /* Container */
+    .container {
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px;
+      flex: 1;
+    }
+
+    /* Flight Mode Hero Banner */
+    .flight-hero-banner {
+      background: linear-gradient(135deg, #FAF5FF 0%, #EEF2FF 100%);
+      border: 1.5px solid #D8B4FE;
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.06);
+    }
+    [data-theme="dark"] .flight-hero-banner {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.12) 0%, rgba(99, 102, 241, 0.12) 100%);
+      border-color: rgba(168, 85, 247, 0.35);
+    }
+    .flight-hero-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .flight-hero-left {
+      flex: 1;
+      min-width: 260px;
+    }
+    .flight-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #7C3AED;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+    }
+    .flight-hero-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .flight-hero-desc {
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      line-height: 1.45;
+    }
+    .flight-stats-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .flight-chip {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      color: var(--ink);
+    }
+    [data-theme="dark"] .flight-chip {
+      background: rgba(20, 27, 38, 0.8);
+    }
+    .btn-download-all {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 0.92rem;
+      font-weight: 700;
+      background: #7C3AED;
+      color: #FFFFFF;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-download-all:hover {
+      background: #6D28D9;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(124, 58, 237, 0.4);
+    }
+
+    /* Search & Wing Filters */
+    .search-section {
+      margin-bottom: 18px;
+    }
+    .search-box-wrap {
+      position: relative;
+      margin-bottom: 12px;
+    }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      color: var(--ink-muted);
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      padding: 12px 14px 12px 40px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .category-pills {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .category-pills::-webkit-scrollbar {
+      display: none;
+    }
+    .filter-chip {
+      white-space: nowrap;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-chip.active {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+    }
+
+    /* Books Grid */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .book-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      position: relative;
+    }
+    .book-card:hover, .book-card:active {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      border-color: var(--accent);
+    }
+    .book-card-header {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .book-card-emoji {
+      font-size: 2.2rem;
+      line-height: 1;
+      padding: 8px;
+      background: var(--surface-subtle);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .book-card-titles {
+      flex: 1;
+      min-width: 0;
+    }
+    .book-card-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .book-card-author {
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .book-card-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .badge-chip {
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-chip.adhd {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+    .badge-chip.full {
+      background: #E0E7FF;
+      color: #3730A3;
+    }
+    .badge-chip.voice {
+      background: var(--emerald-soft);
+      color: var(--emerald);
+    }
+
+    /* Detail View */
+    .book-detail-view {
+      display: none;
+    }
+    .book-detail-view.active {
+      display: block;
+    }
+    .detail-hero {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .detail-hero-top {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .detail-hero-emoji {
+      font-size: 3.2rem;
+      line-height: 1;
+      padding: 12px;
+      background: var(--surface-subtle);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .detail-hero-text h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.45rem;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+    .detail-hero-author {
+      font-size: 0.92rem;
+      color: var(--ink-muted);
+      margin-bottom: 10px;
+    }
+    .detail-hero-desc {
+      font-size: 0.88rem;
+      color: var(--ink-muted);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .detail-action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--surface-subtle);
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-action.primary {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+    .btn-action.purple {
+      background: var(--purple-soft);
+      color: var(--purple);
+      border-color: rgba(124, 58, 237, 0.3);
+    }
+    .btn-action:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    /* Track Sections */
+    .track-section {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .track-header {
+      padding: 14px 18px;
+      background: var(--surface-subtle);
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .track-title {
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .track-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .track-chevron {
+      font-size: 0.9rem;
+      transition: transform 0.2s ease;
+    }
+    .track-section.collapsed .track-chevron {
+      transform: rotate(-90deg);
+    }
+    .track-section.collapsed .track-body {
+      display: none;
+    }
+    .track-body {
+      padding: 8px 0;
+    }
+
+    /* Chapter Row */
+    .chapter-row {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: background 0.12s ease;
+    }
+    .chapter-row:last-child {
+      border-bottom: none;
+    }
+    .chapter-row:hover {
+      background: var(--surface-subtle);
+    }
+    .chapter-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .chapter-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .chapter-label {
+      font-weight: 700;
+      font-size: 0.92rem;
+      line-height: 1.35;
+    }
+    .chapter-chip {
+      font-size: 0.72rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--surface-subtle);
+      color: var(--ink-muted);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .chapter-brief {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .chapter-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .btn-ch {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      transition: all 0.12s ease;
+    }
+    .btn-ch.play-btn {
+      background: var(--accent-soft);
+      color: var(--accent-ink);
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+    .btn-ch.play-btn:hover {
+      background: var(--accent);
+      color: #FFFFFF;
+    }
+
+    /* Bottom Player */
+    .player-bar {
+      position: fixed;
+      bottom: var(--safe-bottom);
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1.5px solid var(--border);
+      padding: 10px 16px;
+      z-index: 60;
+      box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .player-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .player-time {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink-muted);
+      min-width: 38px;
+      font-variant-numeric: tabular-nums;
+    }
+    .player-time.right {
+      text-align: right;
+    }
+    .player-slider {
+      flex: 1;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--border);
+      border-radius: 999px;
+      outline: none;
+    }
+    .player-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+    .player-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .player-track-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .player-book-title {
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .player-chapter-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .player-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .player-btn {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .player-btn.play-main {
+      width: 42px;
+      height: 42px;
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+      font-size: 1.15rem;
+    }
+
+    /* Offline Flight Mode Modal */
+    .offline-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 120;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .offline-modal.active {
+      display: flex;
+    }
+    .offline-modal-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 520px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .modal-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-close-btn {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .progress-box {
+      background: var(--surface-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      border: 1px solid var(--border);
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .progress-box.active {
+      display: flex;
+    }
+    .progress-bar-track {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #7C3AED;
+      width: 0%;
+      transition: width 0.15s ease;
+    }
+    .progress-status-text {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--ink-muted);
+    }
+    .storage-detail-box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      background: var(--surface-subtle);
+    }
+    .storage-stat-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+    }
+    .storage-stat-line:last-child {
+      border-bottom: none;
+      font-weight: 700;
+    }
+
+    /* Reader Modal */
+    .reader-modal {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      padding-top: var(--safe-top);
+      padding-bottom: var(--safe-bottom);
+    }
+    .reader-modal.active {
+      display: flex;
+    }
+    .reader-topbar {
+      padding: 12px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .reader-content-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px;
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+      line-height: 1.75;
+      font-size: 1.05rem;
+      font-family: 'Newsreader', Georgia, serif;
+    }
+    .reader-content-body h1, .reader-content-body h2, .reader-content-body h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+    .reader-content-body p {
+      margin-bottom: 16px;
+    }
+    .reader-bottom-nav {
+      padding: 12px 16px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <a class="back-btn" id="navBackBtn" href="index.html">← AI Hub</a>
+      <div class="topbar-title">📚 <span id="headerTitle">Liberation Library</span></div>
+    </div>
+    <div class="topbar-actions">
+      <button class="flight-pill-btn" id="btnOpenOfflineModal" title="Manage Offline & Flight Cache">
+        ✈️ Flight Mode
+      </button>
+      <span class="status-pill" id="offlineStatusPill">🟢 Online</span>
+      <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle Theme">🌓</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+    <!-- Library View -->
+    <div id="libraryView">
+      <!-- Flight Mode Hero Banner -->
+      <section class="flight-hero-banner" id="flightHeroBanner">
+        <div class="flight-hero-top">
+          <div class="flight-hero-left">
+            <span class="flight-tag">✈️ FLIGHT & TRAVEL OFFLINE SYNC</span>
+            <h2 class="flight-hero-title">Download All Books & Voices</h2>
+            <p class="flight-hero-desc">Download complete chapter texts, summaries, and VoiceLM-XL neural audio directly to your phone. 100% offline playback mid-flight without cellular or Wi-Fi.</p>
+            <div class="flight-stats-cluster">
+              <span class="flight-chip" id="bannerAudioChip">🎙️ 7 Neural Audio Chapters (99.3 MB)</span>
+              <span class="flight-chip" id="bannerBooksChip">📚 29 Books Ready</span>
+              <span class="flight-chip" id="bannerStorageChip">💾 Checking Cache...</span>
+            </div>
+          </div>
+          <div>
+            <button class="btn-download-all" id="btnDownloadAllLibrary">
+              <span>⚡ Download All for Offline</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Search Section -->
+      <div class="search-section">
+        <div class="search-box-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="search" class="search-input" id="bookSearchInput" placeholder="Search books, authors, topics..." autocomplete="off" />
+        </div>
+        <div class="category-pills" id="categoryPills">
+          <button class="filter-chip active" data-cat="all">All Books</button>
+          <button class="filter-chip" data-cat="Science & Frontier">🧬 Science & Frontier</button>
+          <button class="filter-chip" data-cat="Mind & Psychology">🧠 Mind & Fast/Slow</button>
+          <button class="filter-chip" data-cat="Philosophy & Warfare">⚔️ Philosophy & Warfare</button>
+          <button class="filter-chip" data-cat="Literature & Classics">📜 Literature & Classics</button>
+          <button class="filter-chip" data-cat="Space & Physics">🚀 Space & Physics</button>
+          <button class="filter-chip" data-cat="Wizarding & Fantasy">⚡ Harry Potter & Fantasy</button>
+        </div>
+      </div>
+
+      <div class="books-grid" id="booksGrid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Detail View -->
+    <div class="book-detail-view" id="bookDetailView">
+      <div class="detail-hero">
+        <div class="detail-hero-top">
+          <div class="detail-hero-emoji" id="detailEmoji">📖</div>
+          <div class="detail-hero-text">
+            <h1 id="detailTitle">Book Title</h1>
+            <div class="detail-hero-author" id="detailAuthor">Author Name</div>
+            <div class="book-card-stats" id="detailBadges"></div>
+          </div>
+        </div>
+        <p class="detail-hero-desc" id="detailDesc"></p>
+        <div class="detail-action-bar">
+          <button class="btn-action primary" id="btnPlayAllAdhd">⚡ Play Core Steps</button>
+          <button class="btn-action" id="btnPlayAllFull">📖 Play Full Book</button>
+          <button class="btn-action purple" id="btnDownloadBookOffline">💾 Save Book Offline</button>
+          <button class="btn-action" id="btnBackToLibrary">← All Books</button>
+        </div>
+      </div>
+
+      <!-- Core Steps Section -->
+      <section class="track-section" id="adhdTrackSection">
+        <div class="track-header" onclick="toggleTrackSection('adhdTrackSection')">
+          <div class="track-title">
+            <span>⚡ Non-Linear Core Steps</span>
+            <span class="track-badge" id="adhdTrackBadge">0 steps</span>
+          </div>
+          <span class="track-chevron">▼</span>
+        </div>
+        <div class="track-body" id="adhdTrackBody">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- Full Book Section -->
+      <section class="track-section" id="fullTrackSection">
+        <div class="track-header" onclick="toggleTrackSection('fullTrackSection')">
+          <div class="track-title">
+            <span>📖 Full Book Chapters</span>
+            <span class="track-badge" id="fullTrackBadge">0 chapters</span>
+          </div>
+          <span class="track-chevron">▼</span>
+        </div>
+        <div class="track-body" id="fullTrackBody">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Sticky Audio Player Bar -->
+  <div class="player-bar" id="playerBar">
+    <div class="player-progress-wrap">
+      <span class="player-time" id="playerCurrentTime">0:00</span>
+      <input type="range" class="player-slider" id="playerScrubber" min="0" max="100" value="0" />
+      <span class="player-time right" id="playerTotalTime">0:00</span>
+    </div>
+    <div class="player-controls-row">
+      <div class="player-track-info">
+        <div class="player-book-title" id="playerBookTitle">Select a book or chapter</div>
+        <div class="player-chapter-title" id="playerChapterTitle">VoiceLM-XL Aoede UK Female</div>
+      </div>
+      <div class="player-buttons">
+        <button class="player-btn" id="btnRewind15" aria-label="Rewind 15s">↺15</button>
+        <button class="player-btn play-main" id="btnPlayPause" aria-label="Play or Pause">▶</button>
+        <button class="player-btn" id="btnForward15" aria-label="Forward 15s">15↻</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offline & Flight Mode Settings Modal -->
+  <div class="offline-modal" id="offlineModal">
+    <div class="offline-modal-card">
+      <div class="modal-header-row">
+        <div class="modal-title">✈️ Flight Mode & Offline Cache</div>
+        <button class="modal-close-btn" id="btnCloseOfflineModal">✕</button>
+      </div>
+
+      <p style="font-size: 0.88rem; color: var(--ink-muted); line-height: 1.5;">
+        Download all chapters, readable texts, and VoiceLM-XL Aoede neural audio into your browser's persistent storage so you can read and listen anywhere without internet.
+      </p>
+
+      <!-- Progress Box -->
+      <div class="progress-box" id="offlineProgressBox">
+        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.85rem;">
+          <span id="progressStepTitle">Downloading...</span>
+          <span id="progressPercentage">0%</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <div class="progress-status-text" id="progressStatusSub">Starting sync...</div>
+      </div>
+
+      <button class="btn-download-all" id="btnModalStartSync" style="width: 100%;">
+        ⚡ Download Entire Library (All Texts & Voices)
+      </button>
+
+      <!-- Storage Breakdown -->
+      <div class="storage-detail-box">
+        <div style="font-weight: 700; font-size: 0.88rem; margin-bottom: 8px;">📊 Local Storage Status</div>
+        <div class="storage-stat-line">
+          <span>📚 Total Books in Catalog</span>
+          <span id="statModalTotalBooks">29</span>
+        </div>
+        <div class="storage-stat-line">
+          <span>🎙️ Generated Audio Tracks</span>
+          <span id="statModalAudioFiles">7 chapters (99.3 MB)</span>
+        </div>
+        <div class="storage-stat-line">
+          <span>💾 Storage in Cache</span>
+          <span id="statModalCacheSize">Calculating...</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: space-between; margin-top: 6px;">
+        <button class="btn-action" id="btnClearCacheBtn" style="color: #DC2626; border-color: rgba(220, 38, 38, 0.3);">
+          🗑️ Clear Offline Cache
+        </button>
+        <button class="btn-action" id="btnRefreshManifestBtn">
+          🔄 Refresh Index
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- In-App Chapter Reader Modal -->
+  <div class="reader-modal" id="readerModal">
+    <header class="reader-topbar">
+      <button class="back-btn" id="btnCloseReader">✕ Close</button>
+      <div style="font-weight: 700; font-size: 0.95rem; text-align: center; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" id="readerHeaderTitle">Chapter Title</div>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn-action" style="padding: 4px 8px;" id="btnFontSmaller">A-</button>
+        <button class="btn-action" style="padding: 4px 8px;" id="btnFontLarger">A+</button>
+      </div>
+    </header>
+    <div class="reader-content-body" id="readerContentBody">
+      <!-- Chapter text rendered here -->
+    </div>
+    <div class="reader-bottom-nav">
+      <button class="btn-action" id="btnReaderPrev">← Previous</button>
+      <button class="btn-action primary" id="btnReaderListenCurrent">▶️ Listen</button>
+      <button class="btn-action" id="btnReaderNext">Next →</button>
+    </div>
+  </div>
+
+  <audio id="audioElement" preload="metadata"></audio>
+
+  <script>
+    /* ==========================================================================
+       BOOKS CATALOG DATA & APPLICATION LOGIC
+       ========================================================================== */
+    let BOOKS_DATA = [];
+    let AUDIO_INDEX = { files: [], books: {} };
+    let TEXT_VAULT = {};
+    let currentBook = null;
+    let currentTrackType = "adhd";
+    let currentItemIndex = 1;
+    let activeCategory = "all";
+    let activeSearchQuery = "";
+    let readerFontSize = 1.05;
+    let isDownloading = false;
+
+    const CACHE_NAME = "kortex-books-v1";
+    const audioEl = document.getElementById("audioElement");
+
+    // Helper: strip stray leading tildes
+    function cleanEffortStr(raw) {
+      return String(raw || "").replace(/^~+/, "").trim();
+    }
+
+    // Wake Lock to keep phone screen alive during playback
+    let _screenWakeLock = null;
+    async function requestScreenWakeLock() {
+      try {
+        if ("wakeLock" in navigator && !(_screenWakeLock && !_screenWakeLock.released)) {
+          _screenWakeLock = await navigator.wakeLock.request("screen");
+        }
+      } catch (e) {}
+    }
+
+    // Service Worker Registration for Complete Offline Operation
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("books-sw.js")
+          .then(reg => console.log("[SW] Registered:", reg.scope))
+          .catch(err => console.warn("[SW] Registration skipped or failed:", err));
+      });
+    }
+
+    // Initialize Catalog & Indexes
+    async function loadCatalog() {
+      try {
+        const resp = await fetch("assets/books_catalog.json");
+        if (resp.ok) {
+          BOOKS_DATA = await resp.json();
+        }
+      } catch (e) {
+        console.warn("Could not fetch books_catalog.json:", e);
+      }
+
+      try {
+        const aResp = await fetch("assets/books_audio_index.json");
+        if (aResp.ok) {
+          AUDIO_INDEX = await aResp.json();
+        }
+      } catch (e) {
+        console.warn("Could not fetch books_audio_index.json:", e);
+      }
+
+      try {
+        const tResp = await fetch("assets/books_text_vault.json");
+        if (tResp.ok) {
+          TEXT_VAULT = await tResp.json();
+        }
+      } catch (e) {
+        console.warn("Could not fetch books_text_vault.json (will load on demand):", e);
+      }
+
+      renderBooksGrid();
+      updateOfflineStatus();
+      updateStorageMetrics();
+    }
+
+    function renderBooksGrid() {
+      const grid = document.getElementById("booksGrid");
+      grid.innerHTML = "";
+
+      const filtered = BOOKS_DATA.filter(b => {
+        const matchesCat = activeCategory === "all" || b.category.toLowerCase().includes(activeCategory.toLowerCase());
+        const q = activeSearchQuery.toLowerCase().trim();
+        const matchesSearch = !q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) || (b.description || "").toLowerCase().includes(q);
+        return matchesCat && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--ink-muted);">No books found matching "${activeSearchQuery}".</div>`;
+        return;
+      }
+
+      filtered.forEach(b => {
+        const card = document.createElement("div");
+        card.className = "book-card";
+        card.onclick = () => openBookDetail(b.slug || b.filename);
+
+        const adhdCount = (b.adhd_segments || []).length;
+        const fullCount = (b.author_chapters || []).length;
+        const cleanAdhdTime = cleanEffortStr(b.adhd_time_label);
+        const cleanFullTime = cleanEffortStr(b.full_time_label);
+
+        const hasAudio = b.has_audio || (AUDIO_INDEX.books && AUDIO_INDEX.books[b.slug]);
+
+        card.innerHTML = `
+          <div>
+            <div class="book-card-header">
+              <div class="book-card-emoji">${b.cover_emoji || "📖"}</div>
+              <div class="book-card-titles">
+                <div class="book-card-title">${b.title}</div>
+                <div class="book-card-author">${b.author || "Liberation Library"}</div>
+              </div>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--ink-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 10px;">${b.description || ""}</p>
+          </div>
+          <div>
+            <div class="book-card-stats">
+              <span class="badge-chip adhd">⚡ ${adhdCount} Core Steps ${cleanAdhdTime ? `· ⏱️ ${cleanAdhdTime}` : ""}</span>
+              <span class="badge-chip full">📖 ${fullCount} Ch ${cleanFullTime ? `· ⏱️ ${cleanFullTime}` : ""}</span>
+              ${hasAudio ? `<span class="badge-chip voice">🎙️ Neural Voice Ready</span>` : `<span class="badge-chip" style="background: var(--surface-subtle); color: var(--ink-muted);">📄 Text Ready</span>`}
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openBookDetail(slugOrFilename) {
+      const book = BOOKS_DATA.find(b => b.slug === slugOrFilename || b.filename === slugOrFilename);
+      if (!book) return;
+      currentBook = book;
+
+      document.getElementById("libraryView").style.display = "none";
+      const dv = document.getElementById("bookDetailView");
+      dv.classList.add("active");
+
+      document.getElementById("detailEmoji").textContent = book.cover_emoji || "📖";
+      document.getElementById("detailTitle").textContent = book.title;
+      document.getElementById("detailAuthor").textContent = book.author || "Liberation Library";
+      document.getElementById("detailDesc").textContent = book.description || "";
+      document.getElementById("headerTitle").textContent = book.title;
+
+      const adhdTime = cleanEffortStr(book.adhd_time_label);
+      const fullTime = cleanEffortStr(book.full_time_label);
+
+      document.getElementById("detailBadges").innerHTML = `
+        <span class="badge-chip adhd">⚡ ${(book.adhd_segments || []).length} Core Steps ${adhdTime ? `· ⏱️ ${adhdTime}` : ""}</span>
+        <span class="badge-chip full">📖 ${(book.author_chapters || []).length} Chapters ${fullTime ? `· ⏱️ ${fullTime}` : ""}</span>
+        <span class="badge-chip voice">🎙️ Aoede UK Female</span>
+      `;
+
+      // Render ADHD track
+      const adhdBody = document.getElementById("adhdTrackBody");
+      adhdBody.innerHTML = "";
+      const adhdItems = book.adhd_segments || [];
+      document.getElementById("adhdTrackBadge").textContent = `${adhdItems.length} steps`;
+
+      adhdItems.forEach((item, idx) => {
+        const stepNum = idx + 1;
+        const row = document.createElement("div");
+        row.className = "chapter-row";
+        const effortChip = item.duration_min ? `⏱️ ${item.duration_min}m` : (item.pages ? `p. ${item.pages}` : "");
+
+        row.innerHTML = `
+          <div class="chapter-info">
+            <div class="chapter-title-row">
+              <span class="chapter-label">Step ${stepNum} · ${item.label}</span>
+              ${effortChip ? `<span class="chapter-chip">${effortChip}</span>` : ""}
+            </div>
+            <div class="chapter-brief">${item.brief || ""}</div>
+          </div>
+          <div class="chapter-actions">
+            <button class="btn-ch play-btn" onclick="playChapter('adhd', ${stepNum})">▶️ Listen</button>
+            <button class="btn-ch" onclick="readChapter('adhd', ${stepNum})">📖 Read</button>
+          </div>
+        `;
+        adhdBody.appendChild(row);
+      });
+
+      // Render Full Book track
+      const fullBody = document.getElementById("fullTrackBody");
+      fullBody.innerHTML = "";
+      const fullItems = book.author_chapters || [];
+      document.getElementById("fullTrackBadge").textContent = `${fullItems.length} chapters`;
+
+      fullItems.forEach((item, idx) => {
+        const chNum = idx + 1;
+        const row = document.createElement("div");
+        row.className = "chapter-row";
+        const effortChip = item.duration_min ? `⏱️ ${item.duration_min}m` : (item.pages ? `p. ${item.pages}` : "");
+
+        row.innerHTML = `
+          <div class="chapter-info">
+            <div class="chapter-title-row">
+              <span class="chapter-label">Ch ${chNum} · ${item.label}</span>
+              ${effortChip ? `<span class="chapter-chip">${effortChip}</span>` : ""}
+            </div>
+            <div class="chapter-brief">${item.brief || ""}</div>
+          </div>
+          <div class="chapter-actions">
+            <button class="btn-ch play-btn" onclick="playChapter('author', ${chNum})">▶️ Listen</button>
+            <button class="btn-ch" onclick="readChapter('author', ${chNum})">📖 Read</button>
+          </div>
+        `;
+        fullBody.appendChild(row);
+      });
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function backToLibrary() {
+      document.getElementById("bookDetailView").classList.remove("active");
+      document.getElementById("libraryView").style.display = "block";
+      document.getElementById("headerTitle").textContent = "Liberation Library";
+      currentBook = null;
+    }
+
+    function toggleTrackSection(id) {
+      const sec = document.getElementById(id);
+      sec.classList.toggle("collapsed");
+    }
+
+    /* ==========================================================================
+       AUDIO PLAYBACK
+       ========================================================================== */
+    function getAudioUrl(trackType, index) {
+      if (!currentBook) return "";
+      const slug = currentBook.slug || currentBook.filename.replace(/\.pdf$/i, "").toLowerCase();
+      return `audio/books/${slug}/${trackType}_${index}.mp3`;
+    }
+
+    async function playChapter(trackType, index) {
+      if (!currentBook) return;
+      currentTrackType = trackType;
+      currentItemIndex = index;
+
+      const items = trackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
+      const item = items[index - 1];
+      if (!item) return;
+
+      const trackTitle = (trackType === "adhd" ? `Step ${index}` : `Chapter ${index}`) + ` · ${item.label}`;
+      document.getElementById("playerBookTitle").textContent = currentBook.title;
+      document.getElementById("playerChapterTitle").textContent = trackTitle;
+
+      const audioUrl = getAudioUrl(trackType, index);
+      audioEl.src = audioUrl;
+      audioEl.load();
+
+      try {
+        await audioEl.play();
+        document.getElementById("btnPlayPause").textContent = "⏸";
+        requestScreenWakeLock();
+
+        if ("mediaSession" in navigator) {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: trackTitle,
+            artist: currentBook.author || "Liberation Library",
+            album: currentBook.title,
+            artwork: [{ src: "assets/icons/favicon-hub.png", sizes: "96x96", type: "image/png" }]
+          });
+        }
+      } catch (err) {
+        console.warn("Direct audio playback error:", err);
+      }
+    }
+
+    document.getElementById("btnPlayPause").addEventListener("click", () => {
+      if (audioEl.paused) {
+        if (!audioEl.src && currentBook) {
+          playChapter(currentTrackType, currentItemIndex);
+        } else {
+          audioEl.play();
+          document.getElementById("btnPlayPause").textContent = "⏸";
+          requestScreenWakeLock();
+        }
+      } else {
+        audioEl.pause();
+        document.getElementById("btnPlayPause").textContent = "▶";
+      }
+    });
+
+    document.getElementById("btnRewind15").addEventListener("click", () => {
+      audioEl.currentTime = Math.max(0, audioEl.currentTime - 15);
+    });
+
+    document.getElementById("btnForward15").addEventListener("click", () => {
+      audioEl.currentTime = Math.min(audioEl.duration || 0, audioEl.currentTime + 15);
+    });
+
+    audioEl.addEventListener("timeupdate", () => {
+      const cur = audioEl.currentTime || 0;
+      const dur = audioEl.duration || 0;
+      document.getElementById("playerCurrentTime").textContent = formatSeconds(cur);
+      document.getElementById("playerTotalTime").textContent = formatSeconds(dur);
+      if (dur > 0) {
+        document.getElementById("playerScrubber").value = (cur / dur) * 100;
+      }
+    });
+
+    document.getElementById("playerScrubber").addEventListener("input", (e) => {
+      const dur = audioEl.duration || 0;
+      if (dur > 0) {
+        audioEl.currentTime = (e.target.value / 100) * dur;
+      }
+    });
+
+    audioEl.addEventListener("ended", () => {
+      if (!currentBook) return;
+      const items = currentTrackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
+      if (currentItemIndex < items.length) {
+        playChapter(currentTrackType, currentItemIndex + 1);
+      } else {
+        document.getElementById("btnPlayPause").textContent = "▶";
+      }
+    });
+
+    function formatSeconds(sec) {
+      if (!sec || isNaN(sec)) return "0:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m}:${s < 10 ? "0" : ""}${s}`;
+    }
+
+    /* ==========================================================================
+       FLIGHT MODE & COMPLETE OFFLINE CACHE MANAGER
+       ========================================================================== */
+    async function updateStorageMetrics() {
+      try {
+        if ("storage" in navigator && "estimate" in navigator.storage) {
+          const est = await navigator.storage.estimate();
+          const usedMb = ((est.usage || 0) / (1024 * 1024)).toFixed(1);
+          document.getElementById("bannerStorageChip").textContent = `💾 ${usedMb} MB in Offline Cache`;
+          document.getElementById("statModalCacheSize").textContent = `${usedMb} MB (${((est.usage || 0) / (est.quota || 1) * 100).toFixed(1)}% of quota)`;
+        } else if ("caches" in window) {
+          const cache = await caches.open(CACHE_NAME);
+          const keys = await cache.keys();
+          document.getElementById("bannerStorageChip").textContent = `💾 ${keys.length} Items in Cache`;
+          document.getElementById("statModalCacheSize").textContent = `${keys.length} cached files`;
+        }
+      } catch (e) {
+        document.getElementById("bannerStorageChip").textContent = `💾 Storage Ready`;
+      }
+    }
+
+    async function downloadEntireLibraryOffline() {
+      if (isDownloading) return;
+      isDownloading = true;
+
+      const pBox = document.getElementById("offlineProgressBox");
+      const pFill = document.getElementById("progressBarFill");
+      const pPct = document.getElementById("progressPercentage");
+      const pTitle = document.getElementById("progressStepTitle");
+      const pSub = document.getElementById("progressStatusSub");
+      const btnSync = document.getElementById("btnModalStartSync");
+      const btnHero = document.getElementById("btnDownloadAllLibrary");
+
+      pBox.classList.add("active");
+      btnSync.disabled = true;
+      btnHero.disabled = true;
+
+      try {
+        const cache = await caches.open(CACHE_NAME);
+
+        // Core assets
+        const coreUrls = [
+          "books.html",
+          "assets/books_catalog.json",
+          "assets/books_audio_index.json",
+          "assets/books_text_vault.json",
+          "assets/icons/favicon-hub.png"
+        ];
+
+        // Audio URLs from index
+        const audioUrls = (AUDIO_INDEX.files || []).map(f => f.url);
+        const allUrls = [...coreUrls, ...audioUrls];
+        const total = allUrls.length;
+
+        for (let i = 0; i < total; i++) {
+          const url = allUrls[i];
+          const pct = Math.round(((i + 1) / total) * 100);
+          pFill.style.width = `${pct}%`;
+          pPct.textContent = `${pct}%`;
+          pTitle.textContent = `Syncing Item ${i + 1} of ${total}`;
+          pSub.textContent = `Caching: ${url.split("/").pop()}`;
+
+          try {
+            await cache.add(url);
+          } catch (err) {
+            console.warn("Could not cache url:", url, err);
+          }
+        }
+
+        pTitle.textContent = "✓ Library 100% Offline Ready!";
+        pSub.textContent = "All chapters, texts, and audio files cached. Ready for flights.";
+        btnHero.textContent = "✓ Offline Library Synced";
+        setTimeout(() => {
+          btnSync.disabled = false;
+          btnHero.disabled = false;
+          isDownloading = false;
+        }, 1500);
+
+        updateStorageMetrics();
+      } catch (err) {
+        console.error("Library sync error:", err);
+        pTitle.textContent = "Sync interrupted";
+        pSub.textContent = String(err);
+        btnSync.disabled = false;
+        btnHero.disabled = false;
+        isDownloading = false;
+      }
+    }
+
+    async function clearOfflineCache() {
+      if (confirm("Are you sure you want to clear the offline library cache? You can re-download anytime.")) {
+        try {
+          await caches.delete(CACHE_NAME);
+          alert("Offline cache cleared.");
+          updateStorageMetrics();
+        } catch (e) {
+          alert("Error clearing cache: " + e);
+        }
+      }
+    }
+
+    function updateOfflineStatus() {
+      const pill = document.getElementById("offlineStatusPill");
+      if (navigator.onLine) {
+        pill.textContent = "🟢 Online";
+        pill.classList.remove("offline");
+      } else {
+        pill.textContent = "📴 Flight Mode (Offline)";
+        pill.classList.add("offline");
+      }
+    }
+    window.addEventListener("online", updateOfflineStatus);
+    window.addEventListener("offline", updateOfflineStatus);
+
+    /* ==========================================================================
+       IN-APP CHAPTER READER
+       ========================================================================== */
+    async function readChapter(trackType, index) {
+      if (!currentBook) return;
+      currentTrackType = trackType;
+      currentItemIndex = index;
+
+      const items = trackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
+      const item = items[index - 1];
+      if (!item) return;
+
+      const title = (trackType === "adhd" ? `Step ${index}` : `Ch ${index}`) + ` · ${item.label}`;
+      document.getElementById("readerHeaderTitle").textContent = title;
+
+      const modal = document.getElementById("readerModal");
+      const body = document.getElementById("readerContentBody");
+      modal.classList.add("active");
+
+      // Check text vault first for instant offline rendering
+      const slug = currentBook.slug || currentBook.filename.replace(/\.pdf$/i, "").toLowerCase();
+      let textContent = "";
+
+      if (TEXT_VAULT && TEXT_VAULT[slug] && TEXT_VAULT[slug][trackType] && TEXT_VAULT[slug][trackType][String(index)]) {
+        textContent = TEXT_VAULT[slug][trackType][String(index)].content;
+      }
+
+      if (textContent) {
+        body.innerHTML = `
+          <h2>${item.label}</h2>
+          <div style="background: var(--surface-subtle); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem;">
+            <strong>Pages:</strong> ${item.pages || "N/A"} · <strong>Effort:</strong> ~${item.duration_min || 15} mins
+          </div>
+          <div class="rendered-prose">${textContent.replace(/\n\n/g, "</p><p>")}</div>
+        `;
+      } else {
+        body.innerHTML = `
+          <h2>${item.label}</h2>
+          <div style="background: var(--surface-subtle); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem;">
+            <strong>Pages:</strong> ${item.pages || "N/A"} · <strong>Effort:</strong> ~${item.duration_min || 15} mins
+          </div>
+          <p style="font-size: 1.15rem; line-height: 1.8;">${item.brief || "Overview available. Tap Listen below to start audio."}</p>
+        `;
+      }
+    }
+
+    document.getElementById("btnCloseReader").addEventListener("click", () => {
+      document.getElementById("readerModal").classList.remove("active");
+    });
+    document.getElementById("btnReaderListenCurrent").addEventListener("click", () => {
+      playChapter(currentTrackType, currentItemIndex);
+    });
+    document.getElementById("btnReaderPrev").addEventListener("click", () => {
+      if (currentItemIndex > 1) {
+        readChapter(currentTrackType, currentItemIndex - 1);
+      }
+    });
+    document.getElementById("btnReaderNext").addEventListener("click", () => {
+      const items = currentTrackType === "adhd" ? (currentBook.adhd_segments || []) : (currentBook.author_chapters || []);
+      if (currentItemIndex < items.length) {
+        readChapter(currentTrackType, currentItemIndex + 1);
+      }
+    });
+    document.getElementById("btnFontSmaller").addEventListener("click", () => {
+      readerFontSize = Math.max(0.85, readerFontSize - 0.1);
+      document.getElementById("readerContentBody").style.fontSize = `${readerFontSize}rem`;
+    });
+    document.getElementById("btnFontLarger").addEventListener("click", () => {
+      readerFontSize = Math.min(1.45, readerFontSize + 0.1);
+      document.getElementById("readerContentBody").style.fontSize = `${readerFontSize}rem`;
+    });
+
+    /* ==========================================================================
+       MODALS & EVENT LISTENERS
+       ========================================================================== */
+    const offlineModal = document.getElementById("offlineModal");
+    document.getElementById("btnOpenOfflineModal").addEventListener("click", () => {
+      offlineModal.classList.add("active");
+      updateStorageMetrics();
+    });
+    document.getElementById("btnCloseOfflineModal").addEventListener("click", () => {
+      offlineModal.classList.remove("active");
+    });
+    document.getElementById("btnDownloadAllLibrary").addEventListener("click", () => {
+      offlineModal.classList.add("active");
+      downloadEntireLibraryOffline();
+    });
+    document.getElementById("btnModalStartSync").addEventListener("click", downloadEntireLibraryOffline);
+    document.getElementById("btnClearCacheBtn").addEventListener("click", clearOfflineCache);
+    document.getElementById("btnRefreshManifestBtn").addEventListener("click", () => {
+      loadCatalog();
+      updateStorageMetrics();
+    });
+
+    document.getElementById("btnBackToLibrary").addEventListener("click", backToLibrary);
+    document.getElementById("btnDownloadBookOffline").addEventListener("click", downloadEntireLibraryOffline);
+    document.getElementById("btnPlayAllAdhd").addEventListener("click", () => playChapter("adhd", 1));
+    document.getElementById("btnPlayAllFull").addEventListener("click", () => playChapter("author", 1));
+
+    document.getElementById("bookSearchInput").addEventListener("input", (e) => {
+      activeSearchQuery = e.target.value;
+      renderBooksGrid();
+    });
+
+    document.querySelectorAll(".filter-chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+        activeCategory = chip.getAttribute("data-cat");
+        renderBooksGrid();
+      });
+    });
+
+    // Theme Toggle
+    document.getElementById("themeToggleBtn").addEventListener("click", () => {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      if (isDark) {
+        document.documentElement.removeAttribute("data-theme");
+      } else {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    });
+
+    // Support GitHub Preview rewriting
+    (function hydrateHubAppLinks() {
+      try {
+        if (typeof location === "undefined" || typeof document === "undefined") return;
+        const isHtmlPreview = /htmlpreview\.github\.io/i.test(location.hostname || "") || /github\.com\/kouSeek\/portfolio\/blob\//i.test(location.search || "");
+        if (!isHtmlPreview) return;
+        const m = (location.search || "").match(/https:\/\/github\.com\/kouSeek\/portfolio\/blob\/([^/]+)\//i);
+        const branch = (m && m[1]) ? m[1] : "kalyani-reels";
+        const backBtn = document.getElementById("navBackBtn");
+        if (backBtn) {
+          backBtn.href = "https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/" + branch + "/index.html";
+        }
+      } catch (e) {}
+    })();
+
+    // Start
+    loadCatalog();
+  </script>
+</body>
+</html>

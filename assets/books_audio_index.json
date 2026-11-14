@@ -1,0 +1,106 @@
+{
+  "generatedAt": "2026-11-14T02:30:00Z",
+  "totalFiles": 7,
+  "totalBytes": 104134848,
+  "booksCount": 2,
+  "books": {
+    "the-code-book": {
+      "count": 3,
+      "totalBytes": 38475456,
+      "files": [
+        "adhd_1.mp3",
+        "adhd_2.mp3",
+        "adhd_3.mp3"
+      ]
+    },
+    "the-gene": {
+      "count": 4,
+      "totalBytes": 65659392,
+      "files": [
+        "adhd_1.mp3",
+        "adhd_2.mp3",
+        "adhd_3.mp3",
+        "adhd_4.mp3"
+      ]
+    }
+  },
+  "files": [
+    {
+      "slug": "the-code-book",
+      "bookTitle": "The Code Book",
+      "trackType": "adhd",
+      "index": 1,
+      "label": "Step 1 · Jumps to Ch. 4: Cracking the Enigma Machine (Start Here)",
+      "url": "audio/books/the-code-book/adhd_1.mp3",
+      "file": "adhd_1.mp3",
+      "sizeBytes": 13009344,
+      "durationSec": 1626.168
+    },
+    {
+      "slug": "the-code-book",
+      "bookTitle": "The Code Book",
+      "trackType": "adhd",
+      "index": 2,
+      "label": "Step 2 · Jumps to Ch. 6: Alice and Bob Go Public — One-Way Locks & RSA Prime Math",
+      "url": "audio/books/the-code-book/adhd_2.mp3",
+      "file": "adhd_2.mp3",
+      "sizeBytes": 13070784,
+      "durationSec": 1633.848
+    },
+    {
+      "slug": "the-code-book",
+      "bookTitle": "The Code Book",
+      "trackType": "adhd",
+      "index": 3,
+      "label": "Step 3 · Jumps Back to Ch. 1: Mary Queen of Scots & Al-Kindi's Frequency Analysis",
+      "url": "audio/books/the-code-book/adhd_3.mp3",
+      "file": "adhd_3.mp3",
+      "sizeBytes": 12395328,
+      "durationSec": 1549.416
+    },
+    {
+      "slug": "the-gene",
+      "bookTitle": "The Gene: An Intimate History",
+      "trackType": "adhd",
+      "index": 1,
+      "label": "Step 1 · Prologue: Families in Kolkata (Start Here — The Personal Mystery)",
+      "url": "audio/books/the-gene/adhd_1.mp3",
+      "file": "adhd_1.mp3",
+      "sizeBytes": 16686720,
+      "durationSec": 2085.84
+    },
+    {
+      "slug": "the-gene",
+      "bookTitle": "The Gene: An Intimate History",
+      "trackType": "adhd",
+      "index": 2,
+      "label": "Step 2 · Jumps to Part II: Seeing the 3D DNA Double Helix (Franklin, Crick & Watson)",
+      "url": "audio/books/the-gene/adhd_2.mp3",
+      "file": "adhd_2.mp3",
+      "sizeBytes": 18865728,
+      "durationSec": 2358.216
+    },
+    {
+      "slug": "the-gene",
+      "bookTitle": "The Gene: An Intimate History",
+      "trackType": "adhd",
+      "index": 3,
+      "label": "Step 3 · Jumps Back to Part I: Mendel's Pea Garden (How Discrete Code Packets Work)",
+      "url": "audio/books/the-gene/adhd_3.mp3",
+      "file": "adhd_3.mp3",
+      "sizeBytes": 16201728,
+      "durationSec": 2025.216
+    },
+    {
+      "slug": "the-gene",
+      "bookTitle": "The Gene: An Intimate History",
+      "trackType": "adhd",
+      "index": 4,
+      "label": "Step 4 · Jumps to Epilogue: Bheda, Abheda (Epigenetics, Fate & Human Freedom)",
+      "url": "audio/books/the-gene/adhd_4.mp3",
+      "file": "adhd_4.mp3",
+      "sizeBytes": 13905216,
+      "durationSec": 1738.152
+    }
+  ]
+}

@@ -88,6 +88,7 @@
     .quick-link-pill.zorba { background: #E0E7FF; color: #3730A3; border: 1px solid #6366F1; }
     .quick-link-pill.kalyani { background: #DCFCE7; color: #065F46; border: 1px solid #10B981; }
     .quick-link-pill.anondo { background: #CCFBF1; color: #115E59; border: 1px solid #14B8A6; }
+    .quick-link-pill.books { background: #F3E8FF; color: #6B21A8; border: 1px solid #A855F7; }
     .card-link-row {
       display: flex;
       gap: 8px;
@@ -147,6 +148,10 @@
       background: linear-gradient(180deg, #F0FDFA 0%, #FFFFFF 100%);
       border-color: #99F6E4;
     }
+    .persona-card.books {
+      background: linear-gradient(180deg, #FAF5FF 0%, #FFFFFF 100%);
+      border-color: #D8B4FE;
+    }
     .p-badge {
       display: inline-block;
       font-size: 0.8rem;
@@ -159,6 +164,7 @@
     .zorba .p-badge { background: #E0E7FF; color: #4338CA; }
     .kalyani .p-badge { background: #FFF1EC; color: #D8522E; }
     .anondo .p-badge { background: #CCFBF1; color: #0F766E; }
+    .books .p-badge { background: #F3E8FF; color: #7E22CE; }
     .p-title {
       font-size: 1.38rem;
       font-weight: 800;
@@ -185,14 +191,15 @@
     .zorba .p-cta { background: #4F46E5; color: #FFFFFF; }
     .kalyani .p-cta { background: #0E8358; color: #FFFFFF; }
     .anondo .p-cta { background: #0F766E; color: #FFFFFF; }
+    .books .p-cta { background: #7C3AED; color: #FFFFFF; }
   </style>
 </head>
 <body>
   <main class="hub">
     <header class="hub-header">
-      <div class="hub-pill">🪷 Modular AI Companion Hub — All 4 Apps</div>
+      <div class="hub-pill">🪷 Modular AI Companion Hub — All Apps</div>
       <h1 class="hub-title">🪷 AI Companion</h1>
-      <p class="hub-sub">Explore all 4 companion apps—Dopamine-Hitching Reels (✨ ঝলক & ⚡ ZORBA) and 21-Day Interactive Companions (🌸 কল্যাণী & 🌻 ANONDO).</p>
+      <p class="hub-sub">Explore companion apps—Dopamine-Hitching Reels (✨ ঝলক & ⚡ ZORBA), 21-Day Companions (🌸 কল্যাণী & 🌻 ANONDO), and the Liberation Books Library (📚 Books).</p>
     </header>
 
     <nav class="quick-links-bar" aria-label="All Companion Apps">
@@ -200,6 +207,7 @@
       <a class="quick-link-pill zorba" data-app="zorba.html" href="zorba.html">⚡ ZORBA (My Reels)</a>
       <a class="quick-link-pill kalyani" data-app="kalyani.html" href="kalyani.html">🌸 কল্যাণী (Ma's 21-Day)</a>
       <a class="quick-link-pill anondo" data-app="anondo.html" href="anondo.html">🌻 ANONDO (My 21-Day)</a>
+      <a class="quick-link-pill books" data-app="books.html" href="books.html">📚 Books (Library)</a>
     </nav>
 
     <div class="grid">
@@ -259,6 +267,21 @@
           <div class="card-link-row">
             <a class="card-sub-link" href="https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/kalyani-reels/anondo.html" target="_blank" rel="noopener">🌐 GitHub Preview</a>
             <a class="card-sub-link" href="http://koushikchak.c.googlers.com:8765/anondo.html" target="_blank" rel="noopener">💻 Local (:8765)</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="persona-card books">
+        <div>
+          <span class="p-badge">Books • Mobile Library & Offline Audio (English)</span>
+          <h2 class="p-title">📚 Liberation Books Library</h2>
+          <p class="p-desc">Complete Liberation Library books (29 volumes) with non-linear ⚡ Core Steps, full book chapters, in-app distraction-free reading, and VoiceLM-XL Aoede UK Female audio with offline caching for phone commute & travel.</p>
+        </div>
+        <div>
+          <a class="p-cta" data-app="books.html" href="books.html" style="text-decoration:none;">📚 Open Books Library →</a>
+          <div class="card-link-row">
+            <a class="card-sub-link" href="https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/kalyani-reels/books.html" target="_blank" rel="noopener">🌐 GitHub Preview</a>
+            <a class="card-sub-link" href="http://koushikchak.c.googlers.com:8765/books.html" target="_blank" rel="noopener">💻 Local (:8765)</a>
           </div>
         </div>
       </div>

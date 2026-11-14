@@ -1,0 +1,38 @@
+{
+  "title": "The Code Book",
+  "author": "Simon Singh",
+  "filename": "14_The_Code_Book_Simon_Singh.pdf",
+  "slug": "the-code-book",
+  "voice": "Aoede",
+  "tracks": {
+    "adhd": [
+      {
+        "index": 1,
+        "label": "Step 1 · Jumps to Ch. 4: Cracking the Enigma Machine (Start Here)",
+        "pages": "215-234",
+        "brief": "Starts right inside the mechanical rotors and electrical plugboard of the Nazi Enigma machine, showing how Polish mathematician Marian Rejewski and Alan Turing spotted logical loops to break the unbreakable cipher.",
+        "file": "adhd_1.mp3",
+        "durationSec": 1626.168,
+        "sizeBytes": 13009344
+      },
+      {
+        "index": 2,
+        "label": "Step 2 · Jumps to Ch. 6: Alice and Bob Go Public — One-Way Locks & RSA Prime Math",
+        "pages": "410-428",
+        "brief": "Unpacks the mind-opening invention of public-key cryptography: how modular arithmetic and prime multiplication create a padlock anyone can snap shut but only the private prime factors can open.",
+        "file": "adhd_2.mp3",
+        "durationSec": 1633.848,
+        "sizeBytes": 13070784
+      },
+      {
+        "index": 3,
+        "label": "Step 3 · Jumps Back to Ch. 1: Mary Queen of Scots & Al-Kindi's Frequency Analysis",
+        "pages": "15-33",
+        "brief": "Flashes back to the origin of cryptanalysis, watching how ninth-century Arab polymath Al-Kindi cracked substitution ciphers by counting letter fingerprints.",
+        "file": "adhd_3.mp3",
+        "durationSec": 1549.416,
+        "sizeBytes": 12395328
+      }
+    ]
+  }
+}
