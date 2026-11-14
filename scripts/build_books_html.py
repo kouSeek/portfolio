@@ -1568,27 +1568,17 @@ def generate_books_html() -> None:
 
           const wIdx = wordIndex++;
           let weight = Math.max(3, clean.length);
-          if (lineType === "h1" || lineType === "h2") {{
-            weight += 2;
-          }} else if (lineType === "quote") {{
-            weight += 1;
-          }}
-          if (/[.?!]$/.test(clean) || /[.?!]["')\\]]*$/.test(tok)) {{
-            weight += 6;
+          const isSentEnd = /[.?!]$/.test(clean) || /[.?!]["')\\]]*$/.test(tok) || isLast;
+          if (isSentEnd) {{
+            weight += 4;
           }} else if (/[,;:—–·]$/.test(clean) || /[,;:—–·]["')\\]]*$/.test(tok) || tok === "—" || tok === "–" || tok === "·") {{
-            weight += 3;
-          }}
-          if (isLast) {{
-            if (lineType === "h1") weight += 20;
-            else if (lineType === "h2") weight += 18;
-            else if (lineType === "h3") weight += 16;
-            else if (lineType === "quote") weight += (isBlockEnd ? 18 : 10);
-            else weight += (isBlockEnd ? 16 : 4);
+            weight += 2;
           }}
           wordsList.push({{
             index: wIdx,
             word: clean,
-            weight: weight
+            weight: weight,
+            s: isSentEnd ? 1 : 0
           }});
           return `<span class="k-word" data-word-idx="${{wIdx}}" id="kword_${{wIdx}}">${{escapeHtml(tok)}}</span>`;
         }}).join("");
@@ -1703,12 +1693,80 @@ def generate_books_html() -> None:
       const totalVoiced = voicedTimeAt(totalDur);
       if (totalVoiced <= 0) return;
 
+      // 1. Sentence boundary word indices
+      const sentEndIndices = [];
       for (let i = 0; i < words.length; i++) {{
-        const targetVStart = (words[i].cumWeight / totalWeight) * totalVoiced;
-        const targetVEnd = ((words[i].cumWeight + words[i].weight) / totalWeight) * totalVoiced;
-        words[i].startSec = i === 0 ? 0 : invVoicedTime(targetVStart);
-        words[i].endSec = invVoicedTime(targetVEnd);
+        if (words[i].s) sentEndIndices.push(i);
       }}
+      if (!sentEndIndices.length || sentEndIndices[sentEndIndices.length - 1] !== words.length - 1) {{
+        sentEndIndices.push(words.length - 1);
+      }}
+
+      // 2. Anchor every K sentences (K=2 sentences per anchor)
+      const K = 2;
+      const anchorIndices = [];
+      for (let i = K - 1; i < sentEndIndices.length; i += K) {{
+        anchorIndices.push(sentEndIndices[i]);
+      }}
+      if (!anchorIndices.length || anchorIndices[anchorIndices.length - 1] !== words.length - 1) {{
+        anchorIndices.push(words.length - 1);
+      }}
+
+      // 3. Compute anchor timestamps snapped to acoustic silences
+      const anchors = [{{ wordIdx: -1, timeSec: 0.0 }}];
+      for (let a = 0; a < anchorIndices.length; a++) {{
+        const idx = anchorIndices[a];
+        const w = words[idx];
+        const cumW = w.cumWeight + w.weight;
+        const frac = cumW / totalWeight;
+        const targetV = frac * totalVoiced;
+        const tEst = invVoicedTime(targetV);
+
+        let bestSilStart = null;
+        let minDist = 1.6;
+        for (let s = 0; s < rawSilences.length; s++) {{
+          const dist = Math.abs(rawSilences[s][0] - tEst);
+          if (dist < minDist) {{
+            minDist = dist;
+            bestSilStart = rawSilences[s][0];
+          }}
+        }}
+        const aTime = bestSilStart !== null ? bestSilStart : tEst;
+        anchors.push({{
+          wordIdx: idx,
+          timeSec: Math.max(0.1, aTime)
+        }});
+      }}
+
+      for (let a = 1; a < anchors.length; a++) {{
+        if (anchors[a].timeSec <= anchors[a - 1].timeSec) {{
+          anchors[a].timeSec = anchors[a - 1].timeSec + 0.3;
+        }}
+      }}
+      anchors[anchors.length - 1].timeSec = totalDur;
+
+      // 4. Interpolate words strictly within each 2-sentence anchor interval
+      for (let a = 0; a < anchors.length - 1; a++) {{
+        const startWIdx = anchors[a].wordIdx + 1;
+        const endWIdx = anchors[a + 1].wordIdx;
+        if (startWIdx > endWIdx) continue;
+
+        const tStart = anchors[a].timeSec;
+        const tEnd = anchors[a + 1].timeSec;
+        const baseC = words[startWIdx].cumWeight;
+        const spanW = Math.max(1, (words[endWIdx].cumWeight + words[endWIdx].weight) - baseC);
+        const spanT = Math.max(0.05, tEnd - tStart);
+
+        for (let i = startWIdx; i <= endWIdx; i++) {{
+          const fracS = (words[i].cumWeight - baseC) / spanW;
+          const fracE = ((words[i].cumWeight + words[i].weight) - baseC) / spanW;
+          words[i].startSec = tStart + fracS * spanT;
+          words[i].endSec = tStart + fracE * spanT;
+        }}
+      }}
+
+      words[0].startSec = 0.0;
+      words[words.length - 1].endSec = totalDur;
     }}
 
     function syncKaraokeWord() {{

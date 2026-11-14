@@ -89,30 +89,13 @@ def render_markdown_to_html(md_text: str) -> tuple[str, list[dict], int]:
             w_idx = word_index
             word_index += 1
             weight = max(3, len(clean))
-            if line_type in ("h1", "h2"):
+            is_sent_end = bool(re.search(r'[.?!]["\'\)\]]*$', tok)) or is_last
+            if is_sent_end:
+                weight += 4
+            elif re.search(r'[,;:—–·]["\'\)\]]*$', tok) or tok in ("—", "–", "·"):
                 weight += 2
-            elif line_type == "quote":
-                weight += 1
 
-            if re.search(r"[.?!]$", clean) or re.search(r'[.?!]["\'\)\]]*$', tok):
-                weight += 6
-            elif re.search(r"[,;:—–·]$", clean) or re.search(r'[,;:—–·]["\'\)\]]*$', tok) or tok in ("—", "–", "·"):
-                weight += 3
-
-            # Calibrated block & pairing pause weights
-            if is_last:
-                if line_type == "h1":
-                    weight += 20
-                elif line_type == "h2":
-                    weight += 18
-                elif line_type == "h3":
-                    weight += 16
-                elif line_type == "quote":
-                    weight += (18 if is_block_end else 10)
-                else: # body paragraph
-                    weight += (16 if is_block_end else 4)
-
-            words_list.append({"idx": w_idx, "word": clean, "weight": weight})
+            words_list.append({"idx": w_idx, "word": clean, "weight": weight, "s": 1 if is_sent_end else 0})
             escaped_tok = html.escape(tok)
             res.append(f'<span class="k-word" data-word-idx="{w_idx}" id="w_{w_idx}">{escaped_tok}</span>')
         return "".join(res)
@@ -208,7 +191,7 @@ def build_chapter_html(
     content = chapter_data.get("content", brief)
 
     body_html, words_list, total_weight = render_markdown_to_html(content)
-    words_json = json.dumps([{"c": w["cum"], "w": w["weight"]} for w in words_list])
+    words_json = json.dumps([{"c": w["cum"], "w": w["weight"], "s": w["s"]} for w in words_list])
 
     audio_url = f"{GH_RAW_AUDIO_BASE}{audio_track['url']}" if audio_track else ""
     audio_dur = float(audio_track.get("durationSec") or 0.0) if audio_track else 0.0
@@ -846,7 +829,7 @@ def build_chapter_html(
       function invVoicedTime(targetV) {{
         let lo = 0;
         let hi = totalDur;
-        for (let iter = 0; iter < 26; iter++) {{
+        for (let iter = 0; iter < 28; iter++) {{
           const mid = (lo + hi) * 0.5;
           if (voicedTimeAt(mid) < targetV) lo = mid;
           else hi = mid;
@@ -857,12 +840,80 @@ def build_chapter_html(
       const totalVoiced = voicedTimeAt(totalDur);
       if (totalVoiced <= 0) return;
 
+      // 1. Sentence boundary word indices
+      const sentEndIndices = [];
       for (let i = 0; i < words.length; i++) {{
-        const targetVStart = (words[i].c / totalWeight) * totalVoiced;
-        const targetVEnd = ((words[i].c + words[i].w) / totalWeight) * totalVoiced;
-        words[i].startSec = i === 0 ? 0 : invVoicedTime(targetVStart);
-        words[i].endSec = invVoicedTime(targetVEnd);
+        if (words[i].s) sentEndIndices.push(i);
       }}
+      if (!sentEndIndices.length || sentEndIndices[sentEndIndices.length - 1] !== words.length - 1) {{
+        sentEndIndices.push(words.length - 1);
+      }}
+
+      // 2. Anchor every K sentences (K=2 sentences per anchor)
+      const K = 2;
+      const anchorIndices = [];
+      for (let i = K - 1; i < sentEndIndices.length; i += K) {{
+        anchorIndices.push(sentEndIndices[i]);
+      }}
+      if (!anchorIndices.length || anchorIndices[anchorIndices.length - 1] !== words.length - 1) {{
+        anchorIndices.push(words.length - 1);
+      }}
+
+      // 3. Compute anchor timestamps snapped to acoustic silences
+      const anchors = [{{ wordIdx: -1, timeSec: 0.0 }}];
+      for (let a = 0; a < anchorIndices.length; a++) {{
+        const idx = anchorIndices[a];
+        const w = words[idx];
+        const cumW = w.c + w.w;
+        const frac = cumW / totalWeight;
+        const targetV = frac * totalVoiced;
+        const tEst = invVoicedTime(targetV);
+
+        let bestSilStart = null;
+        let minDist = 1.6;
+        for (let s = 0; s < rawSilences.length; s++) {{
+          const dist = Math.abs(rawSilences[s][0] - tEst);
+          if (dist < minDist) {{
+            minDist = dist;
+            bestSilStart = rawSilences[s][0];
+          }}
+        }}
+        const aTime = bestSilStart !== null ? bestSilStart : tEst;
+        anchors.push({{
+          wordIdx: idx,
+          timeSec: Math.max(0.1, aTime)
+        }});
+      }}
+
+      for (let a = 1; a < anchors.length; a++) {{
+        if (anchors[a].timeSec <= anchors[a - 1].timeSec) {{
+          anchors[a].timeSec = anchors[a - 1].timeSec + 0.3;
+        }}
+      }}
+      anchors[anchors.length - 1].timeSec = totalDur;
+
+      // 4. Interpolate words strictly within each 2-sentence anchor interval
+      for (let a = 0; a < anchors.length - 1; a++) {{
+        const startWIdx = anchors[a].wordIdx + 1;
+        const endWIdx = anchors[a + 1].wordIdx;
+        if (startWIdx > endWIdx) continue;
+
+        const tStart = anchors[a].timeSec;
+        const tEnd = anchors[a + 1].timeSec;
+        const baseC = words[startWIdx].c;
+        const spanW = Math.max(1, (words[endWIdx].c + words[endWIdx].w) - baseC);
+        const spanT = Math.max(0.05, tEnd - tStart);
+
+        for (let i = startWIdx; i <= endWIdx; i++) {{
+          const fracS = (words[i].c - baseC) / spanW;
+          const fracE = ((words[i].c + words[i].w) - baseC) / spanW;
+          words[i].startSec = tStart + fracS * spanT;
+          words[i].endSec = tStart + fracE * spanT;
+        }}
+      }}
+
+      words[0].startSec = 0.0;
+      words[words.length - 1].endSec = totalDur;
       timelineCalibrated = true;
     }}
 

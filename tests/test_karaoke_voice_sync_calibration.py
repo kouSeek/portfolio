@@ -239,12 +239,82 @@ function invVoicedTime(targetV) {
 const totalVoiced = voicedTimeAt(totalDur);
 assert.ok(totalVoiced > 1000, 'Total voiced duration must be >1000s');
 
+// 1. Sentence boundary word indices
+const sentEndIndices = [];
 for (let i = 0; i < words.length; i++) {
-  const targetVStart = (words[i].c / totalWeight) * totalVoiced;
-  const targetVEnd = ((words[i].c + words[i].w) / totalWeight) * totalVoiced;
-  words[i].startSec = i === 0 ? 0 : invVoicedTime(targetVStart);
-  words[i].endSec = invVoicedTime(targetVEnd);
+  if (words[i].s) sentEndIndices.push(i);
 }
+if (!sentEndIndices.length || sentEndIndices[sentEndIndices.length - 1] !== words.length - 1) {
+  sentEndIndices.push(words.length - 1);
+}
+assert.ok(sentEndIndices.length > 200, `Expected >200 sentence boundaries, got ${sentEndIndices.length}`);
+
+// 2. Anchor every K=2 sentences
+const K = 2;
+const anchorIndices = [];
+for (let i = K - 1; i < sentEndIndices.length; i += K) {
+  anchorIndices.push(sentEndIndices[i]);
+}
+if (!anchorIndices.length || anchorIndices[anchorIndices.length - 1] !== words.length - 1) {
+  anchorIndices.push(words.length - 1);
+}
+assert.ok(anchorIndices.length > 100, `Expected >100 sentence anchors, got ${anchorIndices.length}`);
+
+// 3. Compute anchor timestamps snapped to acoustic silences
+const anchors = [{ wordIdx: -1, timeSec: 0.0 }];
+for (let a = 0; a < anchorIndices.length; a++) {
+  const idx = anchorIndices[a];
+  const w = words[idx];
+  const cumW = w.c + w.w;
+  const frac = cumW / totalWeight;
+  const targetV = frac * totalVoiced;
+  const tEst = invVoicedTime(targetV);
+
+  let bestSilStart = null;
+  let minDist = 1.6;
+  for (let s = 0; s < silences.length; s++) {
+    const dist = Math.abs(silences[s][0] - tEst);
+    if (dist < minDist) {
+      minDist = dist;
+      bestSilStart = silences[s][0];
+    }
+  }
+  const aTime = bestSilStart !== null ? bestSilStart : tEst;
+  anchors.push({
+    wordIdx: idx,
+    timeSec: Math.max(0.1, aTime)
+  });
+}
+
+for (let a = 1; a < anchors.length; a++) {
+  if (anchors[a].timeSec <= anchors[a - 1].timeSec) {
+    anchors[a].timeSec = anchors[a - 1].timeSec + 0.3;
+  }
+}
+anchors[anchors.length - 1].timeSec = totalDur;
+
+// 4. Interpolate words strictly within each 2-sentence anchor interval
+for (let a = 0; a < anchors.length - 1; a++) {
+  const startWIdx = anchors[a].wordIdx + 1;
+  const endWIdx = anchors[a + 1].wordIdx;
+  if (startWIdx > endWIdx) continue;
+
+  const tStart = anchors[a].timeSec;
+  const tEnd = anchors[a + 1].timeSec;
+  const baseC = words[startWIdx].c;
+  const spanW = Math.max(1, (words[endWIdx].c + words[endWIdx].w) - baseC);
+  const spanT = Math.max(0.05, tEnd - tStart);
+
+  for (let i = startWIdx; i <= endWIdx; i++) {
+    const fracS = (words[i].c - baseC) / spanW;
+    const fracE = ((words[i].c + words[i].w) - baseC) / spanW;
+    words[i].startSec = tStart + fracS * spanT;
+    words[i].endSec = tStart + fracE * spanT;
+  }
+}
+
+words[0].startSec = 0.0;
+words[words.length - 1].endSec = totalDur;
 
 // Verify monotonicity of acoustic startSec
 for (let i = 1; i < words.length; i++) {
