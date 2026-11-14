@@ -499,7 +499,7 @@
       color: #FFFFFF;
     }
 
-    /* Bottom Sticky Player — Hidden by default, shown ONLY when a book or chapter is selected */
+    /* Bottom Sticky Player — Hidden by default, shown ONLY when a book/chapter is played */
     .player-bar {
       position: fixed;
       bottom: var(--safe-bottom);
@@ -841,7 +841,7 @@
       </div>
 
       <div class="books-grid" id="booksGrid">
-        <!-- Rendered dynamically -->
+        <!-- Rendered dynamically from inlined BOOKS_DATA -->
       </div>
     </div>
 
@@ -895,7 +895,7 @@
     </div>
   </main>
 
-  <!-- Sticky Audio Player Bar (Hidden on Homepage by default, shown ONLY when a book/chapter is played) -->
+  <!-- Sticky Audio Player Bar (Hidden by default, shown ONLY when a book/chapter is played) -->
   <div class="player-bar" id="playerBar">
     <div class="player-progress-wrap">
       <span class="player-time" id="playerCurrentTime">0:00</span>
@@ -929,7 +929,7 @@
       </div>
 
       <p style="font-size: 0.85rem; color: var(--ink-muted); line-height: 1.5;">
-        Save all 29 books, full chapter texts, and neural voice files to your phone's browser cache for 100% offline reading and listening during flights.
+        Save all 29 books, chapter summaries, and neural voice files to your phone's browser cache for 100% offline reading and listening during flights.
       </p>
 
       <!-- Progress Box -->
@@ -1000,14 +1000,2065 @@
 
   <script>
     /* ==========================================================================
-       BOOKS CATALOG DATA & LOGIC
+       INLINED CATALOG & AUDIO INDEX (100% SELF-CONTAINED, ZERO EXTERNAL JSON FETCHES)
        ========================================================================== */
+    const BOOKS_DATA = [
+  {
+    "filename": "01_The_Gene_An_Intimate_History_Siddhartha_Mukherjee_COMPLETE.pdf",
+    "slug": "01_The_Gene_An_Intimate_History_Siddhartha_Mukherjee_COMPLETE",
+    "title": "The Gene: An Intimate History",
+    "author": "Siddhartha Mukherjee",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Prologue: Families in Kolkata (Start Here — The Personal Mystery)",
+        "pages": "8-20",
+        "brief": "Siddhartha Mukherjee travels with his father through Kolkata to visit his schizophrenic cousin Moni, asking how a tiny physical code inside our cells carries both brilliance and mental illness across generations."
+      },
+      {
+        "label": "Step 2 · Jumps to Part II: Seeing the 3D DNA Double Helix (Franklin, Crick & Watson)",
+        "pages": "134-148",
+        "brief": "Jumps ahead to 1953 Cambridge and London, where Rosalind Franklin's X-ray photographs and Watson and Crick's brass models reveal the physical four-letter twisted staircase that copies all life."
+      },
+      {
+        "label": "Step 3 · Jumps Back to Part I: Mendel's Pea Garden (How Discrete Code Packets Work)",
+        "pages": "40-52",
+        "brief": "Now that you can picture DNA, we jump back to Gregor Mendel cross-breeding 28,000 pea plants in his monastery garden to prove that traits pass from parent to child as unbreakable packets rather than blended fluids."
+      },
+      {
+        "label": "Step 4 · Jumps to Epilogue: Bheda, Abheda (Epigenetics, Fate & Human Freedom)",
+        "pages": "475-487",
+        "brief": "Returns to the Mukherjee family and the modern CRISPR era, showing how environmental triggers flip genetic switches on and off and why understanding our genome liberates us from fatalism."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Prologue: Families",
+        "pages": "8-20",
+        "brief": "A personal journey into the Mukherjee family history of schizophrenia in Kolkata and the central question of heredity."
+      },
+      {
+        "label": "Part I: The Missing Science of Heredity (1865–1935)",
+        "pages": "21-92",
+        "brief": "Aristotle, Darwin's pangenesis puzzle, Mendel's monastery pea experiments, and the dark detour of early eugenics."
+      },
+      {
+        "label": "Part II: In the Sum of the Parts (1930–1970)",
+        "pages": "93-200",
+        "brief": "Morgan's fruit-fly room, Oswald Avery's transformation experiment, and the discovery of the DNA double helix."
+      },
+      {
+        "label": "Part III: The Dreams of Geneticists (1970–2001)",
+        "pages": "201-251",
+        "brief": "Genetic engineering, recombinant DNA, cloning genes, and the birth of modern biotechnology."
+      },
+      {
+        "label": "Part IV: The Proper Study of Mankind Is Man (1970–2005)",
+        "pages": "252-323",
+        "brief": "Hunting disease genes across human families and the global race to map the entire human genome."
+      },
+      {
+        "label": "Part V: Through the Looking Glass (2001–2015)",
+        "pages": "324-406",
+        "brief": "The biology of identity, race, gender, intelligence, temperament, and epigenetic switches."
+      },
+      {
+        "label": "Part VI: Post-Genome & Epilogue: Bheda, Abheda",
+        "pages": "407-495",
+        "brief": "CRISPR gene editing, embryonic diagnosis, and the philosophical synthesis of difference and sameness."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "03_The_Man_Who_Knew_Infinity_Ramanujan_Robert_Kanigel.pdf",
+    "slug": "03_The_Man_Who_Knew_Infinity_Ramanujan_Robert_Kanigel",
+    "title": "The Man Who Knew Infinity",
+    "author": "Robert Kanigel",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 4: The 1913 Letter That Stunned G. H. Hardy (Start Here)",
+        "pages": "159-172",
+        "brief": "Starts at the dramatic turning point in January 1913 when Cambridge mathematician G. H. Hardy opens a messy envelope from an unknown Madras clerk and realizes these wild infinite series could only come from a genius."
+      },
+      {
+        "label": "Step 2 · Flashes Back to Prologue & Ch. 1–2: Temple Porch & Carr's Book in Kumbakonam",
+        "pages": "13-26",
+        "brief": "Flashes back to South India along the Kaveri River, showing how young Ramanujan worked out thousands of theorems on an elbow-rubbed slate on his porch, experiencing formulas as direct visions from Goddess Namagiri."
+      },
+      {
+        "label": "Step 3 · Jumps to Ch. 6: Flint and Stone — Pure Intuition Meets Rigorous Proof",
+        "pages": "215-228",
+        "brief": "Inside Trinity College, Ramanujan's lightning-fast pattern intuition collides with Hardy's insistence on formal step-by-step proof, producing their breakthrough formula for integer partitions."
+      },
+      {
+        "label": "Step 4 · Jumps to Ch. 8: Taxicab 1729 & Mock Theta Functions",
+        "pages": "309-320",
+        "brief": "Even while ill in Putney and returning to Madras, Ramanujan instantly spots 1729 as the smallest sum of two cubes in two ways and writes down mock theta functions now used in black-hole physics."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Prologue",
+        "pages": "13-20",
+        "brief": "Mahalanobis in Cambridge and the legend of Srinivasa Ramanujan's leap from South India to Trinity College."
+      },
+      {
+        "label": "Ch. 1: In the Shadow of the Temple (1887–1903)",
+        "pages": "21-54",
+        "brief": "Kumbakonam childhood, Brahmin upbringing, and early mathematical prodigy before discovering Carr's book."
+      },
+      {
+        "label": "Ch. 2: Ranging with Delight (1903–1908)",
+        "pages": "55-84",
+        "brief": "Carr's Synopsis sets Ramanujan's mind on fire; he fails college exams because he will only do mathematics."
+      },
+      {
+        "label": "Ch. 3: The Search for Patrons (1908–1913)",
+        "pages": "85-126",
+        "brief": "Marriage to Janaki, poverty in Madras, showing his frayed notebooks door-to-door, and clerkship at the Port Trust."
+      },
+      {
+        "label": "Ch. 4: Hardy (up to 1913)",
+        "pages": "127-168",
+        "brief": "G. H. Hardy's life at Cambridge and the morning Ramanujan's nine-page letter of theorems arrives."
+      },
+      {
+        "label": "Ch. 5: 'I Beg to Introduce Myself' (1913–1914)",
+        "pages": "169-196",
+        "brief": "Neville travels to Madras, Goddess Namagiri grants permission in a dream, and Ramanujan sails from India."
+      },
+      {
+        "label": "Ch. 6: Ramanujan's Spring (1914–1916)",
+        "pages": "197-236",
+        "brief": "Collaborating with Hardy and Littlewood at Cambridge on highly composite numbers and partitions."
+      },
+      {
+        "label": "Ch. 7: The English Chill (1916–1918)",
+        "pages": "237-308",
+        "brief": "Wartime food shortages, illness, election as Fellow of the Royal Society and Trinity College."
+      },
+      {
+        "label": "Ch. 8: Return to the Cauvery & Epilogue (1918–1920)",
+        "pages": "309-374",
+        "brief": "Homecoming to India, final notebooks on mock theta functions, and enduring legacy across modern math."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "04_Autobiography_of_a_Yogi_Paramahansa_Yogananda.pdf",
+    "slug": "04_Autobiography_of_a_Yogi_Paramahansa_Yogananda",
+    "title": "Autobiography of a Yogi",
+    "author": "Paramahansa Yogananda",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 26: The Physiological Science of Kriya Yoga (Start Here)",
+        "pages": "184-193",
+        "brief": "Starts directly with the concrete mechanism: Yogananda explains how circulating life-current calmly up and down the spine oxygenates the blood, slows the heart, and switches off sympathetic nervous-system static."
+      },
+      {
+        "label": "Step 2 · Jumps Back to Ch. 14: An Experience in Cosmic Consciousness",
+        "pages": "111-119",
+        "brief": "At Serampore hermitage, Sri Yukteswar lightly taps Mukunda's chest above the heart, expanding his perception beyond the body into a 360-degree spherical vision of the universe."
+      },
+      {
+        "label": "Step 3 · Jumps Back to Ch. 8: Calcutta Scientist Jagadis Chandra Bose",
+        "pages": "52-60",
+        "brief": "Visits pioneer Bengali physicist Jagadis Chandra Bose in Calcutta, watching his optical crescograph magnify tiny electrical nervous-system impulses inside living plants and metals."
+      },
+      {
+        "label": "Step 4 · Jumps to Ch. 10 & 12: Meeting Sri Yukteswar & Serampore Training",
+        "pages": "75-86",
+        "brief": "Recounts Mukunda's first electric meeting with Swami Sri Yukteswar in a Benares lane and how the no-nonsense master trained him in calm, zero-superstition clarity."
+      },
+      {
+        "label": "Step 5 · Jumps Back to Ch. 1–2: Bengali Parents, Childhood & Mother's Amulet",
+        "pages": "6-18",
+        "brief": "Closes with Mukunda's warm Bengali family childhood, his father's quiet mathematical poise, his mother's love, and the mystic silver amulet."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Ch. 1–3: My Parents, Mother's Amulet & The Saint with Two Bodies",
+        "pages": "6-25",
+        "brief": "Bengali childhood as Mukunda Lal Ghosh, Lahiri Mahasaya's blessing, and Swami Pranabananda in Benares."
+      },
+      {
+        "label": "Ch. 4–7: Himalayan Flight, Tiger Swami & The Levitating Saint",
+        "pages": "26-51",
+        "brief": "Running away toward the Himalayas and meeting extraordinary yogis across Bengal."
+      },
+      {
+        "label": "Ch. 8–9: Jagadis Chandra Bose & Master Mahasaya",
+        "pages": "52-74",
+        "brief": "J. C. Bose's plant nervous-system instruments in Calcutta and the blissful saint Mahendranath Gupta."
+      },
+      {
+        "label": "Ch. 10–13: Meeting Sri Yukteswar & Serampore Hermitage Years",
+        "pages": "75-110",
+        "brief": "Reunion with his guru Sri Yukteswar and daily training in Serampore."
+      },
+      {
+        "label": "Ch. 14–16: Cosmic Consciousness, Cauliflower Robbery & Outwitting the Stars",
+        "pages": "111-139",
+        "brief": "Samadhi awakening and Sri Yukteswar's fierce lessons on deeper law over superstition."
+      },
+      {
+        "label": "Ch. 17–23: Kashmir, Stone Image & Calcutta University Degree",
+        "pages": "140-172",
+        "brief": "Travels with Sri Yukteswar to Kashmir and graduating from Scottish Church College."
+      },
+      {
+        "label": "Ch. 24–28: Becoming a Monk, Kriya Yoga & Ranchi School",
+        "pages": "173-200",
+        "brief": "Entering the Swami order, the physiological mechanics of Kriya Yoga, and founding the Ranchi school."
+      },
+      {
+        "label": "Ch. 29–36: Rabindranath Tagore, Law of Miracles, Babaji & Lahiri Mahasaya",
+        "pages": "201-260",
+        "brief": "Comparing schools with Tagore at Santiniketan and the lineage of Babaji and Lahiri Mahasaya."
+      },
+      {
+        "label": "Ch. 37–48: Voyage to America, Return to India, Gandhi & Encinitas",
+        "pages": "261-363",
+        "brief": "Teaching in America, final days with Sri Yukteswar in Puri, Ananda Moyi Ma, and Encinitas."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "05_Fundamentals_of_Biostatistics_Rosner.pdf",
+    "slug": "05_Fundamentals_of_Biostatistics_Rosner",
+    "title": "Fundamentals of Biostatistics",
+    "author": "Bernard Rosner",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 3: Bayes' Theorem & Real-World Medical Screening (Start Here)",
+        "pages": "66-80",
+        "brief": "Starts with the most counter-intuitive puzzle in statistics: why a 99% accurate clinical test still produces mostly false alarms on a rare condition, and how Bayes' rule calculates the real probability."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 5–6: Normal Distribution & The Central Limit Theorem",
+        "pages": "135-150",
+        "brief": "Shows visually why averaging noisy biological measurements always converges into a clean bell curve, allowing small clinical samples to predict population truth."
+      },
+      {
+        "label": "Step 3 · Jumps Back to Ch. 1–2: Center vs. Spread (Mean, Median & Variance)",
+        "pages": "23-36",
+        "brief": "Returns to the foundations to show how skewed real-world numbers fool simple averages and how variance and interquartile range capture the true spread."
+      },
+      {
+        "label": "Step 4 · Jumps to Ch. 7: Hypothesis Testing, P-Values & Statistical Power",
+        "pages": "231-244",
+        "brief": "Unpacks the physical meaning of null hypotheses, Type I false alarms vs. Type II misses, and how to tell real treatment effect from luck."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Ch. 1: General Overview",
+        "pages": "23-32",
+        "brief": "What biostatistics measures and how real clinical studies are structured."
+      },
+      {
+        "label": "Ch. 2: Descriptive Statistics",
+        "pages": "33-65",
+        "brief": "Measures of location, spread, quantiles, and visual distributions."
+      },
+      {
+        "label": "Ch. 3: Probability",
+        "pages": "66-99",
+        "brief": "Conditional probability, independence, sensitivity/specificity, and Bayes' theorem."
+      },
+      {
+        "label": "Ch. 4: Discrete Probability Distributions",
+        "pages": "100-134",
+        "brief": "Binomial and Poisson distributions in biological counts."
+      },
+      {
+        "label": "Ch. 5: Continuous Probability Distributions",
+        "pages": "135-172",
+        "brief": "The Normal distribution and linear combinations of random variables."
+      },
+      {
+        "label": "Ch. 6: Estimation",
+        "pages": "173-230",
+        "brief": "Sampling distributions, Central Limit Theorem, and confidence intervals."
+      },
+      {
+        "label": "Ch. 7–8: Hypothesis Testing (One-Sample & Two-Sample)",
+        "pages": "231-345",
+        "brief": "t-tests, p-values, statistical power, and sample-size determination."
+      },
+      {
+        "label": "Ch. 9–10: Nonparametric & Categorical Data Methods",
+        "pages": "346-444",
+        "brief": "Rank tests, contingency tables, and chi-square tests."
+      },
+      {
+        "label": "Ch. 11–14: Regression, Correlation, ANOVA & Survival Analysis",
+        "pages": "445-850",
+        "brief": "Linear/logistic regression, multivariable models, and Kaplan-Meier survival curves."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "06_Thinking_Fast_and_Slow_Daniel_Kahneman.pdf",
+    "slug": "06_Thinking_Fast_and_Slow_Daniel_Kahneman",
+    "title": "Thinking, Fast and Slow",
+    "author": "Daniel Kahneman",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Ch. 1–2: Fast System 1 vs. Effortful System 2 (Start Here)",
+        "pages": "17-31",
+        "brief": "Introduces the two actors inside your brain: automatic System 1 that builds instant visual movies, and lazy, energy-protective System 2 that avoids heavy cognitive load."
+      },
+      {
+        "label": "Step 2 · Jumps to Part V (Ch. 35–36): The Experiencing Self vs. The Remembering Self",
+        "pages": "353-366",
+        "brief": "Jumps to Kahneman's deepest life insight: why the self that lives in the present moment is completely different from the storyteller self that judges experiences only by their peak and their ending."
+      },
+      {
+        "label": "Step 3 · Jumps Back to Part IV (Ch. 26): Prospect Theory & Loss Aversion",
+        "pages": "259-272",
+        "brief": "Unpacks the Nobel Prize discovery of why losing ₹1,000 triggers twice as much gut pain as winning ₹1,000 brings joy, and how reference points govern human risk."
+      },
+      {
+        "label": "Step 4 · Jumps Back to Part I (Ch. 5): Cognitive Ease & Why Familiarity Feels True",
+        "pages": "56-67",
+        "brief": "Shows how clear typography, simple language, and a calm mood put System 1 into 'Cognitive Ease,' lowering your guard and making everything feel effortless and true."
+      },
+      {
+        "label": "Step 5 · Jumps to Part II (Ch. 11 & 17): Anchoring & Regression to the Mean",
+        "pages": "112-125",
+        "brief": "Reveals how arbitrary numbers silently hijack negotiations and why unusually good or bad days naturally revert toward average without needing a causal story."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Introduction",
+        "pages": "7-16",
+        "brief": "Origins of Kahneman and Amos Tversky's collaboration on intuition and bias."
+      },
+      {
+        "label": "Part I: Two Systems (Ch. 1–9)",
+        "pages": "17-102",
+        "brief": "System 1 and System 2, attention and effort, associative memory, cognitive ease, and jumping to conclusions."
+      },
+      {
+        "label": "Part II: Heuristics and Biases (Ch. 10–18)",
+        "pages": "103-188",
+        "brief": "Law of small numbers, anchors, availability cascades, base-rate neglect, and regression to the mean."
+      },
+      {
+        "label": "Part III: Overconfidence (Ch. 19–24)",
+        "pages": "189-248",
+        "brief": "The narrative fallacy, illusion of validity, algorithms vs. intuition, and the outside view."
+      },
+      {
+        "label": "Part IV: Choices (Ch. 25–34)",
+        "pages": "249-352",
+        "brief": "Bernoulli's errors, Prospect Theory, the endowment effect, sunk-cost traps, and mental accounting."
+      },
+      {
+        "label": "Part V: Two Selves & Conclusions (Ch. 35–38)",
+        "pages": "353-398",
+        "brief": "Experiencing self vs. remembering self, peak-end rule, and life satisfaction."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "07_The_Art_of_War_Sun_Tzu_Thomas_Cleary.pdf",
+    "slug": "07_The_Art_of_War_Sun_Tzu_Thomas_Cleary",
+    "title": "The Art of War",
+    "author": "Sun Tzu (tr. Thomas Cleary)",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 3: Winning Whole Without Fighting (Start Here)",
+        "pages": "70-82",
+        "brief": "Starts with Sun Tzu's highest principle: breaking resistance without ever fighting a draining battle, keeping your own energy and peace 100% intact."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 6: Emptiness and Fullness — Flowing Like Water",
+        "pages": "98-112",
+        "brief": "Shows how water never crashes into a solid rock wall—it effortlessly flows around high resistance into empty spaces, shaping its victory to the terrain."
+      },
+      {
+        "label": "Step 3 · Jumps Back to Ch. 1 & 4: Making Yourself Invincible First",
+        "pages": "45-59",
+        "brief": "Returns to Master Sun's opening rule: you cannot control when an opponent makes a mistake, but you can make your own position completely unshakable first."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Translator's Introduction: Taoism & The Art of War",
+        "pages": "11-44",
+        "brief": "Historical background of Sun Tzu, Taoist philosophy, and the classical Chinese commentators."
+      },
+      {
+        "label": "Ch. 1–3: Strategic Assessments, Doing Battle & Planning a Siege",
+        "pages": "45-76",
+        "brief": "Assessing the five fundamentals, avoiding protracted drain, and winning intact without battle."
+      },
+      {
+        "label": "Ch. 4–6: Formation, Force & Emptiness and Fullness",
+        "pages": "77-112",
+        "brief": "Defensive invincibility, momentum like rolling boulders, and seizing the initiative."
+      },
+      {
+        "label": "Ch. 7–9: Armed Struggle, Adaptations & Maneuvering Armies",
+        "pages": "113-142",
+        "brief": "Turning circuitous routes into straight ones and reading subtle signs in the field."
+      },
+      {
+        "label": "Ch. 10–13: Terrain, Nine Grounds, Fire Attack & Use of Spies",
+        "pages": "143-172",
+        "brief": "Psychological ground, decisive execution, and strategic intelligence."
+      },
+      {
+        "label": "Mastering the Art of War & Sun Bin Classics",
+        "pages": "173-475",
+        "brief": "Zhuge Liang, Liu Ji, and Sun Bin's companion treatises on leadership and strategy."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "08_The_Kama_Sutra_of_Vatsyayana_Burton.pdf",
+    "slug": "08_The_Kama_Sutra_of_Vatsyayana_Burton",
+    "title": "The Kama Sutra of Vatsyayana",
+    "author": "Vatsyayana (tr. Richard Burton)",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Part I, Ch. 3–4: The 64 Arts & Sovereign Life of a Citizen (Start Here)",
+        "pages": "15-26",
+        "brief": "Paints a vivid picture of the Nagarak (cultured citizen) in ancient India: a calm, well-appointed home with a lute hanging on the wall, painting supplies, garden swings, music, and warm evening adda with friends."
+      },
+      {
+        "label": "Step 2 · Jumps to Part I, Ch. 2 & Part III: Balancing Dharma, Artha & Kama and Courtship",
+        "pages": "49-62",
+        "brief": "Shows why wealth and sensory joy are sacred when pursued without harming oneself, and how genuine romantic trust is built through unhurried playfulness and attentiveness."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Part I: In-General (Dharma, Artha, Kama & Life of a Citizen)",
+        "pages": "11-26",
+        "brief": "The three aims of human life, the 64 arts, and the refined household of a citizen."
+      },
+      {
+        "label": "Part II: On Romantic Union",
+        "pages": "27-48",
+        "brief": "Temperament, affection, and intimacy."
+      },
+      {
+        "label": "Part III: About the Acquisition of a Wife & Courtship",
+        "pages": "49-62",
+        "brief": "Building trust, courtship, and mutual confidence."
+      },
+      {
+        "label": "Part IV–VII: Household Life, Social Dynamics & Concluding Remarks",
+        "pages": "63-110",
+        "brief": "Social customs of ancient India and Vatsyayana's concluding synthesis."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "09_Don_Quixote_Miguel_de_Cervantes.pdf",
+    "slug": "09_Don_Quixote_Miguel_de_Cervantes",
+    "title": "Don Quixote",
+    "author": "Miguel de Cervantes",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Part I, Ch. 1–3: Polishing Rusty Armor & Riding Out at Dawn (Start Here)",
+        "pages": "57-70",
+        "brief": "Alonso Quixano reads chivalric romances until his imagination catches fire, names his skinny horse Rocinante, and gets dubiously knighted by a bewildered innkeeper."
+      },
+      {
+        "label": "Step 2 · Jumps to Part I, Ch. 7–8: Recruiting Sancho Panza & Charging the Windmills",
+        "pages": "82-95",
+        "brief": "Don Quixote recruits his practical neighbor Sancho Panza as squire and charges full tilt into thirty spinning windmills on the plain of Montiel."
+      },
+      {
+        "label": "Step 3 · Jumps to Part II: Sancho Governs His Island with Pure Common Sense",
+        "pages": "595-608",
+        "brief": "When a duke makes Sancho Panza governor of a mock island as a prank, Sancho stuns everyone by solving complex court riddles with effortless peasant wisdom."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Author's Preface",
+        "pages": "25-36",
+        "brief": "Cervantes' witty preface on writing a story free of pompous pedantry."
+      },
+      {
+        "label": "Part I, Ch. 1–6: The First Sally & The Burning of the Books",
+        "pages": "57-81",
+        "brief": "Don Quixote's knighting at the inn and the curate's inspection of his library."
+      },
+      {
+        "label": "Part I, Ch. 7–15: Sancho Panza & The Windmills",
+        "pages": "82-135",
+        "brief": "The second sally with Sancho Panza and the famous charge against the windmills."
+      },
+      {
+        "label": "Part I, Ch. 16–52: The Inn, Mambrino's Helmet & Sierra Morena",
+        "pages": "136-409",
+        "brief": "Misadventures at the inn, freeing the galley slaves, and penance in the mountains."
+      },
+      {
+        "label": "Part II, Ch. 1–74: The Knight and Squire Meet Their Own Fame",
+        "pages": "410-771",
+        "brief": "Don Quixote and Sancho encounter readers of Part I, Sancho governs his island, and the final return home."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "10_Stalin_and_Hitler_Two_Predator_Leaders.pdf",
+    "slug": "10_Stalin_and_Hitler_Two_Predator_Leaders",
+    "title": "Stalin and Hitler: Two Predator Leaders",
+    "author": "Historical Monograph",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Introduction & Origins — Psychological Formation of Two Outsiders",
+        "pages": "9-24",
+        "brief": "Traces how two provincial outsiders from Georgia and Austria turned early grievance and ideological obsession into absolute political ruthlessness."
+      },
+      {
+        "label": "Step 2 · Machinery of Fear, Cult of Personality & Dictatorial Collision",
+        "pages": "25-42",
+        "brief": "Examines how both regimes engineered mass obedience, purged rivals, and locked into the Eastern Front collision."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Introduction & Early Roots",
+        "pages": "9-24",
+        "brief": "Childhoods, family backgrounds, and psychological formation."
+      },
+      {
+        "label": "Rise to Absolute Power",
+        "pages": "25-65",
+        "brief": "Seizing party and state apparatus in Moscow and Berlin."
+      },
+      {
+        "label": "Totalitarian Terror & World War II",
+        "pages": "66-171",
+        "brief": "Purges, ideological warfare, Operation Barbarossa, and final downfall."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "11a_The_Communist_Manifesto_Karl_Marx.pdf",
+    "slug": "11a_The_Communist_Manifesto_Karl_Marx",
+    "title": "The Communist Manifesto",
+    "author": "Karl Marx & Friedrich Engels",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Ch. 1: Bourgeois and Proletarians (Start Here — Skip the 39p Prefaces)",
+        "pages": "40-54",
+        "brief": "Jumps past 39 pages of prefaces straight into Marx and Engels' vivid portrait of how global industrial capitalism tore down feudalism and wired the planet into a single market."
+      },
+      {
+        "label": "Step 2 · Ch. 2: Capital, Wage Labor & the State",
+        "pages": "55-68",
+        "brief": "Presents the core argument on private property, wage labor, and state centralization that defined twentieth-century ideological battles."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Historical Introduction & Prefaces (1872–1890)",
+        "pages": "8-39",
+        "brief": "Historical context of the 1848 revolutions and Marx and Engels' later prefaces."
+      },
+      {
+        "label": "Ch. 1: Bourgeois and Proletarians",
+        "pages": "40-54",
+        "brief": "Class struggle, the rise of global industry, and recurring crises of overproduction."
+      },
+      {
+        "label": "Ch. 2: Proletarians and Communists",
+        "pages": "55-68",
+        "brief": "The Communist program on capital, property, and the state."
+      },
+      {
+        "label": "Ch. 3–4 & Notes: Socialist Literature & Endnotes",
+        "pages": "69-184",
+        "brief": "Critique of rival 1848 socialist schools and historical annotations."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "11b_Das_Kapital_Karl_Marx.pdf",
+    "slug": "11b_Das_Kapital_Karl_Marx",
+    "title": "Das Kapital",
+    "author": "Karl Marx",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 4: The General Formula for Capital M–C–M' (Start Here)",
+        "pages": "104-116",
+        "brief": "Instead of getting bogged down in Ch. 1's 20 yards of linen, we start at Ch. 4 where Marx makes the mechanism crystal clear: ordinary people sell goods to buy what they need (C–M–C), whereas capital spends money only to end up with more money (M–C–M')."
+      },
+      {
+        "label": "Step 2 · Jumps Back to Ch. 1, Sec. 4: The Fetishism of Commodities",
+        "pages": "46-57",
+        "brief": "Now jumps back to the famous section of Chapter 1 where Marx shows how market price tags disguise human relationships between workers as magical properties of things."
+      },
+      {
+        "label": "Step 3 · Jumps to Part VIII: So-Called Primitive Accumulation",
+        "pages": "507-521",
+        "brief": "Jumps to the vivid historical narrative at the end of Volume I, tracing how land enclosures, colonial trade, and national debt forged the modern capitalist system."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Prefaces to the German & English Editions",
+        "pages": "7-27",
+        "brief": "Marx and Engels explain the scientific method of Capital."
+      },
+      {
+        "label": "Part I: Commodities and Money (Ch. 1–3)",
+        "pages": "28-103",
+        "brief": "Use-value, exchange-value, commodity fetishism, exchange, and the functions of money."
+      },
+      {
+        "label": "Part II: The Transformation of Money into Capital (Ch. 4–6)",
+        "pages": "104-125",
+        "brief": "M–C–M' and the buying and selling of labor-power."
+      },
+      {
+        "label": "Part III–V: Absolute & Relative Surplus-Value (Ch. 7–18)",
+        "pages": "126-365",
+        "brief": "The working day, division of labor, machinery, and large-scale industry."
+      },
+      {
+        "label": "Part VI–VIII: Wages, Accumulation & Primitive Accumulation (Ch. 19–33)",
+        "pages": "366-548",
+        "brief": "Wages, capitalist reproduction, industrial reserve army, and historical origins."
+      },
+      {
+        "label": "Volumes II & III (Circulation & Process as a Whole)",
+        "pages": "549-1542",
+        "brief": "Engels' editions of Volumes II and III on circulation, credit, and falling rate of profit."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "12_Hitler_and_the_Nazi_Darwinian_Worldview.pdf",
+    "slug": "12_Hitler_and_the_Nazi_Darwinian_Worldview",
+    "title": "Hitler and the Nazi Darwinian Worldview",
+    "author": "Jerry Bergman",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Introduction & Ch. 1: How Eugenics & Social Darwinism Infected Europe",
+        "pages": "16-33",
+        "brief": "Shows how distorted 19th-century 'racial hygiene' theories were elevated into academic dogma across German universities and medical boards."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 15–17: Textbooks, Lebensborn & Historical Lessons",
+        "pages": "245-261",
+        "brief": "Examines how state biology curricula and medical institutions normalized dehumanization and what modern science learned from that catastrophe."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Introduction",
+        "pages": "16-30",
+        "brief": "Overview of eugenics and racial ideology in early twentieth-century Germany."
+      },
+      {
+        "label": "Ch. 1–7: Origins & Architects of the Nazi Eugenics Worldview",
+        "pages": "31-145",
+        "brief": "Haeckel, racial hygiene societies, and Hitler's inner circle."
+      },
+      {
+        "label": "Ch. 8–17: Medical Establishment, Textbooks & Lessons",
+        "pages": "146-336",
+        "brief": "Doctors, legal policies, school curricula, and bibliography."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "13a_Aghora_I_At_the_Left_Hand_of_God_Robert_Svoboda.pdf",
+    "slug": "13a_Aghora_I_At_the_Left_Hand_of_God_Robert_Svoboda",
+    "title": "Aghora I: At the Left Hand of God",
+    "author": "Robert E. Svoboda",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 1: Ma — Why the Aghori Approaches the Universe as Mother (Start Here)",
+        "pages": "23-31",
+        "brief": "Starts directly with Vimalananda's core revelation: why approaching the fierce cosmic energy as your own Mother Tara dissolves fear, ego, and pretension faster than any dry philosophy."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 4: Rnanubandhana — The Primal Karmic Debt Account",
+        "pages": "57-74",
+        "brief": "Jumps to the most practical teaching in the trilogy: how every person, animal, house, and rupee in your life is linked by a specific rnanubandhana (karmic ledger) that resolves peacefully when you stop clinging."
+      },
+      {
+        "label": "Step 3 · Jumps Back to Ch. 2–3: Shakti, Kali & Fearless Smashan Clarity",
+        "pages": "32-50",
+        "brief": "Returns to Vimalananda's stories of Kalidasa and the cremation ground, showing how remembering impermanence burns away the Eight Snares of shame, disgust, and anxiety."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Preface & Introduction",
+        "pages": "6-22",
+        "brief": "How Robert Svoboda met his mentor Vimalananda and the meaning of Aghora."
+      },
+      {
+        "label": "Ch. 1: Ma",
+        "pages": "23-31",
+        "brief": "The Motherhood of God, Tara, and the relationship between deity and devotee."
+      },
+      {
+        "label": "Ch. 2: Shakti (Maya, Kali & Vision of the Goddess)",
+        "pages": "32-44",
+        "brief": "Maya Shakti, Kalidasa, Vidyaranya, Sarvananda, and Purnananda."
+      },
+      {
+        "label": "Ch. 3: Shiva (Mahakala, Death & the Smashan)",
+        "pages": "45-56",
+        "brief": "Time, death, the cremation pyre, and conquering fear."
+      },
+      {
+        "label": "Ch. 4: Rnanubandhana (The Primal Debt, Fate & Ranu)",
+        "pages": "57-167",
+        "brief": "Karmic bonds across lifetimes, spirits, remedies, and Vimalananda's postscript."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "13b_Aghora_II_Kundalini_Robert_Svoboda.pdf",
+    "slug": "13b_Aghora_II_Kundalini_Robert_Svoboda",
+    "title": "Aghora II: Kundalini",
+    "author": "Robert E. Svoboda",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Ch. 1: Agni — Why a Calm Belly Fire Means a Calm Mind (Start Here)",
+        "pages": "16-28",
+        "brief": "Vimalananda explains the direct physical link between Jatharagni (digestive fire in the gut) and mental clarity: when your stomach fire is steady and cool-headed, your mind cannot be hijacked."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 7: Music — Nada Brahma & Vocal Resonance as Supreme Yoga",
+        "pages": "88-102",
+        "brief": "Jumps straight to Vimalananda's chapter on music, explaining why losing yourself in pure vocal notes (swara and raga) awakens inner joy more safely and directly than forced breath retention."
+      },
+      {
+        "label": "Step 3 · Jumps Back to Ch. 2: Kundalini, Nadis & Purifying the Channels",
+        "pages": "29-44",
+        "brief": "Returns to the subtle anatomy of Ida, Pingala, and Sushumna, showing why clearing emotional static from the nerves comes before waking high voltage."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Foreword & Introduction",
+        "pages": "7-15",
+        "brief": "The inner path of Kundalini and subtle energy."
+      },
+      {
+        "label": "Ch. 1: Agni (The Sacred Fire Within and Without)",
+        "pages": "16-28",
+        "brief": "Digestive fire, mental fire, and cosmic fire."
+      },
+      {
+        "label": "Ch. 2: Kundalini (Nadis, Chakras & Samadhi)",
+        "pages": "29-46",
+        "brief": "The subtle anatomy of nadis, chakras, and Kula Kundalini."
+      },
+      {
+        "label": "Ch. 3–4: Preliminaries & Sadhana",
+        "pages": "47-71",
+        "brief": "Food, daily discipline, and making every action a sadhana."
+      },
+      {
+        "label": "Ch. 5–7: Mantra, Tantra & Music",
+        "pages": "72-105",
+        "brief": "Four levels of speech, mental worship, and Indian classical music as yoga."
+      },
+      {
+        "label": "Ch. 8–10: Immortals, The Esoteric & Gurus and Disciples",
+        "pages": "106-158",
+        "brief": "Siddhas, inner alchemy, and the guru-disciple bond."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "13c_Aghora_III_The_Law_of_Karma_Robert_Svoboda.pdf",
+    "slug": "13c_Aghora_III_The_Law_of_Karma_Robert_Svoboda",
+    "title": "Aghora III: The Law of Karma",
+    "author": "Robert E. Svoboda",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Introduction: The Physics of Karma (Sanchita, Prarabdha & Zero Guilt)",
+        "pages": "7-22",
+        "brief": "Strips away guilt and superstition, explaining karma as simple momentum physics: how past arrows already in flight (prarabdha) play out while present non-entanglement keeps you free."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 9: Prakriti Siddhi — Playing Your Role 100% Then Dropping the Load",
+        "pages": "132-151",
+        "brief": "Jumps to the culmination of the trilogy, where Vimalananda shows how to act with total intensity in the world while keeping your inner core completely unentangled."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Introduction: Karmic Theory, Tantra & Sankhya",
+        "pages": "7-20",
+        "brief": "Sanchita, Prarabdha, and Kriyamana karma and the three gunas."
+      },
+      {
+        "label": "Ch. 1–3: Rnanubandhana, Elan & Teasers and Stallions",
+        "pages": "21-60",
+        "brief": "Vimalananda's real-life laboratory of karmic debts at the Bombay racecourse."
+      },
+      {
+        "label": "Ch. 4–6: Timir, Scarlet Ruby & The City of Delusion",
+        "pages": "61-104",
+        "brief": "Stories of destiny, greed, and discernment in Mumbai."
+      },
+      {
+        "label": "Ch. 7–9: Repay, Redstone & Prakriti Siddhi",
+        "pages": "105-162",
+        "brief": "Balancing final accounts and Vimalananda's departure."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "14_The_Code_Book_Simon_Singh.pdf",
+    "slug": "14_The_Code_Book_Simon_Singh",
+    "title": "The Code Book",
+    "author": "Simon Singh",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 4: Cracking the Enigma Machine (Start Here)",
+        "pages": "215-234",
+        "brief": "Starts right inside the mechanical rotors and electrical plugboard of the Nazi Enigma machine, showing how Polish mathematician Marian Rejewski and Alan Turing spotted logical loops to break the unbreakable cipher."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 6: Alice and Bob Go Public — One-Way Locks & RSA Prime Math",
+        "pages": "410-428",
+        "brief": "Unpacks the mind-opening invention of public-key cryptography: how modular arithmetic and prime multiplication create a padlock anyone can snap shut but only the private prime factors can open."
+      },
+      {
+        "label": "Step 3 · Jumps Back to Ch. 1: Mary Queen of Scots & Al-Kindi's Frequency Analysis",
+        "pages": "15-33",
+        "brief": "Flashes back to the origin of cryptanalysis, watching how ninth-century Arab polymath Al-Kindi cracked substitution ciphers by counting letter fingerprints."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Introduction",
+        "pages": "7-14",
+        "brief": "The evolutionary battle between codemakers and codebreakers."
+      },
+      {
+        "label": "Ch. 1: The Cipher of Mary Queen of Scots",
+        "pages": "15-81",
+        "brief": "Caesar shifts, Al-Kindi's frequency analysis, and Babington's plot."
+      },
+      {
+        "label": "Ch. 2: Le Chiffre Indéchiffrable",
+        "pages": "82-171",
+        "brief": "The Vigenère polyalphabetic cipher and Charles Babbage's breakthrough."
+      },
+      {
+        "label": "Ch. 3: The Mechanization of Secrecy",
+        "pages": "172-214",
+        "brief": "Radio warfare, the Zimmermann telegram, and the birth of rotor machines."
+      },
+      {
+        "label": "Ch. 4: Cracking the Enigma",
+        "pages": "215-315",
+        "brief": "Polish cryptanalysts, Alan Turing, and Bletchley Park."
+      },
+      {
+        "label": "Ch. 5: The Language Barrier",
+        "pages": "316-395",
+        "brief": "Navajo windtalkers and deciphering ancient Egyptian hieroglyphs and Linear B."
+      },
+      {
+        "label": "Ch. 6–7: Alice and Bob Go Public & Pretty Good Privacy",
+        "pages": "396-540",
+        "brief": "Diffie-Hellman, RSA public-key cryptography, and Zimmermann's PGP."
+      },
+      {
+        "label": "Ch. 8: A Quantum Leap into the Future",
+        "pages": "541-610",
+        "brief": "Quantum computers, Shor's algorithm, and photon polarization cryptography."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "15a_Cosmos_Carl_Sagan.pdf",
+    "slug": "15a_Cosmos_Carl_Sagan",
+    "title": "Cosmos",
+    "author": "Carl Sagan",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 9–10: Lives of the Stars, Supernovas & Visualizing the 4th Dimension (Start Here)",
+        "pages": "133-152",
+        "brief": "Starts with Sagan's most visual chapters: how dying stars cook the carbon and iron in our bodies, and how a 3D apple visiting a 2D 'Flatland' lets your brain picture curved 4-dimensional spacetime."
+      },
+      {
+        "label": "Step 2 · Jumps Back to Ch. 1: The Shores of the Cosmic Ocean & Eratosthenes' Two Sticks",
+        "pages": "10-17",
+        "brief": "Visits ancient Alexandria to watch Eratosthenes measure the circumference of the entire Earth within 1% accuracy using only the shadow of an obelisk and pure geometry."
+      },
+      {
+        "label": "Step 3 · Jumps to Ch. 7: The Backbone of Night — How Ancient Ionians Discovered Science",
+        "pages": "102-114",
+        "brief": "Explores how island thinkers like Thales, Democritus, and Pythagoras first realized that the universe runs on discoverable physical mechanisms rather than the whims of gods."
+      },
+      {
+        "label": "Step 4 · Jumps to Ch. 13: Who Speaks for Earth?",
+        "pages": "192-204",
+        "brief": "Closes with Sagan's famous pale-blue perspective on human curiosity, survival, and our place in the cosmic ocean."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Introduction",
+        "pages": "5-9",
+        "brief": "The joy of scientific discovery and the scale of the cosmos."
+      },
+      {
+        "label": "Ch. 1: The Shores of the Cosmic Ocean",
+        "pages": "10-17",
+        "brief": "Cosmic address of Earth and the great Library of Alexandria."
+      },
+      {
+        "label": "Ch. 2: One Voice in the Cosmic Fugue",
+        "pages": "18-30",
+        "brief": "Four billion years of evolution, DNA, and the Cosmic Calendar."
+      },
+      {
+        "label": "Ch. 3: The Harmony of Worlds",
+        "pages": "31-49",
+        "brief": "Ptolemy, Copernicus, Tycho Brahe, and Johannes Kepler's orbital laws."
+      },
+      {
+        "label": "Ch. 4–6: Heaven and Hell, Blues for a Red Planet & Travelers' Tales",
+        "pages": "50-101",
+        "brief": "Venus's greenhouse furnace, Mars exploration, and Voyager among Jupiter and Saturn."
+      },
+      {
+        "label": "Ch. 7–8: The Backbone of Night & Travels in Space and Time",
+        "pages": "102-132",
+        "brief": "Ancient Ionian science, the speed of light, and Einstein's relativity."
+      },
+      {
+        "label": "Ch. 9–10: The Lives of the Stars & The Edge of Forever",
+        "pages": "133-163",
+        "brief": "Stellar nucleosynthesis, supernovas, black holes, the Big Bang, and extra dimensions."
+      },
+      {
+        "label": "Ch. 11–13: The Persistence of Memory, Encyclopaedia Galactica & Who Speaks for Earth?",
+        "pages": "164-206",
+        "brief": "Genes, brains, books, the Drake equation, and humanity's future."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "15b_Fundamentals_of_Astrodynamics_Bate_Mueller_White.pdf",
+    "slug": "15b_Fundamentals_of_Astrodynamics_Bate_Mueller_White",
+    "title": "Fundamentals of Astrodynamics",
+    "author": "Bate, Mueller & White",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Ch. 1: Two-Body Orbital Energy & Why Orbits Are Conic Sections",
+        "pages": "16-31",
+        "brief": "Derives the entire geometry of satellite orbits from Newton's gravity and mechanical energy, showing why total energy alone determines whether an orbit is a circle, ellipse, parabola, or hyperbola."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 3: Hohmann Transfers — Shifting Orbits with Minimum Fuel",
+        "pages": "155-170",
+        "brief": "Jumps directly to spacecraft trajectory design, showing how two short engine burns at perigee and apogee transfer a satellite cleanly between orbits."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Ch. 1: Two-Body Orbital Mechanics",
+        "pages": "16-60",
+        "brief": "Newton's laws, equation of relative motion, constants of motion, and conic sections."
+      },
+      {
+        "label": "Ch. 2: Orbit Determination from Observations",
+        "pages": "61-154",
+        "brief": "Coordinate systems, classical orbital elements, and radar tracking."
+      },
+      {
+        "label": "Ch. 3: Orbital Maneuvers",
+        "pages": "155-182",
+        "brief": "Hohmann transfers, bi-elliptic transfers, and plane changes."
+      },
+      {
+        "label": "Ch. 4–5: Time of Flight & Gauss' Problem",
+        "pages": "183-280",
+        "brief": "Kepler's equation, anomaly angles, and intercept trajectories."
+      },
+      {
+        "label": "Ch. 6–9: Lunar, Interplanetary & Ballistic Trajectories",
+        "pages": "281-430",
+        "brief": "Patched conics, planetary flybys, and reentry mechanics."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "15c_Astrophysics_for_People_in_a_Hurry_Neil_deGrasse_Tyson.pdf",
+    "slug": "15c_Astrophysics_for_People_in_a_Hurry_Neil_deGrasse_Tyson",
+    "title": "Astrophysics for People in a Hurry",
+    "author": "Neil deGrasse Tyson",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Ch. 1: The Greatest Story Ever Told — The First Second of the Universe",
+        "pages": "11-18",
+        "brief": "Rewinds the entire cosmos into a subatomic point 13.8 billion years ago and watches gravity, quarks, electrons, and light separate as the universe cools."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 7: The Cosmos on the Periodic Table",
+        "pages": "58-66",
+        "brief": "Jumps to the chemistry of the stars, tracing how hydrogen from the Big Bang was fused inside stellar cores into the carbon, oxygen, and iron inside your own hands."
+      },
+      {
+        "label": "Step 3 · Jumps Back to Ch. 5–6: Dark Matter & Dark Energy (The Invisible 95%)",
+        "pages": "39-56",
+        "brief": "Follows Vera Rubin and Fritz Zwicky as they discover that visible stars and gas make up less than 5% of the cosmos, held together by invisible dark matter and pushed apart by dark energy."
+      },
+      {
+        "label": "Step 4 · Jumps to Ch. 12: Reflections on the Cosmic Perspective",
+        "pages": "96-106",
+        "brief": "Closes with Tyson's liberating cosmic zoom-out on why remembering our atomic kinship with the universe dissolves small ego worries."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Preface",
+        "pages": "8-10",
+        "brief": "A concise field guide to the universe."
+      },
+      {
+        "label": "Ch. 1: The Greatest Story Ever Told",
+        "pages": "11-18",
+        "brief": "The Big Bang and the first minutes of the cosmos."
+      },
+      {
+        "label": "Ch. 2: On Earth as in the Heavens",
+        "pages": "19-25",
+        "brief": "The universality of physical laws across the universe."
+      },
+      {
+        "label": "Ch. 3: Let There Be Light",
+        "pages": "26-32",
+        "brief": "The cosmic microwave background radiation."
+      },
+      {
+        "label": "Ch. 4: Between the Galaxies",
+        "pages": "33-38",
+        "brief": "Intergalactic gas, dwarf galaxies, and cosmic voids."
+      },
+      {
+        "label": "Ch. 5: Dark Matter",
+        "pages": "39-47",
+        "brief": "Vera Rubin, galaxy rotation curves, and the missing 85% of gravity."
+      },
+      {
+        "label": "Ch. 6: Dark Energy",
+        "pages": "48-57",
+        "brief": "Einstein's cosmological constant and the accelerating universe."
+      },
+      {
+        "label": "Ch. 7: The Cosmos on the Table",
+        "pages": "58-66",
+        "brief": "Cosmic origins of the elements on the Periodic Table."
+      },
+      {
+        "label": "Ch. 8–10: On Being Round, Invisible Light & Between the Planets",
+        "pages": "67-88",
+        "brief": "Spheres, the electromagnetic spectrum, and asteroids/comets."
+      },
+      {
+        "label": "Ch. 11–12: Exoplanet Earth & Reflections on the Cosmic Perspective",
+        "pages": "89-106",
+        "brief": "How Earth looks from deep space and the humbling cosmic perspective."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "15d_Orbital_Mechanics_for_Engineering_Students_Howard_Curtis.pdf",
+    "slug": "15d_Orbital_Mechanics_for_Engineering_Students_Howard_Curtis",
+    "title": "Orbital Mechanics for Engineering Students",
+    "author": "Howard D. Curtis",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 2: The Two-Body Problem & Why Orbits Lock Into a 2D Plane (Start Here)",
+        "pages": "67-84",
+        "brief": "Skips introductory vector calculus drills and goes straight to the physical heart of orbital mechanics: how conservation of angular momentum locks every satellite orbit into a flat plane in 3D space."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 6: Orbital Maneuvers, Hohmann Transfers & Chase Trajectories",
+        "pages": "293-308",
+        "brief": "Shows how spacecraft fire impulsive delta-v burns to hop between orbits, rendezvous with space stations, and escape Earth's gravity well."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Ch. 1: Dynamics of Point Masses",
+        "pages": "18-66",
+        "brief": "Kinematics, Newton's laws, and rotating reference frames."
+      },
+      {
+        "label": "Ch. 2: The Two-Body Problem",
+        "pages": "67-148",
+        "brief": "Equations of relative motion, circular, elliptical, parabolic, and hyperbolic orbits."
+      },
+      {
+        "label": "Ch. 3: Orbital Position as a Function of Time",
+        "pages": "149-192",
+        "brief": "Kepler's equation and time-of-flight calculations."
+      },
+      {
+        "label": "Ch. 4: Orbits in Three Dimensions",
+        "pages": "193-254",
+        "brief": "Euler angles, right ascension, inclination, and Earth oblateness (J2)."
+      },
+      {
+        "label": "Ch. 5–8: Orbit Determination, Maneuvers, Relative Motion & Interplanetary Trajectories",
+        "pages": "255-480",
+        "brief": "Lambert's problem, Hohmann transfers, rendezvous, and planetary missions."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "16a_Harry_Potter_1_and_the_Philosophers_Stone_JK_Rowling.pdf",
+    "slug": "16a_Harry_Potter_1_and_the_Philosophers_Stone_JK_Rowling",
+    "title": "Harry Potter and the Philosopher's Stone (Book 1)",
+    "author": "J. K. Rowling",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 5: Diagon Alley, Gringotts & Ollivanders Wand Shop (Start Here)",
+        "pages": "73-89",
+        "brief": "Skips the slow Privet Drive misery and steps directly through the brick wall behind the Leaky Cauldron into Diagon Alley, where Harry rides Gringotts' underground carts and feels his phoenix-feather wand choose him."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 12: The Invisibility Cloak & The Mirror of Erised",
+        "pages": "206-220",
+        "brief": "On Christmas night at Hogwarts, Harry slips under his father's shimmering Invisibility Cloak and discovers the Mirror of Erised, where Dumbledore explains why dwelling in dreams must never replace living."
+      },
+      {
+        "label": "Step 3 · Flashes Back to Ch. 4 & 7: Hagrid Breaks the Door Down & The Sorting Hat",
+        "pages": "58-70",
+        "brief": "Flashes back to the stormy night Hagrid smashes down the shack door to tell Harry 'You're a wizard,' followed by the Sorting Hat choosing Gryffindor when Harry refuses Slytherin."
+      },
+      {
+        "label": "Step 4 · Jumps to Ch. 16–17: Through the Trapdoor, Wizard's Chess & The Man with Two Faces",
+        "pages": "284-298",
+        "brief": "Harry, Ron, and Hermione outwit McGonagall's giant chessboard and Snape's logic potion puzzle before Harry faces Quirrell and Voldemort in front of the Mirror of Erised."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Ch. 1–2: The Boy Who Lived & The Vanishing Glass",
+        "pages": "13-42",
+        "brief": "Dumbledore leaves baby Harry at Privet Drive and ten-year-old Harry accidentally frees a boa constrictor at the zoo."
+      },
+      {
+        "label": "Ch. 3–4: The Letters from No One & The Keeper of the Keys",
+        "pages": "43-72",
+        "brief": "Hundreds of Hogwarts owl letters flood the house until Hagrid arrives at the rock on the sea."
+      },
+      {
+        "label": "Ch. 5–6: Diagon Alley & Platform Nine and Three-Quarters",
+        "pages": "73-124",
+        "brief": "Gringotts vaults, Ollivanders wand shop, Hedwig, and meeting Ron and Hermione on the Hogwarts Express."
+      },
+      {
+        "label": "Ch. 7–9: The Sorting Hat, The Potions Master & The Midnight Duel",
+        "pages": "125-174",
+        "brief": "Sorting into Gryffindor, Snape's first Potions class, flying lessons, and discovering Fluffy the three-headed dog."
+      },
+      {
+        "label": "Ch. 10–12: Halloween, Quidditch & The Mirror of Erised",
+        "pages": "175-226",
+        "brief": "Defeating the mountain troll, Harry's first match as Seeker, the Invisibility Cloak, and the Mirror of Erised."
+      },
+      {
+        "label": "Ch. 13–15: Nicolas Flamel, Norbert the Dragon & The Forbidden Forest",
+        "pages": "227-273",
+        "brief": "Uncovering the Sorcerer's Stone secret, smuggling Hagrid's baby dragon, and encountering Voldemort in the forest."
+      },
+      {
+        "label": "Ch. 16–17: Through the Trapdoor & The Man with Two Faces",
+        "pages": "274-327",
+        "brief": "Descending through the enchanted chambers and facing Quirrell and Voldemort."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "16b_Harry_Potter_2_and_the_Chamber_of_Secrets_JK_Rowling.pdf",
+    "slug": "16b_Harry_Potter_2_and_the_Chamber_of_Secrets_JK_Rowling",
+    "title": "Harry Potter and the Chamber of Secrets (Book 2)",
+    "author": "J. K. Rowling",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 3: Midnight Rescue in the Flying Car & Arriving at the Burrow (Start Here)",
+        "pages": "33-48",
+        "brief": "Starts as Ron, Fred, and George pull the bars off Harry's bedroom window in a flying turquoise Ford Anglia and whisk him away to the warm, magical chaos of the Weasley family's Burrow."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 13: The Very Secret Diary — Stepping Inside Tom Riddle's 1943 Memory",
+        "pages": "236-251",
+        "brief": "Harry drops ink onto a blank black pocket diary and is pulled physically inside a 50-year-old 3D memory of Hogwarts where young Tom Riddle frames Hagrid."
+      },
+      {
+        "label": "Step 3 · Jumps to Ch. 17–18: The Heir of Slytherin, Fawkes the Phoenix & Freeing Dobby",
+        "pages": "315-330",
+        "brief": "Inside the subterranean Chamber of Secrets, Fawkes brings the Sorting Hat, Harry draws Godric Gryffindor's sword to slay the Basilisk, stabs the diary with a venom fang, and tricks Lucius Malfoy into freeing Dobby with a sock."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Ch. 1–3: The Worst Birthday, Dobby's Warning & The Burrow",
+        "pages": "10-50",
+        "brief": "Dobby's chaotic visit at Privet Drive and escaping in the flying Ford Anglia to the Weasleys' home."
+      },
+      {
+        "label": "Ch. 4–6: Flourish and Blotts, The Whomping Willow & Gilderoy Lockhart",
+        "pages": "51-112",
+        "brief": "Knockturn Alley, crashing into the Whomping Willow, and Lockhart's Cornish pixie disaster."
+      },
+      {
+        "label": "Ch. 7–9: Mudbloods and Murmurs, The Deathday Party & The Writing on the Wall",
+        "pages": "113-169",
+        "brief": "Hearing the mysterious voice inside the castle walls and finding Mrs. Norris petrified."
+      },
+      {
+        "label": "Ch. 10–12: The Rogue Bludger, The Dueling Club & The Polyjuice Potion",
+        "pages": "170-235",
+        "brief": "Harry speaks Parseltongue in front of the school and brews Polyjuice Potion to question Malfoy."
+      },
+      {
+        "label": "Ch. 13–15: The Very Secret Diary, Cornelius Fudge & Aragog",
+        "pages": "236-291",
+        "brief": "Tom Riddle's diary memory and following the spiders into the Forbidden Forest."
+      },
+      {
+        "label": "Ch. 16–18: The Chamber of Secrets, The Heir of Slytherin & Dobby's Reward",
+        "pages": "292-352",
+        "brief": "Entering the Chamber, slaying the Basilisk, destroying Riddle's diary, and freeing Dobby."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "16c_Harry_Potter_3_and_the_Prisoner_of_Azkaban_JK_Rowling.pdf",
+    "slug": "16c_Harry_Potter_3_and_the_Prisoner_of_Azkaban_JK_Rowling",
+    "title": "Harry Potter and the Prisoner of Azkaban (Book 3)",
+    "author": "J. K. Rowling",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 10: 'I Solemnly Swear That I Am Up to No Good' — The Marauder's Map (Start Here)",
+        "pages": "194-210",
+        "brief": "Fred and George gift Harry the ultimate rule-breaker's artifact: a live top-down architectural map of Hogwarts showing every secret tunnel and moving ink dot inside the castle."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 17–19: Cat, Rat, and Dog — The Shrieking Shack Twist",
+        "pages": "343-358",
+        "brief": "Inside the Shrieking Shack, Sirius Black and Remus Lupin reveal that Ron's pet rat Scabbers is actually the traitor Peter Pettigrew who framed Sirius."
+      },
+      {
+        "label": "Step 3 · Jumps to Ch. 21: Hermione's Secret — The Time-Turner Loop & The Stag Patronus",
+        "pages": "399-415",
+        "brief": "Three turns of Hermione's golden hourglass rewind time by three hours: Harry watches his own past self across the lake and realizes nobody is coming to save them because he himself is the one who casts the silver stag Patronus."
+      },
+      {
+        "label": "Step 4 · Flashes Back to Ch. 7 & 12: Professor Lupin's Boggart & Patronus Lessons",
+        "pages": "134-147",
+        "brief": "Flashes back to Remus Lupin's warm, empowering Defense classes where laughter ('Riddikulus!') defeats fear and Harry learns to summon a Patronus shield against Dementors."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Ch. 1–4: Owl Post, Aunt Marge, The Knight Bus & The Leaky Cauldron",
+        "pages": "12-79",
+        "brief": "Blowing up Aunt Marge, riding the triple-decker Knight Bus, and spending carefree weeks in Diagon Alley."
+      },
+      {
+        "label": "Ch. 5–8: The Dementor, Tea Leaves, The Boggart & Flight of the Fat Lady",
+        "pages": "80-172",
+        "brief": "Dementors on the train, Buckbeak the Hippogriff, Lupin's Boggart class, and Sirius Black slashing the portrait."
+      },
+      {
+        "label": "Ch. 9–12: Grim Defeat, The Marauder's Map, The Firebolt & The Patronus",
+        "pages": "173-262",
+        "brief": "Receiving the Marauder's Map, sneaking into Hogsmeade, getting the Firebolt, and Patronus lessons with Lupin."
+      },
+      {
+        "label": "Ch. 13–16: Quidditch Cup, Snape's Grudge & Trelawney's Prediction",
+        "pages": "263-342",
+        "brief": "Winning the Quidditch Cup and Trelawney's real trance prophecy."
+      },
+      {
+        "label": "Ch. 17–20: Cat, Rat, and Dog, Moony/Wormtail/Padfoot/Prongs & The Dementor's Kiss",
+        "pages": "343-398",
+        "brief": "The truth about Sirius Black, James Potter's Animagus friends, and Pettigrew's unmasking."
+      },
+      {
+        "label": "Ch. 21–22: Hermione's Secret (Time-Turner) & Owl Post Again",
+        "pages": "399-448",
+        "brief": "Rewinding three hours to rescue Buckbeak and Sirius."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "16d_Harry_Potter_4_and_the_Goblet_of_Fire_JK_Rowling.pdf",
+    "slug": "16d_Harry_Potter_4_and_the_Goblet_of_Fire_JK_Rowling",
+    "title": "Harry Potter and the Goblet of Fire (Book 4)",
+    "author": "J. K. Rowling",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 16–17: The Goblet of Fire Names a Fourth Champion (Start Here)",
+        "pages": "261-276",
+        "brief": "Starts at the electric moment in the Great Hall when the blue flames of the Goblet of Fire turn red a fourth time and shoot out Harry Potter's name."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 20: The First Task — Out-Flying the Hungarian Horntail on a Firebolt",
+        "pages": "350-365",
+        "brief": "Instead of fighting a fifty-foot dragon with spells, Harry uses his pure spatial flying instinct—summoning his Firebolt broomstick ('Accio Firebolt!') across the castle grounds to dive and feint past the Horntail."
+      },
+      {
+        "label": "Step 3 · Jumps to Ch. 32–34: Flesh, Blood, and Bone & Priori Incantatem in the Graveyard",
+        "pages": "649-664",
+        "brief": "The Triwizard Cup turns out to be a Portkey to Little Hangleton graveyard, where Voldemort rises again and Harry's twin phoenix-feather wand locks beams with Voldemort's in a golden web."
+      },
+      {
+        "label": "Step 4 · Jumps to Ch. 35: Veritaserum — Unmasking the Impostor Mad-Eye Moody",
+        "pages": "683-697",
+        "brief": "Dumbledore bursts into Moody's office as the Polyjuice Potion wears off, revealing how Barty Crouch Jr. orchestrated the entire year's tournament from the shadows."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Ch. 1–5: The Riddle House, The Scar & Weasleys' Wizard Wheezes",
+        "pages": "14-77",
+        "brief": "Voldemort at the Riddle House and the Weasleys blasting through the Dursleys' boarded-up fireplace."
+      },
+      {
+        "label": "Ch. 6–10: The Portkey, The Quidditch World Cup & The Dark Mark",
+        "pages": "78-170",
+        "brief": "Ireland vs. Bulgaria World Cup final and Death Eaters conjuring the Dark Mark."
+      },
+      {
+        "label": "Ch. 11–17: Triwizard Tournament, Mad-Eye Moody, Unforgivable Curses & The Goblet of Fire",
+        "pages": "171-300",
+        "brief": "Beauxbatons and Durmstrang arrive and the Goblet chooses Cedric, Fleur, Krum, and Harry."
+      },
+      {
+        "label": "Ch. 18–23: The Hungarian Horntail, The First Task & The Yule Ball",
+        "pages": "301-445",
+        "brief": "Out-flying the dragon and the Christmas Yule Ball."
+      },
+      {
+        "label": "Ch. 24–29: The Egg and the Eye, The Second Task (Black Lake) & Crouch's Madness",
+        "pages": "446-593",
+        "brief": "Solving the golden egg underwater, gillyweed in the Black Lake, and Padfoot's return."
+      },
+      {
+        "label": "Ch. 30–34: The Pensieve, The Third Task, Graveyard & Priori Incantatem",
+        "pages": "594-682",
+        "brief": "Dumbledore's Pensieve memories, the maze, Voldemort's rebirth, and the twin wand cores connecting."
+      },
+      {
+        "label": "Ch. 35–37: Veritaserum, The Parting of the Ways & The Beginning",
+        "pages": "683-749",
+        "brief": "Unmasking Barty Crouch Jr. and Fudge's refusal to believe Voldemort has returned."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "16e_Harry_Potter_5_and_the_Order_of_the_Phoenix_JK_Rowling.pdf",
+    "slug": "16e_Harry_Potter_5_and_the_Order_of_the_Phoenix_JK_Rowling",
+    "title": "Harry Potter and the Order of the Phoenix (Book 5)",
+    "author": "J. K. Rowling",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 18: Dumbledore's Army & The Room of Requirement (Start Here)",
+        "pages": "387-405",
+        "brief": "Skips Umbridge's bureaucratic misery and enters the magical Room of Requirement, where Harry steps into his natural teaching power—guiding dozens of students in defensive spells and Patronus shields."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 28: Snape's Worst Memory — The Human Flaws of James Potter",
+        "pages": "637-652",
+        "brief": "Harry sinks into Snape's Pensieve basin and watches his own father as an arrogant fifteen-year-old teasing Severus by the lake, shattering his childhood idealization."
+      },
+      {
+        "label": "Step 3 · Jumps to Ch. 35–36: The Department of Mysteries & The Only One He Ever Feared",
+        "pages": "794-825",
+        "brief": "After the battle beyond the veil in the Death Chamber, Dumbledore confronts Voldemort in the Ministry of Magic Atrium—weaving water shields, golden fire, and statues to protect Harry."
+      },
+      {
+        "label": "Step 4 · Jumps to Ch. 37–38: The Lost Prophecy & 'Neither Can Live While the Other Survives'",
+        "pages": "833-848",
+        "brief": "In Dumbledore's headmaster office, Harry unleashes his grief and anger while Dumbledore reveals the prophecy made before Harry's birth and why love is the one power Voldemort cannot comprehend."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Ch. 1–5: Dudley Demented, Grimmauld Place & The Order of the Phoenix",
+        "pages": "14-110",
+        "brief": "Dementor attack in Little Whinging and arriving at Sirius Black's ancestral home."
+      },
+      {
+        "label": "Ch. 6–10: The Hearing, Luna Lovegood & The Sorting Hat's Song",
+        "pages": "111-212",
+        "brief": "The Wizengamot hearing, meeting Luna Lovegood, and the new Hogwarts term."
+      },
+      {
+        "label": "Ch. 11–17: Professor Umbridge, Detention & Educational Decrees",
+        "pages": "213-386",
+        "brief": "Umbridge's blood quill, creating Defense study plans, and meeting in the Hog's Head."
+      },
+      {
+        "label": "Ch. 18–23: Dumbledore's Army, The Snake's Eye & St. Mungo's Hospital",
+        "pages": "387-530",
+        "brief": "Training in the Room of Requirement, the attack on Mr. Weasley, and Christmas at St. Mungo's."
+      },
+      {
+        "label": "Ch. 24–29: Occlumency, Snape's Worst Memory & Career Advice",
+        "pages": "531-688",
+        "brief": "Mind-shield lessons with Snape, the Pensieve memory, and Fred and George's fireworks breakout."
+      },
+      {
+        "label": "Ch. 30–34: Grawp, O.W.L. Exams & The Department of Mysteries",
+        "pages": "689-793",
+        "brief": "Meeting Hagrid's giant brother, taking O.W.L. exams, and flying Thestrals to London."
+      },
+      {
+        "label": "Ch. 35–38: Beyond the Veil, The Atrium Duel, The Prophecy & Second War",
+        "pages": "794-884",
+        "brief": "Loss of Sirius Black, Dumbledore vs. Voldemort in the Atrium, and revealing the prophecy."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "16f_Harry_Potter_6_and_the_Half_Blood_Prince_JK_Rowling.pdf",
+    "slug": "16f_Harry_Potter_6_and_the_Half_Blood_Prince_JK_Rowling",
+    "title": "Harry Potter and the Half-Blood Prince (Book 6)",
+    "author": "J. K. Rowling",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 9: The Half-Blood Prince — Notes in an Old Potions Book (Start Here)",
+        "pages": "182-198",
+        "brief": "Harry opens a battered second-hand textbook filled with handwritten margin notes, shortcut brewing tricks, and invented spells ('Sectumsempra') signed 'This Book is the Property of the Half-Blood Prince.'"
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 13 & 20: Slices of the Dark Lord's Past — Wool's Orphanage & The Borgin Years",
+        "pages": "269-284",
+        "brief": "Dumbledore brings Harry into the Pensieve to visit eleven-year-old Tom Riddle at a London orphanage and watch young Voldemort return to Hogwarts years later asking for the Defense against the Dark Arts post."
+      },
+      {
+        "label": "Step 3 · Jumps to Ch. 23: Horcruxes — Slughorn's Real Memory & The Seven Pieces of Soul",
+        "pages": "503-518",
+        "brief": "With a drop of Felix Felicis luck potion, Harry extracts Slughorn's unedited memory, revealing Tom Riddle asking about splitting a soul into seven dark vessels."
+      },
+      {
+        "label": "Step 4 · Jumps to Ch. 26–27: The Sea Cave, The Emerald Potion & The Lightning-Struck Tower",
+        "pages": "566-598",
+        "brief": "Dumbledore and Harry cross a dark underground lake to retrieve a Horcrux medallion before returning to the Astronomy Tower where Draco lowers his wand and Snape casts the fatal curse."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Ch. 1–3: The Other Minister, Spinner's End & Will and Won't",
+        "pages": "12-67",
+        "brief": "Fudge briefs the Muggle Prime Minister, Snape makes the Unbreakable Vow, and Dumbledore visits the Dursleys."
+      },
+      {
+        "label": "Ch. 4–8: Horace Slughorn, Draco's Detour & The Slug Club",
+        "pages": "68-181",
+        "brief": "Recruiting Slughorn, spying on Draco at Borgin and Burkes, and Tonks rescuing Harry on the train."
+      },
+      {
+        "label": "Ch. 9–12: The Half-Blood Prince, The House of Gaunt & Silver and Opals",
+        "pages": "182-268",
+        "brief": "The mystery Potions book, Voldemort's maternal family history, and Katie Bell's cursed necklace."
+      },
+      {
+        "label": "Ch. 13–17: The Secret Riddle, Felix Felicis & A Sluggish Memory",
+        "pages": "269-383",
+        "brief": "Dumbledore meets child Tom Riddle, liquid luck, and Slughorn's altered memory."
+      },
+      {
+        "label": "Ch. 18–22: Birthday Surprises, Elf Tails & The Unknowable Room",
+        "pages": "384-502",
+        "brief": "Ron's poisoned mead, tracking Draco into the Room of Requirement, and Aragog's funeral."
+      },
+      {
+        "label": "Ch. 23–25: Horcruxes, Sectumsempra & The Seer Overheard",
+        "pages": "503-565",
+        "brief": "The six Horcruxes revealed, the bathroom duel with Malfoy, and discovering who overheard the prophecy."
+      },
+      {
+        "label": "Ch. 26–30: The Cave, The Lightning-Struck Tower, Flight of the Prince & The White Tomb",
+        "pages": "566-664",
+        "brief": "The inferi cave, Dumbledore's death on the tower, Snape reveals he is the Prince, and the funeral."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "16g_Harry_Potter_7_and_the_Deathly_Hallows_JK_Rowling.pdf",
+    "slug": "16g_Harry_Potter_7_and_the_Deathly_Hallows_JK_Rowling",
+    "title": "Harry Potter and the Deathly Hallows (Book 7)",
+    "author": "J. K. Rowling",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 21: The Tale of the Three Brothers — The Cloak, The Stone & The Wand (Start Here)",
+        "pages": "418-434",
+        "brief": "Hermione reads the fairy tale of the three brothers who outwitted Death, explaining the triangular eye symbol: the unbeatable Elder Wand, the Resurrection Stone, and the true Invisibility Cloak."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 26: The Gringotts Dragon Breakout — Heist in the Lestrange Vault",
+        "pages": "532-548",
+        "brief": "Disguised with Polyjuice Potion, Harry, Ron, and Hermione infiltrate Gringotts, seize Hufflepuff's cup from multiplying burning treasures, and unchain a half-blind Ukrainian Ironbelly dragon to fly free over London."
+      },
+      {
+        "label": "Step 3 · Jumps to Ch. 33: The Prince's Tale — Snape's Memories & 'Always'",
+        "pages": "672-692",
+        "brief": "Harry pours Snape's dying tears into the Pensieve, revealing Severus's lifelong love for Lily, his pact with Dumbledore, the silver doe Patronus, and the truth that Harry himself carries a fragment of Voldemort's soul."
+      },
+      {
+        "label": "Step 4 · Jumps to Ch. 34–36: The Forest Again, King's Cross Station & The Flaw in the Plan",
+        "pages": "704-742",
+        "brief": "Harry walks unarmed into the Forbidden Forest to surrender his life, awakens in a spotless King's Cross Station with Dumbledore, and returns to the Great Hall to explain why the Elder Wand will not strike him."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Ch. 1–5: The Dark Lord Ascending, The Dursleys & The Seven Potters",
+        "pages": "14-98",
+        "brief": "Malfoy Manor meeting, Harry leaving Privet Drive forever, and the aerial battle over London."
+      },
+      {
+        "label": "Ch. 6–10: The Ghoul in Pajamas, Dumbledore's Will & Kreacher's Tale",
+        "pages": "99-213",
+        "brief": "Bill and Fleur's wedding, escaping to Tottenham Court Road, and the story of Regulus Black."
+      },
+      {
+        "label": "Ch. 11–15: Infiltrating the Ministry, The Locket & The Goblin's Revenge",
+        "pages": "214-323",
+        "brief": "Stealing Slytherin's locket from Umbridge and wandering through the English countryside."
+      },
+      {
+        "label": "Ch. 16–20: Godric's Hollow, Bathilda's Secret & The Silver Doe",
+        "pages": "324-417",
+        "brief": "Visiting James and Lily's grave, the snake trap, and Ron returning with Gryffindor's sword."
+      },
+      {
+        "label": "Ch. 21–25: The Three Brothers, Malfoy Manor & Shell Cottage",
+        "pages": "418-531",
+        "brief": "The Deathly Hallows legend, capture at Malfoy Manor, Dobby's sacrifice, and Ollivander."
+      },
+      {
+        "label": "Ch. 26–30: Gringotts Dragon Breakout, Hogsmeade & Sacking Snape",
+        "pages": "532-620",
+        "brief": "Riding the dragon to freedom, returning to Hogwarts through the portrait, and taking the castle."
+      },
+      {
+        "label": "Ch. 31–36 & Epilogue: The Battle of Hogwarts, The Prince's Tale & 19 Years Later",
+        "pages": "621-774",
+        "brief": "The final battle, Snape's true allegiance, surrender in the forest, King's Cross, and the duel."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "17a_The_Hitchhikers_Guide_to_the_Galaxy_Douglas_Adams.pdf",
+    "slug": "17a_The_Hitchhikers_Guide_to_the_Galaxy_Douglas_Adams",
+    "title": "The Hitchhiker's Guide to the Galaxy",
+    "author": "Douglas Adams",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Jumps to Ch. 3 & 8: The Babel Fish, Towels & 'Don't Panic' (Start Here)",
+        "pages": "35-46",
+        "brief": "Skips Arthur's mud puddle and introduces the core comic mechanisms: popping a small yellow fish into your ear to translate any language, why a towel is the most massively useful thing in the universe, and why the Guide outsells the Encyclopedia Galactica because it has the words 'DON'T PANIC' in large, friendly letters on its cover."
+      },
+      {
+        "label": "Step 2 · Jumps to Ch. 10 & 18: The Infinite Improbability Drive & The Falling Whale",
+        "pages": "81-95",
+        "brief": "Explains how the starship Heart of Gold traverses interstellar space in nothing-point-zero seconds by calculating how improbable a state is and generating it, accidentally creating a sperm whale and a bowl of petunias in high orbit."
+      },
+      {
+        "label": "Step 3 · Jumps to Ch. 25 & 28: Deep Thought & The Ultimate Answer (42)",
+        "pages": "178-195",
+        "brief": "Hyper-intelligent beings demand to know the Answer to the Ultimate Question of Life, the Universe, and Everything: after 7.5 million years of computation, Deep Thought calmly announces the answer is 42—because nobody ever knew what the actual question was."
+      },
+      {
+        "label": "Step 4 · Flashes Back to Ch. 1–2: Arthur Dent, The Yellow Bulldozer & The Vogon Destructor Fleet",
+        "pages": "6-24",
+        "brief": "Flashes back to the Thursday morning Arthur Dent lies in the mud in front of a yellow bulldozer to stop his cottage being demolished for a bypass, minutes before the Vogons demolish planet Earth for a hyperspace bypass."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Ch. 1–4: Arthur Dent, Ford Prefect & The Demolition of Earth",
+        "pages": "6-56",
+        "brief": "Lying in front of the bulldozer, pints at the pub, and the Vogon fleet arrives."
+      },
+      {
+        "label": "Ch. 5–8: Inside the Vogon Ship, Vogon Poetry & The Guide Entry",
+        "pages": "57-97",
+        "brief": "Prostetnic Vogon Jeltz, the third worst poetry in the universe, and being thrown into space."
+      },
+      {
+        "label": "Ch. 9–14: The Infinite Improbability Drive & The Heart of Gold",
+        "pages": "98-139",
+        "brief": "Rescued in space against 2 to the power of 276,709 to 1 odds, Zaphod Beeblebrox, Trillian, and Marvin."
+      },
+      {
+        "label": "Ch. 15–20: Magrathea, Slartibartfast & Designing Coastlines",
+        "pages": "140-177",
+        "brief": "Landing on the legendary planet-building world and meeting Slartibartfast who won an award for Norway's fjords."
+      },
+      {
+        "label": "Ch. 21–28: Deep Thought & The Answer 42",
+        "pages": "178-227",
+        "brief": "The great supercomputer Deep Thought and the seven-and-a-half-million-year calculation."
+      },
+      {
+        "label": "Ch. 29–35: The Mice, Brains & The Restaurant at the End of the Universe",
+        "pages": "228-257",
+        "brief": "White mice demanding Arthur's brain and escaping toward the Restaurant at the End of the Universe."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  },
+  {
+    "filename": "17b_The_Ultimate_Hitchhikers_Guide_Five_Novels_Douglas_Adams.pdf",
+    "slug": "17b_The_Ultimate_Hitchhikers_Guide_Five_Novels_Douglas_Adams",
+    "title": "The Ultimate Hitchhiker's Guide to the Galaxy (Complete 5-Novel Omnibus)",
+    "author": "Douglas Adams",
+    "category": "General",
+    "pages": 0,
+    "cover_emoji": "📖",
+    "description": "",
+    "adhd_time_label": "",
+    "full_time_label": "",
+    "adhd_segments": [
+      {
+        "label": "Step 1 · Novel 1: Deep Thought & The Answer 42 (Start Here)",
+        "pages": "137-152",
+        "brief": "Starts with the crown jewel of sci-fi comedy: the supercomputer Deep Thought calculating the answer to the Ultimate Question of Life, the Universe, and Everything for 7.5 million years."
+      },
+      {
+        "label": "Step 2 · Novel 2: Milliways — The Restaurant at the End of the Universe",
+        "pages": "223-242",
+        "brief": "Jumps to Novel 2, where time-traveling diners sit down to eat steaks that introduce themselves while watching the entire cosmos explode in real-time."
+      },
+      {
+        "label": "Step 3 · Novel 3: The Flying Lessons of Arthur Dent & The Krikkit Wars",
+        "pages": "410-428",
+        "brief": "In Novel 3, Arthur Dent learns the secret of human flight: throwing yourself at the ground and completely missing because something distracts you in mid-air."
+      },
+      {
+        "label": "Step 4 · Novel 4: 'So Long, and Thanks for All the Fish' — The Dolphins' Final Message",
+        "pages": "542-560",
+        "brief": "Arthur returns to a strangely restored Earth and discovers where all the world's dolphins disappeared to right before the Vogon destruction."
+      },
+      {
+        "label": "Step 5 · Novel 5: Mostly Harmless — The Multi-Dimensional Guide & Alternate Earths",
+        "pages": "698-718",
+        "brief": "Closes the saga with the dark, brilliant finale where parallel probability dimensions collide and Arthur works peacefully as the Sandwich-Maker of Lamuella."
+      }
+    ],
+    "author_chapters": [
+      {
+        "label": "Book 1: The Hitchhiker's Guide to the Galaxy (Nov 1979)",
+        "pages": "24-171",
+        "brief": "Earth's demolition, the Infinite Improbability Drive, Magrathea, and Deep Thought's 42."
+      },
+      {
+        "label": "Book 2: The Restaurant at the End of the Universe (1980)",
+        "pages": "172-348",
+        "brief": "Milliways, the Total Perspective Vortex, the Golgafrinchan B-Ark, and prehistoric Earth."
+      },
+      {
+        "label": "Book 3: Life, the Universe and Everything (1982)",
+        "pages": "349-517",
+        "brief": "The Krikkit robots, Arthur learns to fly, and the search for the Golden Bail of cricket."
+      },
+      {
+        "label": "Book 4: So Long, and Thanks for All the Fish (1984)",
+        "pages": "518-660",
+        "brief": "Arthur meets Fenchurch, the disappearance of the dolphins, and God's Final Message to His Creation."
+      },
+      {
+        "label": "Bonus Story: Young Zaphod Plays It Safe (1986)",
+        "pages": "661-677",
+        "brief": "Zaphod Beeblebrox piloting a salvage ship into the planet of the safety officials."
+      },
+      {
+        "label": "Book 5: Mostly Harmless (1992)",
+        "pages": "678-856",
+        "brief": "Arthur becomes the Sandwich-Maker of Lamuella, Random Dent arrives, and the multidimensional guide."
+      }
+    ],
+    "has_audio": false,
+    "audio_count": 0,
+    "audio_bytes": 0
+  }
+];
+    const AUDIO_INDEX = {
+  "generatedAt": "2026-11-14T02:30:00Z",
+  "totalFiles": 7,
+  "totalBytes": 104134848,
+  "booksCount": 2,
+  "books": {
+    "the-code-book": {
+      "count": 3,
+      "totalBytes": 38475456,
+      "files": [
+        "adhd_1.mp3",
+        "adhd_2.mp3",
+        "adhd_3.mp3"
+      ]
+    },
+    "the-gene": {
+      "count": 4,
+      "totalBytes": 65659392,
+      "files": [
+        "adhd_1.mp3",
+        "adhd_2.mp3",
+        "adhd_3.mp3",
+        "adhd_4.mp3"
+      ]
+    }
+  },
+  "files": [
+    {
+      "slug": "the-code-book",
+      "bookTitle": "The Code Book",
+      "trackType": "adhd",
+      "index": 1,
+      "label": "Step 1 · Jumps to Ch. 4: Cracking the Enigma Machine (Start Here)",
+      "url": "audio/books/the-code-book/adhd_1.mp3",
+      "file": "adhd_1.mp3",
+      "sizeBytes": 13009344,
+      "durationSec": 1626.168
+    },
+    {
+      "slug": "the-code-book",
+      "bookTitle": "The Code Book",
+      "trackType": "adhd",
+      "index": 2,
+      "label": "Step 2 · Jumps to Ch. 6: Alice and Bob Go Public — One-Way Locks & RSA Prime Math",
+      "url": "audio/books/the-code-book/adhd_2.mp3",
+      "file": "adhd_2.mp3",
+      "sizeBytes": 13070784,
+      "durationSec": 1633.848
+    },
+    {
+      "slug": "the-code-book",
+      "bookTitle": "The Code Book",
+      "trackType": "adhd",
+      "index": 3,
+      "label": "Step 3 · Jumps Back to Ch. 1: Mary Queen of Scots & Al-Kindi's Frequency Analysis",
+      "url": "audio/books/the-code-book/adhd_3.mp3",
+      "file": "adhd_3.mp3",
+      "sizeBytes": 12395328,
+      "durationSec": 1549.416
+    },
+    {
+      "slug": "the-gene",
+      "bookTitle": "The Gene: An Intimate History",
+      "trackType": "adhd",
+      "index": 1,
+      "label": "Step 1 · Prologue: Families in Kolkata (Start Here — The Personal Mystery)",
+      "url": "audio/books/the-gene/adhd_1.mp3",
+      "file": "adhd_1.mp3",
+      "sizeBytes": 16686720,
+      "durationSec": 2085.84
+    },
+    {
+      "slug": "the-gene",
+      "bookTitle": "The Gene: An Intimate History",
+      "trackType": "adhd",
+      "index": 2,
+      "label": "Step 2 · Jumps to Part II: Seeing the 3D DNA Double Helix (Franklin, Crick & Watson)",
+      "url": "audio/books/the-gene/adhd_2.mp3",
+      "file": "adhd_2.mp3",
+      "sizeBytes": 18865728,
+      "durationSec": 2358.216
+    },
+    {
+      "slug": "the-gene",
+      "bookTitle": "The Gene: An Intimate History",
+      "trackType": "adhd",
+      "index": 3,
+      "label": "Step 3 · Jumps Back to Part I: Mendel's Pea Garden (How Discrete Code Packets Work)",
+      "url": "audio/books/the-gene/adhd_3.mp3",
+      "file": "adhd_3.mp3",
+      "sizeBytes": 16201728,
+      "durationSec": 2025.216
+    },
+    {
+      "slug": "the-gene",
+      "bookTitle": "The Gene: An Intimate History",
+      "trackType": "adhd",
+      "index": 4,
+      "label": "Step 4 · Jumps to Epilogue: Bheda, Abheda (Epigenetics, Fate & Human Freedom)",
+      "url": "audio/books/the-gene/adhd_4.mp3",
+      "file": "adhd_4.mp3",
+      "sizeBytes": 13905216,
+      "durationSec": 1738.152
+    }
+  ]
+};
     const GH_RAW_AUDIO_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/";
     const CACHE_NAME = "kortex-books-v1";
 
-    let BOOKS_DATA = [];
-    let AUDIO_INDEX = { files: [], books: {} };
-    let TEXT_VAULT = {};
     let currentBook = null;
     let currentTrackType = "adhd";
     let currentItemIndex = 1;
@@ -1023,7 +3074,7 @@
       const t = document.getElementById("toastMsg");
       t.textContent = msg;
       t.classList.remove("active");
-      void t.offsetWidth; // re-trigger animation
+      void t.offsetWidth;
       t.classList.add("active");
     }
 
@@ -1041,15 +3092,7 @@
       } catch (e) {}
     }
 
-    // Service Worker Registration
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("books-sw.js")
-          .catch(err => console.warn("[SW] Registration skipped or failed:", err));
-      });
-    }
-
-    // Audio Element Event Handlers — Keep buttons completely synced and never stuck
+    // Audio Element Event Handlers — Sync buttons cleanly
     audioEl.addEventListener("play", () => {
       document.getElementById("btnPlayPause").textContent = "⏸";
     });
@@ -1070,7 +3113,7 @@
     audioEl.addEventListener("error", (e) => {
       console.warn("Audio error event:", audioEl.error);
       document.getElementById("btnPlayPause").textContent = "▶";
-      showToast("Audio not available or offline. Download via Settings ⚙️");
+      showToast("Audio not available offline. Tap ⚙️ to download.");
     });
 
     // Scrubber updates
@@ -1122,28 +3165,6 @@
       const m = Math.floor(sec / 60);
       const s = Math.floor(sec % 60);
       return `${m}:${s < 10 ? "0" : ""}${s}`;
-    }
-
-    // Initialize Catalog & Indexes
-    async function loadCatalog() {
-      try {
-        const resp = await fetch("assets/books_catalog.json");
-        if (resp.ok) BOOKS_DATA = await resp.json();
-      } catch (e) {}
-
-      try {
-        const aResp = await fetch("assets/books_audio_index.json");
-        if (aResp.ok) AUDIO_INDEX = await aResp.json();
-      } catch (e) {}
-
-      try {
-        const tResp = await fetch("assets/books_text_vault.json");
-        if (tResp.ok) TEXT_VAULT = await tResp.json();
-      } catch (e) {}
-
-      renderBooksGrid();
-      updateOfflineStatus();
-      updateStorageMetrics();
     }
 
     function renderBooksGrid() {
@@ -1292,7 +3313,7 @@
     }
 
     /* ==========================================================================
-       ROBUST AUDIO PLAYBACK (OFFLINE CACHE FIRST -> GITHUB RAW -> LOCALHOST)
+       ROBUST AUDIO PLAYBACK (OFFLINE CACHE FIRST -> BLOB URL -> GITHUB RAW STREAM)
        ========================================================================== */
     async function playChapter(trackType, index) {
       if (!currentBook) return;
@@ -1307,25 +3328,24 @@
       document.getElementById("playerBookTitle").textContent = currentBook.title;
       document.getElementById("playerChapterTitle").textContent = trackTitle;
 
-      // SHOW the player bar now that user has explicitly chosen to play!
+      // SHOW the player bar only when user explicitly chooses to play!
       document.getElementById("playerBar").style.display = "flex";
 
       const slug = currentBook.slug || currentBook.filename.replace(/\.pdf$/i, "").toLowerCase();
       const relPath = `audio/books/${slug}/${trackType}_${index}.mp3`;
       const remoteUrl = `${GH_RAW_AUDIO_BASE}${relPath}`;
 
-      // Clean up previous blob URL if any
       if (activeBlobUrl) {
         URL.revokeObjectURL(activeBlobUrl);
         activeBlobUrl = null;
       }
 
-      // 1. Try CacheStorage first (guarantees 100% offline flight playback)
+      // 1. Try CacheStorage first (guarantees 100% offline playback even on airplane mode)
       let resolvedSrc = null;
       try {
         if ("caches" in window) {
           const cache = await caches.open(CACHE_NAME);
-          const cachedResp = (await cache.match(relPath)) || (await cache.match(remoteUrl));
+          const cachedResp = (await cache.match(remoteUrl)) || (await cache.match(relPath));
           if (cachedResp) {
             const blob = await cachedResp.blob();
             activeBlobUrl = URL.createObjectURL(blob);
@@ -1336,10 +3356,9 @@
         console.warn("Cache lookup error:", e);
       }
 
-      // 2. If not in cache, resolve network URL
+      // 2. If not in cache, use remote raw URL directly
       if (!resolvedSrc) {
-        const isLocal = typeof location !== "undefined" && (location.hostname === "localhost" || location.hostname.endsWith(".googlers.com") || location.hostname === "127.0.0.1");
-        resolvedSrc = isLocal ? relPath : remoteUrl;
+        resolvedSrc = remoteUrl;
       }
 
       audioEl.src = resolvedSrc;
@@ -1372,11 +3391,11 @@
         if ("storage" in navigator && "estimate" in navigator.storage) {
           const est = await navigator.storage.estimate();
           const usedMb = ((est.usage || 0) / (1024 * 1024)).toFixed(1);
-          document.getElementById("statModalCacheSize").textContent = `${usedMb} MB`;
+          document.getElementById("statModalCacheSize").textContent = `${usedMb} MB in Cache`;
         } else if ("caches" in window) {
           const cache = await caches.open(CACHE_NAME);
           const keys = await cache.keys();
-          document.getElementById("statModalCacheSize").textContent = `${keys.length} items cached`;
+          document.getElementById("statModalCacheSize").textContent = `${keys.length} files in Cache`;
         }
       } catch (e) {
         document.getElementById("statModalCacheSize").textContent = "Ready";
@@ -1400,28 +3419,16 @@
       try {
         const cache = await caches.open(CACHE_NAME);
 
-        // Core assets to cache
-        const coreUrls = [
-          "books.html",
-          "./books.html",
-          "assets/books_catalog.json",
-          "assets/books_audio_index.json",
-          "assets/books_text_vault.json",
-          "assets/icons/favicon-hub.png"
-        ];
-
-        // Gather all audio files from index (both relative and absolute GitHub URLs)
+        // Gather all audio files from index
         const audioUrls = [];
         for (const f of (AUDIO_INDEX.files || [])) {
-          audioUrls.push(f.url);
           audioUrls.push(`${GH_RAW_AUDIO_BASE}${f.url}`);
         }
 
-        const allUrls = [...coreUrls, ...audioUrls];
-        const total = allUrls.length;
+        const total = audioUrls.length;
 
         for (let i = 0; i < total; i++) {
-          const url = allUrls[i];
+          const url = audioUrls[i];
           const pct = Math.round(((i + 1) / total) * 100);
           pFill.style.width = `${pct}%`;
           pPct.textContent = `${pct}%`;
@@ -1429,15 +3436,18 @@
           pSub.textContent = `Downloading ${url.split("/").pop()}`;
 
           try {
-            await cache.add(url);
+            const resp = await fetch(url, { mode: "cors" });
+            if (resp.ok) {
+              await cache.put(url, resp);
+            }
           } catch (err) {
-            // Some URLs might be local or remote, continue
+            console.warn("Could not cache url:", url, err);
           }
         }
 
         pTitle.textContent = "✓ 100% Offline Ready!";
-        pSub.textContent = "All books, readable chapters, and neural voices cached for flights.";
-        showToast("✓ Library successfully cached for offline flights!");
+        pSub.textContent = "All voices cached. Ready for flights.";
+        showToast("✓ Voices successfully cached for offline flights!");
 
         setTimeout(() => {
           btnSync.disabled = false;
@@ -1481,9 +3491,9 @@
     window.addEventListener("offline", updateOfflineStatus);
 
     /* ==========================================================================
-       CHAPTER READER
+       CHAPTER READER (USES INLINED BRIEFS & CHAPTER SLICES)
        ========================================================================== */
-    async function readChapter(trackType, index) {
+    function readChapter(trackType, index) {
       if (!currentBook) return;
       currentTrackType = trackType;
       currentItemIndex = index;
@@ -1499,31 +3509,16 @@
       const body = document.getElementById("readerContentBody");
       modal.classList.add("active");
 
-      // Check text vault first for instant 0ms offline rendering
-      const slug = currentBook.slug || currentBook.filename.replace(/\.pdf$/i, "").toLowerCase();
-      let textContent = "";
-
-      if (TEXT_VAULT && TEXT_VAULT[slug] && TEXT_VAULT[slug][trackType] && TEXT_VAULT[slug][trackType][String(index)]) {
-        textContent = TEXT_VAULT[slug][trackType][String(index)].content;
-      }
-
-      if (textContent) {
-        body.innerHTML = `
-          <h2>${item.label}</h2>
-          <div style="background: var(--surface-subtle); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem;">
-            <strong>Pages:</strong> ${item.pages || "N/A"} · <strong>Effort:</strong> ~${item.duration_min || 15} mins
-          </div>
-          <div>${textContent.replace(/\n\n/g, "</p><p>")}</div>
-        `;
-      } else {
-        body.innerHTML = `
-          <h2>${item.label}</h2>
-          <div style="background: var(--surface-subtle); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem;">
-            <strong>Pages:</strong> ${item.pages || "N/A"} · <strong>Effort:</strong> ~${item.duration_min || 15} mins
-          </div>
-          <p style="font-size: 1.15rem; line-height: 1.8;">${item.brief || "Overview available. Tap Listen below to start audio."}</p>
-        `;
-      }
+      body.innerHTML = `
+        <h2>${item.label}</h2>
+        <div style="background: var(--surface-subtle); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem;">
+          <strong>Book:</strong> ${currentBook.title} · <strong>Pages:</strong> ${item.pages || "N/A"} · <strong>Duration:</strong> ~${item.duration_min || 15} mins
+        </div>
+        <div style="font-size: 1.12rem; line-height: 1.85; margin-bottom: 24px;">
+          <p style="font-weight: 600; color: var(--accent); margin-bottom: 12px;">Overview & Core Takeaway:</p>
+          <p>${item.brief || "Chapter overview ready. Tap Listen below to start the complete neural audiobook."}</p>
+        </div>
+      `;
     }
 
     document.getElementById("btnCloseReader").addEventListener("click", () => {
@@ -1566,8 +3561,8 @@
     document.getElementById("btnModalStartSync").addEventListener("click", downloadEntireLibraryOffline);
     document.getElementById("btnClearCacheBtn").addEventListener("click", clearOfflineCache);
     document.getElementById("btnRefreshManifestBtn").addEventListener("click", () => {
-      loadCatalog();
       updateStorageMetrics();
+      showToast("Refreshed storage status.");
     });
 
     document.getElementById("btnBackToLibrary").addEventListener("click", backToLibrary);
@@ -1617,8 +3612,10 @@
       } catch (e) {}
     })();
 
-    // Start
-    loadCatalog();
+    // Render immediately from inlined data
+    renderBooksGrid();
+    updateOfflineStatus();
+    updateStorageMetrics();
   </script>
 </body>
 </html>
