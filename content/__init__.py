@@ -1,17 +1,11 @@
-# -*- coding: utf-8 -*-
-"""Modular Multi-Persona Content Package for AI Companion (`kalyani` + `anondo`)."""
+"""Self-contained seed data for Jhalak Reels (`jhalak.html`) and Zorba Reels (`zorba.html`)."""
+import json
+from pathlib import Path
 
-from .anondo import ANONDO_DAYS_21, ANONDO_PILLARS, ANONDO_QUOTES, ANONDO_SLIDES
-from .kalyani import DAYS_21, GAME_META, LETTER_VIDEO_URL, MORNING_QUOTES, SLIDES
+_DATA = json.loads((Path(__file__).resolve().parent / "reels_seed.json").read_text(encoding="utf-8"))
+LETTER_VIDEO_URL = _DATA["LETTER_VIDEO_URL"]
+SLIDES = _DATA["SLIDES"]
+DAYS_21 = _DATA["DAYS_21"]
+ANONDO_SLIDES = _DATA["ANONDO_SLIDES"]
 
-__all__ = [
-    "LETTER_VIDEO_URL",
-    "SLIDES",
-    "MORNING_QUOTES",
-    "GAME_META",
-    "DAYS_21",
-    "ANONDO_DAYS_21",
-    "ANONDO_SLIDES",
-    "ANONDO_QUOTES",
-    "ANONDO_PILLARS",
-]
+__all__ = ["LETTER_VIDEO_URL", "SLIDES", "DAYS_21", "ANONDO_SLIDES"]

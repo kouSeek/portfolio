@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Architectural & Governance Invariant Tests for AI Companion (`kalyani` + `anondo`)."""
+"""Architectural & Governance Invariant Tests for AI Companion (`jhalak`, `zorba`, `books`, and `index.html`)."""
 
 from pathlib import Path
 import py_compile
@@ -13,103 +13,83 @@ APP_ROOT = Path(__file__).resolve().parent.parent
 
 class TestArchitectureAndDocs(unittest.TestCase):
 
-    def test_modular_two_persona_directory_topology_and_zero_monoliths(self) -> None:
-        """Verify strict modular separation across personas/{kalyani,anondo}/, content/, src/, assets/, audio/, scripts/."""
+    def test_modular_directory_topology_and_removed_21day_apps(self) -> None:
+        """Verify strict modular separation across content/, src/{jhalak,zorba}/, assets/, audio/, scripts/ and complete removal of Kalyani & Anondo 21-day apps."""
         required_files = [
             "GEMINI.md",
             ".gemini/config/rules/ai_companion_rules.md",
             "docs/spec.md",
             "docs/content-pipeline.md",
-            "personas/kalyani/persona.md",
-            "personas/kalyani/curriculum.md",
-            "personas/kalyani/content_curation.md",
-            "personas/kalyani/client-side-gemini.md",
-            "personas/kalyani/curation_manifest.json",
-            "personas/kalyani/days/part1_days.md",
-            "personas/anondo/persona.md",
-            "personas/anondo/curriculum.md",
-            "personas/anondo/content_curation.md",
-            "personas/anondo/client-side-gemini.md",
-            "personas/anondo/curation_manifest.json",
-            "personas/anondo/days/anondo_days.md",
             "content/__init__.py",
-            "content/markdown_loader.py",
-            "content/kalyani/__init__.py",
-            "content/kalyani/slides_and_quotes.py",
-            "content/kalyani/part1_days.py",
-            "content/anondo/__init__.py",
-            "content/anondo/anondo_days.py",
+            "content/reels_seed.json",
             "src/templates/index.html.j2",
-            "src/templates/kalyani.html.j2",
-            "src/templates/anondo.html.j2",
-            "src/kalyani/styles/tokens.css",
-            "src/kalyani/styles/layout.css",
-            "src/kalyani/styles/components.css",
-            "src/kalyani/js/state.js",
-            "src/kalyani/js/audio.js",
-            "src/kalyani/js/plan-view.js",
-            "src/kalyani/js/letter-view.js",
-            "src/kalyani/js/boot.js",
-            "src/anondo/styles/tokens.css",
-            "src/anondo/styles/components.css",
-            "src/anondo/js/audio.js",
-            "src/anondo/js/views.js",
-            "assets/icons/favicon.svg",
-            "favicon.svg",
-            "kalyani-manifest.json",
-            "kalyani-sw.js",
-            ".gitignore",
-            "audio/kalyani/tts_manifest.json",
-            "audio/anondo/tts_manifest.json",
-            "scripts/build_app.py",
-            "scripts/curate_loop.py",
-            "scripts/refresh_voices.py",
-            "scripts/sync_audio_branch.py",
-            "index.html",
-            "kalyani.html",
-            "jhalak.html",
-            "anondo.html",
-            "zorba.html",
-            "jhalak-manifest.json",
-            "zorba-manifest.json",
             "src/templates/jhalak.html.j2",
             "src/templates/zorba.html.j2",
+            "src/jhalak/styles/jhalak.css",
+            "src/jhalak/js/curated-content.js",
+            "src/jhalak/js/feed-engine.js",
+            "src/jhalak/js/player-ui.js",
             "src/zorba/styles/zorba.css",
             "src/zorba/js/curated-content.js",
             "src/zorba/js/player-ui.js",
+            "assets/icons/favicon.svg",
+            "favicon.svg",
+            "kalyani-sw.js",
+            ".gitignore",
+            "audio/jhalak/tts_manifest.json",
+            "audio/zorba/tts_manifest.json",
+            "scripts/build_app.py",
+            "scripts/refresh_voices.py",
+            "scripts/sync_audio_branch.py",
+            "index.html",
+            "jhalak.html",
+            "zorba.html",
+            "jhalak-manifest.json",
+            "zorba-manifest.json",
         ]
         for rel in required_files:
             self.assertTrue((APP_ROOT / rel).is_file(), f"Missing required modular file: {rel}")
 
         gitignore_txt = (APP_ROOT / ".gitignore").read_text(encoding="utf-8")
         self.assertIn("audio/**/*.mp3", gitignore_txt)
-        self.assertIn("!audio/kalyani/tts_manifest.json", gitignore_txt)
-        self.assertIn("!audio/anondo/tts_manifest.json", gitignore_txt)
+        self.assertIn("!audio/jhalak/tts_manifest.json", gitignore_txt)
+        self.assertIn("!audio/zorba/tts_manifest.json", gitignore_txt)
 
-        # Obsolete paths must not exist
+        # Removed Kalyani & Anondo 21-Day apps and obsolete paths must not exist
         for obsolete in (
+            "kalyani.html",
+            "kalyani-manifest.json",
+            "anondo.html",
+            "personas",
+            "src/kalyani",
+            "src/anondo",
+            "src/templates/kalyani.html.j2",
+            "src/templates/anondo.html.j2",
+            "content/kalyani",
+            "content/anondo",
+            "content/markdown_loader.py",
+            "assets/kalyani",
+            "assets/anondo",
+            "assets/icons/favicon-kalyani.png",
+            "assets/icons/favicon-anondo.png",
+            "audio/kalyani",
+            "audio/anondo",
+            "scripts/curate_loop.py",
             "students",
             "scripts/build_koushik_app.py",
             "koushik.html",
             "docs/student-persona.md",
-            "personas/kalyani/days/part2_days.md",
-            "content/kalyani/part2_days.py",
         ):
-            self.assertFalse((APP_ROOT / obsolete).exists(), f"Obsolete path should not exist: {obsolete}")
+            self.assertFalse((APP_ROOT / obsolete).exists(), f"Removed/obsolete path should not exist: {obsolete}")
 
         # build_app.py must remain a lean Jinja2 modular assembler (<220 lines, zero inline JS/CSS strings)
         build_src = (APP_ROOT / "scripts" / "build_app.py").read_text(encoding="utf-8")
         self.assertLess(len(build_src.splitlines()), 220)
         self.assertIn("jinja2", build_src)
         self.assertNotIn("<!DOCTYPE html>", build_src)
-        self.assertNotIn("function renderPlanView", build_src)
-
-        loader_src = (APP_ROOT / "content/kalyani/part1_days.py").read_text(encoding="utf-8")
-        self.assertLess(len(loader_src.splitlines()), 25, "content/kalyani/part1_days.py should be a thin Markdown loader")
-        self.assertIn("load_days_markdown", loader_src)
 
     def test_no_auto_tts_rule_and_manifest_tracking(self) -> None:
-        """Verify build_app.py never calls TTS and refresh_voices.py tracks all expected audio clips for both personas."""
+        """Verify build_app.py never calls TTS and refresh_voices.py tracks all expected audio clips for jhalak and zorba."""
         sys.path.insert(0, str(APP_ROOT))
         sys.path.insert(0, str(APP_ROOT / "scripts"))
         from refresh_voices import collect_expected_audio_items  # noqa: PLC0415
@@ -121,12 +101,7 @@ class TestArchitectureAndDocs(unittest.TestCase):
         self.assertNotIn("gemini-agents-generate/generate", build_src)
         self.assertNotIn("build_one(", build_src)
 
-        gemini_md = (APP_ROOT / "GEMINI.md").read_text(encoding="utf-8")
-        self.assertIn("Principal Software Architecture", gemini_md)
-        self.assertIn("Genius Artist UX Design", gemini_md)
-        self.assertIn("refresh_voices.py --persona", gemini_md)
-
-        for pid in ("kalyani", "anondo", "jhalak"):
+        for pid in ("jhalak", "zorba"):
             expected_count = len(collect_expected_audio_items(pid))
             proc = subprocess.run(
                 [sys.executable, str(APP_ROOT / "scripts" / "refresh_voices.py"), "--persona", pid, "--status", "--scope", "all"],

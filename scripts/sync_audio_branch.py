@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Publish `audio/` (`audio/kalyani/` + `audio/anondo/`) to the single-commit `ai-companion-audio` orphan branch.
+"""Publish `audio/` (`audio/jhalak/`, `audio/zorba/` & `audio/books/`) to the single-commit `ai-companion-audio` orphan branch.
 
 Why this exists:
 - Keeps `ai-companion` ultra-lightweight (<5 MB, zero `.mp3` binaries in code history).
@@ -34,8 +34,8 @@ def get_origin_url() -> str:
 
 
 def sync_audio_orphan_branch(dry_run: bool = False) -> int:
-    if not (AUDIO_DIR / "kalyani" / "tts_manifest.json").is_file():
-        print("[ai-companion-audio] Missing audio/kalyani/tts_manifest.json", file=sys.stderr)
+    if not (AUDIO_DIR / "jhalak" / "tts_manifest.json").is_file():
+        print("[ai-companion-audio] Missing audio/jhalak/tts_manifest.json", file=sys.stderr)
         return 1
 
     mp3_files = sorted(AUDIO_DIR.rglob("*.mp3"))
@@ -55,7 +55,7 @@ def sync_audio_orphan_branch(dry_run: bool = False) -> int:
         shutil.copytree(AUDIO_DIR, stage_root / "audio")
         (stage_root / "README.md").write_text(
             "# ✨ AI Companion (`ai-companion-audio` Single-Commit Voice Asset Branch)\n\n"
-            "Stores active Gemini `Aoede` `.mp3` voice assets for `ai-companion` (`audio/kalyani/`, `audio/anondo/` & `audio/jhalak/`) "
+            "Stores active Gemini `Aoede` `.mp3` voice assets for `ai-companion` (`audio/jhalak/`, `audio/zorba/` & `audio/books/`) "
             "as a single-commit snapshot so replaced audio binaries never bloat Git history.\n",
             encoding="utf-8",
         )

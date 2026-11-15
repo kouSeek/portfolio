@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Unified Modular Jinja2 + Markdown Compiler for AI Companion (`kalyani`, `jhalak`, `anondo`, `zorba`).
+"""Unified Modular Jinja2 Compiler for AI Companion (`jhalak`, `zorba`, and `index.html`).
 
 CRITICAL GOVERNANCE RULE (defined in GEMINI.md):
   - Runs in <0.5s and NEVER invokes TTS voice generation.
-  - Verifies the 12-dimension Agentic LLM Curation Gate and checks `audio/<persona>/tts_manifest.json`.
+  - Checks `audio/<persona>/tts_manifest.json`.
 """
 
 from __future__ import annotations
 
-import argparse, base64, json, shutil, sys
+import argparse
+import base64
+import json
+import shutil
+import sys
 from pathlib import Path
 import jinja2
 
@@ -17,23 +21,19 @@ APP_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(APP_ROOT))
 sys.path.insert(0, str(APP_ROOT / "scripts"))
 
-from content import (  # noqa: E402
-    ANONDO_DAYS_21, ANONDO_PILLARS, ANONDO_QUOTES, ANONDO_SLIDES,
-    DAYS_21, GAME_META, LETTER_VIDEO_URL, MORNING_QUOTES, SLIDES,
-)
-from curate_loop import run_quality_gate  # noqa: E402
-from refresh_voices import get_stale_or_missing_files, load_manifest  # noqa: E402
+from content import ANONDO_SLIDES, DAYS_21, LETTER_VIDEO_URL, SLIDES  # noqa: E402
+from refresh_voices import get_stale_or_missing_files  # noqa: E402
 
 SRC_DIR = APP_ROOT / "src"
 TEMPLATES_DIR = SRC_DIR / "templates"
 GH_RAW_AUDIO_BASE = "https://raw.githubusercontent.com/kouSeek/portfolio/ai-companion-audio/audio/"
 
-KALYANI_CSS = tuple(SRC_DIR / "kalyani" / "styles" / f for f in ("tokens.css", "layout.css", "components.css"))
-KALYANI_JS = tuple(SRC_DIR / "kalyani" / "js" / f for f in ("state.js", "audio.js", "plan-view.js", "letter-view.js", "boot.js"))
-ANONDO_CSS = (SRC_DIR / "anondo" / "styles" / "tokens.css", SRC_DIR / "anondo" / "styles" / "components.css")
-ANONDO_JS = (SRC_DIR / "anondo" / "js" / "audio.js", SRC_DIR / "anondo" / "js" / "views.js")
 JHALAK_CSS = (SRC_DIR / "jhalak" / "styles" / "jhalak.css",)
-JHALAK_JS = (SRC_DIR / "jhalak" / "js" / "curated-content.js", SRC_DIR / "jhalak" / "js" / "feed-engine.js", SRC_DIR / "jhalak" / "js" / "player-ui.js")
+JHALAK_JS = (
+    SRC_DIR / "jhalak" / "js" / "curated-content.js",
+    SRC_DIR / "jhalak" / "js" / "feed-engine.js",
+    SRC_DIR / "jhalak" / "js" / "player-ui.js",
+)
 ZORBA_CSS = (SRC_DIR / "jhalak" / "styles" / "jhalak.css", SRC_DIR / "zorba" / "styles" / "zorba.css")
 ZORBA_JS = (SRC_DIR / "zorba" / "js" / "curated-content.js", SRC_DIR / "zorba" / "js" / "player-ui.js")
 
@@ -42,132 +42,73 @@ def b64_uri(path: Path, mime: str) -> str:
     return ("data:" + mime + ";base64," + base64.b64encode(path.read_bytes()).decode("ascii")) if path.is_file() else ""
 
 
-def _enrich_kalyani_days(days_list: list[dict], url_prefix: str) -> list[dict]:
-    manifest_hashes = load_manifest("kalyani")
-    aud_root = APP_ROOT / "audio" / "kalyani"
-    mpath = aud_root / "tts_manifest.json"
-    story_cuts = json.loads(mpath.read_text(encoding="utf-8")).get("story_cuts", {}) if mpath.is_file() else {}
-    enriched: list[dict] = []
-    for d in days_list:
-        day_num = int(d["day"])
-        ref_day = int(d.get("audio_ref_day", day_num))
-        day_rel = f"days/day_{day_num}.mp3"
-        has_day = (aud_root / day_rel).is_file() or (day_rel in manifest_hashes)
-        resolved_day_rel = day_rel if has_day else f"days/day_{ref_day}.mp3"
-
-        ags_enriched = []
-        for idx, ag in enumerate(d["agendas"]):
-            ag_rel = f"games/day_{day_num}_ag_{idx}.mp3"
-            has_ag = (aud_root / ag_rel).is_file() or (ag_rel in manifest_hashes)
-            resolved_ag = ag_rel if has_ag else f"games/day_{ref_day}_ag_{idx}.mp3"
-            cut_sec = story_cuts.get(resolved_ag, 0)
-            ags_enriched.append({**ag, "audio_url": url_prefix + resolved_ag, "audio_b64": "", "story_end": cut_sec})
-
-        enriched.append({**d, "agendas": ags_enriched, "audio_url": url_prefix + resolved_day_rel, "audio_b64": ""})
-    return enriched
-
-
-def build_kalyani(env: jinja2.Environment) -> None:
-    passed, issues, dim_scores = run_quality_gate(verbose=False, persona_id="kalyani")
-    if not passed:
-        raise RuntimeError(f"Quality Gate failed for kalyani: {issues}")
-    print(f"[Agentic Quality Gate (kalyani)] PASSED all {len(dim_scores)}/12 dimensions.")
-
-    url_prefix = GH_RAW_AUDIO_BASE + "kalyani/"
-    img_dir = APP_ROOT / "assets" / "kalyani" / "slides"
-    sys_md = (APP_ROOT / "personas" / "kalyani" / "client-side-gemini.md").read_text(encoding="utf-8")
-    sys_prompt = sys_md.split("```text", 1)[-1].rsplit("```", 1)[0].strip()
-    kal_mpath = APP_ROOT / "audio" / "kalyani" / "tts_manifest.json"
-    slide_timings = json.loads(kal_mpath.read_text(encoding="utf-8")).get("slide_timings", {}) if kal_mpath.is_file() else {}
+def build_jhalak(env: jinja2.Environment) -> None:
+    url_prefix = GH_RAW_AUDIO_BASE + "jhalak/"
+    img_dir = APP_ROOT / "assets" / "jhalak" / "slides"
     jh_mpath = APP_ROOT / "audio" / "jhalak" / "tts_manifest.json"
-    jh_timings = json.loads(jh_mpath.read_text(encoding="utf-8")).get("audio_timings", {}) if jh_mpath.is_file() else {}
+    jh_manifest = json.loads(jh_mpath.read_text(encoding="utf-8")) if jh_mpath.is_file() else {}
+    slide_timings = jh_manifest.get("slide_timings", {})
+    jh_timings = jh_manifest.get("audio_timings", {})
     slides_payload = [
-        {**s, "img_b64": b64_uri(img_dir / f"slide_{int(s['id'])}.jpg", "image/jpeg"), "audio_url": f"{url_prefix}slides/slide_{int(s['id'])}.mp3", "audio_b64": "", "audio_meta": slide_timings.get(f"slide_{int(s['id'])}", {})}
+        {
+            **s,
+            "img_b64": b64_uri(img_dir / f"slide_{int(s['id'])}.jpg", "image/jpeg"),
+            "audio_url": f"{url_prefix}slides/slide_{int(s['id'])}.mp3",
+            "audio_b64": "",
+            "audio_meta": slide_timings.get(f"slide_{int(s['id'])}", {}),
+        }
         for s in SLIDES
     ]
-    quotes_audio = [{"url": f"{url_prefix}quotes/quote_{i}.mp3", "b64": ""} for i in range(len(MORNING_QUOTES))]
     data_js = "\n".join([
         f"const LETTER_VIDEO_URL = {json.dumps(LETTER_VIDEO_URL, ensure_ascii=False)};",
-        f"const KALYANI_SYSTEM_PROMPT = {json.dumps(sys_prompt, ensure_ascii=False)};",
         f"const SLIDES = {json.dumps(slides_payload, ensure_ascii=False)};",
-        f"const MORNING_QUOTES = {json.dumps(MORNING_QUOTES, ensure_ascii=False)};",
-        f"const GAME_META = {json.dumps(GAME_META, ensure_ascii=False)};",
-        f"const DAYS_21 = {json.dumps(_enrich_kalyani_days(DAYS_21, url_prefix), ensure_ascii=False)};",
-        f"const QUOTES_AUDIO = {json.dumps(quotes_audio, ensure_ascii=False)};",
+        f"const DAYS_21 = {json.dumps(DAYS_21, ensure_ascii=False)};",
         f"const JHALAK_AUDIO_TIMINGS = {json.dumps(jh_timings, ensure_ascii=False)};",
-        "const DAY1_AG_MAP = {};",
     ])
-    for fname, tpl, css_list, js_list, fav_png in (
-        ("kalyani.html", "kalyani.html.j2", KALYANI_CSS, KALYANI_JS, "favicon-kalyani.png"),
-        ("jhalak.html", "jhalak.html.j2", JHALAK_CSS, JHALAK_JS, "favicon-jhalak.png"),
-    ):
-        out = APP_ROOT / fname
-        out.write_text(env.get_template(tpl).render(
-            css_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in css_list),
+    out = APP_ROOT / "jhalak.html"
+    out.write_text(
+        env.get_template("jhalak.html.j2").render(
+            css_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in JHALAK_CSS),
             data_js=data_js,
-            js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in js_list),
+            js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in JHALAK_JS),
             letter_video_url=LETTER_VIDEO_URL,
-            favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / fav_png, "image/png"),
-        ), encoding="utf-8")
-        print(f"Built {out.name} via Jinja2 ({out.stat().st_size:,} bytes)")
+            favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / "favicon-jhalak.png", "image/png"),
+        ),
+        encoding="utf-8",
+    )
+    print(f"Built {out.name} via Jinja2 ({out.stat().st_size:,} bytes)")
 
 
-def build_anondo(env: jinja2.Environment) -> None:
-    passed, issues, dim_scores = run_quality_gate(verbose=False, persona_id="anondo")
-    if not passed:
-        raise RuntimeError(f"Quality Gate failed for anondo: {issues}")
-    print(f"[Agentic Quality Gate (anondo)] PASSED all {len(dim_scores)}/12 dimensions.")
-
-    url_prefix = GH_RAW_AUDIO_BASE + "anondo/"
-    img_dir = APP_ROOT / "assets" / "anondo" / "slides"
-    an_mpath, zb_mpath = APP_ROOT / "audio" / "anondo" / "tts_manifest.json", APP_ROOT / "audio" / "zorba" / "tts_manifest.json"
-    an_timings = {**(json.loads(an_mpath.read_text(encoding="utf-8")).get("audio_timings", {}) if an_mpath.is_file() else {}), **(json.loads(zb_mpath.read_text(encoding="utf-8")).get("audio_timings", {}) if zb_mpath.is_file() else {})}
+def build_zorba(env: jinja2.Environment) -> None:
+    url_prefix = GH_RAW_AUDIO_BASE + "zorba/"
+    img_dir = APP_ROOT / "assets" / "zorba" / "slides"
+    zb_mpath = APP_ROOT / "audio" / "zorba" / "tts_manifest.json"
+    zb_manifest = json.loads(zb_mpath.read_text(encoding="utf-8")) if zb_mpath.is_file() else {}
+    zb_timings = zb_manifest.get("audio_timings", {})
     slides = [
-        {**s, "img_b64": b64_uri(img_dir / f"slide_{int(s['id'])}.jpg", "image/jpeg"), "audio_url": f"{url_prefix}slides/slide_{int(s['id'])}.mp3", "audio_meta": an_timings.get(f"slides/slide_{int(s['id'])}.mp3", {})}
+        {
+            **s,
+            "img_b64": b64_uri(img_dir / f"slide_{int(s['id'])}.jpg", "image/jpeg"),
+            "audio_url": f"{url_prefix}slides/slide_{int(s['id'])}.mp3",
+            "audio_meta": zb_timings.get(f"slides/slide_{int(s['id'])}.mp3", {}),
+        }
         for s in ANONDO_SLIDES
     ]
-    quotes = [{"text": q, "audio_url": f"{url_prefix}quotes/quote_{i}.mp3"} for i, q in enumerate(ANONDO_QUOTES)]
-    pillars = [{**p, "audio_url": f"{url_prefix}pillars/pillar_{i}.mp3"} for i, p in enumerate(ANONDO_PILLARS)]
-    days = [
-        {
-            "day": int(d["day"]),
-            "phase": d.get("phase", "House-Money Era"),
-            "title": d["title_bn"],
-            "sub": d.get("summary_bn", ""),
-            "audio_url": f"{url_prefix}days/day_{int(d['day'])}.mp3",
-            "games": [
-                {
-                    "pillar": ag.get("pillar", ""),
-                    "short": ag["short_bn"],
-                    "category": ag["category"],
-                    "title": ag["title_bn"],
-                    "detail": ag["detail_bn"],
-                    "prompt": ag["prompt_bn"],
-                    "followup_prompt": ag.get("followup_prompt_bn", ""),
-                    "audio_url": f"{url_prefix}games/day_{int(d['day'])}_ag_{idx}.mp3",
-                }
-                for idx, ag in enumerate(d["agendas"])
-            ],
-        }
-        for d in ANONDO_DAYS_21
-    ]
     data_js = "\n".join([
-        f"const ANONDO_DATA = {json.dumps({'slides': slides, 'quotes': quotes, 'days': days}, ensure_ascii=False)};",
-        f"const PILLARS_DATA = {json.dumps(pillars, ensure_ascii=False)};",
-        f"const JHALAK_AUDIO_TIMINGS = {json.dumps(an_timings, ensure_ascii=False)};",
+        f"const ANONDO_DATA = {json.dumps({'slides': slides}, ensure_ascii=False)};",
+        f"const JHALAK_AUDIO_TIMINGS = {json.dumps(zb_timings, ensure_ascii=False)};",
     ])
-    for fname, tpl, css_list, js_list, fav_png in (
-        ("anondo.html", "anondo.html.j2", ANONDO_CSS, ANONDO_JS, "favicon-anondo.png"),
-        ("zorba.html", "zorba.html.j2", ZORBA_CSS, ZORBA_JS, "favicon-zorba.png"),
-    ):
-        out = APP_ROOT / fname
-        out.write_text(env.get_template(tpl).render(
-            css_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in css_list),
+    out = APP_ROOT / "zorba.html"
+    out.write_text(
+        env.get_template("zorba.html.j2").render(
+            css_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in ZORBA_CSS),
             data_js=data_js,
-            js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in js_list),
-            favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / fav_png, "image/png"),
-        ), encoding="utf-8")
-        print(f"Built {out.name} via Jinja2 ({out.stat().st_size:,} bytes)")
+            js_bundle="\n\n".join(p.read_text(encoding="utf-8").strip() for p in ZORBA_JS),
+            favicon_uri=b64_uri(APP_ROOT / "assets" / "icons" / "favicon-zorba.png", "image/png"),
+        ),
+        encoding="utf-8",
+    )
+    print(f"Built {out.name} via Jinja2 ({out.stat().st_size:,} bytes)")
 
 
 def build_all(persona: str = "all") -> None:
@@ -176,11 +117,11 @@ def build_all(persona: str = "all") -> None:
         shutil.copyfile(src_icon, dst_icon)
 
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(TEMPLATES_DIR)), autoescape=False, keep_trailing_newline=True)
-    targets = ("kalyani", "anondo") if persona == "all" else (persona,)
-    if "kalyani" in targets:
-        build_kalyani(env)
-    if "anondo" in targets:
-        build_anondo(env)
+    targets = ("jhalak", "zorba") if persona == "all" else (persona,)
+    if "jhalak" in targets:
+        build_jhalak(env)
+    if "zorba" in targets:
+        build_zorba(env)
 
     hub = APP_ROOT / "index.html"
     hub.write_text(
@@ -198,6 +139,6 @@ def build_all(persona: str = "all") -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Compile AI Companion (`kalyani.html`, `anondo.html`, `index.html`).")
-    parser.add_argument("--persona", default="all", choices=("all", "kalyani", "anondo"))
+    parser = argparse.ArgumentParser(description="Compile AI Companion (`jhalak.html`, `zorba.html`, `index.html`).")
+    parser.add_argument("--persona", default="all", choices=("all", "jhalak", "zorba"))
     build_all(parser.parse_args().persona)

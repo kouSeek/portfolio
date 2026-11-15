@@ -28,17 +28,13 @@ APP_ROOT = Path(__file__).resolve().parent.parent
 AUDIO_DIR = APP_ROOT / "audio"
 GEN_BIN = "/google/bin/releases/gemini-agents-generate/generate"
 TTS_MODELS = ("gemini-v4s-tts-no-transcriber", "gemini-v4s-tts")
-DEFAULT_PERSONA_ID = "kalyani"
-PERSONA_ALIASES = {"ma_kalyani": "kalyani", "ma": "kalyani", "koushik": "anondo", "me": "anondo"}
+DEFAULT_PERSONA_ID = "jhalak"
+PERSONA_ALIASES = {"ma_kalyani": "jhalak", "ma": "jhalak", "koushik": "zorba", "me": "zorba"}
 
 sys.path.insert(0, str(APP_ROOT))
 from content import (  # noqa: E402
-    ANONDO_DAYS_21,
-    ANONDO_PILLARS,
-    ANONDO_QUOTES,
     ANONDO_SLIDES,
     DAYS_21,
-    MORNING_QUOTES,
     SLIDES,
 )
 
@@ -69,79 +65,6 @@ def get_audio_root(persona_id: str = DEFAULT_PERSONA_ID) -> Path:
 
 def get_manifest_path(persona_id: str = DEFAULT_PERSONA_ID) -> Path:
     return get_audio_root(persona_id) / "tts_manifest.json"
-
-
-def _collect_anondo_audio_items() -> dict[str, dict[str, str]]:
-    """Collect expected English Aoede voice items for `anondo` (`audio/anondo/...`)."""
-    items: dict[str, dict[str, str]] = {}
-
-    for s in ANONDO_SLIDES:
-        sid = int(s["id"])
-        rel_path = f"slides/slide_{sid}.mp3"
-        txt = _clean_tts_text(_humanize_english_tts_text(f"{s['title']}. {s['highlight']} {s['text']}"))
-        items[rel_path] = {
-            "hash": sha256_text(txt),
-            "scope": "slides",
-            "part": "0",
-            "text": txt,
-            "part1": txt,
-            "part2": "",
-        }
-
-    for q_idx, q_txt in enumerate(ANONDO_QUOTES):
-        rel_path = f"quotes/quote_{q_idx}.mp3"
-        q_clean = _clean_tts_text(_humanize_english_tts_text(q_txt))
-        items[rel_path] = {
-            "hash": sha256_text(q_clean),
-            "scope": "quotes",
-            "part": "0",
-            "text": q_clean,
-            "part1": q_clean,
-            "part2": "",
-        }
-
-    for p_idx, p_obj in enumerate(ANONDO_PILLARS):
-        rel_path = f"pillars/pillar_{p_idx}.mp3"
-        p_txt = _clean_tts_text(_humanize_english_tts_text(f"{p_obj['title']}. {p_obj['detail']}"))
-        items[rel_path] = {
-            "hash": sha256_text(p_txt),
-            "scope": "pillars",
-            "part": "0",
-            "text": p_txt,
-            "part1": p_txt,
-            "part2": "",
-        }
-
-    for d in ANONDO_DAYS_21:
-        day_num = int(d["day"])
-        day_rel = f"days/day_{day_num}.mp3"
-        raw_day_txt = d.get("voice_script_bn") or f"Good morning Koushik! Welcome to Day {day_num}: {d['title_bn']}."
-        day_txt = _clean_tts_text(_humanize_english_tts_text(raw_day_txt))
-        items[day_rel] = {
-            "hash": sha256_text(day_txt),
-            "scope": "days",
-            "part": "1",
-            "text": day_txt,
-            "part1": day_txt,
-            "part2": "",
-        }
-
-        for idx, ag in enumerate(d["agendas"]):
-            ag_rel = f"games/day_{day_num}_ag_{idx}.mp3"
-            part1_en = _clean_tts_text(_humanize_english_tts_text(f"{ag['title_bn']}. {ag['detail_bn']}"))
-            follow_en = f" And in Turn 2, ask: {ag['followup_prompt_bn']}" if ag.get("followup_prompt_bn") else ""
-            part2_en = _clean_tts_text(_humanize_english_tts_text(f"Open Gemini Live and say: {ag['prompt_bn']}{follow_en}"))
-            full_txt = f"{part1_en} {part2_en}"
-            items[ag_rel] = {
-                "hash": sha256_text(full_txt),
-                "scope": "games",
-                "part": "1",
-                "text": full_txt,
-                "part1": part1_en,
-                "part2": part2_en,
-            }
-
-    return items
 
 
 def _find_node_bin() -> str:
@@ -389,6 +312,18 @@ def _collect_jhalak_audio_items() -> dict[str, dict[str, str]]:
     reels = json.loads(proc.stdout)
 
     items: dict[str, dict[str, str]] = {}
+    for s in SLIDES:
+        sid = int(s["id"])
+        rel_path = f"slides/slide_{sid}.mp3"
+        txt = f"{s['title_bn']}। {s['highlight_bn']}। {s['text_bn']}"
+        items[rel_path] = {
+            "hash": sha256_text(txt),
+            "scope": "slides",
+            "part": "0",
+            "text": txt,
+            "part1": txt,
+            "part2": "",
+        }
     for r in reels:
         cid = str(r["id"])
         rel_path = f"reels/{cid}.mp3"
@@ -424,34 +359,12 @@ def _collect_jhalak_audio_items() -> dict[str, dict[str, str]]:
 
 
 def _collect_zorba_audio_items() -> dict[str, dict[str, str]]:
-    """Collect expected full-page English Aoede voice items for `zorba` (`audio/zorba/reels/<id>.mp3`)."""
-    days_payload = [
-        {
-            "day": int(d["day"]),
-            "phase": d.get("phase", "House-Money Era"),
-            "title": d["title_bn"],
-            "sub": d.get("summary_bn", ""),
-            "games": [
-                {
-                    "pillar": ag.get("pillar", ""),
-                    "short": ag["short_bn"],
-                    "category": ag["category"],
-                    "title": ag["title_bn"],
-                    "detail": ag["detail_bn"],
-                    "prompt": ag["prompt_bn"],
-                    "followup_prompt": ag.get("followup_prompt_bn", ""),
-                }
-                for ag in d["agendas"]
-            ],
-        }
-        for d in ANONDO_DAYS_21
-    ]
-    quotes_payload = [{"text": q} for q in ANONDO_QUOTES]
-    anondo_data = {"slides": ANONDO_SLIDES, "quotes": quotes_payload, "days": days_payload}
+    """Collect expected full-page English Aoede voice items for `zorba` (`audio/zorba/reels/<id>.mp3` + `slides/`)."""
+    anondo_data = {"slides": ANONDO_SLIDES, "quotes": [], "days": []}
     js_path = APP_ROOT / "src" / "zorba" / "js" / "curated-content.js"
     js_code = (
         f"const ANONDO_DATA = {json.dumps(anondo_data, ensure_ascii=False)};\n"
-        f"const PILLARS_DATA = {json.dumps(ANONDO_PILLARS, ensure_ascii=False)};\n"
+        "const PILLARS_DATA = [];\n"
         + js_path.read_text(encoding="utf-8") + "\n"
         + "console.log(JSON.stringify(ALL_JHALAK_REELS));"
     )
@@ -459,6 +372,18 @@ def _collect_zorba_audio_items() -> dict[str, dict[str, str]]:
     reels = json.loads(proc.stdout)
 
     items: dict[str, dict[str, str]] = {}
+    for s in ANONDO_SLIDES:
+        sid = int(s["id"])
+        rel_path = f"slides/slide_{sid}.mp3"
+        txt = _clean_tts_text(_humanize_english_tts_text(f"{s['title']}. {s['highlight']} {s['text']}"))
+        items[rel_path] = {
+            "hash": sha256_text(txt),
+            "scope": "slides",
+            "part": "0",
+            "text": txt,
+            "part1": txt,
+            "part2": "",
+        }
     for r in reels:
         cid = str(r["id"])
         rel_path = f"reels/{cid}.mp3"
@@ -496,76 +421,9 @@ def _collect_zorba_audio_items() -> dict[str, dict[str, str]]:
 def collect_expected_audio_items(persona_id: str = DEFAULT_PERSONA_ID) -> dict[str, dict[str, str]]:
     """Return mapping of relative audio path (under `audio/<persona_id>/`) -> {hash, scope, part, text, part1, part2}."""
     pid = normalize_persona_id(persona_id)
-    if pid == "anondo":
-        return _collect_anondo_audio_items()
-    if pid == "jhalak":
-        return _collect_jhalak_audio_items()
     if pid == "zorba":
         return _collect_zorba_audio_items()
-
-    items: dict[str, dict[str, str]] = {}
-
-    for s in SLIDES:
-        sid = s["id"]
-        rel_path = f"slides/slide_{sid}.mp3"
-        txt = f"{s['title_bn']}। {s['highlight_bn']}। {s['text_bn']}"
-        items[rel_path] = {
-            "hash": sha256_text(txt),
-            "scope": "slides",
-            "part": "0",
-            "text": txt,
-            "part1": txt,
-            "part2": "",
-        }
-
-    for q_idx, q_txt in enumerate(MORNING_QUOTES):
-        rel_path = f"quotes/quote_{q_idx}.mp3"
-        items[rel_path] = {
-            "hash": sha256_text(q_txt),
-            "scope": "quotes",
-            "part": "0",
-            "text": q_txt,
-            "part1": q_txt,
-            "part2": "",
-        }
-
-    for d in DAYS_21:
-        day_num = int(d["day"])
-        part_num = int(d.get("part", 1))
-
-        day_rel = f"days/day_{day_num}.mp3"
-        day_txt = d.get("voice_script_bn") or f"সুপ্রভাত মা! আজকের বিষয়— {d['title_bn']}। {d['summary_bn']}"
-        items[day_rel] = {
-            "hash": sha256_text(day_txt),
-            "scope": "days",
-            "part": str(part_num),
-            "text": day_txt,
-            "part1": day_txt,
-            "part2": "",
-        }
-
-        for idx, ag in enumerate(d["agendas"]):
-            ag_rel = f"games/day_{day_num}_ag_{idx}.mp3"
-            part1_bn = f"{ag['title_bn']}। {ag['detail_bn']}"
-            if ag.get("followup_prompt_bn"):
-                if "🎵" in ag.get("category", ""):
-                    follow_bn = f" আর গানটা শোনা হয়ে গেলে এর মানে জানতে বলো: {ag['followup_prompt_bn']}"
-                else:
-                    follow_bn = f" আর উত্তরের পর দ্বিতীয় কথায় বলো: {ag['followup_prompt_bn']}"
-            else:
-                follow_bn = ""
-            part2_bn = f"এবার ফোনে জেমিনি খুলে মাইক ছুঁয়ে মুখে বলো: {ag['prompt_bn']}{follow_bn}"
-            full_txt = f"{part1_bn} {part2_bn}"
-            items[ag_rel] = {
-                "hash": sha256_text(full_txt),
-                "scope": "games",
-                "part": str(part_num),
-                "text": full_txt,
-                "part1": part1_bn,
-                "part2": part2_bn,
-            }
-
-    return items
+    return _collect_jhalak_audio_items()
 
 
 def load_manifest(persona_id: str = DEFAULT_PERSONA_ID) -> dict[str, str]:
@@ -1081,7 +939,7 @@ def build_one(rel_path: str, info: dict[str, str], aud_root: Path) -> tuple[str,
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Explicit-only incremental Gemini Aoede voice refresher.")
-    parser.add_argument("--persona", default=DEFAULT_PERSONA_ID, choices=("kalyani", "anondo", "jhalak", "zorba"), help="Target persona voice set.")
+    parser.add_argument("--persona", default=DEFAULT_PERSONA_ID, choices=("jhalak", "zorba"), help="Target persona voice set.")
     parser.add_argument("--init-manifest", action="store_true", help="Snapshot current text hashes for existing MP3s.")
     parser.add_argument("--status", action="store_true", help="Check which audio files are stale/missing without regenerating.")
     parser.add_argument("--confirm", action="store_true", help="Explicit confirmation from Koushik to regenerate stale/missing voices.")
