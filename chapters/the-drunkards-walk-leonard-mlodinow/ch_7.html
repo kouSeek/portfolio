@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0F172A" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Ch 7 • The Drunkard&#x27;s Walk: How Randomness Rules Our Lives 📚</title>
+  <link id="pageFavicon" data-emoji="📚" data-png-b64="data:image/png;base64,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" data-https-png="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.png?v=1" data-https-ico="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.ico?v=1" rel="icon" type="image/png" sizes="64x64" href="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.png?v=1" />
+  <link rel="shortcut icon" type="image/x-icon" href="https://raw.githubusercontent.com/kouSeek/portfolio/kalyani-reels/assets/icons/favicon-books.ico?v=1" />
+  <link rel="apple-touch-icon" sizes="64x64" href="data:image/png;base64,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" />
+  <link rel="manifest" href="../../books-manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --surface: #FFFFFF;
+      --surface-subtle: #F1F5F9;
+      --border: #E2E8F0;
+      --ink: #0F172A;
+      --ink-muted: #64748B;
+      --accent: #4F46E5;
+      --accent-light: #EEF2FF;
+      --emerald: #10B981;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    body.dark-mode {
+      --bg: #0F172A;
+      --surface: #1E293B;
+      --surface-subtle: #334155;
+      --border: #334155;
+      --ink: #F8FAFC;
+      --ink-muted: #94A3B8;
+      --accent: #818CF8;
+      --accent-light: rgba(99, 102, 241, 0.15);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: calc(var(--safe-top) + 56px);
+      padding-bottom: calc(var(--safe-bottom) + 36px);
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    body.has-active-player {
+      padding-bottom: calc(var(--safe-bottom) + 110px);
+    }
+    /* Topbar */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--safe-top) + 56px);
+      padding-top: var(--safe-top);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 12px;
+      padding-right: 12px;
+      z-index: 50;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: var(--surface-subtle);
+    }
+    .top-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 55%;
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-icon {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 5px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Main Container */
+    .reader-container {
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 18px;
+    }
+
+    /* Chapter Header Banner */
+    .chapter-hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    .hero-book-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .hero-chapter-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 12px;
+    }
+    .hero-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .meta-chip {
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--surface-subtle);
+      color: var(--ink-muted);
+      border: 1px solid var(--border);
+    }
+    .meta-chip.primary {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+    .meta-chip.effort {
+      color: #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+    .meta-chip.voice {
+      background: #ECFDF5;
+      color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .hero-distribution-bar {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      background: var(--surface-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .hero-dist-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .hero-dist-info strong {
+      color: var(--ink);
+    }
+    .book-toc-vol-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .book-toc-vol-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .book-toc-vol-bar-fill.adhd {
+      background: #10B981;
+    }
+    .book-toc-vol-bar-fill.author {
+      background: #6366F1;
+    }
+    .hero-curation-pill {
+      font-size: 0.78rem;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .hero-brief {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--ink);
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    /* Top Play Button Card */
+    .hero-listen-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--accent-light);
+      border: 1px solid rgba(79, 70, 229, 0.2);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-top: 14px;
+    }
+    .btn-top-listen {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      background: var(--accent);
+      color: #FFFFFF;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+      transition: all 0.15s ease;
+    }
+    .btn-top-listen:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Reading Typography */
+    .prose-body {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1.12rem;
+      line-height: 1.85;
+      color: var(--ink);
+    }
+    .prose-body h1, .prose-body h2, .prose-body h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      margin-top: 28px;
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+    .prose-body p {
+      margin-bottom: 18px;
+    }
+    .prose-body blockquote {
+      border-left: 3.5px solid var(--accent);
+      margin: 18px 0;
+      padding: 10px 18px;
+      color: var(--ink-muted);
+      background: var(--surface-subtle);
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+
+    /* Sentence Chunking & Karaoke Highlighting */
+    .k-chunk {
+      display: inline;
+      border-radius: 6px;
+      transition: background-color 0.18s ease;
+    }
+    .k-chunk.active-chunk {
+      background-color: rgba(99, 102, 241, 0.08);
+      border-radius: 6px;
+    }
+    body.dark-mode .k-chunk.active-chunk {
+      background-color: rgba(99, 102, 241, 0.18);
+    }
+    .k-word {
+      display: inline;
+      border-radius: 4px;
+      padding: 0 2px;
+      transition: background-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+      cursor: pointer;
+    }
+    .k-word:hover {
+      background-color: rgba(99, 102, 241, 0.15);
+    }
+    .k-word.active-word {
+      background-color: #FEF08A !important;
+      color: #0F172A !important;
+      font-weight: 700;
+      border-radius: 4px;
+      box-shadow: 0 0 0 2px #FEF08A, 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+    body.dark-mode .k-word.active-word {
+      background-color: #6366F1 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 0 0 2px #6366F1, 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Chapter Footer Navigation */
+    .nav-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .nav-footer a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .nav-footer a.primary {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+
+    /* Sticky Bottom Player Bar (only shown when audio is playing/active) */
+    .sticky-player {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1.5px solid var(--border);
+      padding: 10px 16px calc(var(--safe-bottom) + 10px);
+      z-index: 60;
+      box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    body.has-active-player .sticky-player {
+      display: flex;
+    }
+    .player-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .player-time {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink-muted);
+      min-width: 38px;
+      font-variant-numeric: tabular-nums;
+    }
+    .player-time.right {
+      text-align: right;
+    }
+    .player-slider {
+      flex: 1;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--border);
+      border-radius: 999px;
+      outline: none;
+    }
+    .player-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+    .player-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .player-info {
+      flex: 1;
+      min-width: 0;
+      margin-right: 12px;
+    }
+    .player-info-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .player-info-sub {
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .player-btns {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-play-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #FFFFFF;
+      border: none;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+    }
+    .btn-skip {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* Toast */
+    .toast-msg {
+      position: fixed;
+      top: calc(var(--safe-top) + 60px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.92);
+      color: #FFFFFF;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 100;
+    }
+    .toast-msg.active {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back-btn" id="navBackBtn" href="../../books.html#book=the-drunkards-walk-leonard-mlodinow">← Library</a>
+    <div class="top-title">The Drunkard&#x27;s Walk: How Randomness Rules Our Lives</div>
+    <div class="top-actions">
+      <button class="btn-icon" id="btnFontSmaller">A-</button>
+      <button class="btn-icon" id="btnFontLarger">A+</button>
+      <button class="btn-icon" id="btnToggleTheme">🎨</button>
+    </div>
+  </header>
+
+  <main class="reader-container">
+    <article class="chapter-hero">
+      <div class="hero-book-title">The Drunkard&#x27;s Walk: How Randomness Rules Our Lives</div>
+      <div class="hero-book-desc" style="font-size: 0.86rem; color: var(--ink-muted); line-height: 1.5; margin: 6px 0 10px; padding-left: 10px; border-left: 3px solid var(--accent);">Starts with the coin-toss fallacy and Monty Hall problem, jumping straight to Jacob Bernoulli&#x27;s 20-year proof of the Law of Large Numbers and Gauss&#x27;s cosmic funnel, skipping basic arithmetic filler.</div>
+      <h1 class="hero-chapter-title">Chapter 7 · Measurement and the Law of Errors</h1>
+      <div class="hero-meta-row">
+        <span class="meta-chip primary">📖 Full Book Chapter (Ch 7 of 10)</span>
+        <span class="meta-chip">📄 Pages 163-190 (28p · 0.0% vol)</span>
+        <span class="meta-chip effort">⏱️ ~28m effort (28 min)</span>
+        
+      </div>
+
+      <div class="hero-distribution-bar">
+        <div class="hero-dist-info">
+          <span>Volume Share: <strong>28 pages (0.0% of book)</strong></span>
+          <span>Full Book: <strong>272 pages (7h 30m)</strong></span>
+        </div>
+        <div class="book-toc-vol-bar-track">
+          <div class="book-toc-vol-bar-fill author" style="width: 8%;"></div>
+        </div>
+      </div>
+      
+      <div class="hero-curation-pill" style="color:var(--accent);background:var(--accent-light);border-color:rgba(79,70,229,0.25);">🏛️ Author Chapter Structure: 10 Illuminating Chapters: Randomness, Law of Large Numbers, False Positives, Bell Curve &amp; Order in Chaos · 10 Chapters</div>
+
+      <div class="hero-brief"><strong>Core Takeaway:</strong> The discovery of experimental error; Carl Friedrich Gauss, Pierre-Simon Laplace, and the normal distribution (the Bell Curve); why random independent errors naturally aggregate into a symmetric bell shape; calculating standard deviation and confidence intervals.</div>
+
+      <details style="margin-top: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-subtle); overflow: hidden;">
+        <summary style="padding: 10px 14px; font-size: 0.85rem; font-weight: 700; cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between;">
+          <span>📑 Chapters List &amp; Book Details (10)</span>
+          <span style="font-size: 0.78rem; color: var(--ink-muted);">Tap to expand ▼</span>
+        </summary>
+        <div style="padding: 10px 12px; background: var(--surface); border-top: 1px solid var(--border); max-height: 360px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">
+          <div style="padding:8px 10px;margin-bottom:8px;background:var(--surface-subtle);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.82rem;color:var(--ink-muted);line-height:1.45;"><strong>📖 About The Drunkard&#x27;s Walk: How Randomness Rules Our Lives:</strong> Starts with the coin-toss fallacy and Monty Hall problem, jumping straight to Jacob Bernoulli&#x27;s 20-year proof of the Law of Large Numbers and Gauss&#x27;s cosmic funnel, skipping basic arithmetic filler.</div><div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:transparent;border-radius:6px;"><div style="font-weight:700;font-size:0.88rem;line-height:1.35;">Ch 1 · Chapter 1 · Peering Through the Eyepiece of Randomness</div><div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.42;">The illusion of order in human events: the Spanish national lottery winner who picked 48 because &#x27;7 times 7 is 48&#x27;; Hollywood studio executives greenlighting blockbusters by pure chance; the myth of the &#x27;hot hand&#x27; in baseball; why our brains construct neat, retrospective causal stories for random variance.</div><div class="book-toc-vol-bar-track" style="height:4px;"><div class="book-toc-vol-bar-fill author" style="width:8%;"></div></div><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:2px;"><div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.74rem;color:var(--ink-muted);"><span class="meta-chip" style="padding:2px 7px;font-size:0.72rem;">p. 1-24</span><span class="meta-chip primary" style="padding:2px 7px;font-size:0.72rem;">1p (0.0%)</span><span class="meta-chip effort" style="padding:2px 7px;font-size:0.72rem;">⏱️ 22m</span></div><a href="ch_1.html" style="text-decoration:none;padding:4px 11px;border-radius:999px;font-size:0.75rem;font-weight:700;background:var(--accent);color:#FFFFFF;">Absorb</a></div></div><div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:transparent;border-radius:6px;"><div style="font-weight:700;font-size:0.88rem;line-height:1.35;">Ch 2 · Chapter 2 · The Laws of Truths and Half-Truths</div><div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.42;">The fundamental laws of probability and why common sense struggles with them: Roman law&#x27;s fatal error of adding half-proofs; the multiplication rule for independent events; conditional probabilities; Kahneman and Tversky&#x27;s famous &#x27;Linda the bank teller&#x27; experiment and the conjunction fallacy.</div><div class="book-toc-vol-bar-track" style="height:4px;"><div class="book-toc-vol-bar-fill author" style="width:8%;"></div></div><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:2px;"><div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.74rem;color:var(--ink-muted);"><span class="meta-chip" style="padding:2px 7px;font-size:0.72rem;">p. 25-50</span><span class="meta-chip primary" style="padding:2px 7px;font-size:0.72rem;">1p (0.0%)</span><span class="meta-chip effort" style="padding:2px 7px;font-size:0.72rem;">⏱️ 25m</span></div><a href="ch_2.html" style="text-decoration:none;padding:4px 11px;border-radius:999px;font-size:0.75rem;font-weight:700;background:var(--accent);color:#FFFFFF;">Absorb</a></div></div><div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:transparent;border-radius:6px;"><div style="font-weight:700;font-size:0.88rem;line-height:1.35;">Ch 3 · Chapter 3 · Finding Your Way Through a Space of Possibilities</div><div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.42;">Combinatorics, sample spaces, and counting: Girolamo Cardano&#x27;s gambling calculations in Renaissance Milan; Galileo Galilei resolving the grand duke&#x27;s dice puzzle (why 10 is rolled more often than 9 on three dice); the infamous Monty Hall three-door paradox and why Marilyn vos Savant was right.</div><div class="book-toc-vol-bar-track" style="height:4px;"><div class="book-toc-vol-bar-fill author" style="width:8%;"></div></div><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:2px;"><div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.74rem;color:var(--ink-muted);"><span class="meta-chip" style="padding:2px 7px;font-size:0.72rem;">p. 51-78</span><span class="meta-chip primary" style="padding:2px 7px;font-size:0.72rem;">1p (0.0%)</span><span class="meta-chip effort" style="padding:2px 7px;font-size:0.72rem;">⏱️ 25m</span></div><a href="ch_3.html" style="text-decoration:none;padding:4px 11px;border-radius:999px;font-size:0.75rem;font-weight:700;background:var(--accent);color:#FFFFFF;">Absorb</a></div></div><div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:transparent;border-radius:6px;"><div style="font-weight:700;font-size:0.88rem;line-height:1.35;">Ch 4 · Chapter 4 · Tracking the Paths to Success</div><div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.42;">Blaise Pascal and Pierre de Fermat&#x27;s historic 1654 letters resolving the &#x27;Problem of Points&#x27;; Pascal&#x27;s Triangle; binomial coefficients; calculating the true odds of winning streaks, tournament brackets, and business venture portfolios.</div><div class="book-toc-vol-bar-track" style="height:4px;"><div class="book-toc-vol-bar-fill author" style="width:8%;"></div></div><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:2px;"><div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.74rem;color:var(--ink-muted);"><span class="meta-chip" style="padding:2px 7px;font-size:0.72rem;">p. 79-106</span><span class="meta-chip primary" style="padding:2px 7px;font-size:0.72rem;">1p (0.0%)</span><span class="meta-chip effort" style="padding:2px 7px;font-size:0.72rem;">⏱️ 25m</span></div><a href="ch_4.html" style="text-decoration:none;padding:4px 11px;border-radius:999px;font-size:0.75rem;font-weight:700;background:var(--accent);color:#FFFFFF;">Absorb</a></div></div><div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:transparent;border-radius:6px;"><div style="font-weight:700;font-size:0.88rem;line-height:1.35;">Ch 5 · Chapter 5 · The Dueling Laws of Large and Small Numbers</div><div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.42;">Jacob Bernoulli&#x27;s 20-year obsession with proving the Law of Large Numbers; the difference between the true Law of Large Numbers and the cognitive trap of the &#x27;Law of Small Numbers&#x27;; why short-term samples deceive startup investors, clinical trials, and portfolio managers.</div><div class="book-toc-vol-bar-track" style="height:4px;"><div class="book-toc-vol-bar-fill author" style="width:8%;"></div></div><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:2px;"><div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.74rem;color:var(--ink-muted);"><span class="meta-chip" style="padding:2px 7px;font-size:0.72rem;">p. 107-134</span><span class="meta-chip primary" style="padding:2px 7px;font-size:0.72rem;">1p (0.0%)</span><span class="meta-chip effort" style="padding:2px 7px;font-size:0.72rem;">⏱️ 28m</span></div><a href="ch_5.html" style="text-decoration:none;padding:4px 11px;border-radius:999px;font-size:0.75rem;font-weight:700;background:var(--accent);color:#FFFFFF;">Absorb</a></div></div><div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:transparent;border-radius:6px;"><div style="font-weight:700;font-size:0.88rem;line-height:1.35;">Ch 6 · Chapter 6 · False Positives and Positive Fallacies</div><div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.42;">Reverend Thomas Bayes and inverse probability; calculating conditional probability with Bayes&#x27; theorem; why a 99% accurate medical screening test can still yield an 80%+ false positive rate; why DNA evidence in courtrooms is routinely misunderstood by juries.</div><div class="book-toc-vol-bar-track" style="height:4px;"><div class="book-toc-vol-bar-fill author" style="width:8%;"></div></div><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:2px;"><div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.74rem;color:var(--ink-muted);"><span class="meta-chip" style="padding:2px 7px;font-size:0.72rem;">p. 135-162</span><span class="meta-chip primary" style="padding:2px 7px;font-size:0.72rem;">1p (0.0%)</span><span class="meta-chip effort" style="padding:2px 7px;font-size:0.72rem;">⏱️ 28m</span></div><a href="ch_6.html" style="text-decoration:none;padding:4px 11px;border-radius:999px;font-size:0.75rem;font-weight:700;background:var(--accent);color:#FFFFFF;">Absorb</a></div></div><div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:var(--accent-light);border-radius:6px;"><div style="font-weight:700;font-size:0.88rem;line-height:1.35;">▶ Ch 7 · Chapter 7 · Measurement and the Law of Errors</div><div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.42;">The discovery of experimental error; Carl Friedrich Gauss, Pierre-Simon Laplace, and the normal distribution (the Bell Curve); why random independent errors naturally aggregate into a symmetric bell shape; calculating standard deviation and confidence intervals.</div><div class="book-toc-vol-bar-track" style="height:4px;"><div class="book-toc-vol-bar-fill author" style="width:8%;"></div></div><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:2px;"><div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.74rem;color:var(--ink-muted);"><span class="meta-chip" style="padding:2px 7px;font-size:0.72rem;">p. 163-190</span><span class="meta-chip primary" style="padding:2px 7px;font-size:0.72rem;">1p (0.0%)</span><span class="meta-chip effort" style="padding:2px 7px;font-size:0.72rem;">⏱️ 28m</span></div><a href="ch_7.html" style="text-decoration:none;padding:4px 11px;border-radius:999px;font-size:0.75rem;font-weight:700;background:var(--accent);color:#FFFFFF;">Absorb</a></div></div><div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:transparent;border-radius:6px;"><div style="font-weight:700;font-size:0.88rem;line-height:1.35;">Ch 8 · Chapter 8 · The Order in Chaos</div><div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.42;">Adolphe Quetelet and &#x27;l&#x27;homme moyen&#x27; (the average man); Francis Galton and the invention of the quincunx (the Galton Board); the Central Limit Theorem; how chaotic microscopic collisions produce predictable macroscopic order in physics, economics, and biology.</div><div class="book-toc-vol-bar-track" style="height:4px;"><div class="book-toc-vol-bar-fill author" style="width:8%;"></div></div><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:2px;"><div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.74rem;color:var(--ink-muted);"><span class="meta-chip" style="padding:2px 7px;font-size:0.72rem;">p. 191-218</span><span class="meta-chip primary" style="padding:2px 7px;font-size:0.72rem;">1p (0.0%)</span><span class="meta-chip effort" style="padding:2px 7px;font-size:0.72rem;">⏱️ 28m</span></div><a href="ch_8.html" style="text-decoration:none;padding:4px 11px;border-radius:999px;font-size:0.75rem;font-weight:700;background:var(--accent);color:#FFFFFF;">Absorb</a></div></div><div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:transparent;border-radius:6px;"><div style="font-weight:700;font-size:0.88rem;line-height:1.35;">Ch 9 · Chapter 9 · Illusions of Patterns and Patterns of Illusion</div><div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.42;">Regression to the mean (Galton&#x27;s discovery of why tall parents have shorter children); why flight instructors mistakenly believed criticism works better than praise; streak shooting and the &#x27;hot hand&#x27; myth in the NBA; why success is rarely linear.</div><div class="book-toc-vol-bar-track" style="height:4px;"><div class="book-toc-vol-bar-fill author" style="width:8%;"></div></div><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:2px;"><div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.74rem;color:var(--ink-muted);"><span class="meta-chip" style="padding:2px 7px;font-size:0.72rem;">p. 219-246</span><span class="meta-chip primary" style="padding:2px 7px;font-size:0.72rem;">1p (0.0%)</span><span class="meta-chip effort" style="padding:2px 7px;font-size:0.72rem;">⏱️ 28m</span></div><a href="ch_9.html" style="text-decoration:none;padding:4px 11px;border-radius:999px;font-size:0.75rem;font-weight:700;background:var(--accent);color:#FFFFFF;">Absorb</a></div></div><div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:transparent;border-radius:6px;"><div style="font-weight:700;font-size:0.88rem;line-height:1.35;">Ch 10 · Chapter 10 · The Drunkard&#x27;s Walk: Stepping Into the Future</div><div style="font-size:0.8rem;color:var(--ink-muted);line-height:1.42;">The random walk model (Einstein, Robert Brown, and pollen grains in water); the square-root law of distance traveled ($D pprox \sqrt{N}$); the role of persistence; why extraordinary achievements require taking many swings of the bat; the ultimate philosophy of grace, courage, and perseverance.</div><div class="book-toc-vol-bar-track" style="height:4px;"><div class="book-toc-vol-bar-fill author" style="width:8%;"></div></div><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:2px;"><div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.74rem;color:var(--ink-muted);"><span class="meta-chip" style="padding:2px 7px;font-size:0.72rem;">p. 247-275</span><span class="meta-chip primary" style="padding:2px 7px;font-size:0.72rem;">1p (0.0%)</span><span class="meta-chip effort" style="padding:2px 7px;font-size:0.72rem;">⏱️ 30m</span></div><a href="ch_10.html" style="text-decoration:none;padding:4px 11px;border-radius:999px;font-size:0.75rem;font-weight:700;background:var(--accent);color:#FFFFFF;">Absorb</a></div></div>
+        </div>
+      </details>
+
+      
+      <div style="margin-top: 14px; font-size: 0.85rem; color: var(--ink-muted); background: var(--surface-subtle); padding: 10px 14px; border-radius: 8px;">
+        📖 Distraction-free reading mode. Voice track is in generation queue.
+      </div>
+      
+    </article>
+
+    <section class="prose-body" id="proseBody">
+      <h2 class="chapter-prose-title"><span class="k-chunk" id="kchunk_0" data-chunk-idx="0"><span class="k-word" data-word-idx="0" id="w_0">Chapter</span> <span class="k-word" data-word-idx="1" id="w_1">7:</span> <span class="k-word" data-word-idx="2" id="w_2">Measurement</span> <span class="k-word" data-word-idx="3" id="w_3">and</span> <span class="k-word" data-word-idx="4" id="w_4">the</span> <span class="k-word" data-word-idx="5" id="w_5">Law</span> <span class="k-word" data-word-idx="6" id="w_6">of</span> <span class="k-word" data-word-idx="7" id="w_7">Errors</span></span></h2>
+<h3 class="section-heading"><span class="k-chunk" id="kchunk_1" data-chunk-idx="1"><span class="k-word" data-word-idx="8" id="w_8">The</span> <span class="k-word" data-word-idx="9" id="w_9">Bell</span> <span class="k-word" data-word-idx="10" id="w_10">Curve</span> <span class="k-word" data-word-idx="11" id="w_11">(Gauss</span> <span class="k-word" data-word-idx="12" id="w_12">and</span> <span class="k-word" data-word-idx="13" id="w_13">the</span> <span class="k-word" data-word-idx="14" id="w_14">Lost</span> <span class="k-word" data-word-idx="15" id="w_15">Asteroid</span> <span class="k-word" data-word-idx="16" id="w_16">Ceres)</span></span></h3>
+<p><span class="k-chunk" id="kchunk_2" data-chunk-idx="2"><span class="k-word" data-word-idx="17" id="w_17">In</span> <span class="k-word" data-word-idx="18" id="w_18">1801,</span> <span class="k-word" data-word-idx="19" id="w_19">Italian</span> <span class="k-word" data-word-idx="20" id="w_20">astronomer</span> <span class="k-word" data-word-idx="21" id="w_21">Giuseppe</span> <span class="k-word" data-word-idx="22" id="w_22">Piazzi</span> <span class="k-word" data-word-idx="23" id="w_23">spotted</span> <span class="k-word" data-word-idx="24" id="w_24">a</span> <span class="k-word" data-word-idx="25" id="w_25">tiny</span> <span class="k-word" data-word-idx="26" id="w_26">heavenly</span> <span class="k-word" data-word-idx="27" id="w_27">body—the</span> <span class="k-word" data-word-idx="28" id="w_28">dwarf</span> <span class="k-word" data-word-idx="29" id="w_29">planet</span> <span class="k-word" data-word-idx="30" id="w_30">Ceres—before</span> <span class="k-word" data-word-idx="31" id="w_31">it</span> <span class="k-word" data-word-idx="32" id="w_32">vanished</span> <span class="k-word" data-word-idx="33" id="w_33">into</span> <span class="k-word" data-word-idx="34" id="w_34">the</span> <span class="k-word" data-word-idx="35" id="w_35">glare</span> <span class="k-word" data-word-idx="36" id="w_36">of</span> <span class="k-word" data-word-idx="37" id="w_37">the</span> <span class="k-word" data-word-idx="38" id="w_38">sun.</span></span> <span class="k-chunk" id="kchunk_3" data-chunk-idx="3"><span class="k-word" data-word-idx="39" id="w_39">Astronomers</span> <span class="k-word" data-word-idx="40" id="w_40">across</span> <span class="k-word" data-word-idx="41" id="w_41">Europe</span> <span class="k-word" data-word-idx="42" id="w_42">despaired</span> <span class="k-word" data-word-idx="43" id="w_43">of</span> <span class="k-word" data-word-idx="44" id="w_44">ever</span> <span class="k-word" data-word-idx="45" id="w_45">finding</span> <span class="k-word" data-word-idx="46" id="w_46">it</span> <span class="k-word" data-word-idx="47" id="w_47">again</span> <span class="k-word" data-word-idx="48" id="w_48">based</span> <span class="k-word" data-word-idx="49" id="w_49">on</span> <span class="k-word" data-word-idx="50" id="w_50">just</span> <span class="k-word" data-word-idx="51" id="w_51">40</span> <span class="k-word" data-word-idx="52" id="w_52">days</span> <span class="k-word" data-word-idx="53" id="w_53">of</span> <span class="k-word" data-word-idx="54" id="w_54">scattered,</span> <span class="k-word" data-word-idx="55" id="w_55">conflicting</span> <span class="k-word" data-word-idx="56" id="w_56">observational</span> <span class="k-word" data-word-idx="57" id="w_57">data.</span></span></p>
+<p><span class="k-chunk" id="kchunk_4" data-chunk-idx="4"><span class="k-word" data-word-idx="58" id="w_58">A</span> <span class="k-word" data-word-idx="59" id="w_59">24-year-old</span> <span class="k-word" data-word-idx="60" id="w_60">Carl</span> <span class="k-word" data-word-idx="61" id="w_61">Friedrich</span> <span class="k-word" data-word-idx="62" id="w_62">Gauss</span> <span class="k-word" data-word-idx="63" id="w_63">stepped</span> <span class="k-word" data-word-idx="64" id="w_64">forward.</span> <span class="k-word" data-word-idx="65" id="w_65">Instead</span> <span class="k-word" data-word-idx="66" id="w_66">of</span> <span class="k-word" data-word-idx="67" id="w_67">averaging</span> <span class="k-word" data-word-idx="68" id="w_68">the</span> <span class="k-word" data-word-idx="69" id="w_69">conflicting</span> <span class="k-word" data-word-idx="70" id="w_70">measurements,</span> <span class="k-word" data-word-idx="71" id="w_71">Gauss</span> <span class="k-word" data-word-idx="72" id="w_72">developed</span> <span class="k-word" data-word-idx="73" id="w_73">the</span> <span class="k-word" data-word-idx="74" id="w_74">**Method</span> <span class="k-word" data-word-idx="75" id="w_75">of</span> <span class="k-word" data-word-idx="76" id="w_76">Least</span> <span class="k-word" data-word-idx="77" id="w_77">Squares**</span> <span class="k-word" data-word-idx="78" id="w_78">and</span> <span class="k-word" data-word-idx="79" id="w_79">formalized</span> <span class="k-word" data-word-idx="80" id="w_80">the</span> <span class="k-word" data-word-idx="81" id="w_81">**Normal</span> <span class="k-word" data-word-idx="82" id="w_82">Distribution**</span> <span class="k-word" data-word-idx="83" id="w_83">(the</span> <span class="k-word" data-word-idx="84" id="w_84">Gaussian</span> <span class="k-word" data-word-idx="85" id="w_85">Bell</span> <span class="k-word" data-word-idx="86" id="w_86">Curve):</span></span></p>
+<p><span class="k-chunk" id="kchunk_5" data-chunk-idx="5"><span class="k-word" data-word-idx="87" id="w_87">$$f(x)</span> <span class="k-word" data-word-idx="88" id="w_88">=</span></span></p>
+<p><span class="k-chunk" id="kchunk_6" data-chunk-idx="6"><span class="k-word" data-word-idx="89" id="w_89">rac{1}{\sigma</span> <span class="k-word" data-word-idx="90" id="w_90">\sqrt{2\pi}}</span> <span class="k-word" data-word-idx="91" id="w_91">e^{-</span></span></p>
+<p><span class="k-chunk" id="kchunk_7" data-chunk-idx="7"><span class="k-word" data-word-idx="92" id="w_92">rac{(x-\mu)^2}{2\sigma^2}}$$</span></span></p>
+<p><span class="k-chunk" id="kchunk_8" data-chunk-idx="8"><span class="k-word" data-word-idx="93" id="w_93">Gauss</span> <span class="k-word" data-word-idx="94" id="w_94">realized</span> <span class="k-word" data-word-idx="95" id="w_95">that</span> <span class="k-word" data-word-idx="96" id="w_96">every</span> <span class="k-word" data-word-idx="97" id="w_97">measurement</span> <span class="k-word" data-word-idx="98" id="w_98">contains</span> <span class="k-word" data-word-idx="99" id="w_99">random</span> <span class="k-word" data-word-idx="100" id="w_100">physical</span> <span class="k-word" data-word-idx="101" id="w_101">disturbances</span> <span class="k-word" data-word-idx="102" id="w_102">(atmospheric</span> <span class="k-word" data-word-idx="103" id="w_103">turbulence,</span> <span class="k-word" data-word-idx="104" id="w_104">mechanical</span> <span class="k-word" data-word-idx="105" id="w_105">gear</span> <span class="k-word" data-word-idx="106" id="w_106">backlash,</span> <span class="k-word" data-word-idx="107" id="w_107">human</span> <span class="k-word" data-word-idx="108" id="w_108">reaction</span> <span class="k-word" data-word-idx="109" id="w_109">time).</span> <span class="k-word" data-word-idx="110" id="w_110">If</span> <span class="k-word" data-word-idx="111" id="w_111">these</span> <span class="k-word" data-word-idx="112" id="w_112">individual</span> <span class="k-word" data-word-idx="113" id="w_113">disturbances</span> <span class="k-word" data-word-idx="114" id="w_114">are</span> <span class="k-word" data-word-idx="115" id="w_115">independent,</span> <span class="k-word" data-word-idx="116" id="w_116">positive</span> <span class="k-word" data-word-idx="117" id="w_117">and</span> <span class="k-word" data-word-idx="118" id="w_118">negative</span> <span class="k-word" data-word-idx="119" id="w_119">errors</span> <span class="k-word" data-word-idx="120" id="w_120">cancel</span> <span class="k-word" data-word-idx="121" id="w_121">each</span> <span class="k-word" data-word-idx="122" id="w_122">other</span> <span class="k-word" data-word-idx="123" id="w_123">out,</span> <span class="k-word" data-word-idx="124" id="w_124">while</span> <span class="k-word" data-word-idx="125" id="w_125">small</span> <span class="k-word" data-word-idx="126" id="w_126">errors</span> <span class="k-word" data-word-idx="127" id="w_127">occur</span> <span class="k-word" data-word-idx="128" id="w_128">frequently</span> <span class="k-word" data-word-idx="129" id="w_129">and</span> <span class="k-word" data-word-idx="130" id="w_130">huge</span> <span class="k-word" data-word-idx="131" id="w_131">errors</span> <span class="k-word" data-word-idx="132" id="w_132">occur</span> <span class="k-word" data-word-idx="133" id="w_133">rarely.</span></span> <span class="k-chunk" id="kchunk_9" data-chunk-idx="9"><span class="k-word" data-word-idx="134" id="w_134">Using</span> <span class="k-word" data-word-idx="135" id="w_135">this</span> <span class="k-word" data-word-idx="136" id="w_136">curve,</span> <span class="k-word" data-word-idx="137" id="w_137">Gauss</span> <span class="k-word" data-word-idx="138" id="w_138">calculated</span> <span class="k-word" data-word-idx="139" id="w_139">the</span> <span class="k-word" data-word-idx="140" id="w_140">exact</span> <span class="k-word" data-word-idx="141" id="w_141">patch</span> <span class="k-word" data-word-idx="142" id="w_142">of</span> <span class="k-word" data-word-idx="143" id="w_143">sky</span> <span class="k-word" data-word-idx="144" id="w_144">where</span> <span class="k-word" data-word-idx="145" id="w_145">Ceres</span> <span class="k-word" data-word-idx="146" id="w_146">would</span> <span class="k-word" data-word-idx="147" id="w_147">reappear—and</span> <span class="k-word" data-word-idx="148" id="w_148">German</span> <span class="k-word" data-word-idx="149" id="w_149">astronomers</span> <span class="k-word" data-word-idx="150" id="w_150">pointed</span> <span class="k-word" data-word-idx="151" id="w_151">their</span> <span class="k-word" data-word-idx="152" id="w_152">telescopes</span> <span class="k-word" data-word-idx="153" id="w_153">directly</span> <span class="k-word" data-word-idx="154" id="w_154">to</span> <span class="k-word" data-word-idx="155" id="w_155">the</span> <span class="k-word" data-word-idx="156" id="w_156">coordinates</span> <span class="k-word" data-word-idx="157" id="w_157">and</span> <span class="k-word" data-word-idx="158" id="w_158">rediscovered</span> <span class="k-word" data-word-idx="159" id="w_159">Ceres</span> <span class="k-word" data-word-idx="160" id="w_160">on</span> <span class="k-word" data-word-idx="161" id="w_161">New</span> <span class="k-word" data-word-idx="162" id="w_162">Year&#x27;s</span> <span class="k-word" data-word-idx="163" id="w_163">Eve,</span> <span class="k-word" data-word-idx="164" id="w_164">1801!</span></span></p>
+    </section>
+
+    <nav class="nav-footer">
+      <a href="ch_6.html">← Previous Chapter</a>
+      <a class="primary" href="../../books.html#book=the-drunkards-walk-leonard-mlodinow">📚 All Books</a>
+      <a href="ch_8.html">Next Chapter →</a>
+    </nav>
+  </main>
+
+  <!-- Sticky Player Bar -->
+  <div class="sticky-player" id="stickyPlayer">
+    <div class="player-progress-wrap">
+      <span class="player-time" id="playerCurrentTime">0:00</span>
+      <input type="range" class="player-slider" id="playerScrubber" min="0" max="100" value="0" />
+      <span class="player-time right" id="playerTotalTime">0:00</span>
+    </div>
+    <div class="player-controls">
+      <div class="player-info">
+        <div class="player-info-title">Chapter 7 · Measurement and the Law of Errors</div>
+        <div class="player-info-sub">The Drunkard&#x27;s Walk: How Randomness Rules Our Lives · Ch 7</div>
+      </div>
+      <div class="player-btns">
+        <button class="btn-skip" id="btnRewind15" title="Rewind 15s">⏪ 15s</button>
+        <button class="btn-play-circle" id="btnBottomPlay" onclick="toggleAudioPlay()">▶</button>
+        <button class="btn-skip" id="btnForward15" title="Forward 15s">⏩ 15s</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-msg" id="toastMsg"></div>
+  <audio id="playerAudio" preload="auto" playsinline webkit-playsinline></audio>
+
+  <script>
+    (function hydratePageFavicon() {
+      function apply() {
+        try {
+          if (!document.head || typeof document.createElement !== "function") return;
+          const el = document.getElementById("pageFavicon");
+          if (!el || !el.getAttribute) return;
+          const emoji = el.getAttribute("data-emoji") || "";
+          const b64 = el.getAttribute("data-png-b64") || "";
+          const httpsPng = el.getAttribute("data-https-png") || b64;
+          const httpsIco = el.getAttribute("data-https-ico") || httpsPng;
+          const useHttps = (typeof location !== "undefined" && /^https?:$/i.test(location.protocol) && (typeof navigator === "undefined" || navigator.onLine !== false));
+          const pngHref = useHttps ? httpsPng : (b64 || httpsPng);
+          const icoHref = useHttps ? httpsIco : (b64 || httpsIco);
+          document.querySelectorAll('link[rel*="icon"]').forEach(n => { if (n.parentNode) n.parentNode.removeChild(n); });
+          const l1 = document.createElement("link");
+          l1.id = "pageFavicon";
+          l1.setAttribute("data-emoji", emoji);
+          l1.setAttribute("data-png-b64", b64);
+          l1.setAttribute("data-https-png", httpsPng);
+          l1.setAttribute("data-https-ico", httpsIco);
+          l1.rel = "icon"; l1.type = "image/png"; l1.sizes = "64x64"; l1.href = pngHref;
+          document.head.appendChild(l1);
+          const l2 = document.createElement("link");
+          l2.rel = "shortcut icon"; l2.type = useHttps ? "image/x-icon" : "image/png"; l2.href = icoHref;
+          document.head.appendChild(l2);
+          const l3 = document.createElement("link");
+          l3.rel = "apple-touch-icon"; l3.sizes = "64x64"; l3.href = b64 || pngHref;
+          document.head.appendChild(l3);
+        } catch (e) {}
+      }
+      apply();
+      if (typeof setTimeout === "function") setTimeout(apply, 90);
+    })();
+
+    const AUDIO_URL = "";
+    const AUDIO_DURATION = 0.0;
+    const AUDIO_SILENCES = [];
+    const CACHE_NAME = "kortex-books-v1";
+    const WORDS_DATA = [{"c": 0, "w": 7, "s": 0}, {"c": 7, "w": 5, "s": 0}, {"c": 12, "w": 11, "s": 0}, {"c": 23, "w": 3, "s": 0}, {"c": 26, "w": 3, "s": 0}, {"c": 29, "w": 3, "s": 0}, {"c": 32, "w": 3, "s": 0}, {"c": 35, "w": 10, "s": 1}, {"c": 45, "w": 3, "s": 0}, {"c": 48, "w": 4, "s": 0}, {"c": 52, "w": 5, "s": 0}, {"c": 57, "w": 5, "s": 0}, {"c": 62, "w": 3, "s": 0}, {"c": 65, "w": 3, "s": 0}, {"c": 68, "w": 4, "s": 0}, {"c": 72, "w": 8, "s": 0}, {"c": 80, "w": 9, "s": 1}, {"c": 89, "w": 3, "s": 0}, {"c": 92, "w": 7, "s": 0}, {"c": 99, "w": 7, "s": 0}, {"c": 106, "w": 10, "s": 0}, {"c": 116, "w": 8, "s": 0}, {"c": 124, "w": 6, "s": 0}, {"c": 130, "w": 7, "s": 0}, {"c": 137, "w": 3, "s": 0}, {"c": 140, "w": 4, "s": 0}, {"c": 144, "w": 8, "s": 0}, {"c": 152, "w": 8, "s": 0}, {"c": 160, "w": 5, "s": 0}, {"c": 165, "w": 6, "s": 0}, {"c": 171, "w": 12, "s": 0}, {"c": 183, "w": 3, "s": 0}, {"c": 186, "w": 8, "s": 0}, {"c": 194, "w": 4, "s": 0}, {"c": 198, "w": 3, "s": 0}, {"c": 201, "w": 5, "s": 0}, {"c": 206, "w": 3, "s": 0}, {"c": 209, "w": 3, "s": 0}, {"c": 212, "w": 8, "s": 1}, {"c": 220, "w": 11, "s": 0}, {"c": 231, "w": 6, "s": 0}, {"c": 237, "w": 6, "s": 0}, {"c": 243, "w": 9, "s": 0}, {"c": 252, "w": 3, "s": 0}, {"c": 255, "w": 4, "s": 0}, {"c": 259, "w": 7, "s": 0}, {"c": 266, "w": 3, "s": 0}, {"c": 269, "w": 5, "s": 0}, {"c": 274, "w": 5, "s": 0}, {"c": 279, "w": 3, "s": 0}, {"c": 282, "w": 4, "s": 0}, {"c": 286, "w": 3, "s": 0}, {"c": 289, "w": 4, "s": 0}, {"c": 293, "w": 3, "s": 0}, {"c": 296, "w": 12, "s": 0}, {"c": 308, "w": 11, "s": 0}, {"c": 319, "w": 13, "s": 0}, {"c": 332, "w": 9, "s": 1}, {"c": 341, "w": 3, "s": 0}, {"c": 344, "w": 11, "s": 0}, {"c": 355, "w": 4, "s": 0}, {"c": 359, "w": 9, "s": 0}, {"c": 368, "w": 5, "s": 0}, {"c": 373, "w": 7, "s": 0}, {"c": 380, "w": 12, "s": 1}, {"c": 392, "w": 7, "s": 0}, {"c": 399, "w": 3, "s": 0}, {"c": 402, "w": 9, "s": 0}, {"c": 411, "w": 3, "s": 0}, {"c": 414, "w": 11, "s": 0}, {"c": 425, "w": 15, "s": 0}, {"c": 440, "w": 5, "s": 0}, {"c": 445, "w": 9, "s": 0}, {"c": 454, "w": 3, "s": 0}, {"c": 457, "w": 6, "s": 0}, {"c": 463, "w": 3, "s": 0}, {"c": 466, "w": 5, "s": 0}, {"c": 471, "w": 7, "s": 0}, {"c": 478, "w": 3, "s": 0}, {"c": 481, "w": 10, "s": 0}, {"c": 491, "w": 3, "s": 0}, {"c": 494, "w": 6, "s": 0}, {"c": 500, "w": 12, "s": 0}, {"c": 512, "w": 3, "s": 0}, {"c": 515, "w": 8, "s": 0}, {"c": 523, "w": 4, "s": 0}, {"c": 527, "w": 10, "s": 1}, {"c": 537, "w": 4, "s": 0}, {"c": 541, "w": 7, "s": 1}, {"c": 548, "w": 13, "s": 0}, {"c": 561, "w": 12, "s": 0}, {"c": 573, "w": 8, "s": 1}, {"c": 581, "w": 30, "s": 1}, {"c": 611, "w": 5, "s": 0}, {"c": 616, "w": 8, "s": 0}, {"c": 624, "w": 4, "s": 0}, {"c": 628, "w": 5, "s": 0}, {"c": 633, "w": 11, "s": 0}, {"c": 644, "w": 8, "s": 0}, {"c": 652, "w": 6, "s": 0}, {"c": 658, "w": 8, "s": 0}, {"c": 666, "w": 12, "s": 0}, {"c": 678, "w": 11, "s": 0}, {"c": 689, "w": 13, "s": 0}, {"c": 702, "w": 10, "s": 0}, {"c": 712, "w": 4, "s": 0}, {"c": 716, "w": 11, "s": 0}, {"c": 727, "w": 5, "s": 0}, {"c": 732, "w": 8, "s": 0}, {"c": 740, "w": 9, "s": 1}, {"c": 749, "w": 3, "s": 0}, {"c": 752, "w": 5, "s": 0}, {"c": 757, "w": 10, "s": 0}, {"c": 767, "w": 12, "s": 0}, {"c": 779, "w": 3, "s": 0}, {"c": 782, "w": 14, "s": 0}, {"c": 796, "w": 8, "s": 0}, {"c": 804, "w": 3, "s": 0}, {"c": 807, "w": 8, "s": 0}, {"c": 815, "w": 6, "s": 0}, {"c": 821, "w": 6, "s": 0}, {"c": 827, "w": 4, "s": 0}, {"c": 831, "w": 5, "s": 0}, {"c": 836, "w": 6, "s": 0}, {"c": 842, "w": 5, "s": 0}, {"c": 847, "w": 5, "s": 0}, {"c": 852, "w": 6, "s": 0}, {"c": 858, "w": 5, "s": 0}, {"c": 863, "w": 10, "s": 0}, {"c": 873, "w": 3, "s": 0}, {"c": 876, "w": 4, "s": 0}, {"c": 880, "w": 6, "s": 0}, {"c": 886, "w": 5, "s": 0}, {"c": 891, "w": 11, "s": 1}, {"c": 902, "w": 5, "s": 0}, {"c": 907, "w": 4, "s": 0}, {"c": 911, "w": 8, "s": 0}, {"c": 919, "w": 5, "s": 0}, {"c": 924, "w": 10, "s": 0}, {"c": 934, "w": 3, "s": 0}, {"c": 937, "w": 5, "s": 0}, {"c": 942, "w": 5, "s": 0}, {"c": 947, "w": 3, "s": 0}, {"c": 950, "w": 3, "s": 0}, {"c": 953, "w": 5, "s": 0}, {"c": 958, "w": 5, "s": 0}, {"c": 963, "w": 5, "s": 0}, {"c": 968, "w": 12, "s": 0}, {"c": 980, "w": 6, "s": 0}, {"c": 986, "w": 11, "s": 0}, {"c": 997, "w": 7, "s": 0}, {"c": 1004, "w": 5, "s": 0}, {"c": 1009, "w": 10, "s": 0}, {"c": 1019, "w": 8, "s": 0}, {"c": 1027, "w": 3, "s": 0}, {"c": 1030, "w": 3, "s": 0}, {"c": 1033, "w": 11, "s": 0}, {"c": 1044, "w": 3, "s": 0}, {"c": 1047, "w": 12, "s": 0}, {"c": 1059, "w": 5, "s": 0}, {"c": 1064, "w": 3, "s": 0}, {"c": 1067, "w": 3, "s": 0}, {"c": 1070, "w": 6, "s": 0}, {"c": 1076, "w": 6, "s": 0}, {"c": 1082, "w": 9, "s": 1}];
+    const CHUNKS_DATA = [{"idx": 0, "w0": 0, "w1": 7, "weight": 45, "cum": 0}, {"idx": 1, "w0": 8, "w1": 16, "weight": 44, "cum": 45}, {"idx": 2, "w0": 17, "w1": 38, "weight": 131, "cum": 89}, {"idx": 3, "w0": 39, "w1": 57, "weight": 121, "cum": 220}, {"idx": 4, "w0": 58, "w1": 86, "weight": 196, "cum": 341}, {"idx": 5, "w0": 87, "w1": 88, "weight": 11, "cum": 537}, {"idx": 6, "w0": 89, "w1": 91, "weight": 33, "cum": 548}, {"idx": 7, "w0": 92, "w1": 92, "weight": 30, "cum": 581}, {"idx": 8, "w0": 93, "w1": 133, "weight": 291, "cum": 611}, {"idx": 9, "w0": 134, "w1": 164, "weight": 189, "cum": 902}];
+    const TIMELINE_DATA = null;
+    const TOTAL_WEIGHT = 1091;
+    let timelineCalibrated = false;
+
+    function buildAcousticWordTimeline(words, chunks, totalWeight, audioMeta) {
+      if (!words || !words.length || !chunks || !chunks.length || totalWeight <= 0) return;
+      const totalDur = (audioMeta && Number(audioMeta.dur) > 0.5)
+        ? Number(audioMeta.dur)
+        : (audioEl && audioEl.duration > 0 ? audioEl.duration : AUDIO_DURATION);
+      if (totalDur <= 0) return;
+
+      const rawSilences = (audioMeta && Array.isArray(audioMeta.silences)) ? audioMeta.silences : (AUDIO_SILENCES || []);
+
+      // 1. Anchor 1-2 sentence chunk boundaries
+      if (Array.isArray(TIMELINE_DATA) && TIMELINE_DATA.length === chunks.length) {
+        for (let i = 0; i < chunks.length; i++) {
+          chunks[i].startSec = Number(TIMELINE_DATA[i].startSec || TIMELINE_DATA[i].start || 0);
+          chunks[i].endSec = Number(TIMELINE_DATA[i].endSec || TIMELINE_DATA[i].end || totalDur);
+        }
+      } else {
+        let lastEnd = 0.0;
+        for (let i = 0; i < chunks.length; i++) {
+          const ch = chunks[i];
+          ch.startSec = lastEnd;
+          if (i === chunks.length - 1) {
+            ch.endSec = totalDur;
+          } else {
+            const nextCum = ch.cum + ch.weight;
+            const targetT = (nextCum / totalWeight) * totalDur;
+
+            let bestSil = null;
+            let minDist = 2.5;
+            for (let s = 0; s < rawSilences.length; s++) {
+              const silT = rawSilences[s][0];
+              if (silT > lastEnd + 0.6 && silT < totalDur - 0.5) {
+                const d = Math.abs(silT - targetT);
+                if (d < minDist) {
+                  minDist = d;
+                  bestSil = silT;
+                }
+              }
+            }
+            const boundary = bestSil !== null ? bestSil : Math.max(lastEnd + 0.6, targetT);
+            ch.endSec = boundary;
+            lastEnd = boundary;
+          }
+        }
+      }
+
+      // 2. Interpolate words strictly inside each 1-2 sentence chunk
+      for (let c = 0; c < chunks.length; c++) {
+        const ch = chunks[c];
+        const spanT = Math.max(0.05, ch.endSec - ch.startSec);
+        const baseC = words[ch.w0].c;
+        const spanW = Math.max(1, (words[ch.w1].c + words[ch.w1].w) - baseC);
+        for (let w = ch.w0; w <= ch.w1; w++) {
+          const fracS = (words[w].c - baseC) / spanW;
+          const fracE = ((words[w].c + words[w].w) - baseC) / spanW;
+          words[w].startSec = ch.startSec + fracS * spanT;
+          words[w].endSec = ch.startSec + fracE * spanT;
+          words[w].chunkIdx = c;
+        }
+      }
+
+      words[0].startSec = 0.0;
+      words[words.length - 1].endSec = totalDur;
+      timelineCalibrated = true;
+    }
+
+    let audioEl = document.getElementById("playerAudio");
+    let activeBlobUrl = null;
+    let audioLoaded = false;
+    let karaokeActive = false;
+    let activeWordIdx = -1;
+    let readerFontSize = 1.12;
+
+    function showToast(msg) {
+      const t = document.getElementById("toastMsg");
+      t.textContent = msg;
+      t.classList.remove("active");
+      void t.offsetWidth;
+      t.classList.add("active");
+      setTimeout(() => t.classList.remove("active"), 2500);
+    }
+
+    function formatSeconds(sec) {
+      if (!sec || isNaN(sec)) return "0:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m}:${s < 10 ? "0" : ""}${s}`;
+    }
+
+    let _screenWakeLock = null;
+    async function requestScreenWakeLock() {
+      try {
+        if ("wakeLock" in navigator && !(_screenWakeLock && !_screenWakeLock.released)) {
+          _screenWakeLock = await navigator.wakeLock.request("screen");
+        }
+      } catch (e) {}
+    }
+
+    function syncPlayButtonUi(isPlaying) {
+      const bBtn = document.getElementById("btnBottomPlay");
+      const tBtn = document.getElementById("btnTopListen");
+      if (bBtn) bBtn.textContent = isPlaying ? "⏸" : "▶";
+      if (tBtn) tBtn.textContent = isPlaying ? "⏸ Pause" : "▶️ Listen";
+      if (isPlaying) {
+        document.body.classList.add("has-active-player");
+        const sp = document.getElementById("stickyPlayer");
+        if (sp) sp.style.display = "flex";
+      }
+    }
+
+    async function toggleAudioPlay() {
+      if (!AUDIO_URL) {
+        showToast("Voice track not yet available for this chapter.");
+        return;
+      }
+
+      if (!audioEl.paused && audioLoaded) {
+        audioEl.pause();
+        return;
+      }
+
+      if (audioLoaded && audioEl.paused && audioEl.src) {
+        try {
+          await audioEl.play();
+          return;
+        } catch (e) {
+          console.warn("Resume failed, reloading src...", e);
+        }
+      }
+
+      showToast("Loading voice track...");
+      let resolvedSrc = null;
+
+      // 1. Try CacheStorage
+      if ("caches" in window) {
+        try {
+          const cache = await caches.open(CACHE_NAME);
+          const cached = await cache.match(AUDIO_URL);
+          if (cached) {
+            const blob = await cached.blob();
+            activeBlobUrl = URL.createObjectURL(blob);
+            resolvedSrc = activeBlobUrl;
+          }
+        } catch (ce) {}
+      }
+
+      // 2. If not in cache, try direct URL
+      if (!resolvedSrc) {
+        resolvedSrc = AUDIO_URL;
+      }
+
+      audioEl.src = resolvedSrc;
+      audioEl.load();
+
+      try {
+        await audioEl.play();
+        audioLoaded = true;
+        karaokeActive = true;
+        requestScreenWakeLock();
+      } catch (err) {
+        console.warn("Direct play failed, trying Blob fetch fallback (iOS Safari / octet-stream workaround)...", err);
+        try {
+          const resp = await fetch(AUDIO_URL, { mode: "cors" });
+          if (resp.ok) {
+            const buf = await resp.arrayBuffer();
+            const audioBlob = new Blob([buf], { type: "audio/mpeg" });
+            activeBlobUrl = URL.createObjectURL(audioBlob);
+            audioEl.src = activeBlobUrl;
+            audioEl.load();
+            await audioEl.play();
+            audioLoaded = true;
+            karaokeActive = true;
+            requestScreenWakeLock();
+
+            // Save to CacheStorage for offline flights
+            if ("caches" in window) {
+              caches.open(CACHE_NAME).then(c => c.put(AUDIO_URL, new Response(audioBlob)));
+            }
+          } else {
+            throw new Error("HTTP " + resp.status);
+          }
+        } catch (blobErr) {
+          console.error("Audio playback error:", blobErr);
+          showToast("⚠️ Could not load audio. Check internet or tap ⚙️ in Library.");
+        }
+      }
+    }
+
+    // Sync Karaoke Sentence Chunk & Word
+    let activeChunkIdx = -1;
+    function syncKaraokeWord() {
+      if (!karaokeActive || !WORDS_DATA.length || TOTAL_WEIGHT <= 0) return;
+      const dur = (audioEl && audioEl.duration > 0) ? audioEl.duration : AUDIO_DURATION;
+      if (!Number.isFinite(dur) || dur <= 0) return;
+      const cur = audioEl.currentTime;
+
+      // 1. Binary search active chunk
+      let cIdx = 0;
+      if (CHUNKS_DATA && CHUNKS_DATA.length && CHUNKS_DATA[0].startSec !== undefined) {
+        let low = 0, high = CHUNKS_DATA.length - 1;
+        while (low <= high) {
+          const mid = (low + high) >> 1;
+          if (CHUNKS_DATA[mid].startSec <= cur) {
+            cIdx = mid;
+            low = mid + 1;
+          } else {
+            high = mid - 1;
+          }
+        }
+      }
+
+      if (cIdx !== activeChunkIdx) {
+        if (activeChunkIdx >= 0) {
+          const prevChunkEl = document.getElementById(`kchunk_${activeChunkIdx}`);
+          if (prevChunkEl) prevChunkEl.classList.remove("active-chunk");
+        }
+        const curChunkEl = document.getElementById(`kchunk_${cIdx}`);
+        if (curChunkEl) {
+          curChunkEl.classList.add("active-chunk");
+          const rect = curChunkEl.getBoundingClientRect();
+          if (rect.top < 80 || rect.bottom > window.innerHeight - 100) {
+            curChunkEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }
+        activeChunkIdx = cIdx;
+      }
+
+      // 2. Binary search active word strictly within active chunk
+      const curChunk = (CHUNKS_DATA && CHUNKS_DATA[cIdx]) ? CHUNKS_DATA[cIdx] : { w0: 0, w1: WORDS_DATA.length - 1 };
+      let foundWordIdx = curChunk.w0;
+      let low = curChunk.w0, high = curChunk.w1;
+      while (low <= high) {
+        const mid = (low + high) >> 1;
+        if (WORDS_DATA[mid].startSec <= cur) {
+          foundWordIdx = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      if (foundWordIdx !== activeWordIdx) {
+        if (activeWordIdx >= 0) {
+          const prev = document.getElementById(`w_${activeWordIdx}`);
+          if (prev) prev.classList.remove("active-word");
+        }
+        activeWordIdx = foundWordIdx;
+        const curEl = document.getElementById(`w_${activeWordIdx}`);
+        if (curEl) {
+          curEl.classList.add("active-word");
+        }
+      }
+    }
+
+    // Audio Listeners
+    audioEl.addEventListener("play", () => {
+      syncPlayButtonUi(true);
+      karaokeActive = true;
+      if (!timelineCalibrated) {
+        buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
+      }
+    });
+    audioEl.addEventListener("loadedmetadata", () => {
+      buildAcousticWordTimeline(WORDS_DATA, CHUNKS_DATA, TOTAL_WEIGHT, { dur: audioEl.duration || AUDIO_DURATION, silences: AUDIO_SILENCES });
+    });
+    audioEl.addEventListener("pause", () => {
+      syncPlayButtonUi(false);
+    });
+    audioEl.addEventListener("ended", () => {
+      syncPlayButtonUi(false);
+      karaokeActive = false;
+      if (activeWordIdx >= 0) {
+        const prev = document.getElementById(`w_${activeWordIdx}`);
+        if (prev) prev.classList.remove("active-word");
+      }
+      showToast("Chapter complete.");
+    });
+    audioEl.addEventListener("timeupdate", () => {
+      const cur = audioEl.currentTime || 0;
+      const dur = audioEl.duration || 0;
+      document.getElementById("playerCurrentTime").textContent = formatSeconds(cur);
+      document.getElementById("playerTotalTime").textContent = formatSeconds(dur);
+      if (dur > 0) {
+        document.getElementById("playerScrubber").value = (cur / dur) * 100;
+      }
+      if (karaokeActive) {
+        syncKaraokeWord();
+      }
+    });
+
+    // Scrubber
+    document.getElementById("playerScrubber").addEventListener("input", (e) => {
+      const dur = audioEl.duration || 0;
+      if (dur > 0) {
+        audioEl.currentTime = (e.target.value / 100) * dur;
+      }
+    });
+    document.getElementById("btnRewind15").addEventListener("click", () => {
+      audioEl.currentTime = Math.max(0, audioEl.currentTime - 15);
+    });
+    document.getElementById("btnForward15").addEventListener("click", () => {
+      audioEl.currentTime = Math.min(audioEl.duration || 0, audioEl.currentTime + 15);
+    });
+
+    // Tap/Click any word to seek audio
+    document.getElementById("proseBody").addEventListener("click", (e) => {
+      const span = e.target.closest(".k-word");
+      if (!span) return;
+      const wIdx = parseInt(span.getAttribute("data-word-idx"), 10);
+      if (Number.isFinite(wIdx) && WORDS_DATA[wIdx]) {
+        if (WORDS_DATA[wIdx].startSec !== undefined) {
+          audioEl.currentTime = WORDS_DATA[wIdx].startSec;
+        } else {
+          const dur = audioEl.duration || AUDIO_DURATION;
+          if (Number.isFinite(dur) && dur > 0 && TOTAL_WEIGHT > 0) {
+            audioEl.currentTime = (WORDS_DATA[wIdx].c / TOTAL_WEIGHT) * dur;
+          }
+        }
+        if (audioEl.paused) {
+          toggleAudioPlay();
+        }
+      }
+    });
+
+    // Font Controls
+    document.getElementById("btnFontSmaller").addEventListener("click", () => {
+      readerFontSize = Math.max(0.9, readerFontSize - 0.1);
+      document.getElementById("proseBody").style.fontSize = `${readerFontSize}rem`;
+    });
+    document.getElementById("btnFontLarger").addEventListener("click", () => {
+      readerFontSize = Math.min(1.5, readerFontSize + 0.1);
+      document.getElementById("proseBody").style.fontSize = `${readerFontSize}rem`;
+    });
+
+    // Theme Toggle
+    document.getElementById("btnToggleTheme").addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      const isDark = document.body.classList.contains("dark-mode");
+      localStorage.setItem("kortex_theme", isDark ? "dark" : "light");
+    });
+    if (localStorage.getItem("kortex_theme") === "dark") {
+      document.body.classList.add("dark-mode");
+    }
+
+    // GitHub Preview Link Hydration
+    (function hydratePageLinks() {
+      try {
+        if (typeof location === "undefined" || typeof document === "undefined") return;
+        const isHtmlPreview = /htmlpreview\.github\.io/i.test(location.hostname || "") || /github\.com[\/]kouSeek[\/]portfolio[\/]blob[\/]/i.test(location.search || "");
+        if (!isHtmlPreview) return;
+        const m = (location.search || "").match(/https:[\/][\/]github\.com[\/]kouSeek[\/]portfolio[\/]blob[\/]([^/]+)[\/]/i);
+        const branch = (m && m[1]) ? m[1] : "kalyani-reels";
+        
+        document.querySelectorAll("a[href]").forEach(a => {
+          const href = a.getAttribute("href");
+          if (!href || href.startsWith("http") || href.startsWith("#")) return;
+          // Resolve relative path against current directory: chapters/<clean_slug>/
+          let targetPath = "";
+          if (href.startsWith("../../")) {
+            targetPath = href.replace("../../", "");
+          } else {
+            targetPath = "chapters/the-drunkards-walk-leonard-mlodinow/" + href;
+          }
+          a.href = "https://htmlpreview.github.io/?https://github.com/kouSeek/portfolio/blob/" + branch + "/" + targetPath;
+        });
+      } catch (e) {}
+    })();
+
+    // Offline Navigation Interceptor: When in offline flight mode, intercept Back to Library and Chapter links
+    document.addEventListener("click", async (e) => {
+      const a = e.target.closest("a[href*='books.html'], a[href*='step_'], a[href*='ch_']");
+      if (!a) return;
+      const href = a.getAttribute("href");
+      if (!href) return;
+
+      const isOffline = (!navigator.onLine || window.__FORCE_OFFLINE__);
+      if (isOffline) {
+        e.preventDefault();
+        let targetKey = href;
+        if (href.includes("books.html")) {
+          targetKey = "books.html";
+        } else if (href.includes("step_") || href.includes("ch_")) {
+          const fname = href.split("/").pop();
+          targetKey = `chapters/the-drunkards-walk-leonard-mlodinow/${fname}`;
+        }
+        if ("caches" in window) {
+          try {
+            const cache = await caches.open(CACHE_NAME);
+            let cachedResp = await cache.match(targetKey) || await cache.match(href);
+            if (!cachedResp && href.includes("books.html")) {
+              cachedResp = await cache.match("./books.html") || await cache.match("books.html");
+            }
+            if (cachedResp) {
+              const htmlText = await cachedResp.text();
+              document.open();
+              document.write(htmlText);
+              document.close();
+              try { window.history.pushState({ path: targetKey }, "", targetKey); } catch (_e) {}
+              return;
+            }
+          } catch (ce) {}
+        }
+      }
+    });
+
+    // Register Service Worker for offline flight mode
+    if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+      navigator.serviceWorker.register("../../kalyani-sw.js", { scope: "../../" }).catch(() => {});
+    }
+  </script>
+</body>
+</html>

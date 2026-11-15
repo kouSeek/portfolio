@@ -102,8 +102,9 @@ class TestBooksOfflineFlightMode(unittest.TestCase):
 
             checked_books += 1
 
+        expected_total = sum(len(b.get("author_chapters", [])) + len(b.get("adhd_segments", [])) for b in self.catalog)
         self.assertEqual(checked_books, 40, "Expected 40 books in catalog")
-        self.assertEqual(total_chapters, 369, "Expected exactly 369 chapter HTML files")
+        self.assertEqual(total_chapters, expected_total, f"Expected {expected_total} chapter HTML files")
 
     def test_books_html_contains_chapter_files_and_full_offline_sync(self) -> None:
         """Verify books.html embeds all 279 chapter files, storage metrics, and sync handler."""
