@@ -22,7 +22,7 @@ let jhSlideLetterIdx = 0;
 let jhRevealedMap = {};
 let jhLikesMap = {};
 let jhDoneMap = {};
-let jhAdminFilterCat = (typeof JHALAK_CATEGORIES !== 'undefined' && JHALAK_CATEGORIES.length > 1) ? JHALAK_CATEGORIES[1].id : 'songs_bn';
+let jhAdminFilterCat = (typeof JHALAK_CATEGORIES !== 'undefined' && JHALAK_CATEGORIES.length > 1) ? JHALAK_CATEGORIES[1].id : 'gods';
 let jhAdminSelectedItemId = '';
 let jhOutgoingCardHtml = '';
 let jhCurrentWordTimings = [];
@@ -55,6 +55,7 @@ let jhLastTapTimeMs = 0;
 let jhLastTapX = 0;
 let jhLastTapY = 0;
 let jhLastDoubleTapToggleMs = 0;
+let jhLastTouchTapHandledMs = 0;
 let jhInitialRenderDone = false;
 let jhLastAutoScrollMs = 0;
 let jhLastUserScrollInteractionMs = 0;
@@ -1786,7 +1787,7 @@ function updateStickyLikeBtnUI() {
 
 /* ADMIN SETTINGS: CATEGORY-LEVEL SELECTABLE DONE & LIKES CONTROLS (NO HUGE LIST) */
 function setAdminCategoryFilter(catId) {
-  jhAdminFilterCat = catId || ((typeof JHALAK_CATEGORIES !== 'undefined' && JHALAK_CATEGORIES.length > 1) ? JHALAK_CATEGORIES[1].id : 'songs_bn');
+  jhAdminFilterCat = catId || ((typeof JHALAK_CATEGORIES !== 'undefined' && JHALAK_CATEGORIES.length > 1) ? JHALAK_CATEGORIES[1].id : 'gods');
   const catItems = ALL_JHALAK_REELS.filter(r =>
     jhAdminFilterCat === 'all' || r.vibe === jhAdminFilterCat
   );
@@ -1911,7 +1912,7 @@ function renderJhAdminItemsList() {
   if (!listEl) return;
 
   if (!jhAdminFilterCat || !JHALAK_CATEGORIES.some(c => c.id === jhAdminFilterCat)) {
-    jhAdminFilterCat = (typeof JHALAK_CATEGORIES !== 'undefined' && JHALAK_CATEGORIES.length > 1) ? JHALAK_CATEGORIES[1].id : 'songs_bn';
+    jhAdminFilterCat = (typeof JHALAK_CATEGORIES !== 'undefined' && JHALAK_CATEGORIES.length > 1) ? JHALAK_CATEGORIES[1].id : 'gods';
   }
 
   const catOptionsHtml = JHALAK_CATEGORIES.map(c => {
@@ -2326,7 +2327,7 @@ function renderJhalakReelStream() {
         </div>
 
         <div class="jh-bottom-pull-cue">
-          👆👆 পাতার যেকোনো জায়গায় দুবার ট্যাপ করলে ভয়েস চলবে/থামবে • 🧲 ব্রেকিং পয়েন্ট অবধি টানলে পাতা উল্টাবে
+          👆 পাতার যেকোনো জায়গায় একবার ছুঁলেই ভয়েস চলবে/থামবে • 🧲 নিচ থেকে টানলে পরের পাতা
         </div>
       </div>
     </article>
@@ -2475,10 +2476,10 @@ function spawnDoubleTapVoiceToast(x, y, label) {
   }, 760);
 }
 
-function handleJhContentDoubleTap(ev, mode) {
+function handleJhContentSingleTap(ev, mode) {
   if (ev && isJhInteractiveTapTarget(ev.target)) return false;
   const now = Date.now();
-  if (now - jhLastDoubleTapToggleMs < 320) return false;
+  if (now - jhLastDoubleTapToggleMs < 220) return false;
   jhLastDoubleTapToggleMs = now;
   if (ev && typeof ev.preventDefault === 'function') {
     try { ev.preventDefault(); } catch (e) {}
@@ -2894,16 +2895,10 @@ window.addEventListener('DOMContentLoaded', () => {
         const endY = ev.changedTouches[0].clientY;
         const dx = endX - jhTouchStartX;
         const dy = endY - jhTouchStartY;
-        if (Math.abs(dx) < 24 && Math.abs(dy) < 24 && !isJhInteractiveTapTarget(ev.target)) {
-          const now = Date.now();
-          if (now - jhLastTapTimeMs <= 320 && Math.hypot(endX - jhLastTapX, endY - jhLastTapY) <= 36) {
-            jhLastTapTimeMs = 0;
-            handleJhContentDoubleTap(ev, 'reel');
-            return;
-          }
-          jhLastTapTimeMs = now;
-          jhLastTapX = endX;
-          jhLastTapY = endY;
+        if (Math.abs(dx) < 14 && Math.abs(dy) < 14 && !isJhInteractiveTapTarget(ev.target)) {
+          jhLastTouchTapHandledMs = Date.now();
+          handleJhContentSingleTap(ev, 'reel');
+          return;
         }
         const curScroll = vp.scrollTop || 0;
         const maxScroll = Math.max(0, (vp.scrollHeight || 0) - (vp.clientHeight || 0));
@@ -2919,8 +2914,16 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }, { passive: true });
 
-    vp.addEventListener('dblclick', ev => {
-      handleJhContentDoubleTap(ev, 'reel');
+    vp.addEventListener('click', ev => {
+      if (Date.now() - jhLastTouchTapHandledMs < 450) return;
+      if (jhMouseDownX !== null && jhMouseDownY !== null) {
+        if (Math.abs(ev.clientX - jhMouseDownX) > 10 || Math.abs(ev.clientY - jhMouseDownY) > 10) return;
+      }
+      if (typeof window !== 'undefined' && typeof window.getSelection === 'function') {
+        const sel = String(window.getSelection() || '').trim();
+        if (sel) return;
+      }
+      handleJhContentSingleTap(ev, 'reel');
     });
 
     vp.addEventListener('touchcancel', () => {
@@ -3050,22 +3053,20 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const letterModal = document.getElementById('jhLetterDrawer');
   if (letterModal && typeof letterModal.addEventListener === 'function') {
-    letterModal.addEventListener('dblclick', ev => {
-      handleJhContentDoubleTap(ev, 'letter');
+    letterModal.addEventListener('click', ev => {
+      if (Date.now() - jhLastTouchTapHandledMs < 450) return;
+      handleJhContentSingleTap(ev, 'letter');
     });
     letterModal.addEventListener('touchend', ev => {
       if (!ev.changedTouches || !ev.changedTouches[0] || isJhInteractiveTapTarget(ev.target)) return;
       const endX = ev.changedTouches[0].clientX;
       const endY = ev.changedTouches[0].clientY;
-      const now = Date.now();
-      if (now - jhLastTapTimeMs <= 320 && Math.hypot(endX - jhLastTapX, endY - jhLastTapY) <= 36) {
-        jhLastTapTimeMs = 0;
-        handleJhContentDoubleTap(ev, 'letter');
-        return;
+      const dx = endX - (jhTouchStartX || endX);
+      const dy = endY - (jhTouchStartY || endY);
+      if (Math.abs(dx) < 14 && Math.abs(dy) < 14) {
+        jhLastTouchTapHandledMs = Date.now();
+        handleJhContentSingleTap(ev, 'letter');
       }
-      jhLastTapTimeMs = now;
-      jhLastTapX = endX;
-      jhLastTapY = endY;
     }, { passive: true });
   }
 });

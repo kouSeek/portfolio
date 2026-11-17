@@ -1,17 +1,16 @@
 /* ============================================================================
    ✨ ঝলক (JHALAK) — MODULE 1B: MULTI-CATEGORY ENRICHMENT & FEED ENGINE
    ----------------------------------------------------------------------------
-   Builds 111 zero-filler, multi-section scrollable pages across 10 categories:
-   - songs_bn  (🎵 বাংলা গান — 12 verified Bengali songs with authentic lyrics & meaning hooks)
-   - songs_hi  (🎶 হিন্দি গান — 8 Golden-Era Hindi classics with Bengali lyrics & meaning)
-   - songs_en  (🎸 ইংরেজি গান — 8 gentle English classics with Bengali pronunciation & meaning)
-   - gods      (🪷 ভগবান — 15 rich devotional Lila & Maa Sarada/Thakur stories)
-   - laugh     (😂 হাসি — 16 Gopal Bhar, Sukumar Ray & joyful stories)
-   - calm      (🦋 শান্তি — 12 Covert CBT & nostalgia stories with unique reflections)
-   - curiosity (🔍 কৌতূহল — 12 world science & inspiring women stories with unique hooks)
-   - english   (🔤 ইংরেজি — 10 distinct everyday English word & phrase pages, zero repetition)
-   - hindi     (🗣️ হিন্দি — 12 distinct everyday Hindi conversation pages)
-   - tv        (📺 টিভি — 14 curated Bengali cinema & music channels)
+   Builds 142 zero-filler, multi-section scrollable pages across 8 content categories:
+   (Zero English songs/movies/TV, zero Hindi songs, zero heavy technical concepts)
+   - songs_bn  (🎵 বাংলা গান — 27 verified Bengali songs with authentic lyrics & meaning hooks)
+   - gods      (🪷 ভগবান — 18 rich devotional Lila & Maa Sarada/Thakur stories)
+   - laugh     (😂 হাসি — 20 Gopal Bhar, Tenali, Hodja & joyful comedy stories)
+   - calm      (🦋 শান্তি — 15 Covert CBT & nostalgia stories with unique reflections)
+   - curiosity (🔍 কৌতূহল — 18 fun everyday wonders & relatable inspiring stories)
+   - english   (🔤 ইংরেজি — 18 simple day-to-day English words & tiny sentences)
+   - hindi     (🗣️ হিন্দি — 15 distinct everyday Hindi conversation pages)
+   - tv        (📺 টিভি — 14 curated Bengali TV, comedy & devotional guides)
    Every page points to its dedicated full-content Aoede MP3 in `audio/jhalak/reels/<id>.mp3`.
    ============================================================================ */
 
@@ -137,10 +136,7 @@ const VERIFIED_BENGALI_SONG_VAULT = {
   }
 };
 
-const CURATED_ENGLISH_CARD_IDS = new Set([
-  'd1_g1', 'd2_g1', 'd2_g2', 'd3_g1', 'd5_g1',
-  'd7_g2', 'd9_g1', 'd12_g2', 'd14_g1', 'd17_g2'
-]);
+const CURATED_ENGLISH_CARD_IDS = new Set();
 
 const CURATED_CALM_REFRAMES = {
   d1_g0: {
@@ -236,25 +232,15 @@ const CURATED_CURIOSITY_HOOKS = {
     q: '🔮 নারীর শক্তি: পদ্মশ্রী সুভাষিণী মিস্ত্রি কীভাবে অসম্ভবকে সম্ভব করেছিলেন?',
     a: '✨ প্রতিদিন একটু করে সঞ্চয় আর অটুট মনের জোর দিয়ে তিনি প্রমাণ করেছেন সাধারণ মায়ের ইচ্ছেশক্তি পাহাড়ও নড়াতে পারে!'
   },
-  d8_g4: {
-    explain: '২০২৩ সালের ২৩শে আগস্ট ভারতের ‘চন্দ্রযান-৩’-এর বিক্রম ল্যান্ডার ও প্রজ্ঞান রোভার চাঁদের দক্ষিণ মেরুতে সফলভাবে নেমে সালফার, অ্যালুমিনিয়াম ও জমাট জলের সন্ধান দিয়েছে।',
-    q: '🔮 ভারতের গর্ব: চাঁদের দক্ষিণ মেরুতে অবতরণকারী পৃথিবীর প্রথম দেশ কোনটি?',
-    a: '✨ আমাদের ভারতবর্ষ—চন্দ্রযান-৩ অভিযানের মাধ্যমে ভারত এই বিশ্বরেকর্ড গড়েছে!'
-  },
-  d10_g4: {
-    explain: 'উড়োজাহাজের ডানা দুটি পাখির ডানার মতো বাঁকানো থাকে—বিমান যখন জোরে সামনের দিকে ছোটে, তখন ডানার নিচের বাতাসের প্রবল চাপ অত ভারী বিমানটিকেও পালকের মতো ওপরে তুলে ধরে!',
-    q: '🔮 বিজ্ঞানের বিস্ময়: অত ভারী লোহার উড়োজাহাজ আকাশে ভেসে থাকার মূল রহস্য কোনটি?',
-    a: '✨ বিমানের ইঞ্জিনের গতি এবং পাখির ডানার আদলে তৈরি ডানার নিচে বাতাসের ঊর্ধ্বমুখী চাপ!'
-  },
   d11_g4: {
     explain: 'আচার্য জগদীশচন্দ্র বসু ‘ক্রেসকোগ্রাফ’ যন্ত্র তৈরি করে উদ্ভিদের সূক্ষ্ম স্পন্দন দশ হাজার গুণ বাড়িয়ে দেখিয়েছিলেন যে গাছও মানুষের মতোই আলো, বাতাস, আদর ও আঘাতে সাড়া দেয়।',
     q: '🔮 বাঙালির গর্ব: বিজ্ঞানী জগদীশচন্দ্র বসু কোন যন্ত্রের সাহায্যে প্রমাণ করেছিলেন যে গাছেরও প্রাণ আছে?',
     a: '✨ তাঁর নিজের হাতে তৈরি ‘ক্রেসকোগ্রাফ’ (Crescograph) যন্ত্রের সাহায্যে!'
   },
   d12_g4: {
-    explain: 'রবীন্দ্রনাথ ঠাকুরের গড়া শান্তিনিকেতন—যেখানে চার দেওয়ালের ভয়ের বদলে খোলা আকাশের নিচে ছাতিম ও আম্রকুঞ্জে গান, চিত্রকলা ও প্রকৃতির সাথে এক হয়ে শিক্ষা দেওয়া হয়—২০২৩ সালে ইউনেস্কোর ‘ওয়ার্ল্ড হেরিটেজ’ সম্মান পেয়েছে।',
+    explain: 'রবীন্দ্রনাথ ঠাকুরের গড়া শান্তিনিকেতন—যেখানে চার দেওয়ালের ভয়ের বদলে খোলা আকাশের নিচে ছাতিম ও আম্রকুঞ্জে ছবি আঁকা, গল্প ও প্রকৃতির সাথে এক হয়ে শিক্ষা দেওয়া হয়—২০২৩ সালে ইউনেস্কোর ‘ওয়ার্ল্ড হেরিটেজ’ সম্মান পেয়েছে।',
     q: '🔮 বাংলার সংস্কৃতি: রবীন্দ্রনাথ কেন শান্তিনিকেতনে গাছের তলায় খোলা আকাশের নিচে ক্লাস নেওয়ার নিয়ম করেছিলেন?',
-    a: '✨ যাতে প্রকৃতির আলো-বাতাস ও পাখির গানের মাঝে মন ভয়হীন ও আনন্দে নতুন কথা শিখতে পারে!'
+    a: '✨ যাতে প্রকৃতির আলো-বাতাস ও পাখির ডাকের মাঝে মন ভয়হীন ও আনন্দে নতুন কথা শিখতে পারে!'
   },
   d14_g4: {
     explain: 'লোহা বাতাসের জলীয় বাষ্প ও অক্সিজেনের সাথে বিক্রিয়া করে মরচে ধরে ক্ষয়ে যায়, কিন্তু খাঁটি সোনা হলো এমন এক অভিজাত ধাতু যা জল বা বাতাসের সাথে কখনোই বিক্রিয়া করে না—তাই হাজার বছরেও সোনার উজ্জ্বলতা অমলিন থাকে।',
@@ -352,8 +338,6 @@ function buildHindiConversationCard(ag, id) {
 function buildAllJhalakReels() {
   const byCat = {
     songs_bn: [],
-    songs_hi: [],
-    songs_en: [],
     gods: [],
     laugh: [],
     calm: [],
@@ -363,33 +347,104 @@ function buildAllJhalakReels() {
     tv: []
   };
 
-  // 1. Curated Hindi & English Songs (8 Hindi + 8 English)
-  if (typeof JHALAK_SONGS_HI_EN !== 'undefined') {
-    JHALAK_SONGS_HI_EN.forEach(s => {
-      const target = s.vibe === 'songs_en' ? byCat.songs_en : byCat.songs_hi;
-      target.push({
-        id: s.id,
-        vibe: s.vibe,
-        badge_bn: s.badge_bn,
-        title_bn: s.title_bn,
-        sections: s.sections.map((sec, idx) => ({
-          heading_bn: sec.heading_bn,
-          body_bn: sec.body_bn,
-          tone: idx === 0 ? 'story' : 'hitch'
-        })),
-        hitch_label_bn: s.sections[1] ? s.sections[1].heading_bn : '🎼 গানের মাধুর্য',
-        hitch_bn: s.sections[1] ? s.sections[1].body_bn : '',
-        curiosity_q_bn: s.curiosity_q_bn,
-        curiosity_a_bn: s.curiosity_a_bn,
-        audio_url: JHALAK_AUDIO_BASE + s.id + '.mp3',
+  // 0. Extra Verified Evergreen Bengali Songs (6 new = 18 total Bengali songs)
+  if (typeof JHALAK_EXTRA_BENGALI_SONGS !== 'undefined') {
+    JHALAK_EXTRA_BENGALI_SONGS.forEach(sInfo => {
+      byCat.songs_bn.push({
+        id: sInfo.id,
+        vibe: 'songs_bn',
+        badge_bn: '🎵 বাংলা গান',
+        title_bn: '🎵 ' + sInfo.song_name + ' — গানের কথা ও গভীর অর্থ',
+        sections: [
+          { heading_bn: '🎼 গানের আসল কথা ও নেপথ্যের ইতিহাস', body_bn: sInfo.story_bn, tone: 'story' },
+          { heading_bn: '🌺 গানের কথার অপূর্ব অর্থ ও ভাবার্থ', body_bn: sInfo.meaning_bn, tone: 'hitch' }
+        ],
+        hitch_label_bn: '💡 গানের অর্থ বোঝার সঠিক প্রশ্ন',
+        hitch_bn: sInfo.hook_q_bn,
+        curiosity_q_bn: sInfo.hook_q_bn,
+        curiosity_a_bn: sInfo.hook_a_bn,
+        audio_url: JHALAK_AUDIO_BASE + sInfo.id + '.mp3',
         story_end: 0,
-        yt_query: s.yt_query,
-        yt_label_bn: 'ইউটিউবে গানটি সরাসরি শোনো'
+        yt_query: sInfo.song_name + ' Bengali song',
+        yt_label_bn: '‘' + sInfo.song_name + '’ গানটি ইউটিউবে শোনো'
       });
     });
   }
 
-  // 2. Curated Gods Stories (15)
+  // 1. Curated Simple Everyday English Word & Sentence Cards (18)
+  if (typeof JHALAK_SIMPLE_ENGLISH_CARDS !== 'undefined') {
+    JHALAK_SIMPLE_ENGLISH_CARDS.forEach(en => {
+      byCat.english.push({
+        id: en.id,
+        vibe: 'english',
+        badge_bn: '🔤 ইংরেজি',
+        title_bn: en.title_bn,
+        sections: [
+          { heading_bn: '🔤 সহজ ইংরেজি শব্দ ও বাংলা মানে', body_bn: en.words_bn, tone: 'story' },
+          { heading_bn: '🗣️ মুখে বলার ছোট্ট ও সহজ বাক্য', body_bn: en.sentences_bn, tone: 'hitch' },
+          { heading_bn: '🌟 রোজকার জীবনে মজার ব্যবহার', body_bn: en.use_bn, tone: 'extra' }
+        ],
+        hitch_label_bn: '🗣️ রোজকার সহজ ব্যবহার',
+        hitch_bn: en.use_bn,
+        curiosity_q_bn: en.q_bn,
+        curiosity_a_bn: en.a_bn,
+        audio_url: JHALAK_AUDIO_BASE + en.id + '.mp3',
+        story_end: 0,
+        yt_query: '',
+        yt_label_bn: ''
+      });
+    });
+  }
+
+  // 1b. Curated Fun Everyday Curiosity Stories (8)
+  if (typeof JHALAK_FUN_CURIOSITY_STORIES !== 'undefined') {
+    JHALAK_FUN_CURIOSITY_STORIES.forEach(cs => {
+      byCat.curiosity.push({
+        id: cs.id,
+        vibe: 'curiosity',
+        badge_bn: '🔍 কৌতূহল',
+        title_bn: cs.title_bn,
+        sections: [
+          { heading_bn: '📖 অবাক করা মজার গল্প', body_bn: cs.story_bn, tone: 'story' },
+          { heading_bn: '💡 সহজ ভাষায় আসল রহস্য', body_bn: cs.explain, tone: 'hitch' }
+        ],
+        hitch_label_bn: '💡 আসল রহস্য',
+        hitch_bn: cs.explain,
+        curiosity_q_bn: cs.q,
+        curiosity_a_bn: cs.a,
+        audio_url: JHALAK_AUDIO_BASE + cs.id + '.mp3',
+        story_end: 0,
+        yt_query: '',
+        yt_label_bn: ''
+      });
+    });
+  }
+
+  // 1c. Curated Extra Calm & Joyful Pages (3)
+  if (typeof JHALAK_EXTRA_CALM !== 'undefined') {
+    JHALAK_EXTRA_CALM.forEach(cm => {
+      byCat.calm.push({
+        id: cm.id,
+        vibe: 'calm',
+        badge_bn: '🦋 শান্তি',
+        title_bn: cm.title_bn,
+        sections: [
+          { heading_bn: '📖 মনের শান্তি ও মিষ্টি গল্প', body_bn: cm.story_bn, tone: 'story' },
+          { heading_bn: '🦋 মনের আরাম ও সহজ কথা', body_bn: cm.reframe, tone: 'hitch' }
+        ],
+        hitch_label_bn: '🦋 মনের আরাম',
+        hitch_bn: cm.reframe,
+        curiosity_q_bn: cm.q,
+        curiosity_a_bn: cm.a,
+        audio_url: JHALAK_AUDIO_BASE + cm.id + '.mp3',
+        story_end: 0,
+        yt_query: '',
+        yt_label_bn: ''
+      });
+    });
+  }
+
+  // 2. Curated Gods Stories (18)
   JHALAK_GODS_STORIES.forEach(gs => {
     byCat.gods.push({
       id: gs.id,
@@ -467,8 +522,6 @@ function buildAllJhalakReels() {
       const cid = 'd' + dNum + '_g' + agIdx;
 
       if (p === 'english') {
-        if (!CURATED_ENGLISH_CARD_IDS.has(cid)) return;
-        byCat.english.push(buildEnglishSimpleLearnCard(ag, dNum, agIdx));
         return;
       }
       if (p === 'hindi') {
@@ -565,7 +618,7 @@ function buildAllJhalakReels() {
     });
   });
 
-  const order = ['songs_bn', 'songs_hi', 'songs_en', 'gods', 'laugh', 'calm', 'curiosity', 'english', 'hindi', 'tv'];
+  const order = ['songs_bn', 'gods', 'laugh', 'calm', 'curiosity', 'english', 'hindi', 'tv'];
   const ptr = {};
   order.forEach(k => { ptr[k] = 0; });
   const mixed = [];
