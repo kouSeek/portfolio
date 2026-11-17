@@ -327,7 +327,7 @@ const suite = code + `
 
   // 9. KORTEX-inspired real-time word-by-word read-aloud highlighting across reel pages and Chithi letter slides
   renderJhalakReelStream();
-  assert.ok(typeof JHALAK_AUDIO_TIMINGS === 'object' && Object.keys(JHALAK_AUDIO_TIMINGS).length === 142, 'All 142 Jhalak reels must have acoustic duration and silence maps');
+  assert.ok(typeof JHALAK_AUDIO_TIMINGS === 'object' && ALL_JHALAK_REELS.every(r => Boolean(JHALAK_AUDIO_TIMINGS[r.id])), 'All 142 Jhalak reels must have acoustic duration and silence maps');
   assert.ok(el('jhReelsViewport').innerHTML.includes('class="jh-tts-word"'), 'Reel page must wrap spoken words in .jh-tts-word spans');
   assert.ok(jhCurrentWordTimings.length > 20, 'Each reel page must build weighted word timing spans');
   assert.ok(jhCurrentTotalWeight > 2000, 'Total word weight must be positive');

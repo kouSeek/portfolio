@@ -760,8 +760,8 @@ def _synthesize_bn_voicelm_aoede(text: str, out_raw: Path, timeout_s: int = 45) 
     )
     req_file = Path(f"/tmp/aicomp_bn_req_{os.getpid()}_{out_raw.stem}.txtpb")
     try:
-        for with_prompt in (True, False):
-            annot_pb = f"annotation {{ prompt {{ speaker_prompt_tokens {{ tokens: [{tokens_str}] }} }} }} " if with_prompt else ""
+        for attempt in range(3):
+            annot_pb = f"annotation {{ prompt {{ speaker_prompt_tokens {{ tokens: [{tokens_str}] }} }} }} "
             req_proto = (
                 'ssml: "placeholder" '
                 'voice { language: "bn-IN" gender: "FEMALE" sample_rate: 24000 } '
@@ -792,6 +792,7 @@ def _synthesize_bn_voicelm_aoede(text: str, out_raw: Path, timeout_s: int = 45) 
                 if len(mp3_bytes) > 1000:
                     out_raw.write_bytes(mp3_bytes)
                     return True
+            time.sleep(0.6 * (attempt + 1))
     except Exception:
         pass
     finally:
@@ -860,8 +861,7 @@ def _synthesize_wav(text: str, out_wav: Path, model_name: str, timeout_s: int = 
     if any(tag in out_wav.name for tag in ("_anondo_", "_zorba_")):
         return _synthesize_voicelm_aoede(text, out_wav, timeout_s=min(60, timeout_s))
     if any(tag in out_wav.name for tag in ("_kalyani_", "_jhalak_")):
-        if _synthesize_bn_voicelm_aoede(text, out_wav, timeout_s=min(60, timeout_s)):
-            return True
+        return _synthesize_bn_voicelm_aoede(text, out_wav, timeout_s=min(60, timeout_s))
     try:
         proc = subprocess.run(
             [GEN_BIN, f"-timeout={timeout_s}s", f"-output={out_wav}", "tts", f"-model={model_name}", "-voice=Aoede", text],
